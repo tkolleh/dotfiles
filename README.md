@@ -1,7 +1,7 @@
 # <⚡️ tkolleh> dotfiles
 
-Setup details for tools, scripts & environment variables across different operating systems. Explore, copy parts for your own dotfiles and enjoy!
+Configuration files for apps, tools, scripts across different operating systems. Explore, copy parts for your own dotfiles and enjoy!
 
 
-<br>
+</br>
 Thanks to all the developers who share their dotfiles.
