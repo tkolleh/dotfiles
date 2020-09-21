@@ -1,0 +1,12 @@
+let g:netrw_dirhistmax  =10
+let g:netrw_dirhistcnt =1
+let g:netrw_dirhist_1='/Users/tkolleh/tools/apache-maven-3.6.1'
+let g:netrw_dirhist_0='/Users/tkolleh/GaTech/gt_courses/cs7641-MachineLearning/office-hours'
+let g:netrw_dirhist_9='/Users/tkolleh/GaTech/gt_courses/cs7641-MachineLearning'
+let g:netrw_dirhist_8='/Users/tkolleh/GaTech/gt_courses/cs7641-MachineLearning/office-hours'
+let g:netrw_dirhist_7='/Users/tkolleh/ws/nvim-lspconfig/lua/nvim_lsp'
+let g:netrw_dirhist_6='/Users/tkolleh/ws/nvim-lspconfig/lua'
+let g:netrw_dirhist_5='/Users/tkolleh/.local/share/plugged/vim-colortemplate/templates'
+let g:netrw_dirhist_4='/Users/tkolleh/.local/share/plugged/vim-colortemplate'
+let g:netrw_dirhist_3='/Users/tkolleh/ws/amplify-js-app'
+let g:netrw_dirhist_2='/Users/tkolleh/ws'

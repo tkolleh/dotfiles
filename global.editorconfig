@@ -1,0 +1,28 @@
+; This file is for unifying the coding style for different editors and IDEs.
+; More information at http://EditorConfig.org
+
+# top-most EditorConfig file
+root = true
+
+# Unix-style newlines with a newline ending and
+# two space tabs for every file.
+[*]
+end_of_line = lf
+
+# Matches multiple files with brace expansion notation
+# Set default charset
+[*.{js,py,java,html,css}]
+charset = utf-8
+indent_style = space
+trim_trailing_whitespace = true
+
+# 2 space indentation
+[*.{js,java,html,css}]
+indent_size = 2
+tab_width = 2
+
+# 4 space indentation
+[*.py]
+indent_size = 4
+tab_width = 4
+
