@@ -1,0 +1,12 @@
+# Don't let ripgrep vomit really long lines to my terminal.
+--max-columns=300
+
+# Add my 'web' type.
+--type-add
+web:*.{html,css,js}*
+
+# Using glob patterns to include/exclude files or folders
+--glob=!git/*
+
+# Ignore case if all lowercase
+--smart-case

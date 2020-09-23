@@ -1,0 +1,118 @@
+#!/usr/bin/env bash
+#
+# =============================================================================
+#
+# symlinked to /usr/local/bin/<filename>
+#
+# Executed by bash for non-login shells.
+#
+# If not running interactively, don't do anything.
+case $- in
+    *i*) ;;
+      *) return;;
+esac
+
+#
+# TODO: Change documentation to https://github.com/tests-always-included/tomdoc.sh
+# where applicable and create separate files for functions
+#
+
+ws () {
+  workspace=$(fd --type d -uu -a . "$HOME/ws" | fzf)
+  cd $workspace
+}
+
+# Open Marked 2, passing provided file path to the application
+marked() {
+  if [ -n "${1}" ]; then
+      open -a "Marked 2" "${1}";
+  else
+      open -a "Marked 2";
+  fi
+}
+
+# using ripgrep combined with preview
+# find-in-file - usage: fif <searchTerm>
+# reference: https://github.com/junegunn/fzf/wiki/examples#searching-file-contents
+fif() {
+  if [ ! "$#" -gt 0 ]; then echo "Need a string to search for!"; return 1; fi
+  rg --files-with-matches --no-messages "$1" | fzf --preview "highlight -O ansi -l {} 2> /dev/null | rg --colors 'match:bg:yellow' --ignore-case --pretty --context 10 '$1' || rg --ignore-case --pretty --context 10 '$1' {}"
+}
+
+# alternative using ripgrep-all (rga)
+fid() {
+  if [ ! "$#" -gt 0 ]; then echo "Need a string to search for!"; return 1; fi
+  rga --files-with-matches --no-messages "$1" | fzf --preview "highlight -O ansi -l {} 2> /dev/null | rg --colors 'match:bg:yellow' --ignore-case --pretty --context 10 '$1' || rg --ignore-case --pretty --context 10 '$1' {}"
+}
+
+# fbr - checkout git branch (including remote branches), sorted by most recent commit, limit 30 last branches
+# reference: https://github.com/junegunn/fzf/wiki/examples#git
+fbr() {
+  local branches branch
+  branches=$(git for-each-ref --count=30 --sort=-committerdate refs/heads/ --format="%(refname:short)") &&
+  branch=$(echo "$branches" |
+           fzf-tmux -d $(( 2 + $(wc -l <<< "$branches") )) +m) &&
+  git checkout $(echo "$branch" | sed "s/.* //" | sed "s#remotes/[^/]*/##")
+}
+
+alias glNoGraph='git log --color=always --format="%C(auto)%h%d %s %C(black)%C(bold)%cr% C(auto)%an" "$@"'
+_gitLogLineToHash="echo {} | grep -o '[a-f0-9]\{7\}' | head -1"
+_viewGitLogLine="$_gitLogLineToHash | xargs -I % sh -c 'git show --color=always % | diff-so-fancy'"
+
+# fcoc_preview - checkout git commit with previews
+fcoc_preview() {
+  local commit
+  commit=$( glNoGraph |
+    fzf --no-sort --reverse --tiebreak=index --no-multi \
+        --ansi --preview="$_viewGitLogLine" ) &&
+  git checkout $(echo "$commit" | sed "s/ .*//")
+}
+
+# fshow_preview - git commit browser with previews
+fshow_preview() {
+    glNoGraph |
+        fzf --no-sort --reverse --tiebreak=index --no-multi \
+            --ansi --preview="$_viewGitLogLine" \
+                --header "enter to view, alt-y to copy hash" \
+                --bind "enter:execute:$_viewGitLogLine   | less -R" \
+                --bind "alt-y:execute:$_gitLogLineToHash | xclip"
+}
+
+# fcs - get git commit sha
+# example usage: git rebase -i `fcs`
+fcs() {
+  local commits commit
+  commits=$(git log --color=always --pretty=oneline --abbrev-commit --reverse) &&
+  commit=$(echo "$commits" | fzf --tac +s +m -e --ansi --reverse) &&
+  echo -n $(echo "$commit" | sed "s/ .*//")
+}
+
+# Check the content length of a file and print size in MB
+contentlength () {
+  if [[ ! -z "$1" ]]; then
+    curl -sLI $1 | awk 'tolower($1) ~ /content-length/ {print $1, ($2/1000000), "MB"}'
+  else
+    echo "Enter URL to file"
+  fi
+}
+
+viml () {
+  nvim -S $LAST_NVIM_SESSION
+}
+
+vims () {
+  SESSION=$(fd . -a $NVIM_SESSION | fzf)
+  nvim -S "$SESSION"
+}
+
+vimplugupdate () {
+  echo ".  .     .    ,     .  .      ";
+  echo "|  |._  _| _.-+-_   \  /*._ _ ";
+  echo "|__|[_)(_](_] |(/,   \/ |[ | )";
+  echo "    |                         ";
+
+  echo -e '  \u001b[34mInstalling, updating and cleaning neovim plugins\u001b[0m'
+  echo -e '==========================='
+  exec nvim +PlugInstall +PlugUpdate +PlugClean +qall
+  echo
+}

@@ -1,0 +1,62 @@
+#
+# Private keys and their passphrase are saved to macOS keychain 
+#
+Host *
+  UseKeychain yes
+  AddKeysToAgent yes
+
+#
+# Config mainly used for tunneling to a remote host and/or virtualbox
+#
+Host *vm
+  HostName localhost
+  PreferredAuthentications publickey
+  IdentitiesOnly yes
+  IdentityFile ~/.ssh/swagger-jacker-key
+  Port 2222
+
+Host ubuntuvm
+  User ubuntu
+
+Host debianvm
+  User root
+
+Host *.amazonaws.com
+  ForwardAgent yes
+
+Host *.compute.internal
+  ForwardAgent yes
+
+Host unraid
+  HostName 10.0.0.2
+  User root
+  PreferredAuthentications publickey
+  IdentitiesOnly yes
+  IdentityFile /Users/tkolleh/.ssh/unraid_id_rsa
+  RemoteCommand "cd /mnt/user/ && exec bash --login"
+  RequestTTY yes
+
+Host github.gatech.edu
+  PreferredAuthentications keyboard-interactive
+  IdentityFile ~/.ssh/swagger-jacker-key
+  
+Host gitlab.com
+  PreferredAuthentications publickey
+  IdentitiesOnly yes
+  IdentityFile ~/.ssh/swagger-jacker-key
+  Port 22
+
+Host github.com
+  PreferredAuthentications publickey
+  IdentitiesOnly yes
+  IdentityFile ~/.ssh/scm_rsa
+  Port 22
+
+Host ml
+  HostName ec2-54-209-158-20.compute-1.amazonaws.com
+  User ubuntu
+  PreferredAuthentications publickey
+  IdentitiesOnly yes
+  IdentityFile ~/.ssh/aws_cloud_rsa
+  Port 22
+
