@@ -1,0 +1,6 @@
+
+# Load .bash_aliases if it exists
+test -f $HOME/.bash_aliases && source $HOME/.bash_aliases
+
+
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash

@@ -1,0 +1,63 @@
+[user]
+  name = tkolleh
+  email = tinatuh@gmail.com
+	signingkey = 2E746CD53171464E7DAE39671EFF437EB92D97F6
+[color]
+  branch = auto
+  diff = true
+  status = auto
+  ui = true
+[color "branch"]
+  current = yellow reverse
+  local = yellow
+  remote = green
+[color "diff"]
+  meta = yellow bold
+  frag = magenta bold
+  old = red bold
+  new = green bold
+[color "status"]
+  added = yellow
+  changed = green
+  untracked = cyan
+[core]
+	excludesfile = /Users/tkolleh/.gitignore_global
+	autocrlf = input
+	editor = nvim
+[difftool "sourcetree"]
+	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
+	path = 
+[mergetool "sourcetree"]
+	cmd = /Applications/Sourcetree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
+	trustExitCode = true
+[push]
+  default = simple
+[credential "https://*.amazonaws.com"]
+  helper = !aws --profile git-rus codecommit credential-helper $@
+  UseHttpPath = true
+[mergetool "vimdiff"]
+  prompt = true
+  cmd = nvim -d $LOCAL $REMOTE $MERGED -c '$wincmd w' -c 'wincmd J'
+[difftool "fugitive"]
+  prompt = true
+	cmd = nvim -f -c \"Gvdiffsplit\" \"$LOCAL\" \"$REMOTE\"
+[mergetool "fugitive"]
+  prompt = true
+	cmd = nvim -f -c \"Gvdiffsplit!\" \"$MERGED\"
+
+[mergetool]
+  prompt = true
+[difftool]
+  prompt = true
+[merge]
+  tool = fugitive
+  guitool = sourcetree
+[diff]
+  tool = fugitive
+  guitool = sourcetree
+[init]
+	templatedir = ~/.git_template
+[gpg]
+	program = /usr/local/bin/gpg
+[tag]
+	gpgsign = true
