@@ -113,15 +113,15 @@ export XDG_DATA_HOME="$HOME/.local/share"
 
 export CURL_HOME="/usr/bin/curl"
 export ICLOUD_DIR="/Users/tkolleh/Library/Mobile Documents/com~apple~CloudDocs/"
-export MARKDOWN_NOTES=$HOME/Documents/markdown-notes
 
-export COURSES=$HOME/GaTech/gt_courses/
-
-# Preferred editor for local and remote sessions
+# Sand et the preferred visual editor for local or set the remote
+# visual editor. The EDITOR variable technically shouldn't be set to a
+# "visual" editor like vi but something like ed
+#
 if [[ -n $SSH_CONNECTION ]]; then
-  export EDITOR='vim'
+  export VISUAL='vim'
 else
-  export EDITOR='nvim'
+  export VISUAL='nvim'
 fi
 
 # Set personal aliases, overriding those provided by oh-my-zsh libs,
@@ -133,7 +133,6 @@ fi
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
-# [[ -a $ZSH_CUSTOM/appearance.zsh ]] && source $ZSH_CUSTOM/appearance.zsh
 # [[ -a $ZSH_CUSTOM/installed-apps.zsh ]] && source $ZSH_CUSTOM/installed-apps.zsh
 # [[ -a $ZSH_CUSTOM/aliases.zsh ]] && source $ZSH_CUSTOM/aliases.zsh
 
@@ -141,18 +140,23 @@ fi
 # -----------------------------------------------------------------------------
 
 # Load app configurations from separate configuration file.
+
+[[ -a $ZSH_CUSTOM/appearance.zsh ]] && source $ZSH_CUSTOM/appearance.zsh
+
 if [ -f "$HOME"/.bash_options ]; then
     source "$HOME"/.bash_options
 fi
-
 # Load alias definitions from separate configuration file.
 if [ -f "$HOME"/.bash_aliases ]; then
     source "$HOME"/.bash_aliases
 fi
-
 # Load custom code from separate configuration file.
 if [ -f "$HOME"/.fzf.zsh ]; then
     source "$HOME"/.fzf.zsh
+fi
+# Load custom code from separate configuration file.
+if [ -f "$HOME"/.bash_functions ]; then
+    source "$HOME"/.bash_functions
 fi
 
 #
