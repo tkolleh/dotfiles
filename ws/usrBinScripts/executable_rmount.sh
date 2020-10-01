@@ -5,7 +5,7 @@
 # symlinked to /usr/local/bin/<filename>
 #
 
-#/ Usage: rumount [options] [dir]
+#/ Usage: rmount [options] [dir]
 #/
 #/    -h, --help        show help text
 #/     [dir]            Mounted directory to be unmounted
@@ -22,7 +22,9 @@
 #/
 #/ Returns the exit code of the sshfs command or an exit code of 1.
 
-local host folder mname
+host=
+folder=
+mname=
 
 while test "$#" -ne 0; do
   case "$1" in
