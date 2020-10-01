@@ -1,13 +1,7 @@
-#
-# Private keys and their passphrase are saved to macOS keychain 
-#
 Host *
   UseKeychain yes
   AddKeysToAgent yes
 
-#
-# Config mainly used for tunneling to a remote host and/or virtualbox
-#
 Host *vm
   HostName localhost
   PreferredAuthentications publickey
@@ -53,7 +47,7 @@ Host github.com
   Port 22
 
 Host ml
-  HostName ec2-54-209-158-20.compute-1.amazonaws.com
+  HostName ec2-*.compute-1.amazonaws.com
   User ubuntu
   PreferredAuthentications publickey
   IdentitiesOnly yes
