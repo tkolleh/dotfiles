@@ -22,8 +22,6 @@
 #/
 #/ Returns the exti code of the rm command or 0 otherwise.
 
-local _unmount_all
-
 _unmount_all=false
 
 while test "$#" -ne 0; do
