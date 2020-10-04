@@ -27,7 +27,6 @@ Host unraid
   PreferredAuthentications publickey
   IdentitiesOnly yes
   IdentityFile /Users/tkolleh/.ssh/unraid_id_rsa
-  RemoteCommand "cd /mnt/user/ && exec bash --login"
   RequestTTY yes
 
 Host github.gatech.edu
