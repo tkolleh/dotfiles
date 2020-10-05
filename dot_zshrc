@@ -143,6 +143,9 @@ fi
 
 [[ -a $ZSH_CUSTOM/appearance.zsh ]] && source $ZSH_CUSTOM/appearance.zsh
 
+if [ -f "$HOME"/.bash_secrets ]; then
+    source "$HOME"/.bash_secrets
+fi
 if [ -f "$HOME"/.bash_options ]; then
     source "$HOME"/.bash_options
 fi
