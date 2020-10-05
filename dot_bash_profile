@@ -1,3 +1,5 @@
+# -*-mode:bash-*- vim:ft=bash
+
 export CLICOLOR=1
 export LSCOLORS=ExFxBxDxCxegedabagacad
 export JAVA_HOME=$(/usr/libexec/java_home -v 14)
@@ -7,50 +9,21 @@ export XDG_DATA_HOME="$HOME/.local/share"
 export CURL_HOME="/usr/bin/curl"
 export ICLOUD_DIR="/Users/tkolleh/Library/Mobile Documents/com~apple~CloudDocs/"
 
+# You may need to manually set your language environment
+export LANG=en_US.UTF-8
+
 # Close shell with five presses of CTRL-D
 export IGNOREEOF=5
 
-# Github API Token for Homebrew
-export HOMEBREW_GITHUB_API_TOKEN=4b351df2289942af94fdd3e78905aeda1eba0782
-
-# NeoVim environment variables
-export NVIM_PY2_HOME="/anaconda3/envs/nvim-py2/bin"
-export NVIM_PY3_HOME="/anaconda3/envs/nvim-py3/bin"
-export MYVIMRC="$XDG_CONFIG_HOME/nvim/init.vim"
-export NVIM_SESSION="$XDG_CONFIG_HOME/sessions"
-export LAST_NVIM_SESSION="$NVIM_SESSION/LastSession.vim"
-
-# NeoVim as default editor
-export EDITOR="nvim"
-
-# Flutter SDK variables
-export FLUTTER="$HOME/ws/flutter-sdk"
-
-# Apache Spark environment variables
-export SPARK_HOME="$HOME/tools/spark-2.3.3-bin-hadoop2.7"
-
-# Golang home
-export GOPATH=$(go env GOPATH)
-
-export PATH="/usr/local/bin:/usr/local/lib:$PATH"
-
+# Sand et the preferred visual editor for local or set the remote
+# visual editor. The EDITOR variable technically shouldn't be set to a
+# "visual" editor like vi but something like ed
 #
-# My custom tools
-# 
-# Installed commands:
-# - notes
-# - plantuml
-# - rgfz
-#
-### export GRAPHVIZ_DOT=/usr/local/bin/dot #Used for plantuml
-export MARKDOWN_NOTES=$HOME/Documents/markdown-notes
-export PATH="$PATH:$HOME/ws/bash-env-setup/apps"
-export PATH="$PATH:$HOME/ws/manage-mmd-notes"
-
-export PATH="$PATH:$JAVA_HOME/bin:$M2_HOME/bin:$FLUTTER/bin:$SPARK_HOME/bin:$GOPATH/bin"
-
-# Load .bash_aliases if it exists
-test -f $HOME/.bash_aliases && source $HOME/.bash_aliases
+if [[ -n $SSH_CONNECTION ]]; then
+  export VISUAL='vim'
+else
+  export VISUAL='nvim'
+fi
 
 # Color manpages
 man() {
@@ -111,35 +84,9 @@ test -f $HOME/ws/alacritty/extra/completions/alacritty.bash && source $HOME/ws/a
 #
 test -f $HOME/.fzf.bash && source $HOME/.fzf.bash
 
-#
-# Check if the ripgrep and command line fuzzy finder are installed
-# and available on path then; fzf + pt configuration
-# Note: This must come after sourcing the fzf
-#
-if hash rg 2>/dev/null && hash fd 2>/dev/null && hash fzf 2>/dev/null; then 
-    export RIPGREP_CONFIG_PATH="$HOME/.ripgreprc"
-    export FZF_DEFAULT_COMMAND='rg --color=never --ignore-case --hidden --files --no-ignore --no-ignore-global --follow'
-    # export FZF_DEFAULT_OPTS="--bind '?:toggle-preview' --preview='less {-1}' --header-lines=1 --preview-window='right:50%:hidden'"
-    export FZF_DEFAULT_OPTS="--bind '?:toggle-preview' --preview='less {-1}' --preview-window='right:50%:hidden'"
-    export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
-    # Search files
-    export FZF_ALT_C_COMMAND='fd --type d --color=never --ignore-case --hidden --follow --exclude ".git" .'
-    # Search recent commands
-    export FZF_CTRL_R_OPTS="$FZF_DEFAULT_OPTS"
-    # export FZF_CTRL_R_OPTS="--preview 'echo {}' --preview-window up:2 --bind ?:toggle-preview"
-    # export FZF_DEFAULT_OPTS="--preview 'rougify {}' --bind ?:toggle-preview"
-fi
-
-[ -f ~/.fzf.bash ] && source ~/.fzf.bash
-
 # Load rbenv automatically by appending
 # the following to ~/.bash_profile:
 eval "$(rbenv init -)"
-
-
-# Simple function to get git ignore defaults from the gitignore api
-function gi() { curl -sL https://www.gitignore.io/api/$@ ;}
-
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
