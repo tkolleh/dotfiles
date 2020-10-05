@@ -1,7 +1,7 @@
 templates:
   simple:
     pandoc:
-      from: markdown
+      from: markdown+multiline_tables+table_captions
       to: html
       standalone: true
       metadata:
