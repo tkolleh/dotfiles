@@ -1,4 +1,8 @@
 
+if [ -f "$HOME"/.bash_secrets ]; then
+    source "$HOME"/.bash_secrets
+fi
+# Load application settings
 if [ -f "$HOME"/.bash_options ]; then
     source "$HOME"/.bash_options
 fi
