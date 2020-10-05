@@ -1,0 +1,116 @@
+# -*-mode:bash-*- vim:ft=bash
+
+# ~/.bash_options
+# =============================================================================
+# Shell aliases sourced by `~/.bashrc` and `~/.zshrc`.
+#
+# OSTYPE values used:
+#     - darwin: macOS
+#     - cygwin: Cygwin POSIX-compatible environment for Windows
+#     - mingw: MinGW Minimalist GNU for Windows
+#     - msys: MinGW Lightweight shell and GNU utilities for Windows
+
+# shellcheck shell=bash
+
+# Configure third party appliapplications and system PATH
+# -----------------------------------------------------------------------------
+#
+export PATH="/usr/local/bin:/usr/local/lib:$PATH"
+
+export MARKDOWN_NOTES=$HOME/Documents/markdown-notes
+export COURSES=$HOME/GaTech/gt_courses/
+
+# Github API Token for Homebrew
+export HOMEBREW_GITHUB_API_TOKEN=4b351df2289942af94fdd3e78905aeda1eba0782
+
+# Custom settings for Java and Java applications
+export JAVA_HOME=$(/usr/libexec/java_home -v 14)
+export M2_HOME="$HOME/Tools/apache-maven-3.6.1"
+
+# -- Conda environment variables --------------------------------------------------- 
+#
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/usr/local/anaconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/usr/local/anaconda3/etc/profile.d/conda.sh" ]; then
+        . "/usr/local/anaconda3/etc/profile.d/conda.sh"
+    else
+        export PATH="/usr/local/anaconda3/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+# <<< conda initialize <<<
+#
+# Set conda env home"
+export CONDA_ENVS="/usr/local/anaconda3/envs"
+
+# -- NeoVim environment variables --------------------------------------------------
+export NVIM_PY2_HOME="$CONDA_ENVS/nvim-py2/bin"
+export NVIM_PY3_HOME="$CONDA_ENVS/nvim-py3/bin"
+export MYVIMRC="$XDG_CONFIG_HOME/nvim/init.vim"
+export MYVIMOPTS="$XDG_CONFIG_HOME/nvim/options.vim"
+export MYVIMPACKS="$XDG_CONFIG_HOME/nvim/packages.vim"
+export NVIM_SESSION="$XDG_CONFIG_HOME/nvim/sessions"
+export LAST_NVIM_SESSION="$NVIM_SESSION/lastsession.vim"
+
+# Golang home
+export GOPATH=$(go env GOPATH)
+
+#
+# Load command line fuzzy finder
+# See: https://github.com/junegunn/fzf
+#
+# Set fzf installation directory path
+export FZF_BASE=/usr/local/opt/fzf/
+
+#
+# Check if the ripgrep and command line fuzzy finder are installed
+# and available on path then; fzf + pt configuration
+# Note: This must come after sourcing the fzf
+#
+if hash rg 2>/dev/null && hash fd 2>/dev/null && hash fzf 2>/dev/null; then 
+    export RIPGREP_CONFIG_PATH="$HOME/.ripgreprc"
+
+    # export FZF_DEFAULT_COMMAND='rg --color=never --ignore-case --hidden --files --no-ignore --no-ignore-global --follow '
+    export FZF_DEFAULT_COMMAND='fd --type f --color=never --ignore-case --no-ignore --hidden --follow'
+
+    export FZF_DEFAULT_OPTS="--bind 'f1:execute(bat --paging=always --color=always {}),f2:execute(nvim {})+abort,ctrl-y:execute-silent(echo {} | pbcopy)+abort' --bind '?:toggle-preview' --preview='bat --number --color=always {} | head -700' --preview-window='right:50%:hidden'"
+
+    export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+
+    # Search for files
+    export FZF_ALT_C_COMMAND='fd --type d --color=never --no-ignore --ignore-case --hidden --follow '
+
+    # Search recent commands
+    export FZF_CTRL_R_OPTS="$FZF_DEFAULT_OPTS"
+fi
+
+#
+# Ruby configuration
+#
+export RUBY_CONFIGURE_OPTS="--with-openssl-dir=$(brew --prefix openssl@1.1)"
+export PATH="/usr/local/opt/ruby/bin:$PATH"
+
+#
+# Opam & Ocaml
+#
+# opam configuration
+test -r $HOME/.opam/opam-init/init.zsh && . $HOME/.opam/opam-init/init.zsh > /dev/null 2> /dev/null || true
+
+#
+# Par configuration
+#
+export PARINIT="rTbgqR B=.,?_A_a Q=_s>|"
+
+fx () {
+  #Done this way to avoid alais executing the inner command for npm root...
+  NODE_PATH=$(npm root -g) fx
+}
+
+#
+# Final $PATH
+#
+export PATH="$PATH:$JAVA_HOME/bin:$M2_HOME/bin:$FLUTTER/bin:$SPARK_HOME/bin:$GOPATH/bin"
