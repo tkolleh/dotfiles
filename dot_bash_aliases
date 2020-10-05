@@ -1,0 +1,105 @@
+# -*-mode:bash-*- vim:ft=bash
+
+# ~/.bash_aliases
+# =============================================================================
+# Shell aliases sourced by `~/.bashrc` and `~/.zshrc`.
+#
+# OSTYPE values used:
+#     - darwin: macOS
+#     - cygwin: Cygwin POSIX-compatible environment for Windows
+#     - mingw: MinGW Minimalist GNU for Windows
+#     - msys: MinGW Lightweight shell and GNU utilities for Windows
+
+# shellcheck shell=bash
+
+# Redefine standard commands to improve their behavior
+# -----------------------------------------------------------------------------
+#
+
+#
+# Alias helper functions
+#
+removeAlias () {
+  # TODO: use awk here
+  CMDTYPE=$(type "$1") 
+  case $CMDTYPE in
+    *"alias"*)
+      unalias $1 2> >(grep -Ev 'no such hash table element' >&2)
+    ;;
+    *"function"*)
+      echo -e "\u001b[34mError: alias is a function\u001b[0m"
+    ;;
+    *"not found"*)
+    ;;
+    *)
+      echo -e "Error: unknown command type for $1 return message is '$CMDTYPE'"
+    ;;
+  esac
+}
+setAlias () {
+  alias "$1" 2>/dev/null 1>/dev/null || alias "$1"="$2"
+}
+replaceAlias () {
+  removeAlias "$1"
+  setAlias "$1" "$2"
+}
+
+
+# -- Local navigation --------------------------------------------------
+replaceAlias ll "exa --time modified --all --binary --git --header --long --color=always "
+replaceAlias la "exa --time modified --all --binary --long "
+replaceAlias lt "exa --long --tree --level=3 "
+
+# -- Git -------------------------------------------------- 
+removeAlias grmci
+grmci () {
+  # TODO: Function needs to be reworked doesn't really do what I want
+  # Remove cached files that have been ignored by git locally or globally.
+  git ls-files --others | xargs -n1 -I '{}' git rm --cached --quiet --ignore-unmatch -- ./{}
+}
+replaceAlias gts "git --no-pager branch --color=always -vva --sort=-committerdate | head -n 8 && git status -b --ignored"
+replaceAlias gcm "git commit -a -S -m"
+replaceAlias glog "git log --oneline --decorate --graph --show-signature"
+replaceAlias gloga "git log --oneline --decorate --graph --show-signature --all"
+replaceAlias gwch "git whatchanged -p --abbrev-commit --pretty=medium | diff-so-fancy | bat"
+
+# -- (neo)vim -------------------------------------------------- 
+setAlias vim "nvim"
+setAlias update_neovim "$HOME/ws/bash-env-setup/neovim_plugin_update.sh"
+
+# -- miscellaneous --------------------------------------------------
+
+setAlias ranger='TERM=xterm-256color ranger'
+
+# Reloads the configuration.
+if [ -n "$ZSH_VERSION" ]; then
+    setAlias resource='source $HOME/.zshrc'
+else
+    setAlias resource='source $HOME/.bash_profile'
+fi
+
+
+setAlias note 'cd $MARKDOWN_NOTES && nvim -c "NV!"'
+setAlias gradle "TERM=xterm ./gradlew"
+
+setAlias awsv "aws --profile vitalnotes-tkolleh-default"
+setAlias lldb "PATH=/usr/bin:$PATH lldb"
+setAlias pandoc "/usr/local/opt/pandoc/bin/pandoc"
+setAlias subl "/Applications/Sublime\ Text.app/Contents/SharedSupport/bin/subl"
+# alias mvn 2>/dev/null >/dev/null || alias mvn='jenv exec mvn'
+
+
+# -- configuration paths ------------------------------------------------------
+
+# Navigates to Chezmoi's local repo.
+if command -v chezmoi > /dev/null; then
+    if [[ "$OSTYPE" =~ ^(cygwin|mingw|msys) ]]; then
+        # shellcheck disable=SC2046,SC2139
+        # TODO verify
+        setAlias chezmoiconf="cd $(chezmoi source-path | tr '\\/' '/' | tr -d ':' | awk '{print "/"$1}')"
+    else
+        setAlias chezmoiconf='cd $(chezmoi source-path)'
+    fi
+else
+    setAlias chezmoiconf='cd $HOME/.local/share/chezmoi'
+fi
