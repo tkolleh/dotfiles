@@ -1,6 +1,16 @@
 
-# Load .bash_aliases if it exists
-test -f $HOME/.bash_aliases && source $HOME/.bash_aliases
-
-
-[ -f ~/.fzf.bash ] && source ~/.fzf.bash
+if [ -f "$HOME"/.bash_options ]; then
+    source "$HOME"/.bash_options
+fi
+# Load alias definitions from separate configuration file.
+if [ -f "$HOME"/.bash_aliases ]; then
+    source "$HOME"/.bash_aliases
+fi
+# Load custom code from separate configuration file.
+if [ -f "$HOME"/.fzf.bash ]; then
+    source "$HOME"/.fzf.bash
+fi
+# Load custom code from separate configuration file.
+if [ -f "$HOME"/.bash_functions ]; then
+    source "$HOME"/.bash_functions
+fi
