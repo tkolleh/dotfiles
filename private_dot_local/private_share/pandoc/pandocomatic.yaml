@@ -1,0 +1,35 @@
+templates:
+  simple:
+    pandoc:
+      from: markdown
+      to: html
+      standalone: true
+      metadata:
+        lang: en-US
+        mathjax: true
+  report:
+    pandoc:
+      from: markdown-raw_tex
+      to: pdf
+      standalone: true
+      pdf-engine: lualatex
+      csl: csl/ieee-with-url.csl
+      highlight-style: tango
+      lua-filter:
+        - filters/pandoc-zotxt.lua
+        - filters/abstract-to-meta.lua
+      filter:
+        - pandoc-citeproc
+        - pandoc-include-code
+      template:
+        - templates/eisvogel.latex
+      metadata:
+        lang: en-US
+        link-citations: true
+        mathjax: true
+        fontsize: 11pt
+        mainfont: "DejaVuSerif"
+        sansfont: "DejaVu Sans Mono Nerd Font Complete"
+        monofont: "DejaVu Sans Mono Nerd Font Complete Mono"
+        mathfont: "DejaVuMathTeXGyre"
+        geometry: "margin=1in"
