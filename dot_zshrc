@@ -161,6 +161,10 @@ fi
 if [ -f "$HOME"/.bash_functions ]; then
     source "$HOME"/.bash_functions
 fi
+# Load autojump
+if [ -f /usr/local/etc/profile.d/autojump.sh ]; then
+    source /usr/local/etc/profile.d/autojump.sh
+if
 
 #
 # Change cursor shape for different vi modes.

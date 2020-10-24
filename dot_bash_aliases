@@ -47,7 +47,6 @@ replaceAlias () {
 
 # -- Local navigation --------------------------------------------------
 replaceAlias ll "exa --time modified --all --binary --git --header --long --color=always "
-replaceAlias la "exa --time modified --all --binary --long "
 replaceAlias lt "exa --long --tree --level=3 "
 
 # -- Git -------------------------------------------------- 
@@ -65,7 +64,6 @@ replaceAlias gwch "git whatchanged -p --abbrev-commit --pretty=medium | diff-so-
 
 # -- (neo)vim -------------------------------------------------- 
 setAlias vim "nvim"
-setAlias update_neovim "$HOME/ws/bash-env-setup/neovim_plugin_update.sh"
 
 # -- miscellaneous --------------------------------------------------
 

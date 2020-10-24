@@ -84,6 +84,11 @@ test -f $HOME/ws/alacritty/extra/completions/alacritty.bash && source $HOME/ws/a
 #
 test -f $HOME/.fzf.bash && source $HOME/.fzf.bash
 
+#
+# Load autojump
+#
+[ -f /usr/local/etc/profile.d/autojump.sh ] && . /usr/local/etc/profile.d/autojump.sh
+
 # Load rbenv automatically by appending
 # the following to ~/.bash_profile:
 eval "$(rbenv init -)"
