@@ -74,12 +74,12 @@ packadd! fzf
   " to open in a new tab, a new split, or in a new vertical split
   " Bang-versions of the commands (e.g. Ag!) will open fzf in fullscreen
   "
-  map <Leader>ff :Files<CR>
-  map <Leader>fh :History<CR>
-  map <Leader>fb :Buffers<CR>
-  map <Leader>fw :Windows<CR>
-  map <Leader>fl :BLines<CR>
-  map <Leader>fc :BCommits<CR>
+  map <leader>ff :Files<CR>
+  map <leader>fh :History<CR>
+  map <leader>fb :Buffers<CR>
+  map <leader>fw :Windows<CR>
+  map <leader>fl :BLines<CR>
+  map <leader>fc :BCommits<CR>
 
 packadd! vim-grepper
   command! -nargs=+ -complete=file Rgb Grepper -noprompt -buffers -tool rg -query <args>
@@ -136,18 +136,18 @@ if has('nvim-0.5')
     autocmd BufEnter * lua require'completion'.on_attach()
   augroup end
 
-  "
-  " use <Tab> as trigger keys for completion-nvim
-  "
-  function! s:check_back_space() abort
-      let col = col('.') - 1
-      return !col || getline('.')[col - 1]  =~ '\s'
-  endfunction
+ "
+ " use <Tab> and <S-Tab> as trigger keys for completion menue
+ "
+ function! s:check_back_space() abort
+     let col = col('.') - 1
+     return !col || getline('.')[col - 1]  =~ '\s'
+ endfunction
 
-  inoremap <silent><expr> <TAB>
-    \ pumvisible() ? "\<C-n>" :
-    \ <SID>check_back_space() ? "\<TAB>" :
-    \ completion#trigger_completion()
+ inoremap <silent><expr> <TAB>
+   \ pumvisible() ? "\<C-n>" :
+   \ <SID>check_back_space() ? "\<TAB>" :
+   \ completion#trigger_completion()
 
   " nnoremap <silent> <F3> :lua require'dap'.stop()<CR>
   nnoremap <silent> <leader>dc :lua require'dap'.continue()<CR>
@@ -161,6 +161,18 @@ if has('nvim-0.5')
   nnoremap <silent> <leader>dl :lua require('dap').run_last()<CR>
   command -nargs=0 Into :lua require('dap').step_into()
   command -nargs=0 DapBreakpoints :lua require('dap').list_breakpoints()
+
+  packadd! ultisnips
+    packadd! vim-snippets
+
+    " Trigger configuration. Change to something else than <tab> if using
+    " completion-nvim
+    let g:UltiSnipsExpandTrigger="<c-n>"
+    let g:UltiSnipsJumpForwardTrigger="<c-b>"
+    let g:UltiSnipsJumpBackwardTrigger="<c-z>"
+
+    " If you want :UltiSnipsEdit to split your window.
+    let g:UltiSnipsEditSplit="vertical"
 
 else
   packadd vim-polyglot

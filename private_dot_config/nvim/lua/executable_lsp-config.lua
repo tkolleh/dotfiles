@@ -13,10 +13,10 @@ local completion_nvim = require'completion'
 -- omnifunc handler to consume LSP completion for each filetype, configuring
 -- diagnostic-nvim in the process.
 --
-local on_attach_callback = function(_, bufnr)
+local on_attach_callback = function(client, bufnr)
   api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
-  diagnostic_nvim.on_attach(_)
-  completion_nvim.on_attach(_)
+  diagnostic_nvim.on_attach(client)
+  completion_nvim.on_attach(client)
 end
 
 local servers = {'pyls_ms', 'sumneko_lua', 'tsserver', 'vimls', 'ocamllsp', 'html', 'sqlls'}
@@ -48,7 +48,7 @@ api.nvim_set_var('diagnostic_virtual_text_prefix', '')
 api.nvim_set_var('diagnostic_trimmed_virtual_text', '32')
 api.nvim_set_var('diagnostic_sign_priority', 20)
 api.nvim_set_var('diagnostic_enable_underline', 0)
-api.nvim_set_var('space_before_virtual_text', 2)
+api.nvim_set_var('space_before_virtual_text', 5)
 api.nvim_set_var('diagnostic_insert_delay', 1)
 
 
@@ -65,3 +65,4 @@ local completion_chain_complete_list = {
 api.nvim_set_var('completion_chain_complete_list', completion_chain_complete_list)
 api.nvim_set_var('completion_trigger_keyword_length', 3)
 api.nvim_set_var('completion_auto_change_source', 1)
+api.nvim_set_var('completion_enable_snippet', 'UltiSnips')

@@ -56,6 +56,9 @@ catch /.*/
     endif
 endtry
 
+let mapleader='\'
+let maplocalleader='_'
+
 set mouse=nvirh
 set mousemodel=popup_setpos
 set cmdheight=3
@@ -192,7 +195,6 @@ inoremap jk <Esc>
 inoremap II <Esc>I
 inoremap AA <Esc>A
 inoremap OO <Esc>O
-
 
 " Use <Tab> and <S-Tab> to navigate through popup menu
 inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
