@@ -116,9 +116,39 @@ updatenvim() {
   echo "    |                                  ";
 
   echo -e '  \u001b[34mInstalling, updating and cleaning neovim plugins\u001b[0m'
-  echo -e '==========================='
-  brew reinstall nvim
-  nvim "+call minpac#update()" "call minpac#clean()" "+qall"
+  echo -e '============================================================'
+  {
+    nvim "+call minpac#update()"
+  } || { echo -e '  \u001b[31mError updating minpac\u001b[0m'; }
+  { 
+    brew reinstall -q nvim
+  } && { 
+    echo -e '  \u001b[34m\n============================================================\u001b[0m'; 
+  }
   echo
   # ASCII art by http://patorjk.com/software/taag/#p=display&h=1&c=echo&f=Contessa&t=Update%20NeoVim
+}
+
+updatetmux() {
+  echo "                                                                     ";
+  echo " | | ._   _|  _. _|_  _    _|_ ._ _           ._  |      _  o ._   _ ";
+  echo " |_| |_) (_| (_|  |_ (/_    |_ | | | |_| ><   |_) | |_| (_| | | | _> ";
+  echo "     |                                        |          _|          ";
+  echo -e '  \u001b[34mUpdate all tmux plugins\u001b[0m'
+  echo -e '  \u001b[34mTPM updating plugins\u001b[0m'
+  echo -e '==========================='
+
+  if $HOME/.tmux/plugins/tpm/bin/update_plugins all; then
+    echo -e '==========================='
+    echo -e '  \u001b[34mTMUX plugins updated\u001b[0m'
+    if tmux source-file $HOME/.tmux.conf; then
+      echo -e '  \u001b[34mSourced tmux config\u001b[0m'
+    else
+      echo -e '  \u001b[34mError sourcing tmux configuration\u001b[0m'
+    fi
+  else
+    echo -e '==========================='
+    echo -e '  \u001b[34mError updating tmux plugins\u001b[0m'
+    echo -e '  \u001b[34mvisit: https://github.com/tmux-plugins/tpm/blob/master/docs/managing_plugins_via_cmd_line.md\u001b[0m'
+  fi
 }

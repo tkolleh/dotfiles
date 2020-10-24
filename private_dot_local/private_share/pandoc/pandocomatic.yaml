@@ -1,17 +1,49 @@
 templates:
-  simple:
+  marked:
     pandoc:
-      from: markdown+multiline_tables+table_captions
+      from: markdown
       to: html
       standalone: true
-      metadata:
-        lang: en-US
-        mathjax: true
+      mathjax: true
+      section-divs: true
+      html-q-tags: true
+      csl: csl/ieee-with-url.csl
+      lua-filter:
+        - filters/pandoc-zotxt.lua
+        - filters/abstract-to-meta.lua
+      filter:
+        - pandoc-citeproc
+        - pandoc-include-code
+    metadata:
+      lang: en-US
+      link-citations: true
+      fontsize: 12pt
+  ieee:
+    pandoc:
+      from: markdown
+      to: html
+      standalone: true
+      mathjax: true
+      section-divs: true
+      html-q-tags: true
+      css: "/Users/tkolleh/Documents/markdown-css/pubcss-ieee.css"
+      csl: csl/ieee-with-url.csl
+      lua-filter:
+        - filters/pandoc-zotxt.lua
+        - filters/abstract-to-meta.lua
+      filter:
+        - pandoc-citeproc
+        - pandoc-include-code
+    metadata:
+      lang: en-US
+      link-citations: true
+      fontsize: 12pt
   report:
     pandoc:
       from: markdown-raw_tex
       to: pdf
       standalone: true
+      mathjax: true
       pdf-engine: lualatex
       csl: csl/ieee-with-url.csl
       highlight-style: tango
@@ -23,13 +55,12 @@ templates:
         - pandoc-include-code
       template:
         - templates/eisvogel.latex
-      metadata:
-        lang: en-US
-        link-citations: true
-        mathjax: true
-        fontsize: 11pt
-        mainfont: "DejaVuSerif"
-        sansfont: "DejaVu Sans Mono Nerd Font Complete"
-        monofont: "DejaVu Sans Mono Nerd Font Complete Mono"
-        mathfont: "DejaVuMathTeXGyre"
-        geometry: "margin=1in"
+    metadata:
+      lang: en-US
+      link-citations: true
+      fontsize: 12pt
+      mainfont: "DejaVuSerif"
+      sansfont: "DejaVu Sans Mono Nerd Font Complete"
+      monofont: "DejaVu Sans Mono Nerd Font Complete Mono"
+      mathfont: "DejaVuMathTeXGyre"
+      geometry: "margin=1in"
