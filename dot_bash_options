@@ -20,9 +20,6 @@ export PATH="/usr/local/bin:/usr/local/lib:$PATH"
 export MARKDOWN_NOTES=$HOME/Documents/markdown-notes
 export COURSES=$HOME/GaTech/gt_courses/
 
-# Github API Token for Homebrew
-export HOMEBREW_GITHUB_API_TOKEN=4b351df2289942af94fdd3e78905aeda1eba0782
-
 # Custom settings for Java and Java applications
 export JAVA_HOME=$(/usr/libexec/java_home -v 14)
 export M2_HOME="$HOME/Tools/apache-maven-3.6.1"
@@ -112,7 +109,4 @@ fx () {
   NODE_PATH=$(npm root -g) fx
 }
 
-#
-# Final $PATH
-#
 export PATH="$PATH:$JAVA_HOME/bin:$M2_HOME/bin:$FLUTTER/bin:$SPARK_HOME/bin:$GOPATH/bin"
