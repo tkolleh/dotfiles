@@ -6,7 +6,7 @@ Host *vm
   HostName localhost
   PreferredAuthentications publickey
   IdentitiesOnly yes
-  IdentityFile ~/.ssh/swagger-jacker-key
+  IdentityFile ~/.ssh/{{ (index (lastpass "401349275726202268") 0).note.fname }}
   Port 2222
 
 Host ubuntuvm
@@ -26,17 +26,17 @@ Host unraid
   User root
   PreferredAuthentications publickey
   IdentitiesOnly yes
-  IdentityFile /Users/tkolleh/.ssh/unraid_id_rsa
+  IdentityFile ~/.ssh/{{ (index (lastpass "1422156508229167239") 0).note.fname }}
   RequestTTY yes
 
 Host github.gatech.edu
   PreferredAuthentications keyboard-interactive
-  IdentityFile ~/.ssh/swagger-jacker-key
+  IdentityFile ~/.ssh/{{ (index (lastpass "401349275726202268") 0).note.fname }}
   
 Host gitlab.com
   PreferredAuthentications publickey
   IdentitiesOnly yes
-  IdentityFile ~/.ssh/swagger-jacker-key
+  IdentityFile ~/.ssh/{{ (index (lastpass "401349275726202268") 0).note.fname }}
   Port 22
 
 Host github.com
@@ -50,6 +50,6 @@ Host ml
   User ubuntu
   PreferredAuthentications publickey
   IdentitiesOnly yes
-  IdentityFile ~/.ssh/aws_cloud_rsa
+  IdentityFile ~/.ssh/{{ (index (lastpass "5450649701707088122") 0).note.fname }}
   Port 22
 
