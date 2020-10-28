@@ -11,6 +11,7 @@ templates:
       lua-filter:
         - filters/pandoc-zotxt.lua
         - filters/abstract-to-meta.lua
+        - filters/diagram-generator.lua
       filter:
         - pandoc-citeproc
         - pandoc-include-code
