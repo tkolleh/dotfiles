@@ -24,7 +24,7 @@ export COURSES=$HOME/GaTech/gt_courses/
 export JAVA_HOME=$(/usr/libexec/java_home -v 14)
 export M2_HOME="$HOME/Tools/apache-maven-3.6.1"
 
-export PLANTUML="$(brew --prefix plantuml)"
+export PLANTUML="/usr/local/Cellar/plantuml/1.2020.19/libexec/plantuml.jar"
 
 # -- Conda environment variables --------------------------------------------------- 
 #
