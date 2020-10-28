@@ -4,6 +4,8 @@ templates:
       from: markdown
       to: html
       standalone: true
+      # self-contained: true #Facing issues with this setting while using mathjax and academic CSS
+      # extract-media: true #Use instead of self-contained to include generated images e.g. plantuml
       mathjax: true
       section-divs: true
       html-q-tags: true
@@ -32,6 +34,7 @@ templates:
       lua-filter:
         - filters/pandoc-zotxt.lua
         - filters/abstract-to-meta.lua
+        - filters/diagram-generator.lua
       filter:
         - pandoc-citeproc
         - pandoc-include-code
