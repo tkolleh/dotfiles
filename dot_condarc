@@ -1,0 +1,13 @@
+ssl_verify: true
+channels:
+  - defaults
+  - conda-forge
+create_default_packages:
+  - debugpy
+  - pip
+  - ipython
+  - yapf
+  - mypy
+  - flake8
+  - black
+  - pytest

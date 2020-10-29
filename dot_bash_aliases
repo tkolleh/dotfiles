@@ -86,6 +86,7 @@ setAlias pandoc "/usr/local/opt/pandoc/bin/pandoc"
 setAlias subl "/Applications/Sublime\ Text.app/Contents/SharedSupport/bin/subl"
 # alias mvn 2>/dev/null >/dev/null || alias mvn='jenv exec mvn'
 
+setAlias ipython "EDITOR=nvim ipython"
 
 # -- configuration paths ------------------------------------------------------
 
