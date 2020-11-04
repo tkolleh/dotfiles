@@ -15,7 +15,10 @@
 #/ ~/.ssh/authorized_keys.
 #/
 #/ Returns the exit code of the ssh command
+#/
+# =============================================================================
 
+# Print above comments as when help option is given
 while test "$#" -ne 0; do
   case "$1" in
   -h | --h | --he | --hel | --help)
@@ -32,14 +35,22 @@ done
 tmpfile="$(mktemp)"
 trap "rm -f \"$tmpfile\"" EXIT
 
-IDFILE=$(ssh -G unraid | awk '/^identityfile/ {print $2}')
-NAME=$(ssh -G unraid | awk '/^hostname/ {print $2}')
-ssh -q -o BatchMode=yes -o ConnectTimeout=5 -E "$tmpfile" root@"$NAME"
-_RCODE=$?
+LOCAL_TERM=$(echo -n "$TERM" | sed -e s/tmux/xterm/)
 
-if [ $_RCODE -ne 0 ] || grep -m 1 -o -E 'Permission denied' $tmpfile >/dev/null; then
-  ssh-copy-id -o PreferredAuthentications=password -i "$IDFILE.pub" root@"$NAME"
-  ssh unraid
+IDFILE=$(ssh -G unraid | awk '/^identityfile/ {print $2}')
+USERNAME=$(ssh -G unraid | awk '/^user/ {print $2}')
+NAME=$(ssh -G unraid | awk '/^hostname/ {print $2}')
+
+ssh -q -o BatchMode=yes -o ConnectTimeout=5 -E "$tmpfile" $USERNAME@"$NAME" -f "exit"
+RCODE=$?
+
+grep -m 1 -o -E 'Permission denied' $tmpfile >/dev/null
+RCODE_G=$?
+
+if [ "$RCODE" -ne 255 ] && [ "$RCODE" -ne 0 ] || [ "$RCODE_G" -eq 0 ]; then
+  # echo "RCODE was $RCODE and RCODE_G was $RCODE_G"
+  ssh-copy-id -o PreferredAuthentications=password -i "$IDFILE.pub" $USERNAME@"$NAME"
+  env TERM=$LOCAL_TERM ssh unraid
 else
-  ssh unraid
+  env TERM=$LOCAL_TERM ssh unraid
 fi

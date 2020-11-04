@@ -9,6 +9,7 @@ templates:
       mathjax: true
       section-divs: true
       html-q-tags: true
+      # citeproc: true #For versions 2.11+
       csl: csl/ieee-with-url.csl
       lua-filter:
         - filters/pandoc-zotxt.lua
@@ -31,6 +32,7 @@ templates:
       html-q-tags: true
       css: "/Users/tkolleh/Documents/markdown-css/pubcss-ieee.css"
       csl: csl/ieee-with-url.csl
+      # citeproc: true #For versions 2.11+
       lua-filter:
         - filters/pandoc-zotxt.lua
         - filters/abstract-to-meta.lua
