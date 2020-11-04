@@ -1,5 +1,8 @@
 vim.cmd('packadd! nvim-treesitter')  -- If installed as a Vim "package".
 
+vim.cmd('packadd! nvim-treesitter-context')
+vim.cmd('packadd! nvim-treesitter-refactor')
+
 require'nvim-treesitter.configs'.setup {
   ensure_installed = "all",      -- one of "all", "language", or a list of languages
   highlight = {

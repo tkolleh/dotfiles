@@ -132,6 +132,7 @@ updatenvim() {
     nvim "+call minpac#update()"
   } || { echo -e '  \u001b[31mError updating minpac\u001b[0m'; }
   { 
+    conda update -n base --all --yes
     brew reinstall -q nvim
   } && { 
     echo -e '  \u001b[34m\n============================================================\u001b[0m'; 
@@ -162,4 +163,15 @@ updatetmux() {
     echo -e '  \u001b[34mError updating tmux plugins\u001b[0m'
     echo -e '  \u001b[34mvisit: https://github.com/tmux-plugins/tpm/blob/master/docs/managing_plugins_via_cmd_line.md\u001b[0m'
   fi
+}
+
+updatezshcustom() {
+  printf "\n${BLUE}%s${RESET}\n" "Updating custom plugins and themes"
+  cd $ZSH_CUSTOM
+  for plugin in plugins/*/ themes/*/; do
+    if [ -d "$plugin/.git" ]; then
+      printf "${YELLOW}%s${RESET}\n" "${plugin%/}"
+      git -C "$plugin" pull
+    fi
+  done
 }
