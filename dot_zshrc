@@ -91,9 +91,9 @@ plugins+=(nvm zsh-nvm zsh-better-npm-completion)
 
 autoload -U compinit && compinit
 
-source $ZSH/oh-my-zsh.sh
-
 plugins+=(fzf-tab)
+
+source $ZSH/oh-my-zsh.sh
 
 # -- User configuration --------------------------------------------------
 
@@ -110,7 +110,7 @@ export XDG_CONFIG_HOME="$HOME/.config"
 export XDG_DATA_HOME="$HOME/.local/share"
 
 export CURL_HOME="/usr/bin/curl"
-export ICLOUD_DIR="/Users/tkolleh/Library/Mobile Documents/com~apple~CloudDocs/"
+export ICLOUD_DIR="$HOME/Library/Mobile Documents/com~apple~CloudDocs/"
 
 # Sand et the preferred visual editor for local or set the remote
 # visual editor. The EDITOR variable technically shouldn't be set to a
