@@ -130,6 +130,7 @@ updatenvim() {
   echo -e '============================================================'
   {
     nvim "+call minpac#update()"
+    nvim -c ":TSUpdate"
   } || { echo -e '  \u001b[31mError updating minpac\u001b[0m'; }
   { 
     conda update -n base --all --yes
