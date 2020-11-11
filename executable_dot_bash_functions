@@ -133,6 +133,7 @@ updatenvim() {
   } || { echo -e '  \u001b[31mError updating minpac\u001b[0m'; }
   { 
     conda update -n base --all --yes
+    npm update -g neovim
     brew reinstall -q nvim
   } && { 
     echo -e '  \u001b[34m\n============================================================\u001b[0m'; 
