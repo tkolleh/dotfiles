@@ -5,7 +5,7 @@ api.nvim_command('packadd! nvim-lspconfig')  -- If installed as a Vim "package".
 api.nvim_command('packadd! diagnostic-nvim')
 api.nvim_command('packadd! completion-nvim')
 
-local nvim_lsp = require'nvim_lsp'
+local nvim_lsp = require'lspconfig'
 local diagnostic_nvim = require'diagnostic'
 local completion_nvim = require'completion'
 
