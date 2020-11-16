@@ -117,9 +117,10 @@ if has('nvim-0.5')
 
   highlight link TSError Normal
 
-  command -nargs=0 LspErrors   :lua require('lsp-diagnostics').errors_to_quickfix()
+  command -nargs=0 LspErrors :lua require('lsp-diagnostics').errors_to_quickfix()
   command -nargs=0 LspWarnings :lua require('lsp-diagnostics').warnings_to_quickfix()
 
+  nnoremap <silent> <leader>q :lua require('quickfix').toggle()<CR>
   noremap <silent> <space>j <cmd>lua vim.lsp.diagnostic.goto_prev {wrap = true}<CR>
   noremap <silent> <space>k <cmd>lua vim.lsp.diagnostic.goto_next {wrap = true}<CR>
 
