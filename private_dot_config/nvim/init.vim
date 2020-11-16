@@ -31,7 +31,6 @@ else
     set pythonthreehome=C:\Python37
 endif
 
-nnoremap <silent> <leader>q :lua require('quickfix').toggle()<CR>
 
 packadd! vim-solarized8
   let g:solarized_diffmode = 1

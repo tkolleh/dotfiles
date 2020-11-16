@@ -18,9 +18,24 @@ end
 
 local servers = {'pyls_ms', 'sumneko_lua', 'tsserver', 'vimls', 'ocamllsp', 'html', 'sqlls'}
 for _, _lsp in ipairs(servers) do
-  nvim_lsp[_lsp].setup {
-    on_attach = on_attach_callback,
-  }
+  if _lsp ~= 'sumneko_lua' then
+    nvim_lsp[_lsp].setup{
+      on_attach = on_attach_callback,
+    }
+  else
+    nvim_lsp[_lsp].setup{
+      on_attach = on_attach_callback,
+      settings = {
+        Lua = {
+          diagnostics = {
+            globals = {
+              'vim',
+            }
+          }
+        }
+      }
+    }
+  end
 end
 
 -- Configure diagnostic-nvim -------------------------
