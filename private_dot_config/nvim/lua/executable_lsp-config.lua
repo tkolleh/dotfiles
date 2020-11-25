@@ -40,6 +40,13 @@ end
 
 -- Configure diagnostic-nvim -------------------------
 --
+
+-- api.nvim_command('highlight link LspDiagnosticsDefaultError Comment')
+-- api.nvim_command('highlight link LspDiagnosticsDefaultWarning Comment')
+-- api.nvim_command('highlight link LspDiagnosticsDefaultInformation Comment')
+-- api.nvim_command('highlight link LspDiagnosticsDefaultHint Comment')
+
+--
 -- Change default signcolumn signs for LSP diagnostic. Note that the first
 -- line is done this way as a reminder of the different ways to
 -- interact with the nvim api from lua
@@ -47,12 +54,7 @@ end
 api.nvim_call_function('sign_define', {"LspDiagnosticsSignError", {text = "", texthl = "LspDiagnosticsDefaultError"}})
 fn.sign_define("LspDiagnosticsSignWarning", {text = "", texthl = "LspDiagnosticsDefaultWarning"})
 fn.sign_define("LspDiagnosticsSignInformation", {text = "", texthl = "LspDiagnosticsDefaultInformation"})
-fn.sign_define("LspDiagnosticsSignHintSign", {text = "", texthl = "LspDiagnosticsDefaultHint"})
-
--- api.nvim_command('highlight link LspDiagnosticsDefaultError Comment')
--- api.nvim_command('highlight link LspDiagnosticsDefaultWarning Comment')
-api.nvim_command('highlight link LspDiagnosticsDefaultInformation Comment')
-api.nvim_command('highlight link LspDiagnosticsDefaultHint Comment')
+fn.sign_define("LspDiagnosticsSignHint", {text = "", texthl = "LspDiagnosticsDefaultHint"})
 
 lsp.handlers["textDocument/publishDiagnostics"] = lsp.with(
   lsp.diagnostic.on_publish_diagnostics, {
@@ -83,14 +85,16 @@ lsp.handlers["textDocument/publishDiagnostics"] = lsp.with(
 -- Configure completion-nvim -------------------------------------------------- 
 --
 local completion_chain_complete_list = {
-  { complete_items = { 'path'} },
-  { complete_items = { 'lsp' } },
-  { complete_items = { 'snippet' } },
-  { complete_items = { 'buffers' } },
-  { mode = { '<c-p>' } },
-  { mode = { '<c-n>' } }
+  default = {
+    { complete_items = { 'path'} },
+    { complete_items = { 'lsp', 'ts' } },
+    { complete_items = { 'snippet', 'UltiSnips' } },
+    { complete_items = { 'buffers' } },
+    { mode = { '<c-p>' } },
+    { mode = { '<c-n>' } }
+  }
 }
 api.nvim_set_var('completion_chain_complete_list', completion_chain_complete_list)
-api.nvim_set_var('completion_trigger_keyword_length', 3)
+api.nvim_set_var('completion_trigger_keyword_length', 2)
 api.nvim_set_var('completion_auto_change_source', 1)
 api.nvim_set_var('completion_enable_snippet', 'UltiSnips')
