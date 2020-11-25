@@ -49,6 +49,7 @@ call minpac#add('nvim-treesitter/nvim-treesitter', {'type': 'start', 'do': 'sile
 call minpac#add('nvim-treesitter/nvim-treesitter-refactor', {'type': 'start'})
 call minpac#add('romgrk/nvim-treesitter-context', {'type': 'start'})
 call minpac#add('nvim-lua/completion-nvim', {'type': 'start'})
+call minpac#add('nvim-treesitter/completion-treesitter', {'type': 'start'})
 call minpac#add('mfussenegger/nvim-dap', {'type': 'start'})
 call minpac#add('theHamsta/nvim-dap-virtual-text', {'type': 'start'})
 call minpac#add('sheerun/vim-polyglot', {'type': 'opt'})
