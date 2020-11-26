@@ -76,9 +76,6 @@ export LAST_NVIM_SESSION="$NVIM_SESSION/lastsession.vim"
 
 export CHEZMOI_SOURCE_PATH="$(chezmoi source-path)"
 
-# Golang home
-export GOPATH=$(go env GOPATH)
-
 #
 # Load command line fuzzy finder
 # See: https://github.com/junegunn/fzf
