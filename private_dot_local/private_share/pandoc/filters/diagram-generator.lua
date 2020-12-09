@@ -1,48 +1,64 @@
 --[[
-    This Lua filter is used to create images with or without captions from
-    code blocks. Currently PlantUML, GraphViz, Tikz, and Python can be
-    processed. For further details, see README.md.
+diagram-generator – create images and figures from code blocks.
 
-    Thanks to @floriandd2ba and @jgm for the initial implementation of
-    the PlantUML filter, which I used as a template. Thanks also @muxueqz
-    for the code to generate a GraphViz image.
+This Lua filter is used to create images with or without captions
+from code blocks. Currently PlantUML, GraphViz, Tikz, and Python
+can be processed. For further details, see README.md.
+
+Copyright: © 2018-2020 John MacFarlane <jgm@berkeley.edu>,
+             2018 Florian Schätzig <florian@schaetzig.de>,
+             2019 Thorsten Sommer <contact@sommer-engineering.com>,
+             2019-2020 Albert Krewinkel <albert+pandoc@zeitkraut.de>
+License:   MIT – see LICENSE file for details
 ]]
+-- Module pandoc.system is required and was added in version 2.7.3
+PANDOC_VERSION:must_be_at_least '2.7.3'
+
+local system = require 'pandoc.system'
+local utils = require 'pandoc.utils'
+local stringify = utils.stringify
+local with_temporary_directory = system.with_temporary_directory
+local with_working_directory = system.with_working_directory
 
 -- The PlantUML path. If set, uses the environment variable PLANTUML or the
 -- value "plantuml.jar" (local PlantUML version). In order to define a
 -- PlantUML version per pandoc document, use the meta data to define the key
--- "plantumlPath".
-local plantumlPath = os.getenv("PLANTUML") or "plantuml.jar"
+-- "plantuml_path".
+local plantuml_path = os.getenv("PLANTUML") or "plantuml.jar"
 
 -- The Inkscape path. In order to define an Inkscape version per pandoc
--- document, use the meta data to define the key "inkscapePath".
-local inkscapePath = os.getenv("INKSCAPE") or "inkscape"
+-- document, use the meta data to define the key "inkscape_path".
+local inkscape_path = os.getenv("INKSCAPE") or "inkscape"
 
 -- The Python path. In order to define a Python version per pandoc document,
--- use the meta data to define the key "pythonPath".
-local pythonPath = os.getenv("PYTHON")
+-- use the meta data to define the key "python_path".
+local python_path = os.getenv("PYTHON") or "python"
 
 -- The Python environment's activate script. Can be set on a per document
 -- basis by using the meta data key "activatePythonPath".
-local pythonActivatePath = os.getenv("PYTHON_ACTIVATE")
+local python_activate_path = os.getenv("PYTHON_ACTIVATE")
 
 -- The Java path. In order to define a Java version per pandoc document,
--- use the meta data to define the key "javaPath".
-local javaPath = os.getenv("JAVA_HOME")
-if javaPath then
-    javaPath = javaPath .. package.config:sub(1,1) .. "bin"
+-- use the meta data to define the key "java_path".
+local java_path = os.getenv("JAVA_HOME")
+if java_path then
+    java_path = java_path .. package.config:sub(1,1) .. "bin"
         .. package.config:sub(1,1) .. "java"
 else
-    javaPath = "java"
+    java_path = "java"
 end
 
 -- The dot (Graphviz) path. In order to define a dot version per pandoc
--- document, use the meta data to define the key "dotPath".
-local dotPath = os.getenv("DOT") or "dot"
+-- document, use the meta data to define the key "dot_path".
+local dot_path = os.getenv("DOT") or "dot"
 
 -- The pdflatex path. In order to define a pdflatex version per pandoc
--- document, use the meta data to define the key "pdflatexPath".
-local pdflatexPath = os.getenv("PDFLATEX") or "pdflatex"
+-- document, use the meta data to define the key "pdflatex_path".
+local pdflatex_path = os.getenv("PDFLATEX") or "pdflatex"
+
+-- The asymptote path. There is also the metadata variable
+-- "asymptote_path".
+local asymptote_path = os.getenv ("ASYMPTOTE") or "asy"
 
 -- The default format is SVG i.e. vector graphics:
 local filetype = "svg"
@@ -67,103 +83,130 @@ end
 -- meta options was set, it gets used instead of the corresponding
 -- environment variable:
 function Meta(meta)
-    plantumlPath = meta.plantumlPath or plantumlPath
-    inkscapePath = meta.inkscapePath or inkscapePath
-    pythonPath = meta.pythonPath or pythonPath
-    pythonActivatePath = meta.activatePythonPath or pythonActivatePath
-    javaPath = meta.javaPath or javaPath
-    dotPath = meta.dotPath or dotPath
-    pdflatexPath = meta.pdflatexPath or pdflatexPath
+  plantuml_path = stringify(
+    meta.plantuml_path or meta.plantumlPath or plantuml_path
+  )
+  inkscape_path = stringify(
+    meta.inkscape_path or meta.inkscapePath or inkscape_path
+  )
+  python_path = stringify(
+    meta.python_path or meta.pythonPath or python_path
+  )
+  python_activate_path =
+    meta.activate_python_path or meta.activatePythonPath or python_activate_path
+  python_activate_path = python_activate_path and stringify(python_activate_path)
+  java_path = stringify(
+    meta.java_path or meta.javaPath or java_path
+  )
+  dot_path = stringify(
+    meta.path_dot or meta.dotPath or dot_path
+  )
+  pdflatex_path = stringify(
+    meta.pdflatex_path or meta.pdflatexPath or pdflatex_path
+  )
+  asymptote_path = stringify(
+     meta.asymptote_path or meta.asymptotePath or asymptote_path
+  )
 end
 
 -- Call plantuml.jar with some parameters (cf. PlantUML help):
 local function plantuml(puml, filetype)
-    local final = pandoc.pipe(javaPath, {"-jar", plantumlPath, "-t" .. filetype, "-pipe", "-charset", "UTF8"}, puml)
-    return final
+  return pandoc.pipe(
+    java_path,
+    {"-jar", plantuml_path, "-t" .. filetype, "-pipe", "-charset", "UTF8"},
+    puml
+  )
 end
 
 -- Call dot (GraphViz) in order to generate the image
 -- (thanks @muxueqz for this code):
 local function graphviz(code, filetype)
-    local final = pandoc.pipe(dotPath, {"-T" .. filetype}, code)
-    return final
+  return pandoc.pipe(dot_path, {"-T" .. filetype}, code)
 end
 
--- Compile LaTeX with Tikz code to an image:
-local function tikz2image(src, filetype, additionalPackages)
+--
+-- TikZ
+--
 
-    -- Define file names:
-    local outfile = string.format("./tmp-latex/file.%s", filetype)
-    local tmp = "./tmp-latex/file"
-    local tmpDir = "./tmp-latex/"
+--- LaTeX template used to compile TikZ images. Takes additional
+--- packages as the first, and the actual TikZ code as the second
+--- argument.
+local tikz_template = [[
+\documentclass{standalone}
+\usepackage{tikz}
+%% begin: additional packages
+%s
+%% end: additional packages
+\begin{document}
+%s
+\end{document}
+]]
 
-    -- Ensure, that the tmp directory exists:
-    os.execute("mkdir -p tmp-latex")
+-- Returns a function which takes the filename of a PDF or SVG file
+-- and a target filename, and writes the input as the given format.
+-- Returns `nil` if conversion into the target format is not possible.
+local function convert_with_inkscape(filetype)
+  -- Build the basic Inkscape command for the conversion
+  local inkscape_output_args
+  if filetype == 'png' then
+    inkscape_output_args = '--export-png="%s" --export-dpi=300'
+  elseif filetype == 'svg' then
+    inkscape_output_args = '--export-plain-svg="%s"'
+  else
+    return nil
+  end
+  return function (pdf_file, outfile)
+    local inkscape_command = string.format(
+      '"%s" --without-gui --file="%s" ' .. inkscape_output_args,
+      inkscape_path,
+      pdf_file,
+      outfile
+    )
+    io.stderr:write(inkscape_command .. '\n')
+    local command_output = io.popen(inkscape_command)
+    -- TODO: print output when debugging.
+    command_output:close()
+  end
+end
 
-    -- Build and write the LaTeX document:
-    local f = io.open(tmp .. ".tex", 'w')
-    f:write("\\documentclass{standalone}\n\\usepackage{tikz}\n")
+--- Compile LaTeX with Tikz code to an image
+local function tikz2image(src, filetype, additional_packages)
+  local convert = convert_with_inkscape(filetype)
+  -- Bail if there is now known way from PDF to the target format.
+  if not convert then
+    error(string.format("Don't know how to convert pdf to %s.", filetype))
+  end
+  return with_temporary_directory("tikz2image", function (tmpdir)
+    return with_working_directory(tmpdir, function ()
+      -- Define file names:
+      local file_template = "%s/tikz-image.%s"
+      local tikz_file = file_template:format(tmpdir, "tex")
+      local pdf_file = file_template:format(tmpdir, "pdf")
+      local outfile = file_template:format(tmpdir, filetype)
 
-    -- Any additional package(s) are desired?
-    if additionalPackages then
-        f:write(additionalPackages)
-    end
+      -- Build and write the LaTeX document:
+      local f = io.open(tikz_file, 'w')
+      f:write(tikz_template:format(additional_packages or '', src))
+      f:close()
 
-    f:write("\\begin{document}\n")
-    f:write(src)
-    f:write("\n\\end{document}\n")
-    f:close()
+      -- Execute the LaTeX compiler:
+      pandoc.pipe(pdflatex_path, {'-output-directory', tmpdir, tikz_file}, '')
 
-    -- Execute the LaTeX compiler:
-    pandoc.pipe(pdflatexPath, {'-output-directory', tmpDir, tmp}, '')
+      convert(pdf_file, outfile)
 
-    -- Build the basic Inkscape command for the conversion:
-    local baseCommand = " --without-gui --file=" .. tmp .. ".pdf"
-    local knownFormat = false
+      -- Try to open and read the image:
+      local img_data
+      local r = io.open(outfile, 'rb')
+      if r then
+        img_data = r:read("*all")
+        r:close()
+      else
+        -- TODO: print warning
+      end
 
-    if filetype == "png" then
-
-        -- Append the subcommands to convert into a PNG file:
-        baseCommand = baseCommand .. " --export-png="
-            .. tmp .. ".png --export-dpi=300"
-        knownFormat = true
-
-    elseif filetype == "svg" then
-
-        -- Append the subcommands to convert into a SVG file:
-        baseCommand = baseCommand .. " --export-plain-svg=" .. tmp .. ".svg"
-        knownFormat = true
-
-    end
-
-    -- Unfortunately, continuation is only possible, if we know the actual
-    -- format:
-    local imgData = nil
-    if knownFormat then
-
-        -- We know the desired format. Thus, execute Inkscape:
-        os.execute("\"" .. inkscapePath .. "\"" .. baseCommand)
-
-        -- Try to open the image:
-        local r = io.open(tmp .. "." .. filetype, 'rb')
-
-        -- Read the image, if available:
-        if r then
-            imgData = r:read("*all")
-            r:close()
-        end
-
-        -- Delete the image tmp file:
-        os.remove(outfile)
-    end
-
-    -- Remove the temporary files:
-    os.remove(tmp .. ".tex")
-    os.remove(tmp .. ".pdf")
-    os.remove(tmp .. ".log")
-    os.remove(tmp .. ".aux")
-
-    return imgData
+      return img_data
+    end)
+  end)
 end
 
 -- Run Python to generate an image:
@@ -185,9 +228,9 @@ local function py2image(code, filetype)
     f:close()
 
     -- Execute Python in the desired environment:
-    local pycmd = pythonPath .. ' ' .. pyfile
-    local command = pythonActivatePath
-      and pythonActivatePath .. ' && ' .. pycmd
+    local pycmd = python_path .. ' ' .. pyfile
+    local command = python_activate_path
+      and python_activate_path .. ' && ' .. pycmd
       or pycmd
     os.execute(command)
 
@@ -201,6 +244,7 @@ local function py2image(code, filetype)
         r:close()
     else
         io.stderr:write(string.format("File '%s' could not be opened", outfile))
+        error 'Could not create image from python code.'
     end
 
     -- Delete the tmp files:
@@ -208,6 +252,50 @@ local function py2image(code, filetype)
     os.remove(outfile)
 
     return imgData
+end
+
+--
+-- Asymptote
+--
+
+local function asymptote(code, filetype)
+  local convert
+  if filetype ~= 'svg' and filetype ~= 'png' then
+    error(string.format("Conversion to %s not implemented", filetype))
+  end
+  return with_temporary_directory(
+    "asymptote",
+    function(tmpdir)
+      return with_working_directory(
+        tmpdir,
+        function ()
+          local asy_file = "pandoc_diagram.asy"
+          local svg_file = "pandoc_diagram.svg"
+          local f = io.open(asy_file, 'w')
+          f:write(code)
+          f:close()
+
+          pandoc.pipe(asymptote_path, {"-f", "svg", "-o", "pandoc_diagram", asy_file}, "")
+
+          local r
+          if filetype == 'svg' then
+            r = io.open(svg_file, 'rb')
+          else
+            local png_file = "pandoc_diagram.png"
+            convert_with_inkscape("png")(svg_file, png_file)
+            r = io.open(png_file, 'rb')
+          end
+
+          local img_data
+          if r then
+            img_data = r:read("*all")
+            r:close()
+          else
+            error("could not read asymptote result file")
+          end
+          return img_data
+      end)
+  end)
 end
 
 -- Executes each document's code block to find matching code blocks:
@@ -222,6 +310,7 @@ function CodeBlock(block)
         graphviz = graphviz,
         tikz = tikz2image,
         py2image = py2image,
+        asymptote = asymptote,
     }
 
     -- Check if a converter exists for this block. If not, return the block
@@ -248,6 +337,7 @@ function CodeBlock(block)
         -- an error occured; img contains the error message
         io.stderr:write(tostring(img))
         io.stderr:write('\n')
+        error 'Image conversion failed. Aborting.'
 
     end
 
@@ -277,6 +367,17 @@ function CodeBlock(block)
         -- gets ignored as well.
         if block.attributes["name"] then
             imgObj.attributes["name"] = block.attributes["name"]
+        end
+    
+        -- Transfer the identifier from the code block to the new image block
+        -- to enable downstream filters like pandoc-crossref. This allows a figure
+        -- block starting with:
+        --
+        --     ```{#fig:pumlExample .plantuml caption="This is an image, created by **PlantUML**."}
+        --
+        -- to be referenced as @fig:pumlExample outside of the figure.
+        if block.identifier then
+            imgObj.identifier = block.identifier
         end
 
         -- Finally, put the image inside an empty paragraph. By returning the

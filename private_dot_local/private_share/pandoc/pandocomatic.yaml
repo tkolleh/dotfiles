@@ -7,17 +7,18 @@ templates:
       mathjax: true
       section-divs: true
       html-q-tags: true
-      # citeproc: true #For versions 2.11+
+      citeproc: true
       lua-filter:
+        - filters/pandoc-zotxt.lua
         - filters/abstract-to-meta.lua
         - filters/diagram-generator.lua
       filter:
-        - pandoc-citeproc
         - pandoc-include-code
     metadata:
       lang: en-US
       link-citations: true
       fontsize: 12pt
+      bibliography: /Users/tkolleh/Downloads/zotero-library.bib
   ieee:
     pandoc:
       from: markdown
@@ -28,18 +29,18 @@ templates:
       html-q-tags: true
       css: "/Users/tkolleh/Documents/markdown-css/pubcss-ieee.css"
       csl: csl/ieee-with-url.csl
-      # citeproc: true #For versions 2.11+
+      citeproc: true
       lua-filter:
         - filters/pandoc-zotxt.lua
         - filters/abstract-to-meta.lua
         - filters/diagram-generator.lua
       filter:
-        - pandoc-citeproc
         - pandoc-include-code
     metadata:
       lang: en-US
       link-citations: true
       fontsize: 12pt
+      bibliography: /Users/tkolleh/Downloads/zotero-library.bib
   report:
     pandoc:
       from: markdown-raw_tex
