@@ -82,7 +82,7 @@ setAlias gradle "TERM=xterm ./gradlew"
 
 setAlias awsv "aws --profile vitalnotes-tkolleh-default"
 setAlias lldb "PATH=/usr/bin:$PATH lldb"
-setAlias pandoc "/usr/local/opt/pandoc/bin/pandoc"
+# setAlias pandoc "/usr/local/opt/pandoc/bin/pandoc"
 setAlias subl "/Applications/Sublime\ Text.app/Contents/SharedSupport/bin/subl"
 # alias mvn 2>/dev/null >/dev/null || alias mvn='jenv exec mvn'
 
