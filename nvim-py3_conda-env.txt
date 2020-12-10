@@ -1,0 +1,17 @@
+name: nvim-py3
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - neovim
+  - python=3
+  - proselint
+  - black
+  - autopep8
+  - jupyter
+  - pip:
+    - ansicolor
+    - chardet
+    - pyyaml
+    - vim-vint
+prefix: /usr/local/anaconda3/envs/nvim-py3

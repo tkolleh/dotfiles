@@ -1,0 +1,51 @@
+name: base
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - conda
+  - python=3.8
+  - python.app
+  - conda-env
+  - conda-build
+  - conda-verify
+  - anaconda-navigator
+  - navigator-updater
+  - black
+  - flake8
+  - mypy
+  - ipython
+  - pylint
+  - yapf
+  - debugpy
+  - matplotlib
+  - jupytext
+  - pip:
+    - absl-py
+    - ansicolor
+    - astor
+    - bleach
+    - cached-property
+    - gast
+    - google-pasta
+    - grpcio
+    - h5py
+    - jinja2-cli
+    - keras
+    - keras-applications
+    - keras-preprocessing
+    - markdown
+    - numpy
+    - opt-einsum
+    - packaging
+    - proselint
+    - protobuf
+    - scipy
+    - tensorboard
+    - tensorflow
+    - tensorflow-estimator
+    - termcolor
+    - vim-vint
+    - webencodings
+    - werkzeug
+prefix: /usr/local/anaconda3
