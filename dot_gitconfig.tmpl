@@ -1,6 +1,10 @@
 [user]
-  name = tkolleh
-  email = tinatuh@gmail.com
+  name = {{ .chezmoi.username }}
+  {{ if (eq .chezmoi.hostname "bluewhale" ) }}
+  email = {{ index ((index (lastpass "5433460393394439843") 0).note) "work"}}
+  {{ else }}
+  email = {{ index ((index (lastpass "5433460393394439843") 0).note) "original"}}
+  {{ end }}
   signingkey = {{ (index (lastpass "3492591893907884721") 0).note.signingkey }}
 [color]
   branch = auto
@@ -21,7 +25,7 @@
   changed = green
   untracked = cyan
 [core]
-	excludesfile = /Users/tkolleh/.gitignore_global
+	excludesfile = {{ .chezmoi.homedir }}.gitignore_global
 	autocrlf = input
 	editor = nvim
 [difftool "sourcetree"]
