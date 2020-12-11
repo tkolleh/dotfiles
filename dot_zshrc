@@ -1,8 +1,29 @@
+# -*-mode:sh-*- vim:ft=shell-script
+
+# ~/.zshrc
+# =============================================================================
+# Executed by Z shell for interactive shells.
+#
+# See http://zsh.sourceforge.net/
+
+# shellcheck shell=bash
+# shellcheck source=/dev/null
+# shellcheck disable=SC2034
+
+# Hide default user from local prompt.
+export DEFAULT_USER="${USER}"
+
+# Disable autosuggestion for large buffers.
+export ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE="20"
+
+# Enable aynchronous mode.
+export ZSH_AUTOSUGGEST_USE_ASYNC=true
+
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
-# Path to your oh-my-zsh installation.
-export ZSH=$HOME/.oh-my-zsh
+# Set path to your oh-my-zsh installation.
+export ZSH="${HOME}/.oh-my-zsh"
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
@@ -10,6 +31,9 @@ export ZSH=$HOME/.oh-my-zsh
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
 #
 POWERLEVEL9K_MODE='nerdfont-complete'
+
+ZSH_THEME="agnoster"
+ZSH_THEME="powerlevel9k/powerlevel9k"
 ZSH_THEME="powerlevel10k/powerlevel10k"
 
 # Set list of themes to pick from when loading at random
@@ -47,7 +71,7 @@ export UPDATE_ZSH_DAYS=10
 # ENABLE_CORRECTION="true"
 
 # Uncomment the following line to display red dots whilst waiting for completion.
-# COMPLETION_WAITING_DOTS="true"
+COMPLETION_WAITING_DOTS="true"
 
 # Uncomment the following line if you want to disable marking untracked files
 # under VCS as dirty. This makes repository status check for large repositories
@@ -75,7 +99,6 @@ plugins=(git jenv fzf ripgrep colored-man-pages gradle rbenv conda-zsh-completio
 
 # Activate the completion cache for packages
 zstyle ':completion::complete:*' use-cache 1
-
 # Display subcommand completion in groups
 zstyle ":conda_zsh_completion:*" use-groups true
 
@@ -93,7 +116,23 @@ autoload -U compinit && compinit
 
 plugins+=(fzf-tab)
 
-source $ZSH/oh-my-zsh.sh
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+#
+# Load theme Powerlevel10K
+#
+if test "${ZSH_THEME#*powerlevel10k}" != "$ZSH_THEME"; then
+    [ -f "$HOME"/.p10k.zsh ] && \. "$HOME"/.p10k.zsh
+fi
+
+# Load Oh My Zsh
+. "$ZSH"/oh-my-zsh.sh
+
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
 
 # -- User configuration --------------------------------------------------
 
@@ -138,9 +177,6 @@ fi
 # -----------------------------------------------------------------------------
 
 # Load app configurations from separate configuration file.
-
-[[ -a $ZSH_CUSTOM/appearance.zsh ]] && source $ZSH_CUSTOM/appearance.zsh
-
 if [ -f "$HOME"/.bash_secrets ]; then
     source "$HOME"/.bash_secrets
 fi
@@ -187,6 +223,4 @@ _fix_cursor() {
 }
 precmd_functions+=(_fix_cursor)
 
-
-export GPG_TTY=$(tty)
 export PATH="/usr/local/anaconda3/bin:$PATH"
