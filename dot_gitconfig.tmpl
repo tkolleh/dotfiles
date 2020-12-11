@@ -4,8 +4,8 @@
   email = {{ index ((index (lastpass "5433460393394439843") 0).note) "work"}}
   {{ else }}
   email = {{ index ((index (lastpass "5433460393394439843") 0).note) "original"}}
-  {{ end }}
   signingkey = {{ (index (lastpass "3492591893907884721") 0).note.signingkey }}
+  {{ end }}
 [color]
   branch = auto
   diff = true
