@@ -56,7 +56,7 @@ grmci () {
   # Remove cached files that have been ignored by git locally or globally.
   git ls-files --others | xargs -n1 -I '{}' git rm --cached --quiet --ignore-unmatch -- ./{}
 }
-replaceAlias gts "git --no-pager branch --color=always -vva --sort=-committerdate | head -n 8 && git status -b --ignored"
+replaceAlias gts "git --no-pager branch --color=always -vva --sort=-committerdate | head -n 8 && git status && git status -b --ignored | gawk '/Ignored\s+files:/{x=NR+8} (NR<=x) {print}'"
 replaceAlias gcm "git commit -a -S -m"
 replaceAlias glog "git log --oneline --decorate --graph --show-signature"
 replaceAlias gloga "git log --oneline --decorate --graph --show-signature --all"
