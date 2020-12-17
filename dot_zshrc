@@ -1,4 +1,4 @@
-# -*-mode:sh-*- vim:ft=shell-script
+# -*-mode:sh-*- vim:ft=zsh
 
 # ~/.zshrc
 # =============================================================================
@@ -71,7 +71,7 @@ export UPDATE_ZSH_DAYS=10
 # ENABLE_CORRECTION="true"
 
 # Uncomment the following line to display red dots whilst waiting for completion.
-COMPLETION_WAITING_DOTS="true"
+# COMPLETION_WAITING_DOTS="true"
 
 # Uncomment the following line if you want to disable marking untracked files
 # under VCS as dirty. This makes repository status check for large repositories
@@ -95,14 +95,19 @@ COMPLETION_WAITING_DOTS="true"
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 #
-plugins=(git jenv fzf ripgrep colored-man-pages gradle rbenv conda-zsh-completion zsh-completions)
+plugins=(
+  vi-mode
+  git 
+  ripgrep 
+  colored-man-pages 
+  conda-zsh-completion 
+  zsh-completions
+)
 
 # Activate the completion cache for packages
-zstyle ':completion::complete:*' use-cache 1
+#zstyle ':completion::complete:*' use-cache 1
 # Display subcommand completion in groups
-zstyle ":conda_zsh_completion:*" use-groups true
-
-plugins+=(vi-mode)
+#zstyle ":conda_zsh_completion:*" use-groups true
 
 #
 # Enable lazy loading by exporting the NVM_LAZY_LOAD environment 
@@ -110,11 +115,12 @@ plugins+=(vi-mode)
 # is loaded.
 #
 export NVM_LAZY_LOAD=true
-plugins+=(nvm zsh-nvm zsh-better-npm-completion)
+plugins+=(zsh-nvm zsh-better-npm-completion)
 
-autoload -U compinit && compinit
+# autoload -U compinit && compinit
+# plugins+=(fzf-tab)
 
-plugins+=(fzf-tab)
+bindkey -M viins 'jk' vi-cmd-mode
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 #
@@ -199,6 +205,12 @@ fi
 if [ -f /usr/local/etc/profile.d/autojump.sh ]; then
     source /usr/local/etc/profile.d/autojump.sh
 fi
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/Users/tj-noyo/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/tj-noyo/google-cloud-sdk/path.zsh.inc'; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f '/Users/tj-noyo/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/tj-noyo/google-cloud-sdk/completion.zsh.inc'; fi
 
 #
 # Change cursor shape for different vi modes.
