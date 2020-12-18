@@ -1,7 +1,12 @@
+"source {{ .chezmoi.homedir }}/.config/nvim/init.vim
+
+set visualbell
+set noerrorbells
 set surround
 set commentary
 set ideajoin
 
-source {{ .chezmoi.homedir }}/.config/nvim/init.vim
+" similar to my vim ranger mapping
+nnoremap <Leader>- :action ActivateProjectToolWindow<CR>
 
 :map \rn :action RenameElement<CR>
