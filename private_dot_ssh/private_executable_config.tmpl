@@ -39,7 +39,17 @@ Host gitlab.com
   IdentityFile ~/.ssh/{{ (index (lastpass "401349275726202268") 0).note.fname }}
   Port 22
 
-Host github.com
+Host github.com-tkolleh
+  HostName github.com
+  User git
+  PreferredAuthentications publickey
+  IdentitiesOnly yes
+  IdentityFile ~/.ssh/scm_rsa
+  Port 22
+
+Host github.com-{{ (index (lastpass "3720627873338883571") 0).note.username }}
+  HostName github.com
+  User git
   PreferredAuthentications publickey
   IdentitiesOnly yes
   IdentityFile ~/.ssh/scm_rsa
