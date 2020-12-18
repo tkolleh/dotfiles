@@ -1,0 +1,27 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_OUTPUT_MODE	u-ctags	/u-ctags or e-ctags/
+!_TAG_PROGRAM_AUTHOR	Universal Ctags Team	//
+!_TAG_PROGRAM_NAME	Universal Ctags	/Derived from Exuberant Ctags/
+!_TAG_PROGRAM_URL	https://ctags.io/	/official site/
+!_TAG_PROGRAM_VERSION	0.0.0	/199d20d/
+Creating a new colorscheme	../../../../../../Users/tkolleh/.config/ranger/ranger-colorschemes/README.md	/^Creating a new colorscheme$/;"	s
+Default	../../../../../../Users/tkolleh/.config/ranger/ranger-colorschemes/default-gruvbox.py	/^class Default(ColorScheme):$/;"	c
+Default	../../../../../../Users/tkolleh/.config/ranger/ranger-colorschemes/gruvbox.py	/^class Default(ColorScheme):$/;"	c
+Usage	../../../../../../Users/tkolleh/.config/ranger/ranger-colorschemes/README.md	/^Usage$/;"	s
+Zenburn	../../../../../../Users/tkolleh/.config/ranger/ranger-colorschemes/zenburn.py	/^class Zenburn(ColorScheme):$/;"	c
+__init__	../../../../../../Users/tkolleh/.config/ranger/ranger-colorschemes/ls_colors.py	/^    def __init__(self):$/;"	m	class:ls_colors
+colorschemes	../../../../../../Users/tkolleh/.config/ranger/ranger-colorschemes/README.md	/^colorschemes$/;"	c
+get_256_background_color_if_exists	../../../../../../Users/tkolleh/.config/ranger/ranger-colorschemes/ls_colors.py	/^    def get_256_background_color_if_exists(self, attribute_list):$/;"	m	class:ls_colors
+get_256_foreground_color_if_exists	../../../../../../Users/tkolleh/.config/ranger/ranger-colorschemes/ls_colors.py	/^    def get_256_foreground_color_if_exists(self, attribute_list):$/;"	m	class:ls_colors
+get_attr_from_lscolors	../../../../../../Users/tkolleh/.config/ranger/ranger-colorschemes/ls_colors.py	/^    def get_attr_from_lscolors(self, attribute_list):$/;"	m	class:ls_colors
+get_default_lscolors	../../../../../../Users/tkolleh/.config/ranger/ranger-colorschemes/ls_colors.py	/^    def get_default_lscolors(self):$/;"	m	class:ls_colors
+ls_colors	../../../../../../Users/tkolleh/.config/ranger/ranger-colorschemes/ls_colors.py	/^class ls_colors(ColorScheme):$/;"	c
+new_hook_before_drawing	../../../../../../Users/tkolleh/.config/ranger/ranger-colorschemes/ls_colors.py	/^    def new_hook_before_drawing(self, fsobject, color_list):$/;"	m	class:ls_colors
+progress_bar_color	../../../../../../Users/tkolleh/.config/ranger/ranger-colorschemes/default-gruvbox.py	/^    progress_bar_color = blue$/;"	v	class:Default
+progress_bar_color	../../../../../../Users/tkolleh/.config/ranger/ranger-colorschemes/zenburn.py	/^    progress_bar_color = 108$/;"	v	class:Zenburn
+style	../../../../../../Users/tkolleh/.config/ranger/ranger-colorschemes/ls_colors.py	/^import ranger.gui.color as style$/;"	I
+use	../../../../../../Users/tkolleh/.config/ranger/ranger-colorschemes/default-gruvbox.py	/^    def use(self, context):  # pylint: disable=too-many-branches,too-many-statements$/;"	m	class:Default
+use	../../../../../../Users/tkolleh/.config/ranger/ranger-colorschemes/gruvbox.py	/^	def use(self, context):$/;"	m	class:Default
+use	../../../../../../Users/tkolleh/.config/ranger/ranger-colorschemes/ls_colors.py	/^    def use(self, context):$/;"	m	class:ls_colors
+use	../../../../../../Users/tkolleh/.config/ranger/ranger-colorschemes/zenburn.py	/^    def use(self, context):$/;"	m	class:Zenburn
