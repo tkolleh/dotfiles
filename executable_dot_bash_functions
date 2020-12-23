@@ -112,7 +112,13 @@ contentlength() {
 }
 
 viml() {
-  nvim -S $LAST_NVIM_SESSION
+  if [[ -f "$LAST_NVIM_SESSION" ]]; then
+    nvim -S $LAST_NVIM_SESSION
+  else
+    echo "Last nvim session not found at $LAST_NVIM_SESSION"
+    touch $LAST_NVIM_SESSION
+    echo "Created new file"
+  fi
 }
 
 vims() {
