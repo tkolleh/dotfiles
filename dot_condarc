@@ -11,3 +11,5 @@ create_default_packages:
   - flake8
   - black
   - pytest
+  - pip
+    - darker
