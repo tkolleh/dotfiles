@@ -15,17 +15,33 @@ esac
 # where applicable and create separate files for functions
 #
 
-ws() {
+user_functions_loaded=1
+
+function ws() {
   workspace=$(fd --type d -uu -a . "$HOME/ws" | fzf)
   cd $workspace
 }
 
 # Open Marked 2, passing provided file path to the application
-marked() {
+function marked() {
   if [ -n "${1}" ]; then
     open -a "Marked 2" "${1}"
   else
     open -a "Marked 2"
+  fi
+}
+
+function pathtosymlink(){
+  if [ -L "${1}" ] ; then
+   if [ -e "${1}" ] ; then
+      true
+   else
+      false
+   fi
+  elif [ -e "${1}" ] ; then
+     false
+  else
+     false
   fi
 }
 
@@ -43,7 +59,7 @@ marked() {
 # using ripgrep combined with preview
 # find-in-file - usage: fif <searchTerm>
 # reference: https://github.com/junegunn/fzf/wiki/examples#searching-file-contents
-fif() {
+function fif() {
   if [ ! "$#" -gt 0 ]; then
     echo "Need a string to search for!"
     return 1
@@ -52,7 +68,7 @@ fif() {
 }
 
 # an alternative to the above using ripgrep-all (rga)
-fid() {
+function fid() {
   if [ ! "$#" -gt 0 ]; then
     echo "Need a string to search for!"
     return 1
@@ -62,7 +78,7 @@ fid() {
 
 # fbr - checkout git branch (including remote branches), sorted by most recent commit, limit 30 last branches
 # reference: https://github.com/junegunn/fzf/wiki/examples#git
-fbr() {
+function fbr() {
   local branches branch
   branches=$(git for-each-ref --count=30 --sort=-committerdate refs/heads/ --format="%(refname:short)") &&
     branch=$(echo "$branches" |
@@ -75,7 +91,7 @@ _gitLogLineToHash="echo {} | grep -o '[a-f0-9]\{7\}' | head -1"
 _viewGitLogLine="$_gitLogLineToHash | xargs -I % sh -c 'git show --color=always % | diff-so-fancy'"
 
 # fcoc_preview - checkout git commit with previews
-fcoc_preview() {
+function fcoc_preview() {
   local commit
   commit=$(glNoGraph |
     fzf --no-sort --reverse --tiebreak=index --no-multi \
@@ -84,7 +100,7 @@ fcoc_preview() {
 }
 
 # fshow_preview - git commit browser with previews
-fshow_preview() {
+function fshow_preview() {
   glNoGraph |
     fzf --no-sort --reverse --tiebreak=index --no-multi \
       --ansi --preview="$_viewGitLogLine" \
@@ -95,7 +111,7 @@ fshow_preview() {
 
 # fcs - get git commit sha
 # example usage: git rebase -i `fcs`
-fcs() {
+function fcs() {
   local commits commit
   commits=$(git log --color=always --pretty=oneline --abbrev-commit --reverse) &&
     commit=$(echo "$commits" | fzf --tac +s +m -e --ansi --reverse) &&
@@ -103,7 +119,7 @@ fcs() {
 }
 
 # Check the content length of a file and print size in MB
-contentlength() {
+function contentlength() {
   if [[ ! -z "$1" ]]; then
     curl -sLI $1 | awk 'tolower($1) ~ /content-length/ {print $1, ($2/1000000), "MB"}'
   else
@@ -111,22 +127,22 @@ contentlength() {
   fi
 }
 
-viml() {
+function viml() {
   if [[ -f "$LAST_NVIM_SESSION" ]]; then
     nvim -S $LAST_NVIM_SESSION
   else
     echo "Last nvim session not found at $LAST_NVIM_SESSION"
     touch $LAST_NVIM_SESSION
-    echo "Created new file"
+    echo "Made a new file"
   fi
 }
 
-vims() {
+function vims() {
   SESSION=$(fd . -a $NVIM_SESSION | fzf)
   nvim -S "$SESSION"
 }
 
-updatenvim() {
+function updatenvim() {
   echo ".  .     .    ,     .  .     .  .      ";
   echo "|  |._  _| _.-+-_   |\ | _  _\  /*._ _ ";
   echo "|__|[_)(_](_] |(/,  | \|(/,(_)\/ |[ | )";
@@ -148,7 +164,7 @@ updatenvim() {
   # ASCII art by http://patorjk.com/software/taag/#p=display&h=1&c=echo&f=Contessa&t=Update%20NeoVim
 }
 
-updatetmux() {
+function updatetmux() {
   echo "                                                                     ";
   echo " | | ._   _|  _. _|_  _    _|_ ._ _           ._  |      _  o ._   _ ";
   echo " |_| |_) (_| (_|  |_ (/_    |_ | | | |_| ><   |_) | |_| (_| | | | _> ";
@@ -172,7 +188,7 @@ updatetmux() {
   fi
 }
 
-updatezshcustom() {
+function updatezshcustom() {
   printf "\n${BLUE}%s${RESET}\n" "Updating custom plugins and themes"
   cd $ZSH_CUSTOM
   for plugin in plugins/*/ themes/*/; do
