@@ -1,0 +1,13 @@
+#! /usr/bin/env bash
+
+[ "$user_functions_loaded" ] || source {{ .chezmoi.homedir }}/.bash_functions
+
+{{ if eq .chezmoi.os "darwin" }}
+bluebox="/usr/local/bin/bluebox"
+if pathtosymlink "${bluebox}"; then 
+  echo "Symlink exists: ${blubox}"
+else
+  echo "Creating symlink for ${bluebox}"
+  ln -s {{ .chezmoi.homedir }}/ws/usrBinScripts/blubox.sh ${blubox} 
+fi
+{{ end }}
