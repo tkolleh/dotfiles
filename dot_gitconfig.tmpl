@@ -1,10 +1,10 @@
 [user]
   name = {{ .chezmoi.username }}
   {{ if (eq .chezmoi.hostname "bluewhale" ) }}
-  email = {{ index ((index (lastpass "5433460393394439843") 0).note) "work"}}
+  email = {{ index ((index (lastpass "5433460393394439843") 0).note) "work" | trim }}
   {{ else }}
-  email = {{ index ((index (lastpass "5433460393394439843") 0).note) "original"}}
-  signingkey = {{ (index (lastpass "3492591893907884721") 0).note.signingkey }}
+  email = {{ index ((index (lastpass "5433460393394439843") 0).note) "original" | trim }}
+  signingkey = {{ (index (lastpass "3492591893907884721") 0).note.signingkey | trim }}
   {{ end }}
 [color]
   branch = auto

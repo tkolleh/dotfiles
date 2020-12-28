@@ -19,7 +19,7 @@
 #
 # Alias helper functions
 #
-removeAlias () {
+function removeAlias () {
   # TODO: use awk here
   CMDTYPE=$(type "$1") 
   case $CMDTYPE in
@@ -36,10 +36,10 @@ removeAlias () {
     ;;
   esac
 }
-setAlias () {
+function setAlias () {
   alias "$1" 2>/dev/null 1>/dev/null || alias "$1"="$2"
 }
-replaceAlias () {
+function replaceAlias () {
   removeAlias "$1"
   setAlias "$1" "$2"
 }
@@ -51,7 +51,7 @@ replaceAlias lt "exa --long --tree --level=3 "
 
 # -- Git -------------------------------------------------- 
 removeAlias grmci
-grmci () {
+function grmci () {
   # TODO: Function needs to be reworked doesn't really do what I want
   # Remove cached files that have been ignored by git locally or globally.
   git ls-files --others | xargs -n1 -I '{}' git rm --cached --quiet --ignore-unmatch -- ./{}
