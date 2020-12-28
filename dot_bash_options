@@ -38,7 +38,7 @@ alias colorvariabletest='echo -e "Do not get lost in a sea of ${COLOR_LIGHTGRAY}
 
 export PATH="/usr/local/bin:/usr/local/lib:$PATH"
 
-export MARKDOWN_NOTES=$HOME/Documents/markdown-notes
+export MARKDOWN_NOTES=$HOME/Dropbox/Documents/markdown-notes
 
 # Custom settings for Java and Java applications
 export JAVA_HOME="/usr/local/opt/openjdk"
