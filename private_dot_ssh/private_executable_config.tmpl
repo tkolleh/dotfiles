@@ -6,7 +6,7 @@ Host *vm
   HostName localhost
   PreferredAuthentications publickey
   IdentitiesOnly yes
-  IdentityFile ~/.ssh/{{ (index (lastpass "401349275726202268") 0).note.fname }}
+  IdentityFile ~/.ssh/{{ (index (lastpass "401349275726202268") 0).note.fname | trim }}
   Port 2222
 
 Host ubuntuvm
@@ -26,17 +26,17 @@ Host unraid
   User root
   PreferredAuthentications publickey
   IdentitiesOnly yes
-  IdentityFile ~/.ssh/{{ (index (lastpass "1422156508229167239") 0).note.fname }}
+  IdentityFile ~/.ssh/{{ (index (lastpass "1422156508229167239") 0).note.fname | trim }}
   RequestTTY yes
 
 Host github.gatech.edu
   PreferredAuthentications keyboard-interactive
-  IdentityFile ~/.ssh/{{ (index (lastpass "401349275726202268") 0).note.fname }}
+  IdentityFile ~/.ssh/{{ (index (lastpass "401349275726202268") 0).note.fname | trim }}
   
 Host gitlab.com
   PreferredAuthentications publickey
   IdentitiesOnly yes
-  IdentityFile ~/.ssh/{{ (index (lastpass "401349275726202268") 0).note.fname }}
+  IdentityFile ~/.ssh/{{ (index (lastpass "401349275726202268") 0).note.fname | trim }}
   Port 22
 
 Host github.com-tkolleh
@@ -47,7 +47,7 @@ Host github.com-tkolleh
   IdentityFile ~/.ssh/scm_rsa
   Port 22
 
-Host github.com-{{ (index (lastpass "3720627873338883571") 0).note.username }}
+Host github.com-{{ (index (lastpass "3720627873338883571") 0).note.username | trim }}
   HostName github.com
   User git
   PreferredAuthentications publickey
@@ -60,6 +60,6 @@ Host ml
   User ubuntu
   PreferredAuthentications publickey
   IdentitiesOnly yes
-  IdentityFile ~/.ssh/{{ (index (lastpass "5450649701707088122") 0).note.fname }}
+  IdentityFile ~/.ssh/{{ (index (lastpass "5450649701707088122") 0).note.fname | trim }}
   Port 22
 
