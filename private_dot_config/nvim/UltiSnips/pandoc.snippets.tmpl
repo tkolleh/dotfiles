@@ -1,0 +1,14 @@
+snippet fmatter
+---
+title: ${1:Temp Note}
+date: ${2:`date +%Y-%m-%d`}
+author: ${3:{{ .chezmoi.username }} }
+pandocomatic_:
+  use-template: ${4:marked}
+tags:
+	- $5
+---
+
+# $1
+$0
+endsnippet
