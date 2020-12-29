@@ -30,7 +30,7 @@ command:go="$(VIM_PATHNOEXT)"
 command:python=python "$(VIM_FILENAME)"
 command:javascript=node "$(VIM_FILENAME)"
 command:sh=sh "$(VIM_FILENAME)"
-command:markdown,md,pandoc=. {{ .chezmoi.homedir }}/.bash_functions && marked "$(VIM_FILEPATH)"
+command:markdown,md,pandoc=bash {{ .chezmoi.homedir }}/.bash_functions marked "$(VIM_FILEPATH)"
 
 cwd=$(VIM_FILEDIR)
 
