@@ -27,18 +27,47 @@
 [core]
 	excludesfile = {{ .chezmoi.homedir }}.gitignore_global
 	autocrlf = input
+  pager = delta
 	editor = nvim
-[difftool "sourcetree"]
-	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
-	path = 
-[mergetool "sourcetree"]
-	cmd = /Applications/Sourcetree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
-	trustExitCode = true
 [push]
   default = simple
+[interactive]
+    diffFilter = delta --color-only
+
+[delta]
+    features = unobtrusive-line-numbers decorations
+    whitespace-error-style = 22 reverse
+    syntax-theme = Solarized (dark)
+
+[delta "unobtrusive-line-numbers"]
+    line-numbers = true
+    line-numbers-minus-style = "#444444"
+    line-numbers-zero-style = "#444444"
+    line-numbers-plus-style = "#444444"
+    line-numbers-left-format = "{nm:>4}┊"
+    line-numbers-right-format = "{np:>4}│"
+    line-numbers-left-style = blue
+    line-numbers-right-style = blue
+
+[delta "decorations"]
+    commit-decoration-style = bold yellow box ul
+    file-style = bold yellow ul
+    file-decoration-style = none
+    hunk-header-decoration-style = yellow box
+
 [credential "https://*.amazonaws.com"]
   helper = !aws --profile git-rus codecommit credential-helper $@
   UseHttpPath = true
+
+[difftool "kdiff3"]
+  prompt = false
+	path = /Applications/kdiff3.app
+  trustExitCode = false
+[mergetool "kdiff3"]
+  prompt = false
+	path = /Applications/kdiff3.app
+  trustExitCode = false
+
 [mergetool "vimdiff"]
   prompt = true
   cmd = nvim -d $LOCAL $REMOTE $MERGED -c '$wincmd w' -c 'wincmd J'
@@ -49,16 +78,13 @@
   prompt = true
 	cmd = nvim -f -c \"Gvdiffsplit!\" \"$MERGED\"
 
-[mergetool]
-  prompt = true
-[difftool]
-  prompt = true
 [merge]
   tool = fugitive
-  guitool = sourcetree
+  guitool = kdiff3
 [diff]
   tool = fugitive
-  guitool = sourcetree
+  guitool = kdiff3
+
 [init]
 	templatedir = ~/.git_template
 [gpg]
