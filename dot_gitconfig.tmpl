@@ -59,31 +59,31 @@
   helper = !aws --profile git-rus codecommit credential-helper $@
   UseHttpPath = true
 
-[difftool "kdiff3"]
+[difftool "pycharm"]
   prompt = false
-	path = /Applications/kdiff3.app
+	cmd = pycharm diff \"$LOCAL\" \"$REMOTE\"
   trustExitCode = false
-[mergetool "kdiff3"]
+[mergetool "pycharm"]
   prompt = false
-	path = /Applications/kdiff3.app
-  trustExitCode = false
+  cmd = pycharm merge \"$(realpath \"${LOCAL}\")\" \"$(realpath \"${REMOTE}\")\" \"$(realpath \"${BASE}\")\" \"$(realpath \"${MERGED}\")\"
+  trustExitCode = true
 
 [mergetool "vimdiff"]
   prompt = true
-  cmd = nvim -d $LOCAL $REMOTE $MERGED -c '$wincmd w' -c 'wincmd J'
-[difftool "fugitive"]
+  cmd = nvim -d \"$LOCAL\" \"$REMOTE\" \"$MERGED\" -c '$wincmd w' -c 'wincmd J'
+[difftool "vimdiff"]
   prompt = true
-	cmd = nvim -f -c \"Gvdiffsplit\" \"$LOCAL\" \"$REMOTE\"
+  cmd = nvim -d \"$LOCAL\" \"$REMOTE\"
 [mergetool "fugitive"]
   prompt = true
 	cmd = nvim -f -c \"Gvdiffsplit!\" \"$MERGED\"
 
 [merge]
   tool = fugitive
-  guitool = kdiff3
+  guitool = pycharm
 [diff]
-  tool = fugitive
-  guitool = kdiff3
+  tool = vimdiff
+  guitool = pycharm
 
 [init]
 	templatedir = ~/.git_template
