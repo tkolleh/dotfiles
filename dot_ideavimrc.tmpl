@@ -7,9 +7,13 @@ set commentary
 set ideajoin
 
 " similar to my vim ranger mapping
-nnoremap <Leader>- :action ActivateProjectToolWindow<CR>
+"
+" nnoremap <Leader>- :action ActivateProjectToolWindow<CR>
+nnoremap <Leader>- :action SelectInProjectView<CR>
 
 nnoremap <Leader>rn :action RenameElement<CR>
 nnoremap <Leader>nf :action Darker<CR>
 
 nnoremap <Leader>b :action ToggleLineBreakpoint<CR>
+
+nnoremap <Leader>ch :action CallHierarchy<CR>
