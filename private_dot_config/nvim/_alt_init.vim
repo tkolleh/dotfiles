@@ -101,3 +101,20 @@ nmap <C-l> <C-w>l
 
 " search highlighted text
 vnoremap // y/<C-R>"<CR>
+
+" Use system clipboard
+" set clipboard=unnamed
+"
+" Copy paste using system clipboard
+" Copy to system clipboard
+vnoremap  <leader>y  "+y
+vnoremap  <leader>Y  "+yg$
+nnoremap  <leader>y  "+y
+nnoremap  <leader>yy  "+yy
+"
+" Paste from system clipboard
+"
+nnoremap <leader>p "+p
+nnoremap <leader>P "+P
+vnoremap <leader>p "+p
+vnoremap <leader>P "+P
