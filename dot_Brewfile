@@ -68,6 +68,7 @@ brew "jenv"
 brew "languagetool"
 brew "lastpass-cli"
 brew "lua"
+brew "luajit", args: ["HEAD"]
 brew "luarocks"
 brew "mtr"
 brew "multimarkdown"
