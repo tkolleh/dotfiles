@@ -6,7 +6,7 @@ set surround
 set commentary
 set ideajoin
 
-" similar to my vim ranger mapping
+" similar to nvim ranger mapping
 "
 " nnoremap <Leader>- :action ActivateProjectToolWindow<CR>
 nnoremap <Leader>- :action SelectInProjectView<CR>
@@ -14,6 +14,10 @@ nnoremap <Leader>- :action SelectInProjectView<CR>
 nnoremap <Leader>rn :action RenameElement<CR>
 nnoremap <Leader>nf :action Darker<CR>
 
+" similar to nvim dap configuration
+"
 nnoremap <Leader>b :action ToggleLineBreakpoint<CR>
+" nnoremap <Leader>dl :action EditorPopupMenuDebug<CR>
 
-nnoremap <Leader>ch :action CallHierarchy<CR>
+
+nnoremap <Leader>h :action TypeHierarchy<CR>
