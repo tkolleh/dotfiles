@@ -52,7 +52,7 @@ Host github.com-{{ (index (lastpass "3720627873338883571") 0).note.username | tr
   User git
   PreferredAuthentications publickey
   IdentitiesOnly yes
-  IdentityFile ~/.ssh/scm_rsa
+  IdentityFile ~/.ssh/{{ (index (lastpass "4605371963989282391") 0).note.filename | trim }}
   Port 22
 
 Host ml
