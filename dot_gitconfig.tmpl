@@ -25,7 +25,7 @@
   changed = green
   untracked = cyan
 [core]
-	excludesfile = {{ .chezmoi.homedir }}.gitignore_global
+	excludesfile = {{ .chezmoi.homedir }}/.gitignore_global
 	autocrlf = input
   pager = delta
 	editor = nvim
@@ -87,6 +87,7 @@
 
 [init]
 	templatedir = ~/.git_template
+	defaultBranch = main
 [gpg]
 	program = /usr/local/bin/gpg
 [tag]
