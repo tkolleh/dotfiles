@@ -1,5 +1,6 @@
 .vim
 .mypy_cache
+.dmypy.json
 
 
 # Created by https://www.gitignore.io/api/vim,linux,macos,windows,sublimetext,intellij+all,visualstudio,androidstudio,visualstudiocode
