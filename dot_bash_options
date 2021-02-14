@@ -125,4 +125,7 @@ fx () {
   NODE_PATH=$(npm root -g) fx
 }
 
+export PRE_COMMIT_FROM_REF="origin/HEAD"
+export PRE_COMMIT_TO_REF="HEAD"
+
 export PATH="$PATH:$JAVA_HOME/bin:$M2_HOME/bin:$FLUTTER/bin:$SPARK_HOME/bin:$GOPATH/bin"

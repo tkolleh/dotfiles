@@ -6,7 +6,7 @@ set surround
 set commentary
 set ideajoin
 
-" similar to nvim ranger mapping
+" nvim ranger mapping
 "
 " nnoremap <Leader>- :action ActivateProjectToolWindow<CR>
 nnoremap <Leader>- :action SelectInProjectView<CR>
@@ -21,3 +21,9 @@ nnoremap <Leader>b :action ToggleLineBreakpoint<CR>
 
 
 nnoremap <Leader>h :action TypeHierarchy<CR>
+
+" nvim gitgutter mapping
+" Unlike gitgutter Jumps are based on timeline not line number in file
+"
+nnoremap ]c :action JumpToNextChange<CR>
+nnoremap [c :action JumpToLastChange<CR>
