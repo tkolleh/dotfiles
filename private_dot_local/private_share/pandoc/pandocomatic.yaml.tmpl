@@ -40,28 +40,27 @@ templates:
       lang: en-US
       link-citations: true
       fontsize: 12pt
-      bibliography: {{ .chezmoi.homedir }}/Downloads/zotero-library.bib
+      bibliography: {{ .chezmoi.homedir }}/Dropbox/Documents/zotero-library.bib
   report:
     pandoc:
-      from: markdown-raw_tex
-      to: pdf
+      from: markdown
+      to: html
       standalone: true
       mathjax: true
       pdf-engine: lualatex
       csl: csl/ieee-with-url.csl
       highlight-style: tango
+      citeproc: true
       lua-filter:
         - filters/pandoc-zotxt.lua
         - filters/abstract-to-meta.lua
       filter:
-        - pandoc-citeproc
         - pandoc-include-code
-      template:
-        - templates/eisvogel.latex
     metadata:
       lang: en-US
       link-citations: true
       fontsize: 12pt
+      bibliography: {{ .chezmoi.homedir }}/Dropbox/Documents/zotero-library.bib
       mainfont: "DejaVuSerif"
       sansfont: "DejaVu Sans Mono Nerd Font Complete"
       monofont: "DejaVu Sans Mono Nerd Font Complete Mono"
