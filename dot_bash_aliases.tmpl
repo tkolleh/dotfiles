@@ -87,6 +87,7 @@ setAlias pandoc "/usr/local/opt/pandoc/bin/pandoc"
 setAlias subl "/Applications/Sublime\ Text.app/Contents/SharedSupport/bin/subl"
 # alias mvn 2>/dev/null >/dev/null || alias mvn='jenv exec mvn'
 
+setAlias chezmoidelta "chezmoi source pull -- --rebase && chezmoi diff | delta"
 setAlias ipython "EDITOR=nvim ipython"
 
 # -- configuration paths ------------------------------------------------------
@@ -95,7 +96,6 @@ setAlias ipython "EDITOR=nvim ipython"
 if command -v chezmoi > /dev/null; then
     if [[ "$OSTYPE" =~ ^(cygwin|mingw|msys) ]]; then
         # shellcheck disable=SC2046,SC2139
-        # TODO verify
         setAlias chezmoiconf="cd $(chezmoi source-path | tr '\\/' '/' | tr -d ':' | awk '{print "/"$1}')"
     else
         setAlias chezmoiconf='cd $(chezmoi source-path)'
