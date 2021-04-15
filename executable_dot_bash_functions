@@ -33,6 +33,18 @@ function marked() {
   fi
 }
 
+function chezmoidiff() {
+  #
+  # Print the difference between the target state and the destination state for
+  # targets. If no targets are specified, print the differences for all targets.
+  #
+  if [ -n "${1}" ]; then
+    chezmoi diff --format=git "${1}" | delta
+  else
+    chezmoi diff --format=git
+  fi
+}
+
 function conda_install_requirements() {
   #
   #  Original solution via StackOverflow:
