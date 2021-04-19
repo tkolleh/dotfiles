@@ -22,62 +22,60 @@ brew "bash-completion"
 brew "bash-git-prompt"
 brew "bat"
 brew "cabal-install"
+brew "cairo"
 brew "llvm"
 brew "ccls"
 brew "chezmoi"
 brew "cocoapods"
 brew "coreutils"
+brew "openldap"
 brew "curl"
 brew "detox"
 brew "diff-so-fancy"
 brew "dive"
-brew "docker"
+brew "docker", link: false
 brew "node"
-brew "openjdk"
 brew "emscripten"
+brew "gobject-introspection"
+brew "harfbuzz"
+brew "eralchemy"
 brew "exa"
 brew "exiftool"
 brew "fd"
+brew "tesseract"
+brew "ffmpeg"
 brew "fswatch"
 brew "fzf", args: ["HEAD"]
 brew "gawk"
 brew "gdb"
-brew "gdk-pixbuf"
 brew "ghostscript"
 brew "gifsicle"
 brew "git"
 brew "git-delta"
 brew "gnu-sed"
-brew "unbound"
 brew "pinentry"
 brew "gnupg"
-brew "gobject-introspection"
-brew "harfbuzz"
 brew "lua"
 brew "gnuplot"
 brew "go"
 brew "gpatch"
 brew "gradle-completion"
-brew "python@3.8"
-brew "graphviz"
 brew "libusbmuxd"
 brew "libimobiledevice"
 brew "ideviceinstaller"
-brew "libheif"
+brew "shared-mime-info"
 brew "imagemagick"
 brew "ios-deploy"
 brew "ipfs"
 brew "jenv"
-brew "kakoune"
-brew "krb5"
 brew "languagetool"
 brew "lastpass-cli"
 brew "luajit", args: ["HEAD"]
 brew "luarocks"
-brew "mas"
 brew "mtr"
 brew "multimarkdown"
 brew "neofetch"
+brew "tree-sitter"
 brew "neovim", args: ["HEAD"]
 brew "p7zip"
 brew "pandoc"
@@ -89,6 +87,7 @@ brew "pinentry-mac"
 brew "poppler"
 brew "pre-commit"
 brew "prettier"
+brew "python@3.8"
 brew "ranger", args: ["HEAD"]
 brew "ruby-build"
 brew "rbenv"
@@ -101,7 +100,6 @@ brew "scalariform"
 brew "shfmt"
 brew "sshfs"
 brew "swagger-codegen"
-brew "tesseract"
 brew "tidy-html5"
 brew "tldr"
 brew "tmux"
@@ -124,7 +122,6 @@ cask "anki"
 cask "chromedriver"
 cask "dash"
 cask "dbeaver-community"
-cask "docker"
 cask "dotnet-sdk"
 cask "dropbox"
 cask "firefox"
@@ -144,6 +141,7 @@ cask "logitech-gaming-software"
 cask "logitech-options"
 cask "mactex"
 cask "notion"
+cask "nvalt"
 cask "openrefine"
 cask "osxfuse"
 cask "postman"
@@ -155,29 +153,4 @@ cask "visual-studio-code"
 cask "webstorm"
 cask "weka"
 cask "zotero"
-mas "AutoMounter", id: 1160435653
-mas "BetterSnapTool", id: 417375580
-mas "Compressor", id: 424390742
-mas "Day One", id: 1055511498
-mas "Final Cut Pro", id: 424389933
-mas "iMovie", id: 408981434
-mas "Keynote", id: 409183694
-mas "Kindle", id: 405399194
-mas "LastPass", id: 926036361
-mas "Logic Pro", id: 634148309
-mas "Magnet", id: 441258766
-mas "MarginNote 3", id: 1423522373
-mas "Microsoft OneNote", id: 784801555
-mas "Notability", id: 736189492
-mas "Numbers", id: 409203825
-mas "Pages", id: 409201541
-mas "Paste", id: 967805235
-mas "Paste JSON as Code • quicktype", id: 1330801220
-mas "Pixelmator", id: 407963104
-mas "Playgrounds", id: 1496833156
-mas "Spark", id: 1176895641
-mas "Tailscale", id: 1475387142
-mas "WhatsApp", id: 1147396723
-mas "Xcode", id: 497799835
-whalebrew "whalebrew/ffmpeg"
-whalebrew "whalebrew/httpie"
+whalebrew "whalebrew/plantuml"

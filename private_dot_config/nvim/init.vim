@@ -42,7 +42,7 @@ set termguicolors
 
 try
     colorscheme solarized8_high
-    set background=light
+    set background=dark
 catch /.*/
     echomsg '!WARNING: unable to set color scheme'
     echomsg 'downloading solarized8 theme'
@@ -51,7 +51,7 @@ catch /.*/
       silent !curl -sfL https://github.com/lifepillar/vim-solarized8/archive/master.zip | tar --strip-components=1 -zxf - -C $XDG_CONFIG_HOME/nvim/pack/themes/opt/solarized8
 
       colorscheme solarized8_high
-      set background=light
+      set background=dark
     endif
 endtry
 
