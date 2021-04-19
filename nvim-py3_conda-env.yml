@@ -5,7 +5,6 @@ channels:
 dependencies:
   - neovim
   - python=3
-  - proselint
   - black
   - autopep8
   - jupyter

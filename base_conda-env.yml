@@ -38,7 +38,6 @@ dependencies:
     - numpy
     - opt-einsum
     - packaging
-    - proselint
     - protobuf
     - scipy
     - tensorboard

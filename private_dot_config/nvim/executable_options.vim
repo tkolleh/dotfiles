@@ -17,7 +17,7 @@ packadd! asyncrun.vim
   noremap <silent><F10> :AsyncTask file-run<cr>
 
   " Change default location of global AsyncTask file
-  let g:asynctasks_rtp_config = expand("nvim/asynctasks.ini")
+  let g:asynctasks_extra_config = ['/Users/tkolleh/.config/nvim/asynctasks.ini']
 
 packadd! fzf
   packadd! fzf.vim
