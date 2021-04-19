@@ -5,7 +5,7 @@
 # shell command, use quotation for filenames containing spaces
 # check ":AsyncTaskMacro" to see available macros
 command=gcc "$(VIM_FILEPATH)" -o "$(VIM_FILEDIR)/$(VIM_FILENOEXT)"
-command:markdown,md,pandoc= /usr/local/bin/pandocomatic -o "$(VIM_FILENOEXT).html" -i "$(VIM_RELNAME)"
+command:markdown,md,pandoc=/usr/local/bin/pandocomatic -o "$(VIM_FILENOEXT).html" -i "$(VIM_RELNAME)"
 
 # working directory, can change to $(VIM_ROOT) for project root
 cwd=$(VIM_FILEDIR)
