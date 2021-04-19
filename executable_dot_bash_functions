@@ -164,6 +164,7 @@ function updatenvim() {
   {
     nvim "+call minpac#update('', {'do': 'quitall'})"
   } || { echo -e '  \u001b[31mError updating minpac\u001b[0m'; }
+  sleep 2s
   { 
     conda update -n base --all --yes
     npm update -g neovim
