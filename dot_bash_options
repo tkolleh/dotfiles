@@ -74,6 +74,27 @@ export LAST_NVIM_SESSION="$NVIM_SESSION/lastsession.vim"
 
 export CHEZMOI_SOURCE_PATH="$(chezmoi source-path)"
 
+
+# batpipe, a bat-based preprocessor for less and bat.
+# Version: 2021.04.06
+# Homepage: https://github.com/eth-p/bat-extras
+# Copyright (C) 2019-2021 eth-p | MIT License
+#
+# To use batpipe, eval the output of this command in your shell init script.
+LESSOPEN="|/usr/local/Cellar/bat-extras-batpipe/2021.04.06/bin/batpipe %s";
+export LESSOPEN;
+unset LESSCLOSE;
+
+# The following will enable colors when using batpipe with less:
+LESS="$LESS -R";
+BATPIPE="color";
+export LESS;
+export BATPIPE;
+
+if hash delta 2>/dev/null; then
+  export BATDIFF_USE_DELTA=true;
+fi
+
 #
 # Load command line fuzzy finder
 # See: https://github.com/junegunn/fzf
@@ -86,7 +107,7 @@ export FZF_BASE=/usr/local/opt/fzf/
 # and available on path then; fzf + pt configuration
 # Note: This must come after sourcing the fzf
 #
-if hash rg 2>/dev/null && hash fd 2>/dev/null && hash fzf 2>/dev/null; then 
+if hash rg 2>/dev/null && hash fd 2>/dev/null && hash fzf 2>/dev/null && hash bat 2>/dev/null; then 
     export RIPGREP_CONFIG_PATH="$HOME/.ripgreprc"
 
     # export FZF_DEFAULT_COMMAND='rg --color=never --ignore-case --hidden --files --no-ignore --no-ignore-global --follow '

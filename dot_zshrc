@@ -117,10 +117,23 @@ plugins=(
 export NVM_LAZY_LOAD=true
 plugins+=(zsh-nvm zsh-better-npm-completion)
 
-# autoload -U compinit && compinit
-# plugins+=(fzf-tab)
-
+#
+# Vi mode key bindings
+#
 bindkey -M viins 'jk' vi-cmd-mode
+
+# Enable Ctrl-x-e to edit command line
+autoload -U edit-command-line
+
+# Emacs style
+# zle -N edit-command-line
+# bindkey '^xe' edit-command-line
+# bindkey '^x^e' edit-command-line
+
+# Vi style
+zle -N edit-command-line
+bindkey -M vicmd v edit-command-line
+
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 #
