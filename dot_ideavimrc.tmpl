@@ -24,7 +24,7 @@ nnoremap <Leader>b :action ToggleLineBreakpoint<CR>
 
 nnoremap <Leader>h :action TypeHierarchy<CR>
 
-" nvim gitgutter mapping
+" gitgutter mapping
 " Unlike gitgutter Jumps are based on timeline not line number in file
 "
 nnoremap ]c :action VcsShowNextChangeMarker<CR>
@@ -33,3 +33,8 @@ nnoremap [c :action VcsShowPrevChangeMarker<CR>
 "nnoremap ]c :action Diff.NextChange<CR>
 "nnoremap [c :action Diff.PrevChange<CR>
 
+
+" nvim-lsp configu mappings
+"
+" Go to references
+nnoremap gr :action FindUsages
