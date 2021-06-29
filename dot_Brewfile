@@ -97,7 +97,7 @@ brew "tidy-html5"
 brew "tldr"
 brew "tmux"
 brew "trash"
-bewq "tree-sitter"
+brew "tree-sitter"
 brew "unbound"
 brew "uncrustify"
 brew "universal-ctags/universal-ctags/universal-ctags", args: ["HEAD"]
