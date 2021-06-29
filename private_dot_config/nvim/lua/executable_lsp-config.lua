@@ -16,7 +16,7 @@ local on_attach_callback = function(client, bufnr)
   completion_nvim.on_attach(client)
 end
 
-local servers = {'pyls_ms', 'sumneko_lua', 'tsserver', 'vimls', 'ocamllsp', 'html', 'sqlls'}
+local servers = {'pyright', 'sumneko_lua', 'tsserver', 'vimls', 'ocamllsp', 'html', 'sqlls'}
 for _, _lsp in ipairs(servers) do
   if _lsp ~= 'sumneko_lua' then
     nvim_lsp[_lsp].setup{
