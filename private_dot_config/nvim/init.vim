@@ -32,26 +32,23 @@ else
 endif
 
 
-packadd! vim-solarized8
-  let g:solarized_diffmode = 1
-  let g:solarized_termtrans = 0
-  let g:solarized_extra_hi_groups = 0
+packadd! vim-colors-github
 
 " Enable true color support
 set termguicolors
 
 try
-    colorscheme solarized8_high
-    set background=dark
+    colorscheme github
+    set background=light
 catch /.*/
     echomsg '!WARNING: unable to set color scheme'
-    echomsg 'downloading solarized8 theme'
-    if empty(glob($XDG_CONFIG_HOME.'/nvim/pack/themes/opt/solarized8'))
-      silent !mkdir -p $XDG_CONFIG_HOME/nvim/pack/themes/opt/solarized8
-      silent !curl -sfL https://github.com/lifepillar/vim-solarized8/archive/master.zip | tar --strip-components=1 -zxf - -C $XDG_CONFIG_HOME/nvim/pack/themes/opt/solarized8
+    echomsg 'downloading github theme'
+    if empty(glob($XDG_CONFIG_HOME.'/nvim/pack/themes/opt/github'))
+      silent !mkdir -p $XDG_CONFIG_HOME/nvim/pack/themes/opt/github
+      silent !curl -sfL https://github.com/cormacrelf/vim-colors-github/archive/master.zip | tar --strip-components=1 -zxf - -C $XDG_CONFIG_HOME/nvim/pack/themes/opt/github
 
-      colorscheme solarized8_high
-      set background=dark
+      colorscheme github
+      set background=light
     endif
 endtry
 
