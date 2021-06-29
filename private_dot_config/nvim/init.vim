@@ -31,26 +31,14 @@ else
     set pythonthreehome=C:\Python37
 endif
 
-
-packadd! vim-colors-github
-
 " Enable true color support
 set termguicolors
 
-try
-    colorscheme github
-    set background=light
-catch /.*/
-    echomsg '!WARNING: unable to set color scheme'
-    echomsg 'downloading github theme'
-    if empty(glob($XDG_CONFIG_HOME.'/nvim/pack/themes/opt/github'))
-      silent !mkdir -p $XDG_CONFIG_HOME/nvim/pack/themes/opt/github
-      silent !curl -sfL https://github.com/cormacrelf/vim-colors-github/archive/master.zip | tar --strip-components=1 -zxf - -C $XDG_CONFIG_HOME/nvim/pack/themes/opt/github
+packadd! github-colors
 
-      colorscheme github
-      set background=light
-    endif
-endtry
+" set background=dark
+set background=light
+colorscheme github-colors
 
 let mapleader='\'
 let maplocalleader='_'
