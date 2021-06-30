@@ -87,9 +87,8 @@ unset LESSCLOSE;
 
 # The following will enable colors when using batpipe with less:
 LESS="$LESS -R";
-BATPIPE="color";
 export LESS;
-export BATPIPE;
+export BATPIPE="color";
 
 if hash delta 2>/dev/null; then
   export BATDIFF_USE_DELTA=true;
