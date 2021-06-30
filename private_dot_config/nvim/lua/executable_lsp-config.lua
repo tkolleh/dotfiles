@@ -22,6 +22,20 @@ for _, _lsp in ipairs(servers) do
     nvim_lsp[_lsp].setup{
       on_attach = on_attach_callback,
     }
+  if _lsp ~= 'sqlls' then
+    nvim_lsp[_lsp].setup{ -- Fix the below code duplication by updating the map
+      cmd = {"/usr/local/bin/sql-language-server", "up", "--method", "stdio"},
+      on_attach = on_attach_callback,
+      settings = {
+        Lua = {
+          diagnostics = {
+            globals = {
+              'vim',
+            }
+          }
+        }
+      }
+    }
   else
     nvim_lsp[_lsp].setup{
       on_attach = on_attach_callback,
