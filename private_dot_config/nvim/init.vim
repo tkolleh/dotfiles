@@ -40,6 +40,8 @@ packadd! github-colors
 set background=light
 colorscheme github-colors
 
+highlight FoldColumn guibg=white guifg=darkgrey
+
 let mapleader='\'
 let maplocalleader='_'
 

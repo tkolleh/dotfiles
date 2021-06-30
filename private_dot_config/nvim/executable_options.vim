@@ -98,86 +98,80 @@ packadd! vim-gitgutter
   nmap ]g <Plug>(GitGutterNextHunk)
   nmap [g <Plug>(GitGutterPrevHunk)
 
+" packadd! commands are apart of the import statements
+lua require('treesitter-config')
+lua require('lsp-config')
+lua require('dap-config')
 
-if has('nvim-0.5')
-  " packadd! commands are apart of the import statements
-  lua require('treesitter-config')
-  lua require('lsp-config')
-  lua require('dap-config')
+nnoremap <silent> gi    <cmd>lua vim.lsp.buf.declaration()<CR>
+nnoremap <silent> gd    <cmd>lua vim.lsp.buf.definition()<CR>
+nnoremap <silent> K     <cmd>lua vim.lsp.buf.hover()<CR>
+nnoremap <silent> gD    <cmd>lua vim.lsp.buf.implementation()<CR>
+nnoremap <silent> <c-i> <cmd>lua vim.lsp.buf.signature_help()<CR>
+nnoremap <silent> gy    <cmd>lua vim.lsp.buf.type_definition()<CR>
+nnoremap <silent> gr    <cmd>lua vim.lsp.buf.references()<CR>
+nnoremap <silent> g0    <cmd>lua vim.lsp.buf.document_symbol()<CR>
+nnoremap <silent> gW    <cmd>lua vim.lsp.buf.workspace_symbol()<CR>
 
-  nnoremap <silent> gi    <cmd>lua vim.lsp.buf.declaration()<CR>
-  nnoremap <silent> gd    <cmd>lua vim.lsp.buf.definition()<CR>
-  nnoremap <silent> K     <cmd>lua vim.lsp.buf.hover()<CR>
-  nnoremap <silent> gD    <cmd>lua vim.lsp.buf.implementation()<CR>
-  nnoremap <silent> <c-i> <cmd>lua vim.lsp.buf.signature_help()<CR>
-  nnoremap <silent> gy    <cmd>lua vim.lsp.buf.type_definition()<CR>
-  nnoremap <silent> gr    <cmd>lua vim.lsp.buf.references()<CR>
-  nnoremap <silent> g0    <cmd>lua vim.lsp.buf.document_symbol()<CR>
-  nnoremap <silent> gW    <cmd>lua vim.lsp.buf.workspace_symbol()<CR>
+highlight link TSError Normal
 
-  highlight link TSError Normal
+command -nargs=0 LspErrors :lua require('lsp-diagnostics').errors_to_quickfix()
+command -nargs=0 LspWarnings :lua require('lsp-diagnostics').warnings_to_quickfix()
 
-  command -nargs=0 LspErrors :lua require('lsp-diagnostics').errors_to_quickfix()
-  command -nargs=0 LspWarnings :lua require('lsp-diagnostics').warnings_to_quickfix()
+nnoremap <silent> <leader>q :lua require('quickfix').toggle()<CR>
+noremap <silent> <space>j <cmd>lua vim.lsp.diagnostic.goto_prev {wrap = true}<CR>
+noremap <silent> <space>k <cmd>lua vim.lsp.diagnostic.goto_next {wrap = true}<CR>
 
-  nnoremap <silent> <leader>q :lua require('quickfix').toggle()<CR>
-  noremap <silent> <space>j <cmd>lua vim.lsp.diagnostic.goto_prev {wrap = true}<CR>
-  noremap <silent> <space>k <cmd>lua vim.lsp.diagnostic.goto_next {wrap = true}<CR>
-
-  if has('folding')
-    set foldmethod=expr
-    set foldexpr=nvim_treesitter#foldexpr()
-  endif
-
-  packadd! completion-buffers
-
-  augroup completion
-    autocmd!
-    " Use completion-nvim in every buffer
-    autocmd BufEnter * lua require'completion'.on_attach()
-  augroup end
-
- "
- " use <Tab> and <S-Tab> as trigger keys for completion menue
- "
- function! s:check_back_space() abort
-     let col = col('.') - 1
-     return !col || getline('.')[col - 1]  =~ '\s'
- endfunction
-
- inoremap <silent><expr> <TAB>
-   \ pumvisible() ? "\<C-n>" :
-   \ <SID>check_back_space() ? "\<TAB>" :
-   \ completion#trigger_completion()
-
-  " nnoremap <silent> <F3> :lua require'dap'.stop()<CR>
-  nnoremap <silent> <leader>dc :lua require'dap'.continue()<CR>
-  " nnoremap <silent> <F10> :lua require'dap'.step_over()<CR>
-  " nnoremap <silent> <F11> :lua require'dap'.step_into()<CR>
-  " nnoremap <silent> <F12> :lua require'dap'.step_out()<CR>
-  nnoremap <silent> <leader>b :lua require'dap'.toggle_breakpoint()<CR>
-  nnoremap <silent> <leader>B :lua require'dap'.toggle_breakpoint(vim.fn.input('Breakpoint Condition: '), nil, nil, true)<CR>
-  nnoremap <silent> <leader>lp :lua require'dap'.toggle_breakpoint(nil, nil, vim.fn.input('Log point message: '), true)<CR>
-  nnoremap <silent> <leader>dr :lua require'dap'.repl.toggle({height=15})<CR>
-  nnoremap <silent> <leader>dl :lua require('dap').run_last()<CR>
-  command -nargs=0 Into :lua require('dap').step_into()
-  command -nargs=0 DapBreakpoints :lua require('dap').list_breakpoints()
-
-  packadd! ultisnips
-    packadd! vim-snippets
-
-    " Trigger configuration. Change to something else than <tab> if using
-    " completion-nvim
-    let g:UltiSnipsExpandTrigger="<c-n>"
-    let g:UltiSnipsJumpForwardTrigger="<c-b>"
-    let g:UltiSnipsJumpBackwardTrigger="<c-z>"
-
-    " If you want :UltiSnipsEdit to split your window.
-    let g:UltiSnipsEditSplit="vertical"
-
-else
-  packadd vim-polyglot
+if has('folding')
+  set foldmethod=expr
+  set foldexpr=nvim_treesitter#foldexpr()
 endif
+
+packadd! completion-buffers
+
+augroup completion
+  autocmd!
+  " Use completion-nvim in every buffer
+  autocmd BufEnter * lua require'completion'.on_attach()
+augroup end
+
+"
+" use <Tab> and <S-Tab> as trigger keys for completion menue
+"
+function! s:check_back_space() abort
+   let col = col('.') - 1
+   return !col || getline('.')[col - 1]  =~ '\s'
+endfunction
+
+inoremap <silent><expr> <TAB>
+ \ pumvisible() ? "\<C-n>" :
+ \ <SID>check_back_space() ? "\<TAB>" :
+ \ completion#trigger_completion()
+
+" nnoremap <silent> <F3> :lua require'dap'.stop()<CR>
+nnoremap <silent> <leader>dc :lua require'dap'.continue()<CR>
+" nnoremap <silent> <F10> :lua require'dap'.step_over()<CR>
+" nnoremap <silent> <F11> :lua require'dap'.step_into()<CR>
+" nnoremap <silent> <F12> :lua require'dap'.step_out()<CR>
+nnoremap <silent> <leader>b :lua require'dap'.toggle_breakpoint()<CR>
+nnoremap <silent> <leader>B :lua require'dap'.toggle_breakpoint(vim.fn.input('Breakpoint Condition: '), nil, nil, true)<CR>
+nnoremap <silent> <leader>lp :lua require'dap'.toggle_breakpoint(nil, nil, vim.fn.input('Log point message: '), true)<CR>
+nnoremap <silent> <leader>dr :lua require'dap'.repl.toggle({height=15})<CR>
+nnoremap <silent> <leader>dl :lua require('dap').run_last()<CR>
+command -nargs=0 Into :lua require('dap').step_into()
+command -nargs=0 DapBreakpoints :lua require('dap').list_breakpoints()
+
+packadd! ultisnips
+  packadd! vim-snippets
+
+  " Trigger configuration. Change to something else than <tab> if using
+  " completion-nvim
+  let g:UltiSnipsExpandTrigger="<c-n>"
+  let g:UltiSnipsJumpForwardTrigger="<c-b>"
+  let g:UltiSnipsJumpBackwardTrigger="<c-z>"
+
+  " If you want :UltiSnipsEdit to split your window.
+  let g:UltiSnipsEditSplit="vertical"
 
 packadd! vim-pandoc
 packadd! vim-pandoc-syntax
