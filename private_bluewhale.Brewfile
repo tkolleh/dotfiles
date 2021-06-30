@@ -21,6 +21,7 @@ brew "eth-p/software/bat-extras"
 brew "exa"
 brew "exiftool"
 brew "fd"
+brew "ffmpeg"
 brew "fswatch"
 brew "fzf"
 brew "gawk"
@@ -48,14 +49,12 @@ brew "jenv"
 brew "jesseduffield/lazydocker/lazydocker"
 brew "languagetool"
 brew "lastpass-cli"
-brew "libheif"
 brew "libimobiledevice"
 brew "librsvg"
 brew "libusbmuxd"
 brew "llvm"
 brew "lua"
 brew "luajit", args: ["HEAD"]
-brew "luajit-openresty"
 brew "luarocks"
 brew "mas"
 brew "mongodb/brew/mongodb-community", link: false
@@ -65,6 +64,7 @@ brew "multimarkdown"
 brew "neofetch"
 brew "neovim", args: ["HEAD"]
 brew "node"
+brew "oauth2l"
 brew "p7zip"
 brew "pandoc"
 brew "pandoc-crossref"
@@ -98,7 +98,6 @@ brew "tldr"
 brew "tmux"
 brew "trash"
 brew "tree-sitter"
-brew "unbound"
 brew "uncrustify"
 brew "universal-ctags/universal-ctags/universal-ctags", args: ["HEAD"]
 brew "watch"
@@ -108,7 +107,6 @@ brew "whalebrew"
 brew "zsh"
 cask "adoptopenjdk"
 cask "anaconda"
-cask "anki"
 cask "chromedriver"
 cask "dash"
 cask "dropbox"
@@ -119,6 +117,7 @@ cask "font-go-mono-nerd-font"
 cask "font-hack-nerd-font"
 cask "font-jetbrains-mono-nerd-font"
 cask "font-victor-mono"
+cask "github"
 cask "google-chrome"
 cask "iterm2"
 cask "jetbrains-toolbox"
@@ -137,29 +136,18 @@ cask "sourcetree"
 cask "visual-studio-code"
 cask "weka"
 cask "zotero"
-mas "AutoMounter", id: 1160435653
-mas "BetterSnapTool", id: 417375580
 mas "Compressor", id: 424390742
-mas "Day One", id: 1055511498
-mas "Final Cut Pro", id: 424389933
+mas "GarageBand", id: 682658836
 mas "Keynote", id: 409183694
-mas "Kindle", id: 405399194
 mas "LastPass", id: 926036361
-mas "Logic Pro", id: 634148309
 mas "Magnet", id: 441258766
-mas "MarginNote 3", id: 1423522373
-mas "Microsoft OneNote", id: 784801555
+mas "Micro Snitch", id: 972028355
+mas "Notability", id: 360593530
 mas "Notability", id: 736189492
 mas "Numbers", id: 409203825
 mas "Pages", id: 409201541
 mas "Paste JSON as Code • quicktype", id: 1330801220
 mas "Paste", id: 967805235
-mas "Pixelmator", id: 407963104
-mas "Playgrounds", id: 1496833156
-mas "Spark", id: 1176895641
-mas "Tailscale", id: 1475387142
-mas "WhatsApp", id: 1147396723
-mas "Xcode", id: 497799835
 mas "iMovie", id: 408981434
 tap "coursier/formulas"
 tap "dart-lang/dart"
@@ -177,7 +165,6 @@ tap "prisma/prisma"
 tap "twlz0ne/ccls"
 tap "universal-ctags/universal-ctags"
 tap "wagoodman/dive"
-whalebrew "whalebrew/ffmpeg"
 whalebrew "whalebrew/httpie"
-whalebrew "whalebrew/proselint"
 whalebrew "whalebrew/plantuml"
+whalebrew "whalebrew/proselint"
