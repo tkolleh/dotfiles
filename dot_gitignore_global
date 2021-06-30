@@ -1,4 +1,6 @@
 slate/source
+.project_mind_map.mmd
+*.xmind
 .vim
 .mypy_cache
 .dmypy.json
