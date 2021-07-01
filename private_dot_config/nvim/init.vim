@@ -40,7 +40,6 @@ packadd! github-colors
 set background=light
 colorscheme github-colors
 
-highlight FoldColumn guibg=white guifg=darkgrey
 
 let mapleader='\'
 let maplocalleader='_'
@@ -259,5 +258,9 @@ augroup NetrwFiletype
   autocmd!
   autocmd FileType netrw call NetrwBuf()
 augroup END
+
+" Used for Github colorscheme
+highlight FoldColumn guibg=white guifg=darkgrey
+highlight FoldColumn ctermbg=white ctermfg=darkgrey
 
 set secure
