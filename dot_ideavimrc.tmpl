@@ -1,17 +1,21 @@
-source {{ .chezmoi.homedir }}/.config/nvim/_alt_init.vim
+source {{ .chezmoi.homeDir }}/.config/nvim/_alt_init.vim
 
 set visualbell
 set noerrorbells
 set surround
 set commentary
 set ideajoin
+set NERDTree
 
-set clipboard+=unnamed
+" Use system clipboard
+" set clipboard+=unnamed
 
-" nvim ranger mapping
+" Open nerd tree in intellij. Same as nvim ranger mapping
 "
-" nnoremap <Leader>- :action ActivateProjectToolWindow<CR>
-nnoremap <Leader>- :action SelectInProjectView<CR>
+map <Leader>- :NERDTreeToggle<CR>
+
+" Open project view with file selected
+" nnoremap <Leader>- :action SelectInProjectView<CR>
 
 nnoremap <Leader>rn :action RenameElement<CR>
 nnoremap <Leader>nf :action Darker<CR>
