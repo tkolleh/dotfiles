@@ -140,11 +140,6 @@ test -r $HOME/.opam/opam-init/init.zsh && . $HOME/.opam/opam-init/init.zsh > /de
 #
 export PARINIT="rTbgqR B=.,?_A_a Q=_s>|"
 
-fx () {
-  #Done this way to avoid alais executing the inner command for npm root...
-  NODE_PATH=$(npm root -g) fx
-}
-
 export PRE_COMMIT_FROM_REF="origin/HEAD"
 export PRE_COMMIT_TO_REF="HEAD"
 

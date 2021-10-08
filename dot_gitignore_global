@@ -1,3 +1,7 @@
+# appmap related
+appmap.yml
+tmp
+
 slate/source
 .project_mind_map.mmd
 *.xmind

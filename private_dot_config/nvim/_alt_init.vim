@@ -4,6 +4,10 @@ set nocompatible
 
 syntax on
 
+" Map leader key to spacebar
+nnoremap <SPACE> <Nop>
+let mapleader = " "
+
 " Avoid garbled characters in Chinese language windows OS
 let $LANG='en' 
 set langmenu=en
