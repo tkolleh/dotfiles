@@ -30,7 +30,7 @@ command:go="$(VIM_PATHNOEXT)"
 command:python=python "$(VIM_FILENAME)"
 command:javascript=node "$(VIM_FILENAME)"
 command:sh=sh "$(VIM_FILENAME)"
-command:markdown,md,pandoc=bash {{ .chezmoi.homedir }}/.bash_functions marked "$(VIM_FILEPATH)"
+command:markdown,md,pandoc=bash {{ .chezmoi.homeDir }}/.bash_functions marked "$(VIM_FILEPATH)"
 
 cwd=$(VIM_FILEDIR)
 
@@ -41,7 +41,7 @@ save=1
 # -- Build markdown files-------------------------------------------------- 
 [md-pdf-gt]
 
-command:markdown,md,pandoc=/usr/local/opt/pandoc/bin/pandoc --verbose -f markdown-raw_tex --output="$(VIM_FILENOEXT).pdf" --include-in-header="{{ .chezmoi.homedir }}/Documents/pandoc-basic.tex" --include-in-header="{{ .chezmoi.homedir }}/Documents/pandoc-gatech-header.tex" --highlight-style zenburn --pdf-engine="xelatex" --bibliography="{{ .chezmoi.homedir }}/Documents/bibliography.bib" "$(VIM_RELNAME)"
+command:markdown,md,pandoc=/usr/local/opt/pandoc/bin/pandoc --verbose -f markdown-raw_tex --output="$(VIM_FILENOEXT).pdf" --include-in-header="{{ .chezmoi.homeDir }}/Documents/pandoc-basic.tex" --include-in-header="{{ .chezmoi.homeDir }}/Documents/pandoc-gatech-header.tex" --highlight-style zenburn --pdf-engine="xelatex" --bibliography="{{ .chezmoi.homeDir }}/Documents/bibliography.bib" "$(VIM_RELNAME)"
 cwd=$(VIM_FILEDIR)
 output=terminal
 

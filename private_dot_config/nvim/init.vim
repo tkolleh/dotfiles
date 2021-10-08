@@ -41,7 +41,9 @@ set background=light
 colorscheme github-colors
 
 
-let mapleader='\'
+" Map leader key to spacebar
+nnoremap <SPACE> <Nop>
+let mapleader = " "
 let maplocalleader='_'
 
 set mouse=nvirh

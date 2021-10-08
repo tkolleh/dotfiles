@@ -18,7 +18,7 @@ templates:
       lang: en-US
       link-citations: true
       fontsize: 12pt
-      bibliography: {{ .chezmoi.homedir }}/Dropbox/Documents/zotero-library.bib
+      bibliography: {{ .chezmoi.homeDir }}/Dropbox/Documents/zotero-library.bib
   ieee:
     pandoc:
       from: markdown
@@ -27,7 +27,7 @@ templates:
       mathjax: true
       section-divs: true
       html-q-tags: true
-      css: "{{ .chezmoi.homedir }}/Dropbox/Documents/markdown-css/pubcss-ieee.css"
+      css: "{{ .chezmoi.homeDir }}/Dropbox/Documents/markdown-css/pubcss-ieee.css"
       csl: csl/ieee-with-url.csl
       citeproc: true
       lua-filter:
@@ -40,7 +40,7 @@ templates:
       lang: en-US
       link-citations: true
       fontsize: 12pt
-      bibliography: {{ .chezmoi.homedir }}/Dropbox/Documents/zotero-library.bib
+      bibliography: {{ .chezmoi.homeDir }}/Dropbox/Documents/zotero-library.bib
   report:
     pandoc:
       from: markdown
@@ -60,7 +60,7 @@ templates:
       lang: en-US
       link-citations: true
       fontsize: 12pt
-      bibliography: {{ .chezmoi.homedir }}/Dropbox/Documents/zotero-library.bib
+      bibliography: {{ .chezmoi.homeDir }}/Dropbox/Documents/zotero-library.bib
       mainfont: "DejaVuSerif"
       sansfont: "DejaVu Sans Mono Nerd Font Complete"
       monofont: "DejaVu Sans Mono Nerd Font Complete Mono"
