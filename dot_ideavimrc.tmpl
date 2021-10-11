@@ -6,13 +6,20 @@ set surround
 set commentary
 set ideajoin
 set NERDTree
+set which-key
+
+" disable the timeout option
+set notimeout
+
+" increase the timeoutlen (default: 1000)
+" set timeoutlen = 5000
 
 " Use system clipboard
 " set clipboard+=unnamed
 
 " Open nerd tree in intellij. Same as nvim ranger mapping
 "
-map <Leader>- :NERDTreeToggle<CR>
+map <Leader>- :NERDTreeFind<CR>
 
 " Open project view with file selected
 " nnoremap <Leader>- :action SelectInProjectView<CR>
