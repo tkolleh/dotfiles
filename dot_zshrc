@@ -175,9 +175,9 @@ export ICLOUD_DIR="$HOME/Library/Mobile Documents/com~apple~CloudDocs/"
 # "visual" editor like vi but something like ed
 #
 if [[ -n $SSH_CONNECTION ]]; then
-  export VISUAL='vim'
+  export VISUAL='lvim'
 else
-  export VISUAL='nvim'
+  export VISUAL='lvim'
 fi
 
 # Set personal aliases, overriding those provided by oh-my-zsh libs,
