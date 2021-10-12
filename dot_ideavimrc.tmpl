@@ -9,23 +9,23 @@ set NERDTree
 set which-key
 
 " disable the timeout option
-set notimeout
+" set notimeout
 
 " increase the timeoutlen (default: 1000)
-" set timeoutlen = 5000
+set timeoutlen = 3000
 
 " Use system clipboard
 " set clipboard+=unnamed
 
 " Open nerd tree in intellij. Same as nvim ranger mapping
 "
-map <Leader>- :NERDTreeFind<CR>
+nnoremap <Leader>- :NERDTreeFind<CR>
 
 " Open project view with file selected
 " nnoremap <Leader>- :action SelectInProjectView<CR>
 
 nnoremap <Leader>rn :action RenameElement<CR>
-nnoremap <Leader>nf :action Darker<CR>
+nnoremap <Leader>fp :action Tool_External Tools_darker<CR>
 
 " similar to nvim dap configuration
 "
@@ -49,3 +49,4 @@ nnoremap [c :action VcsShowPrevChangeMarker<CR>
 "
 " Go to references
 nnoremap gr :action FindUsages
+
