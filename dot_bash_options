@@ -112,7 +112,7 @@ if hash rg 2>/dev/null && hash fd 2>/dev/null && hash fzf 2>/dev/null && hash ba
     # export FZF_DEFAULT_COMMAND='rg --color=never --ignore-case --hidden --files --no-ignore --no-ignore-global --follow '
     export FZF_DEFAULT_COMMAND='fd --type f --color=never --ignore-case --no-ignore --hidden --follow'
 
-    export FZF_DEFAULT_OPTS="--bind 'f1:execute(bat --paging=always --color=always {}),f2:execute(nvim {})+abort,ctrl-y:execute-silent(echo {} | pbcopy)+abort' --bind '?:toggle-preview' --preview='bat --number --color=always {} | head -700' --preview-window='right:50%:hidden'"
+    export FZF_DEFAULT_OPTS="--bind 'f1:execute(bat --paging=always --color=always {}),f2:execute(lvim {})+abort,ctrl-y:execute-silent(echo {} | pbcopy)+abort' --bind '?:toggle-preview' --preview='bat --number --color=always {} | head -700' --preview-window='right:50%:hidden'"
 
     export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 
