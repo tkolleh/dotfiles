@@ -140,9 +140,9 @@ function contentlength() {
 
 function viml() {
   if [[ -f "$LAST_NVIM_SESSION" ]]; then
-    nvim -S $LAST_NVIM_SESSION
+    lvim -S $LAST_NVIM_SESSION
   else
-    echo "Last nvim session not found at $LAST_NVIM_SESSION"
+    echo "Last lvim session not found at $LAST_NVIM_SESSION"
     touch $LAST_NVIM_SESSION
     echo "Made a new file"
   fi
@@ -150,7 +150,7 @@ function viml() {
 
 function vims() {
   SESSION=$(fd . -a $NVIM_SESSION | fzf)
-  nvim -S "$SESSION"
+  lvim -S "$SESSION"
 }
 
 function updatenvim() {
