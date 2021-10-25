@@ -121,6 +121,15 @@ lvim.plugins = {
 
   -- keybindings
   {'tpope/vim-unimpaired'},
+
+  -- tmux
+  {'christoomey/vim-tmux-navigator'},
+
+-- notes
+-- {
+--   'alok/notational-fzf-vim',
+--   requires = 'junegunn/fzf',
+-- },
 --  {
 --    "folke/trouble.nvim",
 --    cmd = "TroubleToggle",
