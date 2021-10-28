@@ -12,7 +12,18 @@ an executable
 lvim.log.level = "warn"
 lvim.format_on_save = true
 lvim.colorscheme = "onebuddy"
+
 vim.o.background = "light"
+vim.o.timeoutlen = 800
+
+-- code folding
+vim.o.foldenable = true
+vim.o.foldlevel = 2
+vim.o.foldlevelstart = 50
+vim.o.foldcolumn = "2"
+vim.o.foldmethod = "expr"
+vim.o.foldexpr = "nvim_treesitter#foldexpr()"
+
 
 -- keymappings [view all the defaults by pressing <leader>Lk]
 lvim.leader = "space"
@@ -114,16 +125,16 @@ lvim.builtin.treesitter.highlight.enabled = true
 
 -- Additional Plugins
 lvim.plugins = {
-  -- colors
-  {'tjdevries/colorbuddy.vim'},
-  {'Th3Whit3Wolf/onebuddy'},
-  {"folke/tokyonight.nvim"},
+--   -- colors
+   {'tjdevries/colorbuddy.vim'},
+   {'Th3Whit3Wolf/onebuddy'},
+   {'folke/tokyonight.nvim'},
 
-  -- keybindings
-  {'tpope/vim-unimpaired'},
+--   -- keybindings
+   {'tpope/vim-unimpaired'},
 
-  -- tmux
-  {'christoomey/vim-tmux-navigator'},
+--   -- tmux
+   {'christoomey/vim-tmux-navigator'},
 
 -- notes
 -- {
