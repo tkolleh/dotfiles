@@ -87,7 +87,8 @@ set confirm
 
 " Map <C-L> (redraw screen) to also turn off search highlighting until the
 " next search
-nnoremap <C-l>l :nohl<CR><C-L>
+" nnoremap <C-l>l :nohl<CR><C-L>"
+nnoremap <leader>h :nohl<CR><C-L>
 
 " map jk to <ESC> when in insert mode
 inoremap jk <Esc>
