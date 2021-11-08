@@ -12,7 +12,7 @@ set which-key
 " set notimeout
 
 " increase the timeoutlen (default: 1000)
-set timeoutlen = 2000
+set timeoutlen = 3000
 
 " Use system clipboard
 set clipboard+=unnamed
@@ -33,7 +33,7 @@ nnoremap <Leader>b :action ToggleLineBreakpoint<CR>
 " nnoremap <Leader>dl :action EditorPopupMenuDebug<CR>
 
 
-nnoremap <Leader>h :action TypeHierarchy<CR>
+nnoremap <Leader><C-h> :action TypeHierarchy<CR>
 
 " gitgutter mapping
 " Unlike gitgutter Jumps are based on timeline not line number in file
