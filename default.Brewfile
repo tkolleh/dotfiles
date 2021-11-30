@@ -205,6 +205,8 @@ brew "scala"
 brew "scalariform"
 # Autoformat shell script source code
 brew "shfmt"
+# Cross-shell prompt for astronauts
+brew "starship"
 # Generate clients, server stubs, and docs from an OpenAPI spec
 brew "swagger-codegen"
 # Granddaddy of HTML tools, with support for modern standards
