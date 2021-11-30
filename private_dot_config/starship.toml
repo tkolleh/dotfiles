@@ -1,0 +1,38 @@
+# Inserts a blank line between shell prompts
+add_newline = true
+
+#
+# First row
+#
+
+# First element
+#
+# Replace the "❯" symbol in the prompt with ""
+# character before entering text
+[character]                        # The name of the module we are configuring is "character"
+success_symbol = "[](bold purple)"  # The "success_symbol" segment is being set to "" with the color "bold blue"
+
+# enable the package module
+[package]
+disabled = true
+
+# Second element
+[directory]
+style = "bold purple"
+truncation_length = 0
+truncate_to_repo = true
+truncation_symbol = "repo: "
+
+# Before all the version info (python, nodejs, php, etc.)
+[git_status]
+style = "bold purple"
+ahead = "⇡${count}"
+diverged = "⇕⇡${ahead_count}⇣${behind_count}"
+behind = "⇣${count}"
+deleted = "x"
+
+# Last param in the first line/row
+[cmd_duration]
+min_time = 1
+format = "took [$duration]($style)"
+disabled = false

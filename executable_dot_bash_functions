@@ -1,24 +1,21 @@
-#!/usr/bin/env bash
+#!/bin/sh
 # -*-mode:bash-*- vim:ft=bash
 #
 # ~/.bash_functions
-# =============================================================================
+# ====================================
 #
-# Executed by bash for non-login shells.
+# Executed for non-login shells.
 #
+
 # If not running interactively, don't do anything.
 case $- in
 *i*) ;;
 *) return ;;
 esac
 
-#
-# TODO: Change documentation to https://github.com/tests-always-included/tomdoc.sh
-# where applicable and create separate files for functions
-#
-
 user_functions_loaded=1
 
+# Change directory to folder in workspace folder
 function ws() {
   workspace=$(fd --type d -uu -a . "$HOME/ws" | fzf)
   cd $workspace
@@ -33,11 +30,9 @@ function marked() {
   fi
 }
 
+# Print the difference between the target state and the destination state for
+# targets. If no targets are specified, print the differences for all targets.
 function chezmoidiff() {
-  #
-  # Print the difference between the target state and the destination state for
-  # targets. If no targets are specified, print the differences for all targets.
-  #
   if [ -n "${1}" ]; then
     chezmoi diff --format=git "${1}" | delta
   else
@@ -45,25 +40,22 @@ function chezmoidiff() {
   fi
 }
 
+# Install requirements.txt in conda environment
+#
+# Original solution via StackOverflow: 
+# http://stackoverflow.com/questions/35802939/install-only-available-packages-using-conda-install-yes-file-requirements-t
+#
 function conda_install_requirements() {
-  #
-  #  Original solution via StackOverflow:
-  #    http://stackoverflow.com/questions/35802939/install-only-available-packages-using-conda-install-yes-file-requirements-t
-  #
-
-  #
   #  Install via `conda` directly.
   #  This will fail to install all
   #  dependencies. If one fails,
   #  all dependencies will fail to install.
-  #
   conda install --yes --file requirements.txt
 
   #
   #  To go around issue above, one can
   #  iterate over all lines in the
   #  requirements.txt file.
-  #
   while read requirement; do conda install --yes $requirement; done < requirements.txt 
 }
 
