@@ -1,11 +1,11 @@
 # -*-mode:sh-*- vim:ft=zsh
-
+#
 # ~/.zshrc
 # =============================================================================
 # Executed by Z shell for interactive shells.
 #
 # See http://zsh.sourceforge.net/
-
+#
 # shellcheck shell=bash
 # shellcheck source=/dev/null
 # shellcheck disable=SC2034
@@ -23,18 +23,18 @@ export ZSH_AUTOSUGGEST_USE_ASYNC=true
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
 # Set path to your oh-my-zsh installation.
-export ZSH="${HOME}/.oh-my-zsh"
+# export ZSH="${HOME}/.oh-my-zsh"
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
 #
-POWERLEVEL9K_MODE='nerdfont-complete'
+#POWERLEVEL9K_MODE='nerdfont-complete'
 
-ZSH_THEME="agnoster"
-ZSH_THEME="powerlevel9k/powerlevel9k"
-ZSH_THEME="powerlevel10k/powerlevel10k"
+#ZSH_THEME="agnoster"
+#ZSH_THEME="powerlevel9k/powerlevel9k"
+#ZSH_THEME="powerlevel10k/powerlevel10k"
 
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
@@ -56,7 +56,7 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
 DISABLE_UPDATE_PROMPT="true"
 
 # Uncomment the following line to change how often to auto-update (in days).
-export UPDATE_ZSH_DAYS=10
+export UPDATE_ZSH_DAYS=7
 
 # Uncomment the following line if pasting URLs and other text is messed up.
 # DISABLE_MAGIC_FUNCTIONS=true
@@ -95,27 +95,27 @@ export UPDATE_ZSH_DAYS=10
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 #
-plugins=(
-  vi-mode
-  git 
-  ripgrep 
-  colored-man-pages 
-  conda-zsh-completion 
-  zsh-completions
-)
+# plugins=(
+#   vi-mode
+#   git 
+#   ripgrep 
+#   colored-man-pages 
+#   conda-zsh-completion 
+#   zsh-completions
+# )
 
 # Activate the completion cache for packages
-#zstyle ':completion::complete:*' use-cache 1
+# zstyle ':completion::complete:*' use-cache 1
 # Display subcommand completion in groups
-#zstyle ":conda_zsh_completion:*" use-groups true
+# zstyle ":conda_zsh_completion:*" use-groups true
 
 #
 # Enable lazy loading by exporting the NVM_LAZY_LOAD environment 
 # variable and setting it to true. It must be set before zsh-nvm
 # is loaded.
 #
-export NVM_LAZY_LOAD=true
-plugins+=(zsh-nvm zsh-better-npm-completion)
+# export NVM_LAZY_LOAD=true
+# plugins+=(zsh-nvm zsh-better-npm-completion)
 
 #
 # Vi mode key bindings
@@ -139,19 +139,19 @@ bindkey -M vicmd v edit-command-line
 #
 # Load theme Powerlevel10K
 #
-if test "${ZSH_THEME#*powerlevel10k}" != "$ZSH_THEME"; then
-    [ -f "$HOME"/.p10k.zsh ] && \. "$HOME"/.p10k.zsh
-fi
+# if test "${ZSH_THEME#*powerlevel10k}" != "$ZSH_THEME"; then
+#     [ -f "$HOME"/.p10k.zsh ] && \. "$HOME"/.p10k.zsh
+# fi
 
 # Load Oh My Zsh
-. "$ZSH"/oh-my-zsh.sh
+# . "$ZSH"/oh-my-zsh.sh
 
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
+# if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+#   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+# fi
 
 # -- User configuration --------------------------------------------------
 
@@ -170,7 +170,7 @@ export XDG_DATA_HOME="$HOME/.local/share"
 export CURL_HOME="/usr/bin/curl"
 export ICLOUD_DIR="$HOME/Library/Mobile Documents/com~apple~CloudDocs/"
 
-# Sand et the preferred visual editor for local or set the remote
+# The preferred visual editor for local or set the remote
 # visual editor. The EDITOR variable technically shouldn't be set to a
 # "visual" editor like vi but something like ed
 #
@@ -218,12 +218,6 @@ fi
 if [ -f /usr/local/etc/profile.d/autojump.sh ]; then
     source /usr/local/etc/profile.d/autojump.sh
 fi
-
-# The next line updates PATH for the Google Cloud SDK.
-if [ -f '/Users/tj-noyo/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/tj-noyo/google-cloud-sdk/path.zsh.inc'; fi
-
-# The next line enables shell command completion for gcloud.
-if [ -f '/Users/tj-noyo/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/tj-noyo/google-cloud-sdk/completion.zsh.inc'; fi
 
 #
 # Change cursor shape for different vi modes.
