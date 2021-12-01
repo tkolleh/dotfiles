@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # -*-mode:bash-*- vim:ft=bash
 #
 # ~/.bash_functions
@@ -13,7 +13,7 @@ case $- in
 *) return ;;
 esac
 
-user_functions_loaded=1
+#user_functions_loaded=1
 
 # Change directory to folder in workspace folder
 function ws() {
@@ -204,14 +204,14 @@ function updatezshcustom() {
 }
 
 # Check if the function exists (bash specific)
-[ -z "$1" ] || {
-  if declare -f "$1" > /dev/null
-  then
-    # call arguments verbatim
-    "$@"
-  else
-    # Show a helpful error
-    echo "'$1' is not a known function name" >&2
-    exit 1
-  fi
-}
+#[ -z "$1" ] || {
+#  if declare -f "$1" > /dev/null
+#  then
+#    # call arguments verbatim
+#    "$@"
+#  else
+#    # Show a helpful error
+#    echo "'$1' is not a known function name" >&2
+#    exit 1
+#  fi
+#}
