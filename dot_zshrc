@@ -84,43 +84,24 @@ zpm load                    \
 #
 # all other plugins
 #
-zpm load                                \
-    @github/jeffreytse/zsh-vi-mode      \
-    @github/rbirnie/oh-my-zsh-keybase
+## Prerequisites:
+fzf_path=$(cmd_path fzf)
+jq_path=$(cmd_path jq)
+rg_path=$(cmd_path rg)
+conda_path=$(cmd_path conda)
+npm_path=$(cmd_path npm)
 
-    ## Prerequisites:
-    fzf_path=$(cmd_path fzf)
-    jq_path=$(cmd_path jq)
-    rg_path=$(cmd_path rg)
-    conda_path=$(cmd_path conda)
-    npm_path=$(cmd_path npm)
+if [[ -n conda_path ]]; then
+    zpm load @github/esc/conda-zsh-completion
+fi
+if [[ -n npm_path ]]; then
+    zpm load @github/lukechilds/zsh-better-npm-completion
+fi
+if [[ -n fzf_path && -n jq_path && -n rg_path ]]; then
 
-    if [[ -n fzf_path && -n jq_path && -n rg_path ]]; then
-        zpm load                                    \
-            @github/jedahan/ripz
-            #@github/chitoku-k/fzf-zsh-completions
-    fi
-    if [[ -n conda_path ]]; then
-        zpm load @github/esc/conda-zsh-completion
-    fi
-    if [[ -n npm_path ]]; then
-        zpm load @github/lukechilds/zsh-better-npm-completion
-    fi
+fi
 
 # -- User configuration -------------------------------------------------
-
-
-#
-# Vi mode key bindings
-#
-bindkey -M viins 'jk' vi-cmd-mode
-
-# Enable Ctrl-x-e to edit command line
-autoload -U edit-command-line
-
-# Vi style
-zle -N edit-command-line
-bindkey -M vicmd v edit-command-line
 
 # The preferred visual editor for local or set the remote
 # visual editor. The EDITOR variable technically shouldn't be set to a
@@ -132,29 +113,6 @@ if [[ -n $SSH_CONNECTION ]]; then
 else
   export VISUAL='vim'
 fi
-
-#
-# Change cursor shape for different vi modes.
-# reference: https://unix.stackexchange.com/questions/433273/changing-cursor-style-based-on-mode-in-both-zsh-and-vim
-#
-function zle-keymap-select {
-  if [[ ${KEYMAP} == vicmd ]] ||
-     [[ $1 = 'block' ]]; then
-    echo -ne '\e[1 q'
-
-  elif [[ ${KEYMAP} == main ]] ||
-       [[ ${KEYMAP} == viins ]] ||
-       [[ ${KEYMAP} = '' ]] ||
-       [[ $1 = 'beam' ]]; then
-    echo -ne '\e[5 q'
-  fi
-}
-zle -N zle-keymap-select
-
-function _fix_cursor() {
-   echo -ne '\e[5 q'
-}
-precmd_functions+=(_fix_cursor)
 
 # TODO: move to zprofile
 export PATH="/usr/local/anaconda3/bin:$PATH"
