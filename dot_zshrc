@@ -2,13 +2,7 @@
 #
 # ~/.zshrc
 # =============================================================================
-# Executed by Z shell for interactive shells.
 #
-# See http://zsh.sourceforge.net/
-#
-# shellcheck shell=bash
-# shellcheck source=/dev/null
-# shellcheck disable=SC2034
 
 # Hide default user from local prompt.
 export DEFAULT_USER="${USER}"
@@ -22,21 +16,6 @@ export ZSH_AUTOSUGGEST_USE_ASYNC=true
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
-# Set list of themes to pick from when loading at random
-# Setting this variable when ZSH_THEME=random will cause zsh to load
-# a theme from this variable instead of looking in ~/.oh-my-zsh/themes/
-# If set to an empty array, this variable will have no effect.
-#
-# ZSH_THEME_RANDOM_CANDIDATES=( "robbyrussell" "agnoster" )
-# ZSH_THEME="agnoster"
-
-# Uncomment the following line to use case-sensitive completion.
-# CASE_SENSITIVE="true"
-
-# Uncomment the following line to use hyphen-insensitive completion.
-# Case-sensitive completion must be off. _ and - will be interchangeable.
-# HYPHEN_INSENSITIVE="true"
-
 # Uncomment the following line to disable bi-weekly auto-update checks.
 # DISABLE_AUTO_UPDATE="true"
 
@@ -46,64 +25,90 @@ DISABLE_UPDATE_PROMPT="true"
 # Uncomment the following line to change how often to auto-update (in days).
 export UPDATE_ZSH_DAYS=7
 
-# Uncomment the following line if pasting URLs and other text is messed up.
-# DISABLE_MAGIC_FUNCTIONS=true
-
-# Uncomment the following line to disable colors in ls.
-# DISABLE_LS_COLORS="true"
-
-# Uncomment the following line to disable auto-setting terminal title.
-# DISABLE_AUTO_TITLE="true"
-
-# Uncomment the following line to enable command auto-correction.
-# ENABLE_CORRECTION="true"
-
-# Uncomment the following line to display red dots whilst waiting for completion.
-# COMPLETION_WAITING_DOTS="true"
-
-# Uncomment the following line if you want to disable marking untracked files
-# under VCS as dirty. This makes repository status check for large repositories
-# much, much faster.
-# DISABLE_UNTRACKED_FILES_DIRTY="true"
-
-# Uncomment the following line if you want to change the command execution time
-# stamp shown in the history command output.
-# You can set one of the optional three formats:
-# "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
-# or set a custom format using the strftime function format specifications,
-# see 'man strftime' for details.
-# HIST_STAMPS="mm/dd/yyyy"
-
 # Would you like to use another custom folder than $ZSH/custom?
 # ZSH_CUSTOM=/path/to/new-custom-folder
 
-# Which plugins would you like to load?
-# Standard plugins can be found in ~/.oh-my-zsh/plugins/*
-# Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
-# Example format: plugins=(rails git textmate ruby lighthouse)
-# Add wisely, as too many plugins slow down shell startup.
-#
-# plugins=(
-#   vi-mode
-#   git 
-#   ripgrep 
-#   colored-man-pages 
-#   conda-zsh-completion 
-#   zsh-completions
-# )
+# You may need to manually set your language environment
+export LANG=en_US.UTF-8
 
-# Activate the completion cache for packages
-# zstyle ':completion::complete:*' use-cache 1
-# Display subcommand completion in groups
-# zstyle ":conda_zsh_completion:*" use-groups true
+# Close shell with five presses of CTRL-D
+export IGNOREEOF=5
+
+# -- Utilities -----------------------------------------------
+# TODO: Move utilities to shared utilitie functions script
+#
+
+# usage: Print path to command if exist
+function cmd_path() {
+  if [[ $ZSH_VERSION ]]; then
+    whence -cp "$1" 2> /dev/null
+  else  # bash
+     type -P "$1"  # No output if not in $PATH
+  fi
+}
+
+
+# -- Prompt --------------------------------------------------
+# Starship cross-shell prompt
+# Install starship
+eval "$(starship init zsh)"
+
+# -- Plugins -------------------------------------------------- 
+# Install zpm-zsh
+if [[ ! -f ~/.zpm/zpm.zsh ]]; then
+  git clone --recursive https://github.com/zpm-zsh/zpm ~/.zpm
+fi
+source ~/.zpm/zpm.zsh
+
+# Pull in OMZ (doesn't actually source anything)
+zpm load @omz
+
+# Load any OMZ libraries we want or that OMZ plugins require
+zpm load                    \
+  @omz-lib/compfix      \
+  @omz-lib/completion   \
+  @omz-lib/directories  \
+  @omz-lib/functions    \
+  @omz-lib/git          \
+  @omz-lib/grep         \
+  @omz-lib/history      \
+  @omz-lib/key-bindings \
+  @omz-lib/misc         \
+  @omz-lib/spectrum
+
+  # Load some OMZ plugins and theme
+  zpm load                  \
+    @omz/git                \
+    @omz/colored-man-pages
 
 #
-# Enable lazy loading by exporting the NVM_LAZY_LOAD environment 
-# variable and setting it to true. It must be set before zsh-nvm
-# is loaded.
+# all other plugins
 #
-# export NVM_LAZY_LOAD=true
-# plugins+=(zsh-nvm zsh-better-npm-completion)
+zpm load                                \
+    @github/jeffreytse/zsh-vi-mode      \
+    @github/rbirnie/oh-my-zsh-keybase
+
+    ## Prerequisites:
+    fzf_path=$(cmd_path fzf)
+    jq_path=$(cmd_path jq)
+    rg_path=$(cmd_path rg)
+    conda_path=$(cmd_path conda)
+    npm_path=$(cmd_path npm)
+
+    if [[ -n fzf_path && -n jq_path && -n rg_path ]]; then
+        zpm load                                    \
+            @github/jedahan/ripz
+            #@github/chitoku-k/fzf-zsh-completions
+    fi
+    if [[ -n conda_path ]]; then
+        zpm load @github/esc/conda-zsh-completion
+    fi
+    if [[ -n npm_path ]]; then
+        zpm load @github/lukechilds/zsh-better-npm-completion
+    fi
+
+# -- User configuration -------------------------------------------------
+
 
 #
 # Vi mode key bindings
@@ -113,90 +118,19 @@ bindkey -M viins 'jk' vi-cmd-mode
 # Enable Ctrl-x-e to edit command line
 autoload -U edit-command-line
 
-# Emacs style
-# zle -N edit-command-line
-# bindkey '^xe' edit-command-line
-# bindkey '^x^e' edit-command-line
-
 # Vi style
 zle -N edit-command-line
 bindkey -M vicmd v edit-command-line
-
-
-# -- User configuration --------------------------------------------------
-
-# You may need to manually set your language environment
-export LANG=en_US.UTF-8
-
-# Close shell with five presses of CTRL-D
-export IGNOREEOF=5
-
-# Starship cross-shell prompt
-# Install starship
-eval "$(starship init zsh)"
-
-if [[ ! -f ~/.zpm/zpm.zsh ]]; then
-  git clone --recursive https://github.com/zpm-zsh/zpm ~/.zpm
-fi
-source ~/.zpm/zpm.zsh
-
-
-# -- Custom path variables -------------------------------------------------- 
-
-# Set XDG configuration directory
-export XDG_CONFIG_HOME="$HOME/.config"
-export XDG_DATA_HOME="$HOME/.local/share"
-
-export CURL_HOME="/usr/bin/curl"
-export ICLOUD_DIR="$HOME/Library/Mobile Documents/com~apple~CloudDocs/"
 
 # The preferred visual editor for local or set the remote
 # visual editor. The EDITOR variable technically shouldn't be set to a
 # "visual" editor like vi but something like ed
 #
+# TODO: move to zprofile
 if [[ -n $SSH_CONNECTION ]]; then
-  export VISUAL='lvim'
+  export VISUAL='vim'
 else
-  export VISUAL='lvim'
-fi
-
-# Set personal aliases, overriding those provided by oh-my-zsh libs,
-# plugins, and themes. Aliases can be placed here, though oh-my-zsh
-# users are encouraged to define aliases within the ZSH_CUSTOM folder.
-# For a full list of active aliases, run `alias`.
-#
-# Example aliases
-# alias zshconfig="mate ~/.zshrc"
-# alias ohmyzsh="mate ~/.oh-my-zsh"
-
-# [[ -a $ZSH_CUSTOM/installed-apps.zsh ]] && source $ZSH_CUSTOM/installed-apps.zsh
-# [[ -a $ZSH_CUSTOM/aliases.zsh ]] && source $ZSH_CUSTOM/aliases.zsh
-
-# Includes
-# -----------------------------------------------------------------------------
-
-# Load app configurations from separate configuration file.
-if [ -f "$HOME"/.bash_secrets ]; then
-    source "$HOME"/.bash_secrets
-fi
-if [ -f "$HOME"/.bash_options ]; then
-    source "$HOME"/.bash_options
-fi
-# Load alias definitions from separate configuration file.
-if [ -f "$HOME"/.bash_aliases ]; then
-    source "$HOME"/.bash_aliases
-fi
-# Load custom code from separate configuration file.
-if [ -f "$HOME"/.fzf.zsh ]; then
-    source "$HOME"/.fzf.zsh
-fi
-# Load custom code from separate configuration file.
-if [ -f "$HOME"/.bash_functions ]; then
-    source "$HOME"/.bash_functions
-fi
-# Load autojump
-if [ -f /usr/local/etc/profile.d/autojump.sh ]; then
-    source /usr/local/etc/profile.d/autojump.sh
+  export VISUAL='vim'
 fi
 
 #
@@ -217,9 +151,59 @@ function zle-keymap-select {
 }
 zle -N zle-keymap-select
 
-_fix_cursor() {
+function _fix_cursor() {
    echo -ne '\e[5 q'
 }
 precmd_functions+=(_fix_cursor)
 
+# TODO: move to zprofile
 export PATH="/usr/local/anaconda3/bin:$PATH"
+
+# -- Custom path variables -------------------------------------------------- 
+
+# 
+# TODO: Move section to zprofile
+#
+# Set XDG configuration directory
+export XDG_CONFIG_HOME="$HOME/.config"
+export XDG_DATA_HOME="$HOME/.local/share"
+
+export CURL_HOME="/usr/bin/curl"
+export ICLOUD_DIR="$HOME/Library/Mobile Documents/com~apple~CloudDocs/"
+
+# -- Include files -----------------------------------------------------------------------------
+
+
+# TODO: move to zprofile
+# Load app configurations from separate configuration file.
+if [[ -a "$HOME"/.bash_secrets ]]; then
+    source "$HOME"/.bash_secrets
+fi
+
+if [[ -a "$HOME"/.bash_options ]]; then
+    source "$HOME"/.bash_options
+fi
+
+# TODO: move to aliases (zshell specific dir)
+# Load alias definitions from separate configuration file.
+if [[ -a "$HOME"/.bash_aliases ]]; then
+    source "$HOME"/.bash_aliases
+fi
+
+# TODO: move to zprofile
+# Load custom code from separate configuration file.
+if [[ -a "$HOME"/.fzf.zsh ]]; then
+    source "$HOME"/.fzf.zsh
+fi
+
+# Load custom code from separate configuration file.
+if [[ -a "$HOME"/.bash_functions ]]; then
+    source "$HOME"/.bash_functions
+fi
+
+# TODO: move to zprofile
+# Load autojump
+if [[ -a /usr/local/etc/profile.d/autojump.sh ]]; then
+    source /usr/local/etc/profile.d/autojump.sh
+fi
+

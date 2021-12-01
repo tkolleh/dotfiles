@@ -1,38 +1,136 @@
-# Inserts a blank line between shell prompts
-add_newline = true
+[character]
+success_symbol = ""
+vicmd_symbol = ""
+error_symbol = ""
 
-#
-# First row
-#
-
-# First element
-#
-# Replace the "❯" symbol in the prompt with ""
-# character before entering text
-[character]                        # The name of the module we are configuring is "character"
-success_symbol = "[](bold purple)"  # The "success_symbol" segment is being set to "" with the color "bold blue"
-
-# enable the package module
-[package]
-disabled = true
-
-# Second element
 [directory]
-style = "bold purple"
-truncation_length = 0
-truncate_to_repo = true
-truncation_symbol = "repo: "
+truncate_to_repo = false
+fish_style_pwd_dir_length = 1
+style = "#faafeb"
+format = "[](bg:$style fg:bright-white)[$path[$read_only]($read_only_style)](bg:$style)[](fg:$style) "
 
-# Before all the version info (python, nodejs, php, etc.)
-[git_status]
-style = "bold purple"
-ahead = "⇡${count}"
-diverged = "⇕⇡${ahead_count}⇣${behind_count}"
-behind = "⇣${count}"
-deleted = "x"
-
-# Last param in the first line/row
 [cmd_duration]
-min_time = 1
-format = "took [$duration]($style)"
+min_time = 1000
+show_milliseconds = true
+format = "[ $duration]($style)"
+
+[jobs]
+symbol = " "
+
+# harware config
+[battery]
+disabled = true
+unknown_symbol = ""
+empty_symbol = ""
+discharging_symbol = ""
+charging_symbol = ""
+full_symbol = ""
+
+    [[battery.display]]
+    threshold = 10
+    style = "bold fg:red"
+
+    [[battery.display]]
+    threshold = 30
+    style = "fg:#ff8800"
+
+    [[battery.display]]
+    threshold = 50
+    style = "fg:yellow"
+
+[memory_usage]
+disabled = true
+symbol = " "
+
+[time]
+disabled = true
+style = "#faafeb"
+format = "[](bg:$style fg:black)[🕙 $time](bg:$style fg:white)[](fg:$style)"
+
+[status]
 disabled = false
+style = "red"
+symbol = "\\(╯°□°）╯︵ ┻━┻ "
+format = "\b[](bg:$style fg:#faafeb)[$symbol$status](bg:$style)[](fg:$style)"
+
+# VCS
+[git_branch]
+symbol = "  "
+style = "#ebfffc"
+format = "\b\b[](fg:#faafeb bg:$style)[$symbol$branch](fg:white bg:$style)[](fg:$style) "
+
+[git_commit]
+style = "#ebfffc"
+format = "\b\b[ ﰖ $hash](fg:white bg:$style)[](fg:$style) "
+
+[git_state]
+am = "APPLYING-MAILBOX"
+am_or_rebase = "APPLYING-MAILBOX/REBASE"
+style = "#ebfffc"
+format = "\b\b[ \\($state( $progress_current/$progress_total)\\)](fg:white bg:$style)[](fg:$style) "
+
+[git_status]
+style = "#ebfffc"
+format = "($conflicted$staged$modified$renamed$deleted$untracked$stashed$ahead_behind\b )"
+conflicted = "[ ](fg:88)[   ${count} ](fg:white bg:88)[ ](fg:88)"
+#staged = "[M$count ](fg:green)"
+#modified = "[M${count} ](fg:red)"
+#renamed = "[R${count} ](fg:208)"
+deleted = "[ ${count} ](fg:208)"
+untracked = "[?${count} ](fg:red)"
+stashed = " ${count} "
+ahead = "[ ${count} ](fg:purple)"
+behind = "[ ${count} ](fg:yellow)"
+diverged = "[](fg:88)[  נּ ](fg:white bg:88)[ ${ahead_count} ](fg:purple bg:88)[ ${behind_count} ](fg:yellow bg:88)[ ](fg:88)"
+
+[shlvl]
+disabled = false
+style = "fg:bright-blue"
+symbol = " "
+
+[env_var]
+variable = "GAMBLE_TEST_COMMAND"
+format = "gambling with [$env_value]($style)"
+
+# techno specific
+[aws]
+disabled = true
+symbol = " "
+
+[conda]
+symbol = " "
+
+[dart]
+symbol = " "
+
+[elixir]
+symbol = " "
+
+[elm]
+symbol = " "
+
+[golang]
+symbol = " "
+
+[java]
+symbol = " "
+
+[nix_shell]
+symbol = " "
+
+[nodejs]
+symbol = " "
+
+[php]
+symbol = " "
+
+[python]
+symbol = " "
+
+[ruby]
+symbol = " "
+
+[rust]
+symbol = " "
+style = "fg:#ffa07a"
+
