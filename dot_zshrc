@@ -96,22 +96,14 @@ if [[ -n fzf_path && -n jq_path && -n rg_path ]]; then
 
 fi
 
-# -- User configuration -------------------------------------------------
-
-# 
-# TODO: Move section to zprofile
 #
-# Set XDG configuration directory
-export XDG_CONFIG_HOME="$HOME/.config"
-export XDG_DATA_HOME="$HOME/.local/share"
+# -- User configuration -------------------------------------------------
+#
 
-export CURL_HOME="/usr/bin/curl"
-export ICLOUD_DIR="$HOME/Library/Mobile Documents/com~apple~CloudDocs/"
+delta_path=$(cmd_path delta)
 
-# -- Include files -----------------------------------------------------------------------------
-
-if [[ -a "$HOME"/.bash_options ]]; then
-    source "$HOME"/.bash_options
+if [[ -n delta_path ]]; then
+  export BATDIFF_USE_DELTA=true
 fi
 
 # TODO: move to aliases (zshell specific dir)
@@ -120,10 +112,26 @@ if [[ -a "$HOME"/.bash_aliases ]]; then
     source "$HOME"/.bash_aliases
 fi
 
-# TODO: move to zprofile
-# Load custom code from separate configuration file.
-if [[ -a "$HOME"/.fzf.zsh ]]; then
-    source "$HOME"/.fzf.zsh
+#
+# Check if the ripgrep and command line fuzzy finder are installed
+# and available on path then; fzf + pt configuration
+# Note: This must come after sourcing the fzf
+#
+if hash rg 2>/dev/null && hash fd 2>/dev/null && hash fzf 2>/dev/null && hash bat 2>/dev/null; then 
+    export RIPGREP_CONFIG_PATH="$HOME/.ripgreprc"
+
+    # export FZF_DEFAULT_COMMAND='rg --color=never --ignore-case --hidden --files --no-ignore --no-ignore-global --follow '
+    export FZF_DEFAULT_COMMAND='fd --type f --color=never --ignore-case --no-ignore --hidden --follow'
+
+    export FZF_DEFAULT_OPTS="--bind 'f1:execute(bat --paging=always --color=always {}),f2:execute(nvim {})+abort,ctrl-y:execute-silent(echo {} | pbcopy)+abort' --bind '?:toggle-preview' --preview='bat --number --color=always {} | head -700' --preview-window='right:50%:hidden'"
+
+    export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+
+    # Search for files
+    export FZF_ALT_C_COMMAND='fd --type d --color=never --no-ignore --ignore-case --hidden --follow '
+
+    # Search recent commands
+    export FZF_CTRL_R_OPTS="$FZF_DEFAULT_OPTS"
 fi
 
 # Load custom code from separate configuration file.
