@@ -10,8 +10,21 @@ export IGNOREEOF=5
 export LANG=en_US.UTF-8
 
 export CURL_HOME="$(brew --prefix curl)"
-
 export ICLOUD_DIR="{{ .chezmoi.homeDir }}/Library/Mobile Documents/com~apple~CloudDocs/"
+export XDG_CONFIG_HOME="$HOME/.config"
+export XDG_DATA_HOME="$HOME/.local/share"
+export MARKDOWN_NOTES=$HOME/Dropbox/Documents/markdown-notes
+#export CONDA_ENVS="/usr/local/anaconda3/envs"
+#export NVIM_PY2_HOME="$CONDA_ENVS/nvim-py2/bin"
+#export NVIM_PY3_HOME="$CONDA_ENVS/nvim-py3/bin"
+export MYVIMRC="$XDG_CONFIG_HOME/nvim/init.vim"
+export MYVIMOPTS="$XDG_CONFIG_HOME/nvim/options.vim"
+export MYVIMPACKS="$XDG_CONFIG_HOME/nvim/packages.vim"
+export NVIM_SESSION="$XDG_CONFIG_HOME/nvim/sessions"
+export LAST_NVIM_SESSION="$NVIM_SESSION/lastsession.vim"
+export CHEZMOI_SOURCE_PATH="$(chezmoi source-path)"
+
+# export PATH="/usr/local/bin:/usr/local/lib:$PATH"
 
 # The preferred visual editor for local or set the remote
 # visual editor. The EDITOR variable technically shouldn't be set to a
