@@ -110,12 +110,6 @@ export ICLOUD_DIR="$HOME/Library/Mobile Documents/com~apple~CloudDocs/"
 
 # -- Include files -----------------------------------------------------------------------------
 
-# TODO: move to zprofile
-# Load app configurations from separate configuration file.
-if [[ -a "$HOME"/.bash_secrets ]]; then
-    source "$HOME"/.bash_secrets
-fi
-
 if [[ -a "$HOME"/.bash_options ]]; then
     source "$HOME"/.bash_options
 fi

@@ -15,11 +15,12 @@ tap "wagoodman/dive"
 brew "python@3.10"
 brew "autojump"
 brew "bash"
-brew "bash-completion"
 brew "bash-git-prompt"
 brew "bat"
+brew "python@3.9"
 brew "cabal-install"
 brew "glib"
+brew "cairo"
 brew "llvm"
 brew "ccls"
 brew "chezmoi"
@@ -62,7 +63,6 @@ brew "lua"
 brew "gnuplot"
 brew "go"
 brew "gpatch"
-brew "gradle-completion"
 brew "libusbmuxd"
 brew "libimobiledevice"
 brew "ideviceinstaller"
@@ -71,7 +71,6 @@ brew "imagemagick"
 brew "ios-deploy"
 brew "jenv"
 brew "jq"
-brew "lastpass-cli"
 brew "lazydocker"
 brew "libproxy"
 brew "luarocks"
@@ -81,7 +80,7 @@ brew "mtr"
 brew "multimarkdown"
 brew "neofetch"
 brew "tree-sitter"
-brew "neovim"
+brew "neovim", args: ["HEAD"]
 brew "nghttp2"
 brew "oauth2l"
 brew "p7zip"
@@ -119,6 +118,8 @@ brew "zsh"
 brew "coursier/formulas/coursier"
 brew "eth-p/software/bat-extras"
 brew "universal-ctags/universal-ctags/universal-ctags", args: ["HEAD"]
+cask "1password-cli"
+cask "anaconda"
 cask "chromedriver"
 cask "dash"
 cask "docker"
@@ -147,9 +148,16 @@ cask "vimr"
 cask "visual-studio-code"
 cask "weka"
 cask "zotero"
+mas "Compressor", id: 424390742
+mas "GarageBand", id: 682658836
+mas "iMovie", id: 408981434
+mas "Keynote", id: 409183694
 mas "Magnet", id: 441258766
 mas "Micro Snitch", id: 972028355
 mas "Neeva", id: 1540663248
+mas "Notability", id: 736189492
 mas "Notability", id: 360593530
+mas "Numbers", id: 409203825
+mas "Pages", id: 409201541
 mas "Paste", id: 967805235
 mas "Spark", id: 1176895641
