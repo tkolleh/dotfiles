@@ -3,6 +3,7 @@
 # ~/.zshrc
 # =============================================================================
 #
+#
 
 # Hide default user from local prompt.
 export DEFAULT_USER="${USER}"
@@ -158,10 +159,3 @@ fi
 if [[ -a "$HOME"/.bash_functions ]]; then
     source "$HOME"/.bash_functions
 fi
-
-# TODO: move to zprofile
-# Load autojump
-if [[ -a /usr/local/etc/profile.d/autojump.sh ]]; then
-    source /usr/local/etc/profile.d/autojump.sh
-fi
-
