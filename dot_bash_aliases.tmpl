@@ -67,9 +67,6 @@ replaceAlias gloga "git log --oneline --decorate --graph --show-signature --all"
 replaceAlias gwch "git whatchanged -p --abbrev-commit --pretty=medium"
 replaceAlias gcd "git checkout development"
 
-# -- (neo)vim -------------------------------------------------- 
-setAlias vim "lvim"
-
 # -- miscellaneous --------------------------------------------------
 
 setAlias ranger='TERM=xterm-256color ranger'
@@ -80,7 +77,6 @@ if [ -n "$ZSH_VERSION" ]; then
 else
     setAlias resource='source $HOME/.bash_profile'
 fi
-
 
 setAlias note 'cd $MARKDOWN_NOTES && lvim -c "NV!"'
 setAlias gradle "TERM=xterm ./gradlew"
