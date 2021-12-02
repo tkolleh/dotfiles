@@ -119,7 +119,6 @@ brew "zsh"
 brew "coursier/formulas/coursier"
 brew "eth-p/software/bat-extras"
 brew "universal-ctags/universal-ctags/universal-ctags", args: ["HEAD"]
-cask "anaconda"
 cask "chromedriver"
 cask "dash"
 cask "docker"

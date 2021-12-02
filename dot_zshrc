@@ -14,9 +14,6 @@ export ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE="20"
 # Enable aynchronous mode.
 export ZSH_AUTOSUGGEST_USE_ASYNC=true
 
-# If you come from bash you might have to change your $PATH.
-# export PATH=$HOME/bin:/usr/local/bin:$PATH
-
 # Uncomment the following line to disable bi-weekly auto-update checks.
 # DISABLE_AUTO_UPDATE="true"
 
@@ -25,9 +22,6 @@ DISABLE_UPDATE_PROMPT="true"
 
 # Uncomment the following line to change how often to auto-update (in days).
 export UPDATE_ZSH_DAYS=7
-
-# Would you like to use another custom folder than $ZSH/custom?
-# ZSH_CUSTOM=/path/to/new-custom-folder
 
 # You may need to manually set your language environment
 export LANG=en_US.UTF-8
@@ -104,22 +98,6 @@ fi
 
 # -- User configuration -------------------------------------------------
 
-# The preferred visual editor for local or set the remote
-# visual editor. The EDITOR variable technically shouldn't be set to a
-# "visual" editor like vi but something like ed
-#
-# TODO: move to zprofile
-if [[ -n $SSH_CONNECTION ]]; then
-  export VISUAL='vim'
-else
-  export VISUAL='vim'
-fi
-
-# TODO: move to zprofile
-export PATH="/usr/local/anaconda3/bin:$PATH"
-
-# -- Custom path variables -------------------------------------------------- 
-
 # 
 # TODO: Move section to zprofile
 #
@@ -131,7 +109,6 @@ export CURL_HOME="/usr/bin/curl"
 export ICLOUD_DIR="$HOME/Library/Mobile Documents/com~apple~CloudDocs/"
 
 # -- Include files -----------------------------------------------------------------------------
-
 
 # TODO: move to zprofile
 # Load app configurations from separate configuration file.
