@@ -1,3 +1,24 @@
 eval "$(/opt/homebrew/bin/brew shellenv)"
 
 [ -f /opt/homebrew/etc/profile.d/autojump.sh ] && . /opt/homebrew/etc/profile.d/autojump.sh
+
+export PATH="$HOME/.jenv/bin:$PATH"
+eval "$(jenv init -)"
+
+# Close shell with five presses of CTRL-D
+export IGNOREEOF=5
+export LANG=en_US.UTF-8
+
+export CURL_HOME="$(brew --prefix curl)"
+
+export ICLOUD_DIR="{{ .chezmoi.homeDir }}/Library/Mobile Documents/com~apple~CloudDocs/"
+
+# Preferred visual editor for local or set the remote
+# visual editor. The EDITOR variable technically shouldn't be set to a
+# "visual" editor like vi but something like ed
+#
+if [[ -n $SSH_CONNECTION ]]; then
+  export VISUAL='vim'
+else
+  export VISUAL='vim'
+fi
