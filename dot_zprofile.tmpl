@@ -24,6 +24,10 @@ else
   export VISUAL='vim'
 fi
 
+# Load app configurations from separate configuration file.
+if [[ -a "$HOME"/.bash_secrets ]]; then
+    source "$HOME"/.bash_secrets
+fi
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
