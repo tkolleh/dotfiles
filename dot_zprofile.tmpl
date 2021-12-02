@@ -13,12 +13,30 @@ export CURL_HOME="$(brew --prefix curl)"
 
 export ICLOUD_DIR="{{ .chezmoi.homeDir }}/Library/Mobile Documents/com~apple~CloudDocs/"
 
-# Preferred visual editor for local or set the remote
+# The preferred visual editor for local or set the remote
 # visual editor. The EDITOR variable technically shouldn't be set to a
 # "visual" editor like vi but something like ed
 #
+# TODO: move to zprofile
 if [[ -n $SSH_CONNECTION ]]; then
   export VISUAL='vim'
 else
   export VISUAL='vim'
 fi
+
+
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/opt/anaconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/opt/anaconda3/etc/profile.d/conda.sh" ]; then
+        . "/opt/anaconda3/etc/profile.d/conda.sh"
+    else
+        export PATH="/opt/anaconda3/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+# <<< conda initialize <<<
+

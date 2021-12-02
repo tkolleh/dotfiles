@@ -99,6 +99,11 @@ symbol = " "
 
 [conda]
 symbol = " "
+ignore_base = true
+format = "[$symbol$environment]($style) "
+disabled = false
+truncation_length = 10
+
 
 [dart]
 symbol = " "
