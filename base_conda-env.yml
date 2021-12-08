@@ -3,14 +3,8 @@ channels:
   - defaults
   - conda-forge
 dependencies:
-  - conda
-  - python=3.8
-  - python.app
-  - conda-env
-  - conda-build
-  - conda-verify
-  - anaconda-navigator
-  - navigator-updater
+  - python=3
+  - pip=20
   - black
   - flake8
   - mypy
@@ -31,20 +25,11 @@ dependencies:
     - grpcio
     - h5py
     - jinja2-cli
-    - keras
-    - keras-applications
-    - keras-preprocessing
     - markdown
-    - numpy
     - opt-einsum
     - packaging
     - protobuf
-    - scipy
-    - tensorboard
-    - tensorflow
-    - tensorflow-estimator
     - termcolor
     - vim-vint
     - webencodings
-    - werkzeug
 prefix: /usr/local/anaconda3
