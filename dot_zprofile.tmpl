@@ -1,6 +1,14 @@
-eval "$(/opt/homebrew/bin/brew shellenv)"
+# TODO: add conditional based on chezmoi varibale to check username
+# Commented lines are for tkolleh
+#
 
-[ -f /opt/homebrew/etc/profile.d/autojump.sh ] && . /opt/homebrew/etc/profile.d/autojump.sh
+#eval "$(/opt/homebrew/bin/brew shellenv)"
+#
+# [ -f /opt/homebrew/etc/profile.d/autojump.sh ] && . /opt/homebrew/etc/profile.d/autojump.sh
+
+eval "$(/usr/local/bin/brew shellenv)"
+
+[ -f /usr/local/etc/profile.d/autojump.sh ] && . /usr/local/etc/profile.d/autojump.sh
 
 export PATH="$HOME/.jenv/bin:$PATH"
 eval "$(jenv init -)"
