@@ -47,9 +47,8 @@
     file-decoration-style = none
     hunk-header-decoration-style = yellow box
 
-[credential "https://*.amazonaws.com"]
-  helper = !aws --profile git-rus codecommit credential-helper $@
-  UseHttpPath = true
+[credential]
+  helper = osxkeychain
 
 [difftool "pycharm"]
   prompt = false

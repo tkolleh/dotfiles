@@ -119,12 +119,6 @@ if [[ -n delta_path ]]; then
   export BATDIFF_USE_DELTA=true
 fi
 
-# TODO: move to aliases (zshell specific dir)
-# Load alias definitions from separate configuration file.
-if [[ -a "$HOME"/.bash_aliases ]]; then
-    source "$HOME"/.bash_aliases
-fi
-
 #
 # Check if the ripgrep and command line fuzzy finder are installed
 # and available on path then; fzf + pt configuration
@@ -145,6 +139,12 @@ if hash rg 2>/dev/null && hash fd 2>/dev/null && hash fzf 2>/dev/null && hash ba
 
     # Search recent commands
     export FZF_CTRL_R_OPTS="$FZF_DEFAULT_OPTS"
+fi
+
+# TODO: move to aliases (zshell specific dir)
+# Load alias definitions from separate configuration file.
+if [[ -a "$HOME"/.bash_aliases ]]; then
+    source "$HOME"/.bash_aliases
 fi
 
 # Load custom code from separate configuration file.
