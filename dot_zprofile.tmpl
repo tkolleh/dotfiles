@@ -1,9 +1,10 @@
 # TODO: add conditional based on chezmoi varibale to check username or OS version
 # 
-#
-# eval "$(/opt/homebrew/bin/brew shellenv)"
-#
-eval "$(/usr/local/bin/brew shellenv)"
+{{ if (eq .chezmoi.username "tkolleh")}}
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+{{ else }}
+  eval "$(/usr/local/bin/brew shellenv)"
+{{ end }}
 
 # Close shell with five presses of CTRL-D
 export IGNOREEOF=5
@@ -15,9 +16,11 @@ export XDG_CONFIG_HOME="$HOME/.config"
 export XDG_DATA_HOME="$HOME/.local/share"
 export JAVA_HOME="$(asdf where ${PLUGIN} $(asdf current ${PLUGIN}))"
 export MARKDOWN_NOTES=$HOME/Dropbox/Documents/markdown-notes
+
 #export CONDA_ENVS="/usr/local/anaconda3/envs"
 #export NVIM_PY2_HOME="$CONDA_ENVS/nvim-py2/bin"
 #export NVIM_PY3_HOME="$CONDA_ENVS/nvim-py3/bin"
+
 export MYVIMRC="$XDG_CONFIG_HOME/nvim/init.vim"
 export MYVIMOPTS="$XDG_CONFIG_HOME/nvim/options.vim"
 export MYVIMPACKS="$XDG_CONFIG_HOME/nvim/packages.vim"
