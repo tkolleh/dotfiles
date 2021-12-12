@@ -1,17 +1,9 @@
-# TODO: add conditional based on chezmoi varibale to check username
-# Commented lines are for tkolleh
+# TODO: add conditional based on chezmoi varibale to check username or OS version
+# 
 #
-
-#eval "$(/opt/homebrew/bin/brew shellenv)"
+# eval "$(/opt/homebrew/bin/brew shellenv)"
 #
-# [ -f /opt/homebrew/etc/profile.d/autojump.sh ] && . /opt/homebrew/etc/profile.d/autojump.sh
-
 eval "$(/usr/local/bin/brew shellenv)"
-
-[ -f /usr/local/etc/profile.d/autojump.sh ] && . /usr/local/etc/profile.d/autojump.sh
-
-export PATH="$HOME/.jenv/bin:$PATH"
-eval "$(jenv init -)"
 
 # Close shell with five presses of CTRL-D
 export IGNOREEOF=5
@@ -21,6 +13,7 @@ export CURL_HOME="$(brew --prefix curl)"
 export ICLOUD_DIR="{{ .chezmoi.homeDir }}/Library/Mobile Documents/com~apple~CloudDocs/"
 export XDG_CONFIG_HOME="$HOME/.config"
 export XDG_DATA_HOME="$HOME/.local/share"
+export JAVA_HOME="$(asdf where ${PLUGIN} $(asdf current ${PLUGIN}))"
 export MARKDOWN_NOTES=$HOME/Dropbox/Documents/markdown-notes
 #export CONDA_ENVS="/usr/local/anaconda3/envs"
 #export NVIM_PY2_HOME="$CONDA_ENVS/nvim-py2/bin"
@@ -40,9 +33,9 @@ export CHEZMOI_SOURCE_PATH="$(chezmoi source-path)"
 #
 # TODO: move to zprofile
 if [[ -n $SSH_CONNECTION ]]; then
-  export VISUAL='vim'
+  export VISUAL='lvim'
 else
-  export VISUAL='vim'
+  export VISUAL='lvim'
 fi
 
 # Load app configurations from separate configuration file.
@@ -64,4 +57,11 @@ else
 fi
 unset __conda_setup
 # <<< conda initialize <<<
+
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f "$HOME"/google-cloud-sdk/path.zsh.inc ]; then . "$HOME"/google-cloud-sdk/path.zsh.inc; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f "$HOME"/google-cloud-sdk/completion.zsh.inc ]; then . "$HOME"/google-cloud-sdk/completion.zsh.inc; fi
 
