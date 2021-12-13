@@ -4,7 +4,6 @@
 # =============================================================================
 #
 #
-
 # Hide default user from local prompt.
 export DEFAULT_USER="${USER}"
 
@@ -32,7 +31,6 @@ export IGNOREEOF=5
 # -- Utilities -----------------------------------------------
 # TODO: Move utilities to shared utilitie functions script
 #
-
 # usage: Print path to command if exist
 function cmd_path() {
   if [[ $ZSH_VERSION ]]; then
@@ -100,17 +98,14 @@ conda_path=$(cmd_path conda)
 npm_path="$(brew --prefix npm)"
 z_path="$(brew --prefix z.lua)"
 
-if [[ -n conda_path ]]; then
-    zpm load @github/esc/conda-zsh-completion
-fi
 if [[ -n npm_path ]]; then
     zpm load @github/lukechilds/zsh-better-npm-completion
 fi
+if [[ -n conda_path ]]; then
+    zpm load @github/esc/conda-zsh-completion
+fi
 if [[ -n fzf_path && -n jq_path && -n rg_path ]]; then
     zpm load @github/unixorn/fzf-zsh-plugin    
-fi
-if [[ -n "$(brew --prefix asdf)" ]]; then
-    zpm load @omz-lib/asdf
 fi
 if [[ -n z_path ]]; then
     eval "$(lua /usr/local/opt/z.lua/share/z.lua/z.lua --init zsh)"
@@ -119,12 +114,6 @@ fi
 #
 # -- User configuration -------------------------------------------------
 #
-
-delta_path=$(cmd_path delta)
-
-if [[ -n delta_path ]]; then
-  export BATDIFF_USE_DELTA=true
-fi
 
 #
 # Check if the ripgrep and command line fuzzy finder are installed
@@ -146,6 +135,43 @@ if hash rg 2>/dev/null && hash fd 2>/dev/null && hash fzf 2>/dev/null && hash ba
 
     # Search recent commands
     export FZF_CTRL_R_OPTS="$FZF_DEFAULT_OPTS"
+fi
+
+delta_path=$(cmd_path delta)
+
+if [[ -n delta_path ]]; then
+  export BATDIFF_USE_DELTA=true
+fi
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f "$HOME"/google-cloud-sdk/path.zsh.inc ]; then . "$HOME"/google-cloud-sdk/path.zsh.inc; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f "$HOME"/google-cloud-sdk/completion.zsh.inc ]; then . "$HOME"/google-cloud-sdk/completion.zsh.inc; fi
+
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/opt/anaconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/opt/anaconda3/etc/profile.d/conda.sh" ]; then
+        . "/opt/anaconda3/etc/profile.d/conda.sh"
+    else
+        export PATH="/opt/anaconda3/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+# <<< conda initialize <<<
+
+
+if [[ -n "$(brew --prefix asdf)" ]]; then
+    zpm load @omz-lib/asdf
+
+    export JAVA_HOME="$(asdf where java $(asdf current java | awk '{ print $2 }'))"
+    if [[ -d "$JAVA_HOME"/bin ]]; then
+      export PATH="$JAVA_HOME/bin:$PATH"
+    fi
 fi
 
 # TODO: move to aliases (zshell specific dir)
