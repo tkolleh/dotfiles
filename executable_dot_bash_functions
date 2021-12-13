@@ -15,6 +15,11 @@ esac
 
 #user_functions_loaded=1
 
+# Runtime home directory for asdf managed language runtimes
+function runtime_homedir(){
+  asdf where ${1} $(asdf current ${1} | awk '{ print $2 }')
+}
+
 # Change directory to folder in workspace folder
 function ws() {
   workspace=$(fd --type d -uu -a . "$HOME/ws" | fzf)
