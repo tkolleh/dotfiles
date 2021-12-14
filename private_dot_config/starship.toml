@@ -1,3 +1,6 @@
+# Timeout for commands executed by starship (in milliseconds)
+command_timeout = 750
+
 [character]
 success_symbol = ""
 vicmd_symbol = ""
