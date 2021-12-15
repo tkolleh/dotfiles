@@ -186,3 +186,6 @@ fi
 if [[ -a "$HOME"/.bash_functions ]]; then
     source "$HOME"/.bash_functions
 fi
+
+# Must be last
+source $(brew --prefix asdf)/asdf.sh
