@@ -28,18 +28,11 @@ export LANG=en_US.UTF-8
 # Close shell with five presses of CTRL-D
 export IGNOREEOF=5
 
-# -- Utilities -----------------------------------------------
-# TODO: Move utilities to shared utilitie functions script
-#
-# usage: Print path to command if exist
-function cmd_path() {
-  if [[ $ZSH_VERSION ]]; then
-    whence -cp "$1" 2> /dev/null
-  else  # bash
-     type -P "$1"  # No output if not in $PATH
-  fi
-}
 
+# Load custom code from separate configuration file.
+if [[ -a "$HOME"/.bash_functions ]]; then
+    source "$HOME"/.bash_functions
+fi
 
 # -- Prompt --------------------------------------------------
 # Starship cross-shell prompt
@@ -52,19 +45,6 @@ if [[ ! -f ~/.zpm/zpm.zsh ]]; then
   git clone --recursive https://github.com/zpm-zsh/zpm ~/.zpm
 fi
 source ~/.zpm/zpm.zsh
-
-# zsh-vi-mode
-function zvm_config() {
-    # Only changing the escape key to `jk` in insert mode, we still
-    # keep using the default keybindings `^[` in other modes
-    ZVM_VI_INSERT_ESCAPE_BINDKEY=jk
-}
-# The plugin will auto execute this zvm_after_init function
-function zvm_after_init() {
-  [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-}
-zpm load @github/jeffreytse/zsh-vi-mode
-
 
 # Pull in OMZ (doesn't actually source anything)
 zpm load @omz
@@ -110,6 +90,18 @@ fi
 if [[ -n z_path ]]; then
     eval "$(lua /usr/local/opt/z.lua/share/z.lua/z.lua --init zsh)"
 fi
+
+# zsh-vi-mode
+function zvm_config() {
+    # Only changing the escape key to `jk` in insert mode, we still
+    # keep using the default keybindings `^[` in other modes
+    ZVM_VI_INSERT_ESCAPE_BINDKEY=jk
+}
+# The plugin will auto execute this zvm_after_init function
+function zvm_after_init() {
+  [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+}
+zpm load @github/jeffreytse/zsh-vi-mode
 
 #
 # -- User configuration -------------------------------------------------
@@ -182,9 +174,14 @@ if [[ -a "$HOME"/.bash_aliases ]]; then
     source "$HOME"/.bash_aliases
 fi
 
-# Load custom code from separate configuration file.
-if [[ -a "$HOME"/.bash_functions ]]; then
-    source "$HOME"/.bash_functions
+# The preferred visual editor for local or set the remote
+# visual editor. The EDITOR variable technically shouldn't be set to a
+# "visual" editor like vi but something like ed
+#
+if [[ -n $SSH_CONNECTION ]]; then
+  export VISUAL='lvim'
+else
+  export VISUAL='lvim'
 fi
 
 # Must be last
