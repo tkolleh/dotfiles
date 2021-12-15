@@ -13,7 +13,21 @@ case $- in
 *) return ;;
 esac
 
-#user_functions_loaded=1
+
+# Print path to command if exist
+function cmd_path() {
+  if [[ $ZSH_VERSION ]]; then
+    whence -cp "$1" 2> /dev/null
+  else  # bash
+     type -P "$1"  # No output if not in $PATH
+  fi
+}
+
+
+# Print paths on new line and count
+function syspath(){
+   echo $PATH | sed 's/:/\n/g' | sort | uniq -c
+}
 
 # Runtime home directory for asdf managed language runtimes
 function runtime_homedir(){
