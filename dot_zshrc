@@ -50,51 +50,41 @@ source ~/.zpm/zpm.zsh
 zpm load @omz
 
 # Load any OMZ libraries we want or that OMZ plugins require
-zpm load                    \
-  @omz-lib/compfix      \
-  @omz-lib/completion   \
-  @omz-lib/directories  \
+zpm load                \
   @omz-lib/functions    \
   @omz-lib/git          \
   @omz-lib/grep         \
-  @omz-lib/history      \
-  @omz-lib/key-bindings \
-  @omz-lib/misc         \
   @omz-lib/spectrum
 
-  # Load some OMZ plugins and theme
-  zpm load                  \
-    @omz/git                \
-    @omz/colored-man-pages
+# Load some OMZ plugins and theme
+zpm load                  \
+  @omz/git                \
+  @omz/colored-man-pages
 
-#
-# all other plugins
-#
-## Prerequisites:
+# Plugins for local host
+zpm if-not ssh load                                   \
+  zsh-users/zsh-completions,async                     \
+  zpm-zsh/zsh-better-npm-completion,async             \
+  zpm-zsh/zsh-history-substring-search,async          \
+  zpm-zsh/zsh-autosuggestions,async
+
+# zdharma-continuum/fast-syntax-highlighting,async    \
+
+# Prerequisites:
 fzf_path="$(brew --prefix fzf)"
-jq_path="$(brew --prefix jq)"
 rg_path="$(brew --prefix rg)"
-conda_path=$(cmd_path conda)
-npm_path="$(brew --prefix npm)"
+conda_path="$(cmd_path conda)"
 z_path="$(brew --prefix z.lua)"
 
-if [[ -n npm_path ]]; then
-    zpm load @github/lukechilds/zsh-better-npm-completion
+if [[ -n z_path ]]; then
+    eval "$(lua ${z_path}/share/z.lua/z.lua --init zsh)"
 fi
 if [[ -n conda_path ]]; then
     zpm load @github/esc/conda-zsh-completion
 fi
-if [[ -n fzf_path && -n jq_path && -n rg_path ]]; then
+if [[ -n fzf_path && -n rg_path ]]; then
     zpm load @github/unixorn/fzf-zsh-plugin    
 fi
-if [[ -n z_path ]]; then
-    eval "$(lua ${z_path}/share/z.lua/z.lua --init zsh)"
-fi
-
-#zpm load @github/zsh-users/zsh-syntax-highlighting
-#zpm load @github/zsh-users/zsh-completions
-zpm load @github/zsh-users/zsh-history-substring-search
-#zpm load @github/zsh-users/zsh-autosuggestions
 
 # zsh-vi-mode
 function zvm_config() {
@@ -102,6 +92,7 @@ function zvm_config() {
     # keep using the default keybindings `^[` in other modes
     ZVM_VI_INSERT_ESCAPE_BINDKEY=jk
 }
+
 # The plugin will auto execute this zvm_after_init function
 function zvm_after_init() {
   [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
