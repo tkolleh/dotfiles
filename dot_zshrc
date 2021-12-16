@@ -88,7 +88,7 @@ if [[ -n fzf_path && -n jq_path && -n rg_path ]]; then
     zpm load @github/unixorn/fzf-zsh-plugin    
 fi
 if [[ -n z_path ]]; then
-    eval "$(lua /usr/local/opt/z.lua/share/z.lua/z.lua --init zsh)"
+    eval "$(lua ${z_path}/share/z.lua/z.lua --init zsh)"
 fi
 
 # zsh-vi-mode
