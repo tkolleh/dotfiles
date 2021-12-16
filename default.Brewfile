@@ -109,6 +109,7 @@ brew "wget"
 brew "whalebrew"
 brew "z.lua"
 brew "zsh"
+brew "zsh-completions"
 brew "coursier/formulas/coursier"
 brew "eth-p/software/bat-extras"
 brew "universal-ctags/universal-ctags/universal-ctags", args: ["HEAD"]
