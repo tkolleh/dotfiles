@@ -91,6 +91,11 @@ if [[ -n z_path ]]; then
     eval "$(lua ${z_path}/share/z.lua/z.lua --init zsh)"
 fi
 
+#zpm load @github/zsh-users/zsh-syntax-highlighting
+#zpm load @github/zsh-users/zsh-completions
+zpm load @github/zsh-users/zsh-history-substring-search
+#zpm load @github/zsh-users/zsh-autosuggestions
+
 # zsh-vi-mode
 function zvm_config() {
     # Only changing the escape key to `jk` in insert mode, we still
@@ -183,6 +188,7 @@ if [[ -n $SSH_CONNECTION ]]; then
 else
   export VISUAL='lvim'
 fi
+
 
 # Must be last
 source $(brew --prefix asdf)/asdf.sh
