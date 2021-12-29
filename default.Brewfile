@@ -69,6 +69,7 @@ brew "ios-deploy"
 brew "jq"
 brew "lazydocker"
 brew "libproxy"
+brew "luajit", args: ["HEAD"]
 brew "luarocks"
 brew "mas"
 brew "mermaid-cli"
@@ -147,6 +148,7 @@ mas "Compressor", id: 424390742
 mas "GarageBand", id: 682658836
 mas "iMovie", id: 408981434
 mas "Keynote", id: 409183694
+mas "Kindle", id: 405399194
 mas "LastPass", id: 926036361
 mas "Magnet", id: 441258766
 mas "Micro Snitch", id: 972028355
