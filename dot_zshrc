@@ -49,11 +49,16 @@ source ~/.zpm/zpm.zsh
 # Pull in OMZ (doesn't actually source anything)
 zpm load @omz
 
-# Load any OMZ libraries we want or that OMZ plugins require
 zpm load                \
+  @omz-lib/compfix      \
+  @omz-lib/completion   \
+  @omz-lib/directories  \
   @omz-lib/functions    \
   @omz-lib/git          \
   @omz-lib/grep         \
+  @omz-lib/history      \
+  @omz-lib/key-bindings \
+  @omz-lib/misc         \
   @omz-lib/spectrum
 
 # Load some OMZ plugins and theme
@@ -84,6 +89,16 @@ if [[ -n conda_path ]]; then
 fi
 if [[ -n fzf_path && -n rg_path ]]; then
     zpm load @github/unixorn/fzf-zsh-plugin    
+
+    export FZF_DEFAULT_COMMAND='fd --type f --color=never --ignore-case --no-ignore --hidden --follow'
+    export FZF_DEFAULT_OPTS="--bind 'f1:execute(bat --paging=always --color=always {}),f2:execute(lvim {})+abort,ctrl-y:execute-silent(echo {} | pbcopy)+abort' --bind '?:toggle-preview' --preview='bat --number --color=always {} | head -700' --preview-window='right:50%:hidden'"
+    export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+
+    # Search for files
+    export FZF_ALT_C_COMMAND='fd --type d --color=never --no-ignore --ignore-case --hidden --follow '
+
+    # Search recent commands
+    export FZF_CTRL_R_OPTS="$FZF_DEFAULT_OPTS"
 fi
 
 # zsh-vi-mode
@@ -103,28 +118,6 @@ zpm load @github/jeffreytse/zsh-vi-mode
 # -- User configuration -------------------------------------------------
 #
 
-#
-# Check if the ripgrep and command line fuzzy finder are installed
-# and available on path then; fzf + pt configuration
-# Note: This must come after sourcing the fzf
-#
-if hash rg 2>/dev/null && hash fd 2>/dev/null && hash fzf 2>/dev/null && hash bat 2>/dev/null; then 
-    export RIPGREP_CONFIG_PATH="$HOME/.ripgreprc"
-
-    # export FZF_DEFAULT_COMMAND='rg --color=never --ignore-case --hidden --files --no-ignore --no-ignore-global --follow '
-    export FZF_DEFAULT_COMMAND='fd --type f --color=never --ignore-case --no-ignore --hidden --follow'
-
-    export FZF_DEFAULT_OPTS="--bind 'f1:execute(bat --paging=always --color=always {}),f2:execute(lvim {})+abort,ctrl-y:execute-silent(echo {} | pbcopy)+abort' --bind '?:toggle-preview' --preview='bat --number --color=always {} | head -700' --preview-window='right:50%:hidden'"
-
-    export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
-
-    # Search for files
-    export FZF_ALT_C_COMMAND='fd --type d --color=never --no-ignore --ignore-case --hidden --follow '
-
-    # Search recent commands
-    export FZF_CTRL_R_OPTS="$FZF_DEFAULT_OPTS"
-fi
-
 delta_path=$(cmd_path delta)
 
 if [[ -n delta_path ]]; then
@@ -136,6 +129,7 @@ if [ -f "$HOME"/google-cloud-sdk/path.zsh.inc ]; then . "$HOME"/google-cloud-sdk
 
 # The next line enables shell command completion for gcloud.
 if [ -f "$HOME"/google-cloud-sdk/completion.zsh.inc ]; then . "$HOME"/google-cloud-sdk/completion.zsh.inc; fi
+
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
