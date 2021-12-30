@@ -13,39 +13,12 @@ export ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE="20"
 # Enable aynchronous mode.
 export ZSH_AUTOSUGGEST_USE_ASYNC=true
 
-# Uncomment the following line to disable bi-weekly auto-update checks.
-# DISABLE_AUTO_UPDATE="true"
-
 # Uncomment the following line to automatically update without prompting.
 DISABLE_UPDATE_PROMPT="true"
 
 # Uncomment the following line to change how often to auto-update (in days).
 export UPDATE_ZSH_DAYS=7
 
-# You may need to manually set your language environment
-export LANG=en_US.UTF-8
-
-# Close shell with five presses of CTRL-D
-export IGNOREEOF=5
-
-# Homebrew installs to its preferred prefix; 
-# - /usr/local for macOS Intel 
-# - /opt/homebrew for Apple Silicon 
-# - /home/linuxbrew/.linuxbrew for Linux
-{{ if (eq .chezmoi.username "tkolleh")}}
-eval "$(/opt/homebrew/bin/brew shellenv)"
-{{ else }}
-# eval "$(/usr/local/bin/brew shellenv)"
-{{ end }}
-
-export CURL_HOME="$(brew --prefix curl)"
-export ICLOUD_DIR="{{ .chezmoi.homeDir }}/Library/Mobile Documents/com~apple~CloudDocs/"
-export CHEZMOI_SOURCE_PATH="$(chezmoi source-path)"
-
-# Load custom code from separate configuration file.
-if [[ -a "$HOME"/.bash_functions ]]; then
-    source "$HOME"/.bash_functions
-fi
 
 # -- Prompt --------------------------------------------------
 # Starship cross-shell prompt
@@ -78,6 +51,11 @@ zpm load                  \
   @omz/git                \
   @omz/colored-man-pages
 
+# Load custom code from separate configuration file.
+if [[ -a "$HOME"/.bash_functions ]]; then
+    source "$HOME"/.bash_functions
+fi
+
 # Plugins for local host
 zpm if-not ssh load                                   \
   zsh-users/zsh-completions,async                     \
@@ -87,18 +65,39 @@ zpm if-not ssh load                                   \
 
 # zdharma-continuum/fast-syntax-highlighting,async    \
 
-# Prerequisites:
-fzf_path="$(brew --prefix fzf)"
-rg_path="$(brew --prefix rg)"
-conda_path="$(cmd_path conda)"
 z_path="$(brew --prefix z.lua)"
-
 if [[ -n z_path ]]; then
     eval "$(lua ${z_path}/share/z.lua/z.lua --init zsh)"
+    unset z_path
 fi
+
+conda_path="$(cmd_path conda)"
 if [[ -n conda_path ]]; then
     zpm load @github/esc/conda-zsh-completion
+    export CONDA_ENVS="/usr/local/anaconda3/envs"
+
+    #
+    # >>> conda initialize >>>
+    #
+    __conda_setup="$($conda_path 'shell.zsh' 'hook' 2> /dev/null)"
+    if [ $? -eq 0 ]; then
+        eval "$__conda_setup"
+    else
+        if [ -f "/opt/anaconda3/etc/profile.d/conda.sh" ]; then
+            . "/opt/anaconda3/etc/profile.d/conda.sh"
+        else
+            export PATH="/opt/anaconda3/bin:$PATH"
+        fi
+    fi
+    unset __conda_setup
+    #
+    # <<< conda initialize <<<
+    #
+    unset conda_path
 fi
+
+fzf_path="$(brew --prefix fzf)"
+rg_path="$(brew --prefix rg)"
 if [[ -n fzf_path && -n rg_path ]]; then
     zpm load @github/unixorn/fzf-zsh-plugin    
 
@@ -111,8 +110,24 @@ if [[ -n fzf_path && -n rg_path ]]; then
 
     # Search recent commands
     export FZF_CTRL_R_OPTS="$FZF_DEFAULT_OPTS"
+    unset rg_path
+    unset fzf_path
 fi
 
+if [[ -n "$(brew --prefix asdf)" ]]; then
+    zpm load @omz-lib/asdf
+
+    export JAVA_HOME="$(asdf where java $(asdf current java | awk '{ print $2 }'))"
+    export SCALA_HOME="$(asdf where scala $(asdf current scala | awk '{ print $2 }'))"
+    export SBT_HOME="$(asdf where sbt $(asdf current sbt | awk '{ print $2 }'))"
+    if [[ -d "$JAVA_HOME"/bin ]]; then
+      export PATH="$JAVA_HOME/bin:$SCALA_HOME/bin:$SBT_HOME/bin:$PATH"
+    fi
+fi
+
+#
+# Custom zsh vi mode configuration
+#
 # zsh-vi-mode
 function zvm_config() {
     # Only changing the escape key to `jk` in insert mode, we still
@@ -127,9 +142,9 @@ function zvm_after_init() {
 zpm load @github/jeffreytse/zsh-vi-mode
 
 #
-# -- User configuration -------------------------------------------------
+# configuration --------------------------------------------------------
 #
-
+#
 delta_path=$(cmd_path delta)
 
 if [[ -n delta_path ]]; then
@@ -141,34 +156,6 @@ if [ -f "$HOME"/google-cloud-sdk/path.zsh.inc ]; then . "$HOME"/google-cloud-sdk
 
 # The next line enables shell command completion for gcloud.
 if [ -f "$HOME"/google-cloud-sdk/completion.zsh.inc ]; then . "$HOME"/google-cloud-sdk/completion.zsh.inc; fi
-
-
-# >>> conda initialize >>>
-# !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('/opt/anaconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
-if [ $? -eq 0 ]; then
-    eval "$__conda_setup"
-else
-    if [ -f "/opt/anaconda3/etc/profile.d/conda.sh" ]; then
-        . "/opt/anaconda3/etc/profile.d/conda.sh"
-    else
-        export PATH="/opt/anaconda3/bin:$PATH"
-    fi
-fi
-unset __conda_setup
-# <<< conda initialize <<<
-
-
-if [[ -n "$(brew --prefix asdf)" ]]; then
-    zpm load @omz-lib/asdf
-
-    export JAVA_HOME="$(asdf where java $(asdf current java | awk '{ print $2 }'))"
-    export SCALA_HOME="$(asdf where scala $(asdf current scala | awk '{ print $2 }'))"
-    export SBT_HOME="$(asdf where sbt $(asdf current sbt | awk '{ print $2 }'))"
-    if [[ -d "$JAVA_HOME"/bin ]]; then
-      export PATH="$JAVA_HOME/bin:$SCALA_HOME/bin:$SBT_HOME/bin:$PATH"
-    fi
-fi
 
 # TODO: move to aliases (zshell specific dir)
 # Load alias definitions from separate configuration file.
