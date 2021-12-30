@@ -23,6 +23,30 @@ function cmd_path() {
   fi
 }
 
+#
+# Alias helper functions
+#
+#
+function __remove_alias() {
+  local CMDTYPE=$(type "$1") 
+  case $CMDTYPE in
+    *"alias"*)
+      unalias $1 2> >(grep -Ev 'no such hash table element' >&2)
+    ;;
+    *"function"*)
+      echo -e "\u001b[34mError: alias is a function\u001b[0m"
+    ;;
+    *"not found"*)
+    ;;
+    *)
+      echo -e "Error: unknown command type for $1 return message is '$CMDTYPE'"
+    ;;
+  esac
+}
+function __alias () {
+  __remove_alias "$1"
+  alias "$1"="$2"
+}
 
 # Print paths on new line and count
 function syspath(){
@@ -108,7 +132,7 @@ function fbr() {
     git checkout $(echo "$branch" | sed "s/.* //" | sed "s#remotes/[^/]*/##")
 }
 
-alias glNoGraph='git log --color=always --format="%C(auto)%h%d %s %C(black)%C(bold)%cr% C(auto)%an" "$@"'
+__alias glNoGraph='git log --color=always --format="%C(auto)%h%d %s %C(black)%C(bold)%cr% C(auto)%an" "$@"'
 _gitLogLineToHash="echo {} | grep -o '[a-f0-9]\{7\}' | head -1"
 _viewGitLogLine="$_gitLogLineToHash | xargs -I % sh -c 'git show --color=always % | diff-so-fancy'"
 
