@@ -17,78 +17,48 @@
 #
 # TODO: use oh-my-zshell alias functions
 #
-# Alias helper functions
-#
-function removeAlias () {
-  # TODO: use awk here
-  CMDTYPE=$(type "$1") 
-  case $CMDTYPE in
-    *"alias"*)
-      unalias $1 2> >(grep -Ev 'no such hash table element' >&2)
-    ;;
-    *"function"*)
-      echo -e "\u001b[34mError: alias is a function\u001b[0m"
-    ;;
-    *"not found"*)
-    ;;
-    *)
-      echo -e "Error: unknown command type for $1 return message is '$CMDTYPE'"
-    ;;
-  esac
-}
-function setAlias () {
-  alias "$1" 2>/dev/null 1>/dev/null || alias "$1"="$2"
-}
-function replaceAlias () {
-  removeAlias "$1"
-  setAlias "$1" "$2"
-}
-
-
 # -- Local navigation --------------------------------------------------
-replaceAlias ll "exa --time modified --all --binary --git --header --long --color=always "
-replaceAlias lt "exa --long --tree --level=3 "
+__alias ll "exa --time modified --all --binary --git --header --long --color=always "
+__alias lt "exa --long --tree --level=3 "
 
 # -- Git -------------------------------------------------- 
-removeAlias grmci
+__remove_alias grmci
 function grmci () {
   # TODO: Function needs to be reworked doesn't really do what I want
   # Remove cached files that have been ignored by git locally or globally.
   git ls-files --others | xargs -n1 -I '{}' git rm --cached --quiet --ignore-unmatch -- ./{}
 }
-#
-# replaceAlias gts "git --no-pager branch --color=always -vva --sort=-committerdate | head -n 8 && git status && git status -b --ignored | gawk '/Ignored\s+files:/{x=NR+8} (NR<=x) {print}'"
-#
-replaceAlias gts "git log --oneline --pretty='%Cred%h%Creset -%C(auto)%d%Creset %<(50,trunc)%s %Cgreen(%cr) %C(bold blue)<%an>%Creset' -5 && echo "" && git status && echo "" && git status -b --ignored | gawk '/Ignored\s+files:/{x=NR+8} (NR<=x) {print}'"
-replaceAlias gtsp git-extended-status
-replaceAlias gcm "git commit -a -S -m"
-replaceAlias glog "git log --oneline --decorate --graph --show-signature"
-replaceAlias gloga "git log --oneline --decorate --graph --show-signature --all"
-replaceAlias gwch "git whatchanged -p --abbrev-commit --pretty=medium"
-replaceAlias gcd "git checkout development"
+
+__alias gts "git log --oneline --pretty='%Cred%h%Creset -%C(auto)%d%Creset %<(50,trunc)%s %Cgreen(%cr) %C(bold blue)<%an>%Creset' -5 && echo "" && git status && echo "" && git status -b --ignored | gawk '/Ignored\s+files:/{x=NR+8} (NR<=x) {print}'"
+__alias gtsp git-extended-status
+__alias gcm "git commit -a -S -m"
+__alias glog "git log --oneline --decorate --graph --show-signature"
+__alias gloga "git log --oneline --decorate --graph --show-signature --all"
+__alias gwch "git whatchanged -p --abbrev-commit --pretty=medium"
+__alias gcd "git checkout development"
 
 # -- miscellaneous --------------------------------------------------
 
-setAlias ranger='TERM=xterm-256color ranger'
+alias ranger='TERM=xterm-256color ranger'
 
 # Reloads the configuration.
 if [ -n "$ZSH_VERSION" ]; then
-    setAlias resource='source $HOME/.zshrc'
+    __alias resource 'source $HOME/.zshrc'
 else
-    setAlias resource='source $HOME/.bash_profile'
+    __alias resource 'source $HOME/.bash_profile'
 fi
 
-setAlias note 'cd $MARKDOWN_NOTES && lvim -c "NV!"'
-setAlias gradle "TERM=xterm ./gradlew"
+__alias note 'cd $MARKDOWN_NOTES && lvim -c "NV!"'
+__alias gradle "TERM=xterm ./gradlew"
 
-#setAlias lldb "PATH=/usr/bin:$PATH lldb"
-setAlias pandoc "/usr/local/opt/pandoc/bin/pandoc"
-setAlias subl "/Applications/Sublime\ Text.app/Contents/SharedSupport/bin/subl"
+#__alias lldb "PATH=/usr/bin:$PATH lldb"
+alias pandoc="/usr/local/opt/pandoc/bin/pandoc"
+__alias subl "/Applications/Sublime\ Text.app/Contents/SharedSupport/bin/subl"
 
-setAlias chezmoidelta "chezmoi source pull -- --rebase && chezmoi diff | delta"
-setAlias ipython "EDITOR=lvim ipython"
-setAlias gloudtoken "gcloud auth login --brief && gcloud auth print-identity-token"
-setAlias trash_pycharm_remote_resources "trash -v ~/Library/Caches/JetBrains/PyCharm2021.2/remote_sources ~/Library/Caches/JetBrains/PyCharm2021.2/tmp"
+__alias chezmoidelta "chezmoi source pull -- --rebase && chezmoi diff | delta"
+alias ipython="EDITOR=lvim ipython"
+__alias gloudtoken "gcloud auth login --brief && gcloud auth print-identity-token"
+__alias trash_pycharm_remote_resources "trash -v ~/Library/Caches/JetBrains/PyCharm2021.2/remote_sources ~/Library/Caches/JetBrains/PyCharm2021.2/tmp"
 
 # -- configuration paths ------------------------------------------------------
 
@@ -96,10 +66,10 @@ setAlias trash_pycharm_remote_resources "trash -v ~/Library/Caches/JetBrains/PyC
 if command -v chezmoi > /dev/null; then
     if [[ "$OSTYPE" =~ ^(cygwin|mingw|msys) ]]; then
         # shellcheck disable=SC2046,SC2139
-        setAlias chezmoiconf="cd $(chezmoi source-path | tr '\\/' '/' | tr -d ':' | awk '{print "/"$1}')"
+        __alias chezmoiconf "cd $(chezmoi source-path | tr '\\/' '/' | tr -d ':' | awk '{print "/"$1}')"
     else
-        setAlias chezmoiconf='cd $(chezmoi source-path)'
+        __alias chezmoiconf 'cd $(chezmoi source-path)'
     fi
 else
-    setAlias chezmoiconf='cd $HOME/.local/share/chezmoi'
+    __alias chezmoiconf 'cd $HOME/.local/share/chezmoi'
 fi
