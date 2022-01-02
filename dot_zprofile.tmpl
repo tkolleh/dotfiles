@@ -10,6 +10,17 @@ if [[ -a "$HOME"/.bash_secrets ]]; then
     source "$HOME"/.bash_secrets
 fi
 
+# The preferred visual editor for local or set the remote
+# visual editor. The EDITOR variable technically shouldn't be set to a
+# "visual" editor like vi but something like ed
+#
+if [[ -n $SSH_CONNECTION ]]; then
+  export VISUAL='vim'
+else
+  export VISUAL='lvim'
+  export EDITOR='lvim'
+fi
+
 # Homebrew installs to its preferred prefix; 
 # - /usr/local for macOS Intel 
 # - /opt/homebrew for Apple Silicon 
