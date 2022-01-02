@@ -19,7 +19,6 @@ DISABLE_UPDATE_PROMPT="true"
 # Uncomment the following line to change how often to auto-update (in days).
 export UPDATE_ZSH_DAYS=7
 
-
 # -- Prompt --------------------------------------------------
 # Starship cross-shell prompt
 # Install starship
@@ -102,7 +101,7 @@ if [[ -n fzf_path && -n rg_path ]]; then
     zpm load @github/unixorn/fzf-zsh-plugin    
 
     export FZF_DEFAULT_COMMAND='fd --type f --color=never --ignore-case --no-ignore --hidden --follow'
-    export FZF_DEFAULT_OPTS="--bind 'f1:execute(bat --paging=always --color=always {}),f2:execute(lvim {})+abort,ctrl-y:execute-silent(echo {} | pbcopy)+abort' --bind '?:toggle-preview' --preview='bat --number --color=always {} | head -700' --preview-window='right:50%:hidden'"
+    export FZF_DEFAULT_OPTS="--bind 'f1:execute(bat --paging=always --color=always {}),f2:execute($EDITOR {})+abort,ctrl-y:execute-silent(echo {} | pbcopy)+abort' --bind '?:toggle-preview' --preview='bat --number --color=always {} | head -700' --preview-window='right:50%:hidden'"
     export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 
     # Search for files
@@ -142,7 +141,7 @@ function zvm_after_init() {
 zpm load @github/jeffreytse/zsh-vi-mode
 
 #
-# configuration --------------------------------------------------------
+# Additional configuration --------------------------------------------------------
 #
 #
 delta_path=$(cmd_path delta)
@@ -161,16 +160,6 @@ if [ -f "$HOME"/google-cloud-sdk/completion.zsh.inc ]; then . "$HOME"/google-clo
 # Load alias definitions from separate configuration file.
 if [[ -a "$HOME"/.bash_aliases ]]; then
     source "$HOME"/.bash_aliases
-fi
-
-# The preferred visual editor for local or set the remote
-# visual editor. The EDITOR variable technically shouldn't be set to a
-# "visual" editor like vi but something like ed
-#
-if [[ -n $SSH_CONNECTION ]]; then
-  export VISUAL='lvim'
-else
-  export VISUAL='lvim'
 fi
 
 
