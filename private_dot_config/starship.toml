@@ -100,6 +100,10 @@ format = "gambling with [$env_value]($style)"
 disabled = true
 symbol = " "
 
+[gcloud]
+disabled = true
+symbol = " "
+
 [conda]
 symbol = " "
 ignore_base = true
@@ -122,18 +126,24 @@ symbol = " "
 
 [java]
 symbol = " "
+format = "[${symbol}(${version} )]($style) "
+
+[scala]
+format = "[${symbol}(${version} )]($style) "
 
 [nix_shell]
 symbol = " "
 
 [nodejs]
 symbol = " "
+format = "[$symbol($version )]($style) "
 
 [php]
 symbol = " "
 
 [python]
 symbol = " "
+format = "[${symbol}${pyenv_prefix}(${version} )(($virtualenv) )]($style) "
 
 [ruby]
 symbol = " "
