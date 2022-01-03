@@ -1,7 +1,0 @@
-java adoptopenjdk-17.0.1+12
-scala 3.1.0
-sbt 1.6.0-RC1
-ruby 3.0.3
-nodejs 17.2.0
-golang 1.17.5
-rust 1.57.0
