@@ -2,6 +2,8 @@
 appmap.yml
 tmp
 
+.sbtopts
+
 slate/source
 .project_mind_map.mmd
 *.xmind
