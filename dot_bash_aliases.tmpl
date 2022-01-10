@@ -39,7 +39,8 @@ __alias gcd "git checkout development"
 
 # -- miscellaneous --------------------------------------------------
 
-alias ranger='TERM=xterm-256color ranger'
+alias ranger="TERM=xterm-256color ranger"
+alias fx="NODE_PATH=`npm root -g` fx"
 
 # Reloads the configuration.
 if [ -n "$ZSH_VERSION" ]; then
@@ -49,14 +50,14 @@ else
 fi
 
 __alias note 'cd $MARKDOWN_NOTES && lvim -c "NV!"'
-__alias gradle "TERM=xterm ./gradlew"
+# __alias gradle "TERM=xterm ./gradlew"
 
 #__alias lldb "PATH=/usr/bin:$PATH lldb"
-alias pandoc="/usr/local/opt/pandoc/bin/pandoc"
-__alias subl "/Applications/Sublime\ Text.app/Contents/SharedSupport/bin/subl"
+# alias pandoc="/usr/local/opt/pandoc/bin/pandoc"
+# __alias subl "/Applications/Sublime\ Text.app/Contents/SharedSupport/bin/subl"
 
 __alias chezmoidelta "chezmoi source pull -- --rebase && chezmoi diff | delta"
-alias ipython="EDITOR=lvim ipython"
+__alias ipython="EDITOR=lvim ipython"
 __alias gloudtoken "gcloud auth login --brief && gcloud auth print-identity-token"
 __alias trash_pycharm_remote_resources "trash -v ~/Library/Caches/JetBrains/PyCharm2021.2/remote_sources ~/Library/Caches/JetBrains/PyCharm2021.2/tmp"
 

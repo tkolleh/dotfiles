@@ -1,5 +1,5 @@
 # Timeout for commands executed by starship (in milliseconds)
-command_timeout = 750
+command_timeout = 3000
 
 [character]
 success_symbol = ""
@@ -13,7 +13,7 @@ style = "#faafeb"
 format = "[](bg:$style fg:bright-white)[$path[$read_only]($read_only_style)](bg:$style)[](fg:$style) "
 
 [cmd_duration]
-min_time = 1000
+min_time = 2000
 show_milliseconds = true
 format = "[ $duration]($style)"
 
