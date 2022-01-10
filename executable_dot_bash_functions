@@ -83,6 +83,7 @@ function chezmoidiff() {
   fi
 }
 
+
 # Install requirements.txt in conda environment
 #
 # Original solution via StackOverflow: 
