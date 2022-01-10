@@ -11,10 +11,13 @@ an executable
 -- general
 lvim.log.level = "warn"
 lvim.format_on_save = true
-lvim.colorscheme = "onebuddy"
+
+lvim.colorscheme = "vscode"
+vim.g.vscode_style = "light"
+vim.g.vscode_italic_comment = 1
 
 vim.o.background = "light"
-vim.o.timeoutlen = 800
+vim.o.timeoutlen = 700
 
 -- code folding
 vim.o.foldenable = true
@@ -84,6 +87,7 @@ lvim.builtin.treesitter.ensure_installed = {
   "rust",
   "java",
   "yaml",
+  "scala",
 }
 
 lvim.builtin.treesitter.ignore_install = { "haskell" }
@@ -130,7 +134,16 @@ lvim.builtin.treesitter.highlight.enabled = true
 
 -- Additional Plugins
 lvim.plugins = {
+    {
+      "windwp/nvim-spectre",
+      event = "BufRead",
+      config = function()
+        require("spectre").setup()
+      end,
+    },
+
 --   -- colors
+   {'Mofiqul/vscode.nvim'},
    {'tjdevries/colorbuddy.vim'},
    {'Th3Whit3Wolf/onebuddy'},
    {'folke/tokyonight.nvim'},
@@ -150,9 +163,18 @@ lvim.plugins = {
 --    "folke/trouble.nvim",
 --    cmd = "TroubleToggle",
 --  },
+
 }
 
 -- Autocommands (https://neovim.io/doc/user/autocmd.html)
 -- lvim.autocommands.custom_groups = {
 --   { "BufWinEnter", "*.lua", "setlocal ts=8 sw=8" },
 -- }
+
+lvim.builtin.which_key.mappings["x"] = {
+  name = "+ripgrep search",
+  f = { "<cmd>lua require('spectre').open()<cr>", "files" },
+  s = { "<cmd>lua require('spectre').open_file_search()<cr>", "buffer" },
+  w = { "<cmd>lua require('spectre').open_visual({select_word=true})<cr>", "word" },
+}
+
