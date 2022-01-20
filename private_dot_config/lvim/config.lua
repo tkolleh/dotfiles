@@ -134,6 +134,50 @@ lvim.builtin.treesitter.highlight.enabled = true
 
 -- Additional Plugins
 lvim.plugins = {
+--  -- Manage git via Vim
+    {
+      "tpope/vim-fugitive",
+      cmd = {
+        "G",
+        "Git",
+        "Gdiffsplit",
+        "Gread",
+        "Gwrite",
+        "Ggrep",
+        "GMove",
+        "GDelete",
+        "GBrowse",
+        "GRemove",
+        "GRename",
+        "Glgrep",
+        "Gedit"
+      },
+      ft = {"fugitive"}
+    },
+
+--  -- Permalinks to git web hosts
+    {
+      "ruifm/gitlinker.nvim",
+      event = "BufRead",
+      config = function()
+      require("gitlinker").setup {
+            opts = {
+              -- remote = 'github', -- force the use of a specific remote
+                -- adds current line nr in the url for normal mode
+                add_current_line_on_normal_mode = true,
+              -- callback for what to do with the url
+                action_callback = require("gitlinker.actions").open_in_browser,
+              -- print the url after performing the action
+                print_url = false,
+              -- mapping to call url generation
+                mappings = "<leader>gy",
+            },
+          }
+      end,
+      requires = "nvim-lua/plenary.nvim",
+    },
+
+--  -- Custom search
     {
       "windwp/nvim-spectre",
       event = "BufRead",
