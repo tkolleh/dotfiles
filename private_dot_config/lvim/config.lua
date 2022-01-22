@@ -199,6 +199,7 @@ lvim.plugins = {
    {'christoomey/vim-tmux-navigator'},
 
 -- notes
+   {'renerocksai/telekasten.nvim'},
 -- {
 --   'alok/notational-fzf-vim',
 --   requires = 'junegunn/fzf',
