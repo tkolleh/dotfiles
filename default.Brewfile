@@ -60,6 +60,7 @@ brew "gnupg"
 brew "lua"
 brew "gnuplot"
 brew "gpatch"
+brew "httpie"
 brew "libusbmuxd"
 brew "libimobiledevice"
 brew "ideviceinstaller"
@@ -107,8 +108,8 @@ brew "uncrustify"
 brew "watch"
 brew "watchman"
 brew "wget"
-brew "whalebrew"
-brew "z.lua"
+brew "whalebrew", args: ["HEAD"]
+brew "zoxide"
 brew "zsh"
 brew "zsh-completions"
 brew "coursier/formulas/coursier"
@@ -153,8 +154,8 @@ mas "LastPass", id: 926036361
 mas "Magnet", id: 441258766
 mas "Micro Snitch", id: 972028355
 mas "Neeva", id: 1540663248
-mas "Notability", id: 736189492
 mas "Notability", id: 360593530
+mas "Notability", id: 736189492
 mas "Numbers", id: 409203825
 mas "Pages", id: 409201541
 mas "Paste", id: 967805235
