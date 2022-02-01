@@ -8,29 +8,24 @@
 export DEFAULT_USER="${USER}"
 
 # Disable autosuggestion for large buffers.
-export ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE="20"
+export ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE="50"
 
 # Enable aynchronous mode.
-export ZSH_AUTOSUGGEST_USE_ASYNC=true
+# export ZSH_AUTOSUGGEST_USE_ASYNC=true
 
 # Uncomment the following line to automatically update without prompting.
-DISABLE_UPDATE_PROMPT="true"
+# DISABLE_UPDATE_PROMPT="true"
 
 # Uncomment the following line to change how often to auto-update (in days).
 export UPDATE_ZSH_DAYS=7
 
-# -- Prompt --------------------------------------------------
-# Starship cross-shell prompt
-# Install starship
-eval "$(starship init zsh)"
-
-# -- Plugins -------------------------------------------------- 
 # Install zpm-zsh
 if [[ ! -f ~/.zpm/zpm.zsh ]]; then
   git clone --recursive https://github.com/zpm-zsh/zpm ~/.zpm
 fi
 source ~/.zpm/zpm.zsh
 
+# -- Plugins -------------------------------------------------- 
 # Pull in OMZ (doesn't actually source anything)
 zpm load @omz
 
@@ -50,11 +45,6 @@ zpm load                  \
   @omz/git                \
   @omz/colored-man-pages
 
-# Load custom code from separate configuration file.
-if [[ -a "$HOME"/.bash_functions ]]; then
-    source "$HOME"/.bash_functions
-fi
-
 # Plugins for local host
 zpm if-not ssh load                                   \
   zsh-users/zsh-completions,async                     \
@@ -63,17 +53,11 @@ zpm if-not ssh load                                   \
   zpm-zsh/zsh-autosuggestions,async                   \
   zdharma-continuum/fast-syntax-highlighting,async
 
-z_path="$(brew --prefix z.lua)"
-if [[ -n z_path ]]; then
-    eval "$(lua ${z_path}/share/z.lua/z.lua --init zsh)"
-    unset z_path
-fi
-
-conda_path="$(cmd_path conda)"
-if [[ -n conda_path ]]; then
+if (( ${+commands[conda]} )); then
     zpm load @github/esc/conda-zsh-completion
     export CONDA_ENVS="/usr/local/anaconda3/envs"
 
+    conda_path="$(whence -cp conda)"
     #
     # >>> conda initialize >>>
     #
@@ -91,12 +75,9 @@ if [[ -n conda_path ]]; then
     #
     # <<< conda initialize <<<
     #
-    unset conda_path
 fi
 
-fzf_path="$(brew --prefix fzf)"
-rg_path="$(brew --prefix rg)"
-if [[ -n fzf_path && -n rg_path ]]; then
+if (( ${+commands[fd]} )) && (( ${+commands[rg]} )) && (( ${+commands[fzf]} )); then
     zpm load @github/unixorn/fzf-zsh-plugin    
 
     export FZF_DEFAULT_COMMAND='fd --type f --color=never --ignore-case --no-ignore --hidden --follow'
@@ -108,11 +89,9 @@ if [[ -n fzf_path && -n rg_path ]]; then
 
     # Search recent commands
     export FZF_CTRL_R_OPTS="$FZF_DEFAULT_OPTS"
-    unset rg_path
-    unset fzf_path
 fi
 
-if [[ -n "$(brew --prefix asdf)" ]]; then
+if (( ${+commands[asdf]} )); then
     zpm load @omz-lib/asdf
 
     export JAVA_HOME="$(asdf where java $(asdf current java | awk '{ print $2 }'))"
@@ -139,13 +118,7 @@ function zvm_after_init() {
 }
 zpm load @github/jeffreytse/zsh-vi-mode
 
-#
-# Additional configuration --------------------------------------------------------
-#
-#
-delta_path=$(cmd_path delta)
-
-if [[ -n delta_path ]]; then
+if (( ${+commands[delta]} )); then
   export BATDIFF_USE_DELTA=true
 fi
 
@@ -155,12 +128,31 @@ if [ -f "$HOME"/google-cloud-sdk/path.zsh.inc ]; then . "$HOME"/google-cloud-sdk
 # The next line enables shell command completion for gcloud.
 if [ -f "$HOME"/google-cloud-sdk/completion.zsh.inc ]; then . "$HOME"/google-cloud-sdk/completion.zsh.inc; fi
 
+
+# Load custom code from separate configuration file.
+if [[ -a "$HOME"/.bash_functions ]]; then
+    source "$HOME"/.bash_functions
+fi
+
 # TODO: move to aliases (zshell specific dir)
 # Load alias definitions from separate configuration file.
 if [[ -a "$HOME"/.bash_aliases ]]; then
     source "$HOME"/.bash_aliases
 fi
 
+
+# -- Prompt --------------------------------------------------
+# Starship cross-shell prompt
+# Install starship
+eval "$(starship init zsh)"
+
+# -- Initialize tools ----------------------------------------
+#
+# Alternative to cd
+if (( ${+commands[zoxide]} )); then
+  eval "$(zoxide init zsh)"
+  export _ZO_ECHO=1
+fi
 
 # Must be last
 source $(brew --prefix asdf)/asdf.sh
