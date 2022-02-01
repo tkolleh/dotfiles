@@ -27,6 +27,8 @@ vim.o.foldcolumn = "2"
 vim.o.foldmethod = "expr"
 vim.o.foldexpr = "nvim_treesitter#foldexpr()"
 
+-- Scala metals
+vim.opt_global.shortmess:remove("F")
 
 -- keymappings [view all the defaults by pressing <leader>Lk]
 lvim.leader = "space"
@@ -132,8 +134,27 @@ lvim.builtin.treesitter.highlight.enabled = true
 --   }
 -- }
 
+local formatters = require "lvim.lsp.null-ls.formatters"
+formatters.setup {
+  {
+    exe = "scalafmt",
+    ---@usage arguments to pass to the formatter
+    -- these cannot contain whitespaces, options such as `--line-width 80` become either `{'--line-width', '80'}` or `{'--line-width=80'}`
+    args = {'--stdin'},
+    filetypes = {'scala','sc'},
+  },
+}
+
 -- Additional Plugins
 lvim.plugins = {
+--  -- Scala LSP
+    {
+      "scalameta/nvim-metals",
+      requires = "nvim-lua/plenary.nvim",
+      config = function()
+        require("user.metals").config()
+      end,
+    },
 --  -- Manage git via Vim
     {
       "tpope/vim-fugitive",
@@ -146,7 +167,7 @@ lvim.plugins = {
         "Ggrep",
         "GMove",
         "GDelete",
-        "GBrowse",
+        "GBrows e",
         "GRemove",
         "GRename",
         "Glgrep",
@@ -200,6 +221,9 @@ lvim.plugins = {
 -- lvim.autocommands.custom_groups = {
 --   { "BufWinEnter", "*.lua", "setlocal ts=8 sw=8" },
 -- }
+lvim.autocommands.custom_groups = {
+  { "FileType", "scala,sbt", "lua require('user.metals').config()" }
+}
 
 lvim.builtin.which_key.mappings["x"] = {
   name = "+ripgrep search",
