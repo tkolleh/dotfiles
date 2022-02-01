@@ -154,5 +154,9 @@ if (( ${+commands[zoxide]} )); then
   export _ZO_ECHO=1
 fi
 
+# Scala application manager
+# add installation directory in PATH in the current session
+eval "$(cs install --env)" 
+
 # Must be last
 source $(brew --prefix asdf)/asdf.sh
