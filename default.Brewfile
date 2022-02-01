@@ -12,6 +12,7 @@ tap "prisma/prisma"
 tap "twlz0ne/ccls"
 tap "universal-ctags/universal-ctags"
 tap "wagoodman/dive"
+brew "ammonite-repl"
 brew "coreutils"
 brew "asdf"
 brew "python@3.10"
@@ -133,6 +134,7 @@ cask "google-chrome"
 cask "jetbrains-toolbox"
 cask "keybase"
 cask "logitech-options"
+cask "logseq"
 cask "mactex"
 cask "nvalt"
 cask "openrefine"
@@ -153,9 +155,10 @@ mas "Kindle", id: 405399194
 mas "LastPass", id: 926036361
 mas "Magnet", id: 441258766
 mas "Micro Snitch", id: 972028355
-mas "Neeva", id: 1540663248
-mas "Notability", id: 360593530
+mas "MILK Books", id: 1486465681
+mas "Mimeo Photos", id: 1282504627
 mas "Notability", id: 736189492
+mas "Notability", id: 360593530
 mas "Numbers", id: 409203825
 mas "Pages", id: 409201541
 mas "Paste", id: 967805235
