@@ -1,3 +1,6 @@
+.metals
+.env
+
 # asdf local tool versions
 .tool-versions
 
