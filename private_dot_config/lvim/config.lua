@@ -27,6 +27,12 @@ vim.o.foldcolumn = "2"
 vim.o.foldmethod = "expr"
 vim.o.foldexpr = "nvim_treesitter#foldexpr()"
 
+-- status line (lualine)
+lvim.builtin.lualine.style = "default" -- or "none"
+lvim.builtin.lualine.options = {
+  theme = 'material',
+}
+
 -- Scala metals
 vim.opt_global.shortmess:remove("F")
 
@@ -122,18 +128,6 @@ lvim.builtin.treesitter.highlight.enabled = true
 -- end
 
 -- set a formatter if you want to override the default lsp one (if it exists)
--- lvim.lang.python.formatters = {
---   {
---     exe = "black",
---   }
--- }
--- set an additional linter
--- lvim.lang.python.linters = {
---   {
---     exe = "flake8",
---   }
--- }
-
 local formatters = require "lvim.lsp.null-ls.formatters"
 formatters.setup {
   {
@@ -144,6 +138,7 @@ formatters.setup {
     filetypes = {'scala','sc'},
   },
 }
+
 
 -- Additional Plugins
 lvim.plugins = {
@@ -181,6 +176,13 @@ lvim.plugins = {
       "ruifm/gitlinker.nvim",
       event = "BufRead",
       requires = "nvim-lua/plenary.nvim",
+      opts = {
+        -- callback for what to do with the url
+        action_callback = require"gitlinker.actions".copy_to_clipboard,
+      },
+      callbacks = {
+        ["code.corp.creditkarma.com"] = require"gitlinker.hosts".get_github_type_url
+      },
     },
 
 --  -- Custom search
@@ -206,10 +208,6 @@ lvim.plugins = {
 
 -- notes
    {'renerocksai/telekasten.nvim'},
--- {
---   'alok/notational-fzf-vim',
---   requires = 'junegunn/fzf',
--- },
 --  {
 --    "folke/trouble.nvim",
 --    cmd = "TroubleToggle",
