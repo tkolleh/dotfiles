@@ -30,28 +30,24 @@ source ~/.zpm/zpm.zsh
 zpm load @omz
 
 zpm load                \
-  @omz-lib/completion   \
-  @omz-lib/directories  \
   @omz-lib/functions    \
-  @omz-lib/git          \
-  @omz-lib/grep         \
-  @omz-lib/history      \
-  @omz-lib/key-bindings \
-  @omz-lib/misc         \
-  @omz-lib/spectrum
+#   @omz-lib/completion
 
 # Load some OMZ plugins and theme
 zpm load                  \
   @omz/git                \
-  @omz/colored-man-pages
+  @omz/colored-man-pages  \
+  @omz/aliases
 
 # Plugins for local host
 zpm if-not ssh load                                   \
-  zsh-users/zsh-completions,async                     \
+  zsh-users/zsh-completions                           \
   zpm-zsh/zsh-better-npm-completion,async             \
   zpm-zsh/zsh-history-substring-search,async          \
   zdharma-continuum/fast-syntax-highlighting,async
   # zpm-zsh/zsh-autosuggestions,async
+
+autoload -U compinit && compinit
 
 if (( ${+commands[conda]} )); then
     zpm load @github/esc/conda-zsh-completion
