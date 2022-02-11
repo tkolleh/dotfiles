@@ -29,9 +29,17 @@ source ~/.zpm/zpm.zsh
 # Pull in OMZ (doesn't actually source anything)
 zpm load @omz
 
-zpm load                \
-  @omz-lib/functions    \
-#   @omz-lib/completion
+zpm load                         \
+  @omz-lib/functions             \
+  @omz-lib/prompt_info_functions \
+  @omz-lib/git                   \
+  @omz-lib/compfix               \
+  @omz-lib/grep                  \
+  @omz-lib/termsupport           \
+  @omz-lib/spectrum              \
+  @omz-lib/history               \
+  @omz-lib/key-bindings          \
+  @omz-lib/completion
 
 # Load some OMZ plugins and theme
 zpm load                  \
@@ -41,13 +49,27 @@ zpm load                  \
 
 # Plugins for local host
 zpm if-not ssh load                                   \
-  zsh-users/zsh-completions                           \
-  zpm-zsh/zsh-better-npm-completion,async             \
-  zpm-zsh/zsh-history-substring-search,async          \
-  zdharma-continuum/fast-syntax-highlighting,async
-  # zpm-zsh/zsh-autosuggestions,async
+  zdharma-continuum/fast-syntax-highlighting          \
+  zpm-zsh/zsh-history-substring-search                \
+  zpm-zsh/zsh-autosuggestions,async                   \
+  zsh-users/zsh-completions,async                     \
+  zpm-zsh/zsh-better-npm-completion,async
 
 autoload -U compinit && compinit
+
+# Bind keys for zsh-history-substring-search. Plugin must be loaded 
+# after fast-syntax-highlighting.
+
+bindkey '^[[A' history-substring-search-up
+bindkey '^[[B' history-substring-search-down
+
+bindkey "$terminfo[kcuu1]" history-substring-search-up
+bindkey "$terminfo[kcud1]" history-substring-search-down
+
+bindkey -M vicmd 'k' history-substring-search-up
+bindkey -M vicmd 'j' history-substring-search-down
+
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=253,bg=white,underline"
 
 if (( ${+commands[conda]} )); then
     zpm load @github/esc/conda-zsh-completion
