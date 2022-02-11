@@ -1,5 +1,5 @@
 # Timeout for commands executed by starship (in milliseconds)
-command_timeout = 3000
+command_timeout = 200
 
 [character]
 success_symbol = ""
@@ -13,7 +13,7 @@ style = "#faafeb"
 format = "[](bg:$style fg:bright-white)[$path[$read_only]($read_only_style)](bg:$style)[](fg:$style) "
 
 [cmd_duration]
-min_time = 2000
+min_time = 8000
 show_milliseconds = true
 format = "[ $duration]($style)"
 
@@ -29,17 +29,17 @@ discharging_symbol = ""
 charging_symbol = ""
 full_symbol = ""
 
-    [[battery.display]]
-    threshold = 10
-    style = "bold fg:red"
+[[battery.display]]
+threshold = 10
+style = "bold fg:red"
 
-    [[battery.display]]
-    threshold = 30
-    style = "fg:#ff8800"
+[[battery.display]]
+threshold = 30
+style = "fg:#ff8800"
 
-    [[battery.display]]
-    threshold = 50
-    style = "fg:yellow"
+[[battery.display]]
+threshold = 50
+style = "fg:yellow"
 
 [memory_usage]
 disabled = true
@@ -151,4 +151,3 @@ symbol = " "
 [rust]
 symbol = " "
 style = "fg:#ffa07a"
-
