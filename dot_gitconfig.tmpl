@@ -24,12 +24,16 @@
 [push]
   default = simple
 [interactive]
-    diffFilter = delta --color-only
+    diffFilter = delta --color-only --features=interactive
 
 [delta]
+    navigate = true
     features = unobtrusive-line-numbers decorations
     whitespace-error-style = 22 reverse
     syntax-theme = Solarized (dark)
+
+[delta "interactive"]
+    keep-plus-minus-markers = false
 
 [delta "unobtrusive-line-numbers"]
     line-numbers = true
@@ -61,13 +65,13 @@
 
 [mergetool "vimdiff"]
   prompt = true
-  cmd = nvim -d \"$LOCAL\" \"$REMOTE\" \"$MERGED\" -c '$wincmd w' -c 'wincmd J'
+  cmd = lvim -d \"$LOCAL\" \"$REMOTE\" \"$MERGED\" -c '$wincmd w' -c 'wincmd J'
 [difftool "vimdiff"]
   prompt = true
-  cmd = nvim -d \"$LOCAL\" \"$REMOTE\"
+  cmd = lvim -d \"$LOCAL\" \"$REMOTE\"
 [mergetool "fugitive"]
   prompt = true
-	cmd = nvim -f -c \"Gvdiffsplit!\" \"$MERGED\"
+	cmd = lvim -f -c \"Gvdiffsplit!\" \"$MERGED\"
 
 [difftool "sourcetree"]
 	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
@@ -85,9 +89,11 @@
 [merge]
   tool = fugitive
   guitool = pycharm
+  conflictstyle = diff3
 [diff]
   tool = vimdiff
   guitool = pycharm
+  colorMoved = default
 
 [init]
 	templatedir = /Applications/SourceTree.app/Contents/Resources/git_local/share/git-core/templates
