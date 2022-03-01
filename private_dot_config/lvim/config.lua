@@ -9,14 +9,8 @@ an executable
 -- THESE ARE EXAMPLE CONFIGS FEEL FREE TO CHANGE TO WHATEVER YOU WANT
 
 -- general
-lvim.log.level = "warn"
+lvim.log.level = "debug"
 lvim.format_on_save = true
-
-lvim.colorscheme = "vscode"
-vim.g.vscode_style = "light"
-vim.g.vscode_italic_comment = 1
-
-vim.o.background = "light"
 vim.o.timeoutlen = 700
 
 -- code folding
@@ -32,9 +26,6 @@ lvim.builtin.lualine.style = "default" -- or "none"
 lvim.builtin.lualine.options = {
   theme = 'material',
 }
-
--- Scala metals
-vim.opt_global.shortmess:remove("F")
 
 -- keymappings [view all the defaults by pressing <leader>Lk]
 lvim.leader = "space"
@@ -139,13 +130,24 @@ formatters.setup {
   },
 }
 
-
 -- Additional Plugins
 lvim.plugins = {
+--   -- colors
+    {'Mofiqul/vscode.nvim'},
+    {'tjdevries/colorbuddy.vim'},
+    {'Th3Whit3Wolf/onebuddy'},
+    {'folke/tokyonight.nvim'},
+--  -- Change colorscheme based on OS
+    {
+      "cormacrelf/dark-notify",
+      requires = "Mofiqul/vscode.nvim",
+      config = function()
+        require("user.dark_notify").config()
+      end
+    },
 --  -- Scala LSP
     {
       "scalameta/nvim-metals",
-      requires = "nvim-lua/plenary.nvim",
       config = function()
         require("user.metals").config()
       end,
@@ -176,13 +178,13 @@ lvim.plugins = {
       "ruifm/gitlinker.nvim",
       event = "BufRead",
       requires = "nvim-lua/plenary.nvim",
-      opts = {
-        -- callback for what to do with the url
-        action_callback = require"gitlinker.actions".copy_to_clipboard,
-      },
-      callbacks = {
-        ["code.corp.creditkarma.com"] = require"gitlinker.hosts".get_github_type_url
-      },
+      -- opts = {
+      --   -- callback for what to do with the url
+      --   action_callback = require"gitlinker.actions".copy_to_clipboard,
+      -- },
+      -- callbacks = {
+      --   ["code.corp.creditkarma.com"] = require"gitlinker.hosts".get_github_type_url
+      -- },
     },
 
 --  -- Custom search
@@ -193,12 +195,6 @@ lvim.plugins = {
         require("spectre").setup()
       end,
     },
-
---   -- colors
-   {'Mofiqul/vscode.nvim'},
-   {'tjdevries/colorbuddy.vim'},
-   {'Th3Whit3Wolf/onebuddy'},
-   {'folke/tokyonight.nvim'},
 
 --   -- keybindings
    {'tpope/vim-unimpaired'},
@@ -219,8 +215,11 @@ lvim.plugins = {
 -- lvim.autocommands.custom_groups = {
 --   { "BufWinEnter", "*.lua", "setlocal ts=8 sw=8" },
 -- }
+
+-- Metals configuration
+-- https://github.com/LunarVim/lunarvim.org/blob/1b2f36dcdb5cd1e4e1a9db34b538246bb0a47494/docs/languages/scala.md
 lvim.autocommands.custom_groups = {
-  { "FileType", "scala,sbt", "lua require('user.metals').config()" }
+  { "FileType", "java,scala,sbt", "lua require('user.metals').config()" }
 }
 
 lvim.builtin.which_key.mappings["x"] = {
@@ -229,4 +228,3 @@ lvim.builtin.which_key.mappings["x"] = {
   s = { "<cmd>lua require('spectre').open_file_search()<cr>", "buffer" },
   w = { "<cmd>lua require('spectre').open_visual({select_word=true})<cr>", "word" },
 }
-
