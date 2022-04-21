@@ -203,7 +203,7 @@ lvim.plugins = {
    {'christoomey/vim-tmux-navigator'},
 
 -- notes
-   {'renerocksai/telekasten.nvim'},
+-- {'renerocksai/telekasten.nvim'},
 --  {
 --    "folke/trouble.nvim",
 --    cmd = "TroubleToggle",
