@@ -167,8 +167,10 @@ eval "$(starship init zsh)"
 # -- Initialize tools ----------------------------------------
 #
 # Alternative to cd
+# The default command is `z` the `--cmd cd` option replaces `cd` 
+# command.
 if (( ${+commands[zoxide]} )); then
-  eval "$(zoxide init zsh)"
+  eval "$(zoxide init --cmd cd zsh)"
   export _ZO_ECHO=1
 fi
 
@@ -177,4 +179,4 @@ fi
 eval "$(cs install --env)" 
 
 # Must be last
-source $(brew --prefix asdf)/asdf.sh
+source $(brew --prefix asdf)/libexec/asdf.sh

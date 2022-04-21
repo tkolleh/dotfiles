@@ -58,11 +58,13 @@ function runtime_homedir(){
   asdf where ${1} $(asdf current ${1} | awk '{ print $2 }')
 }
 
+# Commented out infavor of using zoxide (`z`) command
+#
 # Change directory to folder in workspace folder
-function ws() {
-  workspace=$(fd --type d -uu -a . "$HOME/ws" | fzf)
-  cd $workspace
-}
+# function ws() {
+#   workspace=$(fd --type d -uu -a . "$HOME/ws" | fzf)
+#   cd $workspace
+# }
 
 # Open Marked 2, passing provided file path to the application
 function marked() {

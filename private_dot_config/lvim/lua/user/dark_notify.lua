@@ -1,7 +1,7 @@
 local M = {}
 
 M.config = function()
-  require('dark_notify').dn.run({
+  require('dark_notify').run({
     schemes = {
       -- you can use a different colorscheme for each
       dark  = {
