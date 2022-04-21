@@ -1,5 +1,5 @@
 # Timeout for commands executed by starship (in milliseconds)
-command_timeout = 200
+command_timeout = 300
 
 [character]
 success_symbol = ""
