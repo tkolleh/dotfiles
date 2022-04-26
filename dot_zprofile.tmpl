@@ -46,3 +46,14 @@ export MYVIMOPTS="$XDG_CONFIG_HOME/nvim/options.vim"
 export MYVIMPACKS="$XDG_CONFIG_HOME/nvim/packages.vim"
 export NVIM_SESSION="$XDG_CONFIG_HOME/nvim/sessions"
 export LAST_NVIM_SESSION="$NVIM_SESSION/lastsession.vim"
+
+
+{{ if (eq .chezmoi.username "tj.kolleh")}}
+# Gaurded by one password
+export NEW_RELIC_API_KEY={{ range (onepassword "eehrc6lejvajtfcpejah3e5uem").fields -}}
+                          {{   if (eq .id "credential") -}}
+                          {{     .value -}}
+                          {{   end -}}
+                          {{ end }}
+{{ end }}
+
