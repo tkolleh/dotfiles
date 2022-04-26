@@ -44,8 +44,7 @@ zpm load                         \
 # Load some OMZ plugins and theme
 zpm load                  \
   @omz/git                \
-  @omz/colored-man-pages  \
-  @omz/aliases
+  @omz/colored-man-pages
 
 # Plugins for local host
 zpm if-not ssh load                                   \
@@ -137,7 +136,7 @@ function zvm_after_init() {
 zpm load @github/jeffreytse/zsh-vi-mode
 
 if (( ${+commands[delta]} )); then
-  export BATDIFF_USE_DELTA=true
+  export BATDIFF_USE_DELTA=false
 fi
 
 # The next line updates PATH for the Google Cloud SDK.
