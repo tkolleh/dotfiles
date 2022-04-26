@@ -249,6 +249,11 @@ function updatezshcustom() {
   done
 }
 
+function fzfa() {
+  alias | bat --paging=never -n -f -l bash | fzf --ansi
+}
+
+
 # Check if the function exists (bash specific)
 #[ -z "$1" ] || {
 #  if declare -f "$1" > /dev/null

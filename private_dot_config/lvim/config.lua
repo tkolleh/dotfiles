@@ -13,6 +13,8 @@ lvim.log.level = "debug"
 lvim.format_on_save = true
 vim.o.timeoutlen = 700
 
+vim.opt_global.shortmess:remove("F")
+
 -- code folding
 vim.o.foldenable = true
 vim.o.foldlevel = 2
