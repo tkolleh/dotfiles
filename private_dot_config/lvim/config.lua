@@ -29,12 +29,63 @@ lvim.builtin.lualine.style = "default" -- or "none"
 lvim.builtin.lualine.options = {
   theme = 'material',
 }
+local function metals_status()
+  return vim.g["metals_status"] or ""
+end
 
+local components = require("lvim.core.lualine.components")
+lvim.builtin.lualine.sections.lualine_x = {
+  components.encoding,
+  components.filetype,
+}
+lvim.builtin.lualine.sections.lualine_y = {
+  components.progress,
+  metals_status,
+}
 
--- TODO: User Config for predefined plugins
--- After changing plugin config exit and reopen LunarVim, Run :PackerInstall :PackerCompile
+--  -- Optional core plugins
 lvim.builtin.dashboard.active = true
 lvim.builtin.terminal.active = true
+
+require("user.dap").config(true)
+
+--  -- Telescope configuration
+--  -- WIP for better configuration: https://github.com/LunarVim/LunarVim/issues/2426
+lvim.builtin.telescope.on_config_done = function(tele)
+  local opts = {
+    pickers = {
+      find_files = {
+        find_command = { "fd", "--type=file", "--hidden", "--smart-case", "--strip-cwd-prefix" },
+      },
+      live_grep = {
+        --@usage don't include the filename in the search results
+        only_sort_text = true,
+      },
+    },
+    defaults = {
+      file_ignore_patterns = { "target", "node_modules", "parser.c", "out", "%.min.js" },
+      prompt_prefix = "❯",
+      sorting_strategy = "ascending",
+      layout_strategy = "horizontal",
+      layout_config = {
+          horizontal = {
+              prompt_position = "top",
+              preview_width = 0.55,
+              results_width = 0.8,
+          },
+          vertical = {
+              mirror = false,
+          },
+          width = 0.87,
+          height = 0.80,
+          preview_cutoff = 120,
+      },
+    },
+  }
+  tele.setup(opts)
+end
+
+--  -- Nvim tree configuration
 lvim.builtin.nvimtree.setup.view.side = "left"
 lvim.builtin.nvimtree.show_icons.git = 0
 
@@ -142,49 +193,46 @@ lvim.plugins = {
    {'christoomey/vim-tmux-navigator'},
 
 --   -- Custom Quickfix window
-    {
+   {
       "kevinhwang91/nvim-bqf",
       event = { "BufRead", "BufNew" },
       config = function()
-      require("bqf").setup({
-              auto_enable = true,
-              preview = {
+        require("bqf").setup({
+            auto_enable = true,
+            preview = {
               win_height = 12,
               win_vheight = 12,
               delay_syntax = 80,
               border_chars = { "┃", "┃", "━", "━", "┏", "┓", "┗", "┛", "█" },
-              },
-              func_map = {
+            },
+            func_map = {
               vsplit = "",
               ptogglemode = "z,",
               stoggleup = "",
-              },
-              filter = {
+            },
+            filter = {
               fzf = {
-              action_for = { ["ctrl-s"] = "split" },
-              extra_opts = { "--bind", "ctrl-o:toggle-all", "--prompt", "> " },
+                action_for = { ["ctrl-s"] = "split" },
+                extra_opts = { "--bind", "ctrl-o:toggle-all", "--prompt", "> " },
               },
-              },
-              })
+            },
+        })
       end,
     },
 
 --  -- Telescope symbols populator
-  {'nvim-telescope/telescope-symbols.nvim'},
+  -- {'nvim-telescope/telescope-symbols.nvim'},
 
+--  -- Debugger UI
+    {
+      "rcarriga/nvim-dap-ui",
+      config = function()
+        require('dapui').setup()
+        lvim.builtin.which_key.mappings["dv"] = { "<cmd>lua require 'dapui'.toggle()<cr>", "Toggle Sidebar" }
+      end,
+    },
 
 --  end additional plugins bloc
-}
-
--- Autocommands (https://neovim.io/doc/user/autocmd.html)
--- lvim.autocommands.custom_groups = {
---   { "BufWinEnter", "*.lua", "setlocal ts=8 sw=8" },
--- }
-
--- Metals configuration
--- https://github.com/LunarVim/lunarvim.org/blob/1b2f36dcdb5cd1e4e1a9db34b538246bb0a47494/docs/languages/scala.md
-lvim.autocommands.custom_groups = {
-  { "FileType", "java,scala,sbt", "lua require('user.metals').config()" }
 }
 
 -- keymappings [view all the defaults by pressing <leader>Lk]
