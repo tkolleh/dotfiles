@@ -31,6 +31,8 @@ eval "$(/opt/homebrew/bin/brew shellenv)"
 # eval "$(/usr/local/bin/brew shellenv)"
 {{ end }}
 
+FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
+
 export CURL_HOME="$(brew --prefix curl)"
 
 export ICLOUD_DIR="{{ .chezmoi.homeDir }}/Library/Mobile Documents/com~apple~CloudDocs/"
