@@ -39,9 +39,9 @@ __alias gcd "git checkout development"
 
 # -- miscellaneous --------------------------------------------------
 
-__alias rg "rg --smart-case"
-__alias ranger "TERM=xterm-256color ranger"
-__alias fx "NODE_PATH=`npm root -g` fx"
+alias rg="$(brew --prefix rg)/bing/rg --smart-case"
+alias ranger="TERM=xterm-256color $(brew --prefix ranger)/bin/ranger"
+alias fx="NODE_PATH=`npm root -g` fx"
 
 # Reloads the configuration.
 if [ -n "$ZSH_VERSION" ]; then
