@@ -40,7 +40,7 @@ __alias gcd "git checkout development"
 # -- miscellaneous --------------------------------------------------
 
 alias rg="$(brew --prefix rg)/bing/rg --smart-case"
-alias ranger="TERM=xterm-256color $(brew --prefix ranger)/bin/ranger"
+alias ranger="TERM=xterm-256color $(brew --prefix ranger)/bin/ranger --choosedir=$HOME/.rangerdir"
 alias fx="NODE_PATH=`npm root -g` fx"
 
 # Reloads the configuration.
