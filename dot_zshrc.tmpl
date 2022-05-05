@@ -169,7 +169,7 @@ eval "$(starship init zsh)"
 # The default command is `z` the `--cmd cd` option replaces `cd` 
 # command.
 if (( ${+commands[zoxide]} )); then
-  eval "$(zoxide init --cmd cd zsh)"
+  eval "$(zoxide init zsh)"
   export _ZO_ECHO=1
 fi
 
