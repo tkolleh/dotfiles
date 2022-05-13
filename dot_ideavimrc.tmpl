@@ -1,5 +1,3 @@
-source {{ .chezmoi.homeDir }}/.config/nvim/_alt_init.vim
-
 set visualbell
 set noerrorbells
 set surround
@@ -7,6 +5,23 @@ set commentary
 set ideajoin
 set NERDTree
 set which-key
+
+" Map <C-L> (redraw screen) to also turn off search highlighting until the
+" next search
+" 
+nnoremap <leader>h :nohl<CR><C-L>
+
+" map jk to <ESC> when in insert mode
+inoremap jk <Esc>
+
+" quick movements
+inoremap II <Esc>I
+inoremap AA <Esc>A
+inoremap OO <Esc>O
+
+" search highlighted text
+vnoremap // y/<C-R>"<CR>
+
 
 " disable the timeout option
 " set notimeout
