@@ -142,6 +142,8 @@ lvim.plugins = {
         require("user.metals").config()
       end,
     },
+--  -- Thrift syntax plugin
+    { "solarnz/thrift.vim" },
 --  -- Manage git via Vim
     {
       "tpope/vim-fugitive",
@@ -168,13 +170,9 @@ lvim.plugins = {
       "ruifm/gitlinker.nvim",
       event = "BufRead",
       requires = "nvim-lua/plenary.nvim",
-      -- opts = {
-      --   -- callback for what to do with the url
-      --   action_callback = require"gitlinker.actions".copy_to_clipboard,
-      -- },
-      -- callbacks = {
-      --   ["code.corp.creditkarma.com"] = require"gitlinker.hosts".get_github_type_url
-      -- },
+      config = function()
+        require("user.gitlinker").config()
+      end
     },
 
 --  -- Custom search
