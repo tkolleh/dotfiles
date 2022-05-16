@@ -144,27 +144,6 @@ lvim.plugins = {
     },
 --  -- Thrift syntax plugin
     { "solarnz/thrift.vim" },
---  -- Manage git via Vim
-    {
-      "tpope/vim-fugitive",
-      cmd = {
-        "G",
-        "Git",
-        "Gdiffsplit",
-        "Gread",
-        "Gwrite",
-        "Ggrep",
-        "GMove",
-        "GDelete",
-        "GBrows e",
-        "GRemove",
-        "GRename",
-        "Glgrep",
-        "Gedit"
-      },
-      ft = {"fugitive"}
-    },
-
 --  -- Permalinks to git web hosts
     {
       "ruifm/gitlinker.nvim",
@@ -174,7 +153,6 @@ lvim.plugins = {
         require("user.gitlinker").config()
       end
     },
-
 --  -- Custom search
     {
       "windwp/nvim-spectre",
@@ -183,7 +161,6 @@ lvim.plugins = {
         require("spectre").setup()
       end,
     },
-
 --   -- keybindings
    {'tpope/vim-unimpaired'},
 
@@ -231,6 +208,11 @@ lvim.plugins = {
     },
 
 --  end additional plugins bloc
+}
+
+--Metals configuration
+lvim.autocommands.custom_groups = {
+  { "FileType", "scala,sbt,sc", "lua require('user.metals').config()" }
 }
 
 -- keymappings [view all the defaults by pressing <leader>Lk]
