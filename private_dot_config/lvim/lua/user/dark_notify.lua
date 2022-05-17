@@ -5,7 +5,7 @@ M.config = function()
     schemes = {
       -- you can use a different colorscheme for each
       dark  = {
-        colorscheme = "vscode",
+        colorscheme = "tokyonight",
         background = "dark",
        },
       light = {
@@ -18,11 +18,14 @@ M.config = function()
       -- this is called at startup and every time dark mode is switched,
       -- either via the OS, or because you manually set/toggled the mode.
       -- mode is either "light" or "dark"
-
-      lvim.colorscheme = "vscode"
-      vim.g.vscode_style = mode
-      vim.g.vscode_italic_comment = 1
-      vim.o.background = mode
+      if mode == "dark" then
+        vim.g.tokyonight_style = "night"
+      else
+        lvim.colorscheme = "vscode"
+        vim.g.vscode_style = mode
+        vim.g.vscode_italic_comment = 1
+        vim.o.background = mode
+      end
     end,
   })
 end

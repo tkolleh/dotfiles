@@ -1,5 +1,11 @@
-.metals
 .env
+
+# Metals
+.bloop
+.metals 
+.bsp
+project/metals.sbt
+.metals
 
 # asdf local tool versions
 .tool-versions
