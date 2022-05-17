@@ -11,6 +11,7 @@ an executable
 -- general
 lvim.log.level = "debug"
 lvim.format_on_save = true
+vim.o.wrap = true
 vim.o.timeoutlen = 700
 vim.o.laststatus = 3
 
@@ -88,6 +89,7 @@ end
 --  -- Nvim tree configuration
 lvim.builtin.nvimtree.setup.view.side = "left"
 lvim.builtin.nvimtree.show_icons.git = 0
+vim.g["nvim_tree_highlight_opened_files"] = 2
 
 -- if you don't want all the parsers change this to a table of the ones you want
 lvim.builtin.treesitter.ensure_installed = {
@@ -153,12 +155,32 @@ lvim.plugins = {
         require("user.gitlinker").config()
       end
     },
+--  -- Git wrapper in vim
+    {
+      "tpope/vim-fugitive",
+      cmd = {
+        "G",
+        "Git",
+        "Gdiffsplit",
+        "Gread",
+        "Gwrite",
+        "Ggrep",
+        "GMove",
+        "GDelete",
+        "GBrowse",
+        "GRemove",
+        "GRename",
+        "Glgrep",
+        "Gedit"
+      },
+      ft = {"fugitive"}
+    },
 --  -- Custom search
     {
       "windwp/nvim-spectre",
       event = "BufRead",
       config = function()
-        require("spectre").setup()
+        require("user.spectre").config()
       end,
     },
 --   -- keybindings
@@ -194,10 +216,6 @@ lvim.plugins = {
         })
       end,
     },
-
---  -- Telescope symbols populator
-  -- {'nvim-telescope/telescope-symbols.nvim'},
-
 --  -- Debugger UI
     {
       "rcarriga/nvim-dap-ui",
@@ -205,6 +223,28 @@ lvim.plugins = {
         require('dapui').setup()
         lvim.builtin.which_key.mappings["dv"] = { "<cmd>lua require 'dapui'.toggle()<cr>", "Toggle Sidebar" }
       end,
+    },
+--  -- Show context of current scope e.g. function, class, etc...
+    {
+      "romgrk/nvim-treesitter-context",
+      config = function()
+        require("treesitter-context").setup{
+          enable = true, -- Enable this plugin (Can be enabled/disabled later via commands)
+          throttle = true, -- Throttles plugin updates (may improve performance)
+          max_lines = 0, -- How many lines the window should span. Values <= 0 mean no limit.
+          patterns = { -- Match patterns for TS nodes. These get wrapped to match at word boundaries.
+            -- For all filetypes
+            -- Note that setting an entry here replaces all other patterns for this entry.
+            -- By setting the 'default' entry below, you can control which nodes you want to
+            -- appear in the context window.
+            default = {
+              'class',
+              'function',
+              'method',
+            },
+          },
+        }
+      end
     },
 
 --  end additional plugins bloc
@@ -223,11 +263,3 @@ lvim.leader = "space"
 
 ---- search highlighted text
 lvim.keys.visual_mode["//"] = 'y/<C-R>"<CR>'
-
-
-lvim.builtin.which_key.mappings["x"] = {
-  name = "+ripgrep search",
-  f = { "<cmd>lua require('spectre').open()<cr>", "files" },
-  s = { "<cmd>lua require('spectre').open_file_search()<cr>", "buffer" },
-  w = { "<cmd>lua require('spectre').open_visual({select_word=true})<cr>", "word" },
-}
