@@ -1,7 +1,8 @@
 local M = {}
 
 M.config = function()
-  require('dark_notify').run({
+  local dn = require('dark_notify')
+  dn.run({
     schemes = {
       -- you can use a different colorscheme for each
       dark  = {
@@ -28,5 +29,8 @@ M.config = function()
       end
     end,
   })
+  dn.update()
+
+  vim.api.nvim_set_keymap('n', '<F5>', [[<Cmd>lua require'dark_notify'.toggle()<CR>]], { noremap = true, silent = true })
 end
 return M

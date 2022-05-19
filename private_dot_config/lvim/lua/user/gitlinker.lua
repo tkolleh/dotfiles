@@ -22,8 +22,17 @@ M.config = function ()
     -- default mapping to call url generation with action_callback
     mappings = nil
   })
-  lvim.builtin.which_key.mappings['gy'] = {'<cmd>lua require("gitlinker").get_buf_range_url("n", {action_callback = require"gitlinker.actions".copy_to_clipboard})<cr>', "Copy gitlink"}
-  lvim.keys.visual_mode['gy'] = '<cmd>lua require("gitlinker").get_buf_range_url("v", {action_callback = require"gitlinker.actions".copy_to_clipboard})<cr>'
+  lvim.builtin.which_key.mappings['gy'] = {
+    '<cmd>lua require("gitlinker").get_buf_range_url("n", {action_callback = require"gitlinker.actions".copy_to_clipboard})<cr>',
+    "Copy gitlink"
+  }
+
+  vim.api.nvim_set_keymap(
+    'v',
+    'gy',
+    [[<cmd>lua require("gitlinker").get_buf_range_url("v", {action_callback = require"gitlinker.actions".copy_to_clipboard})<cr>]],
+    { noremap = true, silent = true }
+  )
 end
 
 return M
