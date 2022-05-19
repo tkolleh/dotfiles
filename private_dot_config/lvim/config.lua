@@ -15,8 +15,6 @@ vim.o.wrap = true
 vim.o.timeoutlen = 700
 vim.o.laststatus = 3
 
-vim.opt_global.shortmess:remove("F")
-
 -- code folding
 vim.o.foldenable = true
 vim.o.foldlevel = 2
@@ -30,9 +28,6 @@ lvim.builtin.lualine.style = "default" -- or "none"
 lvim.builtin.lualine.options = {
   theme = 'material',
 }
-local function metals_status()
-  return vim.g["metals_status"] or ""
-end
 
 local components = require("lvim.core.lualine.components")
 lvim.builtin.lualine.sections.lualine_x = {
@@ -41,11 +36,10 @@ lvim.builtin.lualine.sections.lualine_x = {
 }
 lvim.builtin.lualine.sections.lualine_y = {
   components.progress,
-  metals_status,
 }
 
 --  -- Optional core plugins
-lvim.builtin.dashboard.active = true
+lvim.builtin.alpha.mode = "startify"
 lvim.builtin.terminal.active = true
 
 require("user.dap").config(true)
@@ -132,7 +126,7 @@ lvim.plugins = {
 --  -- Change colorscheme based on OS
     {
       "cormacrelf/dark-notify",
-      requires = "Mofiqul/vscode.nvim",
+      requires = {"Mofiqul/vscode.nvim", "folke/tokyonight.nvim"},
       config = function()
         require("user.dark_notify").config()
       end
