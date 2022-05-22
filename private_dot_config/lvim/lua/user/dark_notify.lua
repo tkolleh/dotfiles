@@ -20,6 +20,7 @@ M.config = function()
       -- either via the OS, or because you manually set/toggled the mode.
       -- mode is either "light" or "dark"
       if mode == "dark" then
+        lvim.colorscheme = "tokyonight"
         vim.g.tokyonight_style = "night"
       else
         lvim.colorscheme = "vscode"
