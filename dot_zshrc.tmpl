@@ -151,6 +151,10 @@ if [[ -a "$HOME"/.bash_functions ]]; then
     source "$HOME"/.bash_functions
 fi
 
+if [[ -a "$HOME"/.host_functions ]]; then
+    source "$HOME"/.host_functions
+fi
+
 # TODO: move to aliases (zshell specific dir)
 # Load alias definitions from separate configuration file.
 if [[ -a "$HOME"/.bash_aliases ]]; then
