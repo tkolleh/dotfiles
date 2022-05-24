@@ -238,6 +238,7 @@ lvim.builtin.lualine.options = {
 
 local components = require("lvim.core.lualine.components")
 lvim.builtin.lualine.sections.lualine_x = {
+ components.diagnostics,
  components.encoding,
  components.filetype,
 }

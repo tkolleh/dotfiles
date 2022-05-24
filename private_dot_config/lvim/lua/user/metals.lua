@@ -14,7 +14,7 @@ M.config = function()
   }
   metals_config.settings = {
     disabledMode = false,
-    bloopSbtAlreadyInstalled = true,
+    bloopSbtAlreadyInstalled = false,
     ammoniteJvmProperties = {
       "-Xmx2G", "-Xms256M"
     },
