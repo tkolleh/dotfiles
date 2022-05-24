@@ -1,41 +1,57 @@
 local M = {}
 
-M.config = function(is_enable)
-  if not is_enable then
-    return
+M.config = function()
+  lvim.builtin.dap.on_config_done = function(dap)
+    print("bufferline: " .. vim.inspect(dap ~= nil))
+    dap.configurations.scala = {
+    {
+      type = "scala",
+      request = "launch",
+      name = "RunOrTest",
+      metals = {
+        runType = "runOrTestFile",
+        --args = { "firstArg", "secondArg", "thirdArg" }, -- here just as an example
+      },
+    },
+    {
+      type = "scala",
+      request = "launch",
+      name = "Test Target",
+      metals = {
+        runType = "testTarget",
+      },
+    },
+  }
+  -- Setup dap UI
+  local dapui = require('dapui')
+  dapui.setup()
+
+  -- Use nvim-dap events to open and close the dapui automatically
+  dap.listeners.after.event_initialized["dapui_config"] = function()
+    dapui.open()
   end
-  lvim.builtin.dap.active = is_enable
-  -- local dap_config = require("lvim.core.dap").configurations
-  -- dap_config.scala = {
-  --   {
-  --     type = "scala",
-  --     request = "launch",
-  --     name = "RunOrTest",
-  --     metals = {
-  --       runType = "runOrTestFile",
-  --       --args = { "firstArg", "secondArg", "thirdArg" }, -- here just as an example
-  --     },
-  --   },
-  --   {
-  --     type = "scala",
-  --     request = "launch",
-  --     name = "Test Target",
-  --     metals = {
-  --       runType = "testTarget",
-  --     },
-  --   },
-  -- }
-  vim.api.nvim_set_keymap('n', '<F7>', [[<Cmd>lua require'dap'.continue()<CR>]], { noremap = true, silent = true })
-  vim.api.nvim_set_keymap('n', '<F3>', [[<Cmd>lua require'dap'.terminate()<CR>]], { noremap = true, silent = true })
-  vim.api.nvim_set_keymap('n', '<F4>', [[<Cmd>lua require'dap'.terminate(); require'dap'.run_last()<CR>]], { noremap = true, silent = true })
-  vim.api.nvim_set_keymap('n', '<F6>', [[<Cmd>lua require'dap'.pause()<CR>]], { noremap = true, silent = true })
-  vim.api.nvim_set_keymap('n', '<F9>', [[<Cmd>lua require'dap'.toggle_breakpoint()<CR>]], { noremap = true, silent = true })
-  -- TODO: conditional breakpoints
-  vim.api.nvim_set_keymap('n', '<F8>', [[<Cmd>lua require'dap'.run_to_cursor()<CR>]], { noremap = true, silent = true })
-  vim.api.nvim_set_keymap('n', '<F10>', [[<Cmd>lua require'dap'.step_over()<CR>]], { noremap = true, silent = true })
-  vim.api.nvim_set_keymap('n', '<F11>', [[<Cmd>lua require'dap'.step_into()<CR>]], { noremap = true, silent = true })
-  vim.api.nvim_set_keymap('n', '<F12>', [[<Cmd>lua require'dap'.step_out()<CR>]], { noremap = true, silent = true })
-  -- TODO: more debug commands https://github.com/mfussenegger/nvim-dap/blob/9b8c27d6dcc21b69834fe9c2d344e49030783390/doc/dap.txt#L460
+  dap.listeners.before.event_terminated["dapui_config"] = function()
+    dapui.close()
+  end
+  dap.listeners.before.event_exited["dapui_config"] = function()
+    dapui.close()
+  end
+
+  end
+
+  -- Autocomplete repl commands, see :h dap-completion
+   local nvim_dap_group = vim.api.nvim_create_augroup("nvim-dap", { clear = true })
+   vim.api.nvim_create_autocmd("FileType", {
+     pattern = { "dap-repl" },
+     callback = function()
+       require('dap.ext.autocompl').attach()
+     end,
+     group = nvim_dap_group,
+   })
+
+  --  dapui keybindings
+  lvim.builtin.which_key.mappings["dv"] = { "<cmd>lua require 'dapui'.toggle()<cr>", "Toggle Sidebar" }
+  lvim.builtin.which_key.mappings["de"] = { "<cmd>lua require 'dapui'.eval()<cr>", "Evaluate" }
 end
 
 return M
