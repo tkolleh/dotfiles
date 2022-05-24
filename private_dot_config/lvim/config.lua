@@ -23,20 +23,6 @@ vim.o.foldcolumn = "2"
 vim.o.foldmethod = "expr"
 vim.o.foldexpr = "nvim_treesitter#foldexpr()"
 
--- status line (lualine)
-lvim.builtin.lualine.style = "default" -- or "none"
-lvim.builtin.lualine.options = {
-  theme = 'material',
-}
-
-local components = require("lvim.core.lualine.components")
-lvim.builtin.lualine.sections.lualine_x = {
-  components.encoding,
-  components.filetype,
-}
-lvim.builtin.lualine.sections.lualine_y = {
-  components.progress,
-}
 
 --  -- Optional core plugins
 lvim.builtin.alpha.mode = "startify"
@@ -244,9 +230,22 @@ lvim.plugins = {
 --  end additional plugins bloc
 }
 
---Metals configuration
-lvim.autocommands.custom_groups = {
-  { "FileType", "scala,sbt,sc", "lua require('user.metals').config()" }
+-- status line (lualine)
+lvim.builtin.lualine.style = "default" -- or "none"
+lvim.builtin.lualine.options = {
+  theme = 'material',
+}
+
+local components = require("lvim.core.lualine.components")
+lvim.builtin.lualine.sections.lualine_x = {
+ components.encoding,
+ components.filetype,
+}
+
+local metals_status = require("user.metals").metals_status
+lvim.builtin.lualine.sections.lualine_y = {
+ components.progress,
+ metals_status(),
 }
 
 -- keymappings [view all the defaults by pressing <leader>Lk]
