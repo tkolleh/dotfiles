@@ -27,8 +27,9 @@ vim.o.foldexpr = "nvim_treesitter#foldexpr()"
 --  -- Optional core plugins
 lvim.builtin.alpha.mode = "startify"
 lvim.builtin.terminal.active = true
-
-require("user.dap").config(true)
+lvim.builtin.cmp.completion.keyword_length = 2
+lvim.builtin.telescope.defaults.layout_config.width = 0.95
+lvim.builtin.dap.active = true -- (default: false)
 
 --  -- Telescope configuration
 --  -- WIP for better configuration: https://github.com/LunarVim/LunarVim/issues/2426
@@ -68,6 +69,7 @@ end
 
 --  -- Nvim tree configuration
 lvim.builtin.nvimtree.setup.view.side = "left"
+lvim.builtin.nvimtree.setup.view.width = "25%"
 lvim.builtin.nvimtree.show_icons.git = 0
 vim.g["nvim_tree_highlight_opened_files"] = 2
 
@@ -117,15 +119,6 @@ lvim.plugins = {
         require("user.dark_notify").config()
       end
     },
---  -- Scala LSP
-    {
-      "scalameta/nvim-metals",
-      config = function()
-        require("user.metals").config()
-      end,
-    },
---  -- Thrift syntax plugin
-    { "solarnz/thrift.vim" },
 --  -- Permalinks to git web hosts
     {
       "ruifm/gitlinker.nvim",
@@ -196,14 +189,6 @@ lvim.plugins = {
         })
       end,
     },
---  -- Debugger UI
-    {
-      "rcarriga/nvim-dap-ui",
-      config = function()
-        require('dapui').setup()
-        lvim.builtin.which_key.mappings["dv"] = { "<cmd>lua require 'dapui'.toggle()<cr>", "Toggle Sidebar" }
-      end,
-    },
 --  -- Show context of current scope e.g. function, class, etc...
     {
       "romgrk/nvim-treesitter-context",
@@ -226,7 +211,22 @@ lvim.plugins = {
         }
       end
     },
-
+--  -- Debugger UI
+    {
+      "rcarriga/nvim-dap-ui",
+      config = function()
+        require("user.dap").config()
+      end,
+    },
+--  -- Scala LSP
+    {
+      "scalameta/nvim-metals",
+      config = function()
+        require("user.metals").config()
+      end,
+    },
+--  -- Thrift syntax plugin
+    { "solarnz/thrift.vim" },
 --  end additional plugins bloc
 }
 
