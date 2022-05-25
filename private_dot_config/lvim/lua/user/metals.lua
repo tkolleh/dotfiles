@@ -72,7 +72,6 @@ end
 
 M.metals_status = function()
   local conditions = require("lvim.core.lualine.conditions")
-  local m_status = vim.pretty_print(vim.g["metals_status"]) or {}
   local status = {
     "g:metals_status",
     icon = "",
