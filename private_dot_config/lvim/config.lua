@@ -214,9 +214,9 @@ lvim.plugins = {
 --  -- Debugger UI
     {
       "rcarriga/nvim-dap-ui",
-      config = function()
-        require("user.dap").config()
-      end,
+      config = function ()
+        require('dapui').setup()
+      end
     },
 --  -- Scala LSP
     {
@@ -227,13 +227,17 @@ lvim.plugins = {
     },
 --  -- Thrift syntax plugin
     { "solarnz/thrift.vim" },
+
 --  end additional plugins bloc
 }
+
+-- Configure nvim-dap and dap-ui
+require("user.dap").config()
 
 -- status line (lualine)
 lvim.builtin.lualine.style = "default" -- or "none"
 lvim.builtin.lualine.options = {
-  theme = 'material',
+  theme = 'tokyonight',
 }
 
 local components = require("lvim.core.lualine.components")

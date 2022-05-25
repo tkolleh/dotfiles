@@ -24,7 +24,6 @@ M.config = function()
   }
   -- Setup dap UI
   local dapui = require('dapui')
-  dapui.setup()
 
   -- Use nvim-dap events to open and close the dapui automatically
   dap.listeners.after.event_initialized["dapui_config"] = function()
