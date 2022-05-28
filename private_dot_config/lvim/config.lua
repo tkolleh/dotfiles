@@ -10,7 +10,7 @@ an executable
 
 -- general
 lvim.log.level = "debug"
-lvim.format_on_save = true
+lvim.format_on_save = false
 vim.o.wrap = true
 vim.o.timeoutlen = 700
 vim.o.laststatus = 3
@@ -227,12 +227,28 @@ lvim.plugins = {
     },
 --  -- Thrift syntax plugin
     { "solarnz/thrift.vim" },
+--   -- sessiom manager
+    {'Shatur/neovim-session-manager'},
+--   -- vscode-like pictogrms to neovim builtin lsp
+    {'onsails/lspkind.nvim'},
+--   -- Auto save
+    {'Pocco81/AutoSave.nvim'},
+--   -- Delete buffer without rearraging windows
+    {'famiu/bufdelete.nvim'},
 
 --  end additional plugins bloc
 }
 
 -- Configure nvim-dap and dap-ui
 require("user.dap").config()
+
+-- lspkind configuration
+lvim.builtin.cmp.formatting.format = require('lspkind').cmp_format({
+  -- defines how annotations are shown
+  -- default: symbol
+  -- options: 'text', 'text_symbol', 'symbol_text', 'symbol'
+  mode='symbol'
+})
 
 -- status line (lualine)
 lvim.builtin.lualine.style = "default" -- or "none"
