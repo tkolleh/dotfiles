@@ -35,6 +35,10 @@ M.config = function()
   dap.listeners.before.event_exited["dapui_config"] = function()
     dapui.close()
   end
+  dap.listeners.after["event_terminated"]["nvim-metals"] = function()
+    vim.notify("Tests have finished!")
+    dap.repl.open()
+  end
 
   end
 

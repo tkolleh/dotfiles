@@ -21,6 +21,7 @@ M.config = function()
     showImplicitArguments = true,
     showImplicitConversionsAndClasses = true,
     showInferredType = true,
+    superMethodLensesEnabled = true,
     excludedPackages = {
       "akka.actor.typed.javadsl",
       "com.github.swagger.akka.javadsl",
