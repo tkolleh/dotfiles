@@ -6,7 +6,7 @@ M.config = function()
     schemes = {
       -- you can use a different colorscheme for each
       dark  = {
-        colorscheme = "tokyonight",
+        colorscheme = "vscode",
         background = "dark",
        },
       light = {
@@ -25,15 +25,18 @@ M.config = function()
           -- Default is too dark for "night" style
           border = "orange"
         }
+
         -- Color scheme must be set last
-        vim.cmd[[colorscheme tokyonight]]
-        -- lvim.colorscheme = "tokyonight"
+        vim.o.colorscheme = "vscode"
+        lvim.colorscheme = "vscode"
+
       else
         lvim.colorscheme = "vscode"
         vim.g.vscode_style = mode
         vim.g.vscode_italic_comment = 1
-        vim.o.background = mode
       end
+        vim.o.background = mode
+        lvim.background = mode
     end,
   })
   dn.update()

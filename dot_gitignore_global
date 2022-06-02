@@ -6,6 +6,7 @@
 .bsp
 project/metals.sbt
 .metals
+.ammonite
 
 # asdf local tool versions
 .tool-versions
