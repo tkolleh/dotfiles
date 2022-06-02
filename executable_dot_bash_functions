@@ -113,7 +113,10 @@ function fif() {
     echo "Need a string to search for!"
     return 1
   fi
-  rg --files-with-matches --no-messages "$1" | fzf --preview "highlight -O ansi -l {} 2> /dev/null | rg --colors 'match:bg:yellow' --ignore-case --pretty --context 10 '$1' || rg --ignore-case --pretty --context 10 '$1' {}"
+  rg --files-with-matches --no-messages "$1" | fzf \
+    -m \
+    --preview "highlight -O ansi -l {} 2> /dev/null | rg --colors 'match:bg:yellow' --ignore-case --pretty --context 10 '$1' || rg --ignore-case --pretty --context 10 '$1' {}" \
+    --bind="f9:execute:lvim {} < /dev/tty"
 }
 
 # an alternative to the above using ripgrep-all (rga)
@@ -122,7 +125,10 @@ function fid() {
     echo "Need a string to search for!"
     return 1
   fi
-  rga --files-with-matches --no-messages "$1" | fzf --preview "highlight -O ansi -l {} 2> /dev/null | rg --colors 'match:bg:yellow' --ignore-case --pretty --context 10 '$1' || rg --ignore-case --pretty --context 10 '$1' {}"
+  rga --files-with-matches --no-messages "$1" | fzf \
+    -m \
+    --preview "highlight -O ansi -l {} 2> /dev/null | rg --colors 'match:bg:yellow' --ignore-case --pretty --context 10 '$1' || rg --ignore-case --pretty --context 10 '$1' {}" \
+    --bind="f9:execute:lvim {} < /dev/tty"
 }
 
 # fbr - checkout git branch (including remote branches), sorted by most recent commit, limit 30 last branches

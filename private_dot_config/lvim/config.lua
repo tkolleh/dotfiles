@@ -92,6 +92,7 @@ lvim.builtin.treesitter.ensure_installed = {
 lvim.builtin.treesitter.ignore_install = { "haskell" }
 lvim.builtin.treesitter.highlight.enabled = true
 
+lvim.format_on_save = false
 -- set a formatter if you want to override the default lsp one (if it exists)
 local formatters = require "lvim.lsp.null-ls.formatters"
 formatters.setup {
