@@ -12,6 +12,9 @@ an executable
 lvim.log.level = "debug"
 lvim.format_on_save = false
 vim.o.wrap = true
+vim.o.linebreak = true
+vim.o.list = true
+-- vim.o.showbreak = ﬌
 vim.o.timeoutlen = 700
 vim.o.laststatus = 3
 
@@ -28,50 +31,13 @@ vim.o.foldexpr = "nvim_treesitter#foldexpr()"
 lvim.builtin.alpha.mode = "startify"
 lvim.builtin.terminal.active = true
 lvim.builtin.cmp.completion.keyword_length = 2
-lvim.builtin.telescope.defaults.layout_config.width = 0.95
 lvim.builtin.dap.active = true -- (default: false)
-
---  -- Telescope configuration
---  -- WIP for better configuration: https://github.com/LunarVim/LunarVim/issues/2426
-lvim.builtin.telescope.on_config_done = function(tele)
-  local opts = {
-    pickers = {
-      find_files = {
-        find_command = { "fd", "--type=file", "--hidden", "--smart-case", "--strip-cwd-prefix" },
-      },
-      live_grep = {
-        --@usage don't include the filename in the search results
-        only_sort_text = true,
-      },
-    },
-    defaults = {
-      file_ignore_patterns = { "target", "node_modules", "parser.c", "out", "%.min.js" },
-      prompt_prefix = "❯",
-      sorting_strategy = "ascending",
-      layout_strategy = "horizontal",
-      layout_config = {
-          horizontal = {
-              prompt_position = "top",
-              preview_width = 0.55,
-              results_width = 0.8,
-          },
-          vertical = {
-              mirror = false,
-          },
-          width = 0.87,
-          height = 0.80,
-          preview_cutoff = 120,
-      },
-    },
-  }
-  tele.setup(opts)
-end
 
 --  -- Nvim tree configuration
 lvim.builtin.nvimtree.setup.view.side = "left"
 lvim.builtin.nvimtree.setup.view.width = "25%"
 lvim.builtin.nvimtree.show_icons.git = 0
-vim.g["nvim_tree_highlight_opened_files"] = 2
+vim.g.nvim_tree_highlight_opened_files = 2
 
 -- if you don't want all the parsers change this to a table of the ones you want
 lvim.builtin.treesitter.ensure_installed = {
@@ -104,6 +70,9 @@ formatters.setup {
     filetypes = {'scala','sc'},
   },
 }
+
+-- Required for rmagatti/goto-preview plugin
+lvim.keys.normal_mode["gp"] = false -- Disable lunarvim keybinding
 
 -- Additional Plugins
 lvim.plugins = {
@@ -233,17 +202,145 @@ lvim.plugins = {
 --   -- vscode-like pictogrms to neovim builtin lsp
     {'onsails/lspkind.nvim'},
 --   -- Auto save
-    {'Pocco81/AutoSave.nvim'},
+    {
+      'Pocco81/AutoSave.nvim',
+      config = function ()
+        require("autosave").setup({
+          enabled = false,
+          conditions = {
+              exists = true,
+          },
+          write_all_buffers = false,
+      })
+      end,
+    },
 --   -- Delete buffer without rearraging windows
     {'famiu/bufdelete.nvim'},
+--   -- Minimap
+    {
+      'wfxr/minimap.vim',
+      cmd = {"Minimap", "MinimapClose", "MinimapToggle", "MinimapRefresh", "MinimapUpdateHighlight"},
+    },
+--   -- Highlight and search for TODO comments
+    {
+      "folke/todo-comments.nvim",
+      event = "BufRead",
+      config = function()
+        require("todo-comments").setup()
+      end,
+    },
+--   -- Function signature hint while typing
+    {
+      "ray-x/lsp_signature.nvim",
+      event = "BufRead",
+      config = function()
+        require("lsp_signature").setup()
+      end
+    },
+--  -- Prettier lsp builtin peek definition
+--  -- TODO move configuration to separate config file
+    {
+      "rmagatti/goto-preview",
+      config = function()
+        require('goto-preview').setup {
+            width = 120; -- Width of the floating window
+            height = 25; -- Height of the floating window
+            default_mappings = false; -- Bind default mappings
+            debug = false; -- Print debug information
+            opacity = nil; -- 0-100 opacity level of the floating window where 100 is fully transparent.
+            resizing_mappings = false; -- Binds arrow keys to resizing the floating window.
+            post_open_hook = nil; -- A function taking two arguments, a buffer and a window to be ran as a hook.
+
+            -- These two configs can also be passed down to the goto-preview definition and implementation calls for one off "peak" functionality.
+            focus_on_open = true; -- Focus the floating window when opening it.
+            dismiss_on_move = false; -- Dismiss the floating window when moving the cursor.
+        }
+        -- You can use "default_mappings = true" setup option
+        -- Or explicitly set keybindings
+        -- vim.cmd("nnoremap gpd <cmd>lua require('goto-preview').goto_preview_definition()<CR>")
+        -- vim.cmd("nnoremap gpi <cmd>lua require('goto-preview').goto_preview_implementation()<CR>")
+        -- vim.cmd("nnoremap gP <cmd>lua require('goto-preview').close_all_win()<CR>")
+
+        vim.api.nvim_set_keymap('n', 'gp',
+          [[<Cmd>lua require('goto-preview').goto_preview_definition()<CR>]],
+          { noremap = true, silent = true }
+        )
+        vim.api.nvim_set_keymap('n', 'gP',
+          [[<Cmd>lua require('goto-preview').close_all_win()<CR>]],
+          { noremap = true, silent = true }
+        )
+      end
+    },
+--  -- Syntax highlighting for the HOCON language used by JVM config files
+    {'jvirtanen/vim-hocon'},
+
+--  -- Telescope extensions
+    {'nvim-telescope/telescope-dap.nvim'},
 
 --  end additional plugins bloc
 }
+
+--  -- Telescope configuration
+lvim.builtin.telescope.defaults.layout_config.width = 0.95
+
+--  -- minimap configuration
+vim.g.minimap_width = 10
+vim.g.minimap_auto_start = 0
+vim.g.minimap_auto_start_win_enter = 0
+vim.g.minimap_git_colors = 1
+vim.g.minimap_block_filetypes = {'diff', 'nvimtree', 'fugitive', 'nerdtree', 'tagbar', 'fzf'}
+vim.g.minimap_block_buftypes = {'diff', 'nvimtree', 'nofile', 'nowrite', 'quickfix', 'terminal', 'prompt'}
+
+--  -- WIP for better configuration: https://github.com/LunarVim/LunarVim/issues/2426
+lvim.builtin.telescope.on_config_done = function(tele)
+  pcall(tele.load_extension, "dap")
+  local opts = {
+    pickers = {
+      find_files = {
+        find_command = { "fd", "--type=file", "--hidden", "--strip-cwd-prefix" },
+        theme = "dropdown",
+      },
+      live_grep = {
+        --@usage don't include the filename in the search results
+        only_sort_text = true,
+        theme = "dropdown",
+      },
+      buffers = {
+        theme = "dropdown"
+      },
+      oldfiles = {
+        theme = "dropdown"
+      },
+    },
+    defaults = {
+      file_ignore_patterns = { "target", "node_modules", "parser.c", "out", "%.min.js" },
+      prompt_prefix = "❯",
+      sorting_strategy = "ascending",
+      layout_strategy = "horizontal",
+      layout_config = {
+          horizontal = {
+              prompt_position = "top",
+              preview_width = 0.55,
+              results_width = 0.8,
+          },
+          vertical = {
+              mirror = false,
+          },
+          width = 0.87,
+          height = 0.80,
+          preview_cutoff = 120,
+      },
+    },
+  }
+  tele.setup(opts)
+end
+
 
 -- Configure nvim-dap and dap-ui
 require("user.dap").config()
 
 -- lspkind configuration
+---- TODO not sure this is working
 lvim.builtin.cmp.formatting.format = require('lspkind').cmp_format({
   -- defines how annotations are shown
   -- default: symbol
