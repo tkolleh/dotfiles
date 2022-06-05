@@ -1,7 +1,7 @@
 # Timeout for commands executed by starship (in milliseconds)
 add_newline = true
 scan_timeout = 10
-command_timeout = 550
+command_timeout = 150
 
 [character]
 success_symbol = ""

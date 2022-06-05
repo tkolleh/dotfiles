@@ -2,7 +2,7 @@ local M = {}
 
 M.config = function()
   lvim.builtin.dap.on_config_done = function(dap)
-    print("bufferline: " .. vim.inspect(dap ~= nil))
+    -- print("bufferline: " .. vim.inspect(dap ~= nil))
     dap.configurations.scala = {
     {
       type = "scala",
@@ -52,9 +52,13 @@ M.config = function()
      group = nvim_dap_group,
    })
 
-  --  dapui keybindings
+  --  dap and dapui keybindings
   lvim.builtin.which_key.mappings["dv"] = { "<cmd>lua require 'dapui'.toggle()<cr>", "Toggle Sidebar" }
   lvim.builtin.which_key.mappings["de"] = { "<cmd>lua require 'dapui'.eval()<cr>", "Evaluate" }
+  lvim.builtin.which_key.mappings["dl"] = {
+    "<cmd>lua require 'telescope'.extensions.dap.list_breakpoints{}<cr>",
+    "list breakpoints"
+  }
 end
 
 return M
