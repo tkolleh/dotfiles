@@ -6,10 +6,12 @@ set ideajoin
 set NERDTree
 set which-key
 
+" Map leader key
+let mapleader=" "
+
 " Map <C-L> (redraw screen) to also turn off search highlighting until the
 " next search
-" 
-nnoremap <leader>h :nohl<CR><C-L>
+nnoremap <Leader>h :nohl<CR><C-L>
 
 " map jk to <ESC> when in insert mode
 inoremap jk <Esc>
@@ -37,16 +39,10 @@ set clipboard+=unnamed
 nnoremap <Leader>e :NERDTreeFind<CR>
 
 " Open project view with file selected
-" nnoremap <Leader>- :action SelectInProjectView<CR>
+" nnoremap <Leader>e :action SelectInProjectView<CR>
 
 nnoremap <Leader>rn :action RenameElement<CR>
 nnoremap <Leader>fp :action Tool_External Tools_darker<CR>
-
-" similar to nvim dap configuration
-"
-nnoremap <Leader>b :action ToggleLineBreakpoint<CR>
-" nnoremap <Leader>dl :action EditorPopupMenuDebug<CR>
-
 
 nnoremap <Leader><C-h> :action TypeHierarchy<CR>
 
@@ -60,8 +56,20 @@ nnoremap [c :action VcsShowPrevChangeMarker<CR>
 "nnoremap [c :action Diff.PrevChange<CR>
 
 
-" nvim-lsp configu mappings
+" nvim-lsp config mappings
 "
-" Go to references
-nnoremap gr :action FindUsages
+nnoremap gr :action FindUsages<CR>
+nnoremap gI :action GotoImplementation<CR>
+nnoremap gD :action GotoDeclaration<CR>
+nnoremap <Leader>ls :action FileStructurePopup<CR>
+nnoremap gp :action QuickImplementations<CR>
+nnoremap <Leader>lj :action GotoNextError<CR>
+nnoremap <Leader>lk :action GotoPreviousError<CR>
+
+" similar to nvim dap configuration
+"
+nnoremap <Leader>dt :action ToggleLineBreakpoint<CR>
+nnoremap <Leader>dl :action EditorPopupMenuDebug<CR>
+nnoremap <Leader>ds :action Debug<CR>
+nnoremap <Leader>de :action Debugger.EvaluationDialogPopup<CR>
 

@@ -14,7 +14,6 @@ lvim.format_on_save = false
 vim.o.wrap = true
 vim.o.linebreak = true
 vim.o.list = true
--- vim.o.showbreak = ﬌
 vim.o.timeoutlen = 700
 vim.o.laststatus = 3
 
@@ -234,7 +233,10 @@ lvim.plugins = {
       "ray-x/lsp_signature.nvim",
       event = "BufRead",
       config = function()
-        require("lsp_signature").setup()
+        require("lsp_signature").setup({
+          always_trigger = false,
+          timer_interval = 500,
+      })
       end
     },
 --  -- Prettier lsp builtin peek definition
@@ -345,7 +347,7 @@ lvim.builtin.cmp.formatting.format = require('lspkind').cmp_format({
   -- defines how annotations are shown
   -- default: symbol
   -- options: 'text', 'text_symbol', 'symbol_text', 'symbol'
-  mode='symbol'
+  mode='text_symbol'
 })
 
 -- status line (lualine)
