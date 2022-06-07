@@ -40,7 +40,11 @@ M.config = function()
   metals_config.init_options.statusBarProvider = "on"
 
   local capabilities = vim.lsp.protocol.make_client_capabilities()
-  metals_config.capabilities = require("cmp_nvim_lsp").update_capabilities(capabilities)
+  local status_ok, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
+  if status_ok then
+    capabilities = cmp_nvim_lsp.update_capabilities(capabilities)
+    metals_config.capabilities = capabilities
+  end
 
   metals_config.on_attach = function(client, bufnr)
     require("lvim.lsp").common_on_attach(client, bufnr)
