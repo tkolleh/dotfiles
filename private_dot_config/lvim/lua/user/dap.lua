@@ -11,6 +11,12 @@ M.config = function()
       metals = {
         runType = "runOrTestFile",
         --args = { "firstArg", "secondArg", "thirdArg" }, -- here just as an example
+        -- jvmOptions = { "-Dpropert=123" },
+        env = {
+          "ACTIVE_PROFILE=feature-resolver",
+          "DEPLOYMENT_ZONE=member",
+        },
+        envFile = ".env",
       },
     },
     {
@@ -19,6 +25,13 @@ M.config = function()
       name = "Test Target",
       metals = {
         runType = "testTarget",
+        --args = { "firstArg", "secondArg", "thirdArg" }, -- here just as an example
+        -- jvmOptions = { "-Dpropert=123" },
+        env = {
+          "ACTIVE_PROFILE=feature-resolver",
+          "DEPLOYMENT_ZONE=member",
+        },
+        envFile = ".env",
       },
     },
   }
@@ -59,6 +72,19 @@ M.config = function()
     "<cmd>lua require 'telescope'.extensions.dap.list_breakpoints{}<cr>",
     "list breakpoints"
   }
+end
+
+
+M.dap_status = function()
+  local conditions = require("lvim.core.lualine.conditions")
+  local ds = require("dap").status()
+  local status = {
+    ds,
+    icon = "🦟",
+    color = { gui = "bold" },
+    cond = conditions.hide_in_width,
+  }
+  return status
 end
 
 return M
