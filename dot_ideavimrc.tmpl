@@ -55,6 +55,11 @@ nnoremap [c :action VcsShowPrevChangeMarker<CR>
 "nnoremap ]c :action Diff.NextChange<CR>
 "nnoremap [c :action Diff.PrevChange<CR>
 
+" similar to nvim telescope config
+"
+nnoremap <Leader>sr :action RecentFiles<CR>
+nnoremap <Leader>sf :action GotoFile<CR>
+nnoremap <Leader>sf :action FindInPath<CR>
 
 " nvim-lsp config mappings
 "
@@ -65,6 +70,7 @@ nnoremap <Leader>ls :action FileStructurePopup<CR>
 nnoremap gp :action QuickImplementations<CR>
 nnoremap <Leader>lj :action GotoNextError<CR>
 nnoremap <Leader>lk :action GotoPreviousError<CR>
+nnoremap <Leader>ls :action GotoSymbol<CR>
 
 " similar to nvim dap configuration
 "

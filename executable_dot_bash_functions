@@ -268,6 +268,19 @@ function rangerdir() {
   fi
 }
 
+# Kubernetes namesapce visualization tool
+# https://github.com/viralpoetry/kubesurveyor
+function k8nsv() {
+  if [[ ! -z "$1" ]]; then
+    echo "Saving namespace data for $1"
+    kubesurveyor $1 --insecure --save > namespace.yaml
+    cat namespace.yaml| kubesurveyor $1 --load --out png
+    trash "$1"
+  else
+    echo "Namespace required"
+  fi
+}
+
 # Check term support for true color. Prints a color band showing gradients
 # if there is a difference between gradients i.e no smooth color band, then
 # there is something wrong with true color support.
