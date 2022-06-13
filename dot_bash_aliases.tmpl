@@ -29,7 +29,7 @@ function grmci () {
   git ls-files --others | xargs -n1 -I '{}' git rm --cached --quiet --ignore-unmatch -- ./{}
 }
 
-__alias gts "git log --oneline --pretty='%Cred%h%Creset -%C(auto)%d%Creset %<(50,trunc)%s %Cgreen(%cr) %C(bold blue)<%an>%Creset' -5 && echo "" && git status && echo "" && git status -b --ignored | gawk '/Ignored\s+files:/{x=NR+8} (NR<=x) {print}'"
+# __alias gts "git log --oneline --pretty='%Cred%h%Creset -%C(auto)%d%Creset %<(50,trunc)%s %Cgreen(%cr) %C(bold blue)<%an>%Creset' -5 ; git status -b --ignored | gawk '/Ignored\s+files:/{x=NR+8} (NR<=x) {print}'"
 __alias gtsp git-extended-status
 __alias gcm "git commit -a -S -m"
 __alias glog "git log --oneline --decorate --graph --show-signature"

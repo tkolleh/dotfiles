@@ -49,6 +49,7 @@ M.config = function()
   metals_config.on_attach = function(client, bufnr)
     require("lvim.lsp").common_on_attach(client, bufnr)
     require("metals").setup_dap()
+    require("aerial").on_attach(client, bufnr)
   end
 
   -- Autocmd that will actually be in charging of starting the whole thing

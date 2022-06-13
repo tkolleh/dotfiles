@@ -13,9 +13,12 @@ lvim.log.level = "debug"
 lvim.format_on_save = false
 vim.o.wrap = true
 vim.o.linebreak = true
+vim.o.showbreak = "⤦"
 vim.o.list = true
 vim.o.timeoutlen = 700
 vim.o.laststatus = 3
+
+local ignore_file_buff_types = {"gitcommit", "gitrebase", "svn", "hgcommit", "quickfix", "nofile", "help", 'fugitive', 'nerdtree', 'tagbar', 'fzf', 'diff', 'nvimtree', 'nofile', 'nowrite', 'quickfix', 'terminal', 'prompt'}
 
 -- code folding
 vim.o.foldenable = true
@@ -73,12 +76,13 @@ formatters.setup {
 -- Required for rmagatti/goto-preview plugin
 lvim.keys.normal_mode["gp"] = false -- Disable lunarvim keybinding
 
+vim.list_extend(lvim.lsp.automatic_configuration.skipped_servers, { "metals" })
+
 -- Additional Plugins
 lvim.plugins = {
 --   -- colors
-    {'Mofiqul/vscode.nvim'},
     {'tjdevries/colorbuddy.vim'},
-    {'Th3Whit3Wolf/onebuddy'},
+    {'Mofiqul/vscode.nvim'},
     {'folke/tokyonight.nvim'},
 --  -- Change colorscheme based on OS
     {
@@ -127,10 +131,8 @@ lvim.plugins = {
     },
 --   -- keybindings
    {'tpope/vim-unimpaired'},
-
 --   -- tmux
    {'christoomey/vim-tmux-navigator'},
-
 --   -- Custom Quickfix window
    {
       "kevinhwang91/nvim-bqf",
@@ -180,6 +182,25 @@ lvim.plugins = {
         }
       end
     },
+--  -- Document outline (structure)
+    {
+      'stevearc/aerial.nvim',
+      event = { "BufRead", "BufNew" },
+      config = function ()
+        require("aerial").setup({
+          on_attach = function(bufnr)
+            -- Toggle the aerial window with <leader>a
+            vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>a', '<cmd>AerialToggle!<CR>', {})
+            -- Jump forwards/backwards with '{' and '}'
+            vim.api.nvim_buf_set_keymap(bufnr, 'n', '{', '<cmd>AerialPrev<CR>', {})
+            vim.api.nvim_buf_set_keymap(bufnr, 'n', '}', '<cmd>AerialNext<CR>', {})
+            -- Jump up the tree with '[[' or ']]'
+            vim.api.nvim_buf_set_keymap(bufnr, 'n', '[[', '<cmd>AerialPrevUp<CR>', {})
+            vim.api.nvim_buf_set_keymap(bufnr, 'n', ']]', '<cmd>AerialNextUp<CR>', {})
+          end
+        })
+      end
+    },
 --  -- Debugger UI
     {
       "rcarriga/nvim-dap-ui",
@@ -198,14 +219,13 @@ lvim.plugins = {
     { "solarnz/thrift.vim" },
 --   -- sessiom manager
     {'Shatur/neovim-session-manager'},
---   -- vscode-like pictogrms to neovim builtin lsp
-    {'onsails/lspkind.nvim'},
 --   -- Auto save
     {
       'Pocco81/AutoSave.nvim',
       config = function ()
         require("autosave").setup({
           enabled = false,
+          on_off_commands = true,
           conditions = {
               exists = true,
           },
@@ -215,11 +235,6 @@ lvim.plugins = {
     },
 --   -- Delete buffer without rearraging windows
     {'famiu/bufdelete.nvim'},
---   -- Minimap
-    {
-      'wfxr/minimap.vim',
-      cmd = {"Minimap", "MinimapClose", "MinimapToggle", "MinimapRefresh", "MinimapUpdateHighlight"},
-    },
 --   -- Highlight and search for TODO comments
     {
       "folke/todo-comments.nvim",
@@ -235,7 +250,7 @@ lvim.plugins = {
       config = function()
         require("lsp_signature").setup({
           always_trigger = false,
-          timer_interval = 500,
+          timer_interval = 300,
       })
       end
     },
@@ -275,9 +290,40 @@ lvim.plugins = {
     },
 --  -- Syntax highlighting for the HOCON language used by JVM config files
     {'jvirtanen/vim-hocon'},
-
+--  -- Focus on the last place of edit
+    {
+      'ethanholz/nvim-lastplace',
+      config = function()
+        require('nvim-lastplace').setup {
+            lastplace_ignore_buftype = ignore_file_buff_types,
+            lastplace_ignore_filetype = ignore_file_buff_types,
+            lastplace_open_folds = true
+        }
+      end
+    },
+--  -- Smooth scrolling neovim plugin
+    {
+      'karb94/neoscroll.nvim',
+      event = "WinScrolled",
+      config = function ()
+        require('neoscroll').setup()
+      end
+    },
+--  -- Repeat plugin maps not just default
+    {'tpope/vim-repeat'},
+--  -- Change surroundings of word groups
+    {
+      "tpope/vim-surround",
+      keys = {"c", "d", "y"}
+      -- make sure to change the value of `timeoutlen` if it's not
+      -- triggering correctly, see https://github.com/tpope/vim-surround/issues/117
+      -- setup = function()
+        --  vim.o.timeoutlen = 500
+      -- end
+    },
 --  -- Telescope extensions
     {'nvim-telescope/telescope-dap.nvim'},
+    {'nvim-telescope/telescope-ui-select.nvim' },
 
 --  end additional plugins bloc
 }
@@ -290,12 +336,21 @@ vim.g.minimap_width = 10
 vim.g.minimap_auto_start = 0
 vim.g.minimap_auto_start_win_enter = 0
 vim.g.minimap_git_colors = 1
-vim.g.minimap_block_filetypes = {'diff', 'nvimtree', 'fugitive', 'nerdtree', 'tagbar', 'fzf'}
-vim.g.minimap_block_buftypes = {'diff', 'nvimtree', 'nofile', 'nowrite', 'quickfix', 'terminal', 'prompt'}
+vim.g.minimap_block_filetypes = ignore_file_buff_types
+vim.g.minimap_block_buftypes = ignore_file_buff_types
+
+--  -- Speectre configuration
+lvim.builtin.which_key.mappings["ss"] = {
+  name = "+ripgrep search",
+  f = { "<cmd>lua require('spectre').open()<cr>", "files" },
+  b = { "<cmd>lua require('spectre').open_file_search()<cr>", "buffers" },
+  w = { "<cmd>lua require('spectre').open_visual({select_word=true})<cr>", "selected word" },
+}
 
 --  -- WIP for better configuration: https://github.com/LunarVim/LunarVim/issues/2426
 lvim.builtin.telescope.on_config_done = function(tele)
   pcall(tele.load_extension, "dap")
+  pcall(tele.load_extension, "ui-select")
   local opts = {
     pickers = {
       find_files = {
@@ -341,15 +396,6 @@ end
 -- Configure nvim-dap and dap-ui
 require("user.dap").config()
 
--- lspkind configuration
----- TODO not sure this is working
-lvim.builtin.cmp.formatting.format = require('lspkind').cmp_format({
-  -- defines how annotations are shown
-  -- default: symbol
-  -- options: 'text', 'text_symbol', 'symbol_text', 'symbol'
-  mode='text_symbol'
-})
-
 -- status line (lualine)
 lvim.builtin.lualine.style = "default" -- or "none"
 lvim.builtin.lualine.options = {
@@ -364,16 +410,25 @@ lvim.builtin.lualine.sections.lualine_x = {
 }
 
 local metals_status = require("user.metals").metals_status
+local dap_status = require("user.dap").dap_status
 lvim.builtin.lualine.sections.lualine_y = {
  components.progress,
  metals_status(),
+ dap_status(),
 }
+
 
 -- keymappings [view all the defaults by pressing <leader>Lk]
 lvim.leader = "space"
+lvim.builtin.which_key.mappings["j"] = { "<cmd>Telescope jumplist<cr>", "Jump List" }
 
--- Write buffer (Save changes)
--- lvim.keys.normal_mode["<C-s>"] = ":w<cr>"
+-- TODO: Delete this line and the following.
+-- The following commands are not needed as this is done by default
+-- lvim.keys.normal_mode["gd"] = { "<cmd>Telescope lsp_definitions<cr>", "Goto definition"}
+-- lvim.keys.normal_mode["gr"] = { "<cmd>Telescope lsp_references<cr>", "Goto references"}
+-- lvim.keys.normal_mode["gI"] = { "<cmd>Telescope lsp_implementations<cr>", "Goto implementations"}
 
 ---- search highlighted text
 lvim.keys.visual_mode["//"] = 'y/<C-R>"<CR>'
+
+
