@@ -30,6 +30,12 @@ M.config = function()
     },
     fallbackScalaVersion = "2.12.15",
     serverVersion = "latest.snapshot",
+    scalafixConfigPath = ".scalafix.conf",
+    scalafixRulesDependencies = {
+      "com.github.liancheng::organize-imports",
+      "com.github.zio::zio-shield",
+      "com.timushev::zio-magic-comments",
+    },
   }
 
   -- *READ THIS*
