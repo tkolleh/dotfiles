@@ -1,5 +1,4 @@
 set visualbell
-set noerrorbells
 set surround
 set commentary
 set ideajoin
@@ -28,7 +27,7 @@ vnoremap // y/<C-R>"<CR>
 " disable the timeout option
 " set notimeout
 
-" increase the timeoutlen (default: 1000)
+" increase the which key timeout (default: 1000)
 set timeoutlen = 3000
 
 " Use system clipboard
@@ -36,10 +35,9 @@ set clipboard+=unnamed
 
 " Open nerd tree in intellij. Same as nvim file explorer mapping
 "
-nnoremap <Leader>e :NERDTreeFind<CR>
-
-" Open project view with file selected
 " nnoremap <Leader>e :action SelectInProjectView<CR>
+"
+nnoremap <Leader>e :NERDTreeFind<CR>
 
 nnoremap <Leader>rn :action RenameElement<CR>
 nnoremap <Leader>fp :action Tool_External Tools_darker<CR>
@@ -59,18 +57,19 @@ nnoremap [c :action VcsShowPrevChangeMarker<CR>
 "
 nnoremap <Leader>sr :action RecentFiles<CR>
 nnoremap <Leader>sf :action GotoFile<CR>
-nnoremap <Leader>sf :action FindInPath<CR>
+nnoremap <Leader>st :action FindInPath<CR>
 
 " nvim-lsp config mappings
 "
 nnoremap gr :action FindUsages<CR>
 nnoremap gI :action GotoImplementation<CR>
 nnoremap gD :action GotoDeclaration<CR>
+nnoremap <Leader>lS :action GotoSymbol<CR>
 nnoremap <Leader>ls :action FileStructurePopup<CR>
+nnoremap <Leader>la :action ActivateStructureToolWindow<CR>
 nnoremap gp :action QuickImplementations<CR>
 nnoremap <Leader>lj :action GotoNextError<CR>
 nnoremap <Leader>lk :action GotoPreviousError<CR>
-nnoremap <Leader>ls :action GotoSymbol<CR>
 
 " similar to nvim dap configuration
 "

@@ -427,7 +427,11 @@ lvim.builtin.which_key.mappings["j"] = { "<cmd>Telescope jumplist<cr>", "Jump Li
 -- lvim.keys.normal_mode["gd"] = { "<cmd>Telescope lsp_definitions<cr>", "Goto definition"}
 -- lvim.keys.normal_mode["gr"] = { "<cmd>Telescope lsp_references<cr>", "Goto references"}
 -- lvim.keys.normal_mode["gI"] = { "<cmd>Telescope lsp_implementations<cr>", "Goto implementations"}
-
+-- lvim.keys.normal_mode["<S-Tab>"] = { "<cmd>Telescope buffers<cr>", "Find buffer"}
+vim.api.nvim_set_keymap('n', '<S-Tab>',
+  [[<Cmd>Telescope buffers<CR>]],
+  { noremap = true, silent = true }
+)
 ---- search highlighted text
 lvim.keys.visual_mode["//"] = 'y/<C-R>"<CR>'
 
