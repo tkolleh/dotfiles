@@ -29,8 +29,9 @@ function grmci () {
   git ls-files --others | xargs -n1 -I '{}' git rm --cached --quiet --ignore-unmatch -- ./{}
 }
 
-# __alias gts "git log --oneline --pretty='%Cred%h%Creset -%C(auto)%d%Creset %<(50,trunc)%s %Cgreen(%cr) %C(bold blue)<%an>%Creset' -5 ; git status -b --ignored | gawk '/Ignored\s+files:/{x=NR+8} (NR<=x) {print}'"
-__alias gtsp git-extended-status
+__alias gst "git status -b --ignored\
+  && git log --oneline \
+  --pretty='%Cred%h%Creset -%C(auto)%d%Creset %<(50,trunc)%s %Cgreen(%cr) %C(bold blue)<%an>%Creset' -5"
 __alias gcm "git commit -a -S -m"
 __alias glog "git log --oneline --decorate --graph --show-signature"
 __alias gloga "git log --oneline --decorate --graph --show-signature --all"
@@ -42,7 +43,10 @@ __alias gcd "git checkout development"
 alias rg="$(brew --prefix rg)/bin/rg --smart-case"
 alias batgrep="batgrep --smart-case"
 alias ranger="TERM=xterm-256color $(brew --prefix ranger)/bin/ranger --choosedir=$HOME/.rangerdir"
+# https://github.com/antonmedv/fx
 alias fx="NODE_PATH=`npm root -g` fx"
+# https://github.com/antonmedv/eat
+alias eat="NODE_PATH=`npm root -g` eat"
 
 # Reloads the configuration.
 if [ -n "$ZSH_VERSION" ]; then
@@ -56,7 +60,6 @@ __alias note 'cd $MARKDOWN_NOTES && lvim -c "NV!"'
 
 #__alias lldb "PATH=/usr/bin:$PATH lldb"
 # alias pandoc="/usr/local/opt/pandoc/bin/pandoc"
-# __alias subl "/Applications/Sublime\ Text.app/Contents/SharedSupport/bin/subl"
 
 __alias chezmoidelta "chezmoi source pull -- --rebase && chezmoi diff | delta"
 __alias ipython "EDITOR=lvim ipython"
