@@ -17,46 +17,46 @@
   changed = green
   untracked = cyan
 [core]
-	excludesfile = {{ .chezmoi.homeDir }}/.gitignore_global
-	autocrlf = input
+  excludesfile = {{ .chezmoi.homeDir }}/.gitignore_global
+  autocrlf = input
   pager = delta
-	editor = lvim
+  editor = lvim
 [push]
   default = simple
 [interactive]
-    diffFilter = delta --color-only --features=interactive
+  diffFilter = delta --color-only --features=interactive
 
 [delta]
-    navigate = true
-    features = unobtrusive-line-numbers decorations
-    whitespace-error-style = 22 reverse
-    syntax-theme = Solarized (dark)
+  navigate = true
+  features = unobtrusive-line-numbers decorations
+  whitespace-error-style = 22 reverse
+  syntax-theme = Solarized (dark)
 
 [delta "interactive"]
-    keep-plus-minus-markers = false
+  keep-plus-minus-markers = false
 
 [delta "unobtrusive-line-numbers"]
-    line-numbers = true
-    line-numbers-minus-style = "#444444"
-    line-numbers-zero-style = "#444444"
-    line-numbers-plus-style = "#444444"
-    line-numbers-left-format = "{nm:>4}┊"
-    line-numbers-right-format = "{np:>4}│"
-    line-numbers-left-style = blue
-    line-numbers-right-style = blue
+  line-numbers = true
+  line-numbers-minus-style = "#444444"
+  line-numbers-zero-style = "#444444"
+  line-numbers-plus-style = "#444444"
+  line-numbers-left-format = "{nm:>4}┊"
+  line-numbers-right-format = "{np:>4}│"
+  line-numbers-left-style = blue
+  line-numbers-right-style = blue
 
 [delta "decorations"]
-    commit-decoration-style = bold yellow box ul
-    file-style = bold yellow ul
-    file-decoration-style = none
-    hunk-header-decoration-style = yellow box
+  commit-decoration-style = bold yellow box ul
+  file-style = bold yellow ul
+  file-decoration-style = none
+  hunk-header-decoration-style = yellow box
 
 [credential]
   helper = osxkeychain
 
 [difftool "pycharm"]
   prompt = false
-	cmd = pycharm diff \"$LOCAL\" \"$REMOTE\"
+  cmd = pycharm diff \"$LOCAL\" \"$REMOTE\"
   trustExitCode = false
 [mergetool "pycharm"]
   prompt = false
@@ -71,20 +71,20 @@
   cmd = lvim -d \"$LOCAL\" \"$REMOTE\"
 [mergetool "fugitive"]
   prompt = true
-	cmd = lvim -f -c \"Gvdiffsplit!\" \"$MERGED\"
+  cmd = lvim -f -c \"Gvdiffsplit!\" \"$MERGED\"
 
 [difftool "sourcetree"]
-	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
-	path = 
+  cmd = opendiff \"$LOCAL\" \"$REMOTE\"
+  path = 
 [mergetool "sourcetree"]
-	cmd = /Applications/Sourcetree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
-	trustExitCode = true
+  cmd = /Applications/Sourcetree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
+  trustExitCode = true
 
 [filter "lfs"]
-	clean = git-lfs clean -- %f
-	smudge = git-lfs smudge -- %f
-	process = git-lfs filter-process
-	required = true
+  clean = git-lfs clean -- %f
+  smudge = git-lfs smudge -- %f
+  process = git-lfs filter-process
+  required = true
 
 [merge]
   tool = fugitive
@@ -96,7 +96,7 @@
   colorMoved = default
 
 [init]
-	templatedir = /Applications/SourceTree.app/Contents/Resources/git_local/share/git-core/templates
-	defaultBranch = main
+  templatedir = /Applications/SourceTree.app/Contents/Resources/git_local/share/git-core/templates
+  defaultBranch = main
 [pull]
-	rebase = false
+  rebase = false
