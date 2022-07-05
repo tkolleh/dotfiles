@@ -29,9 +29,9 @@ function grmci () {
   git ls-files --others | xargs -n1 -I '{}' git rm --cached --quiet --ignore-unmatch -- ./{}
 }
 
-__alias gst "git status -b --ignored\
-  && git log --oneline \
-  --pretty='%Cred%h%Creset -%C(auto)%d%Creset %<(50,trunc)%s %Cgreen(%cr) %C(bold blue)<%an>%Creset' -5"
+__alias gst " git log --oneline \
+  --pretty='%Cred%h%Creset -%C(auto)%d%Creset %<(50,trunc)%s %Cgreen(%cr) %C(bold blue)<%an>%Creset' -5; \
+  git status -b --ignored"
 __alias gcm "git commit -a -S -m"
 __alias glog "git log --oneline --decorate --graph --show-signature"
 __alias gloga "git log --oneline --decorate --graph --show-signature --all"
