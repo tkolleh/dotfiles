@@ -13,8 +13,9 @@ lvim.log.level = "debug"
 lvim.format_on_save = false
 vim.o.wrap = true
 vim.o.linebreak = true
-vim.o.showbreak = "⤦"
-vim.o.list = true
+vim.o.showbreak="        "
+-- vim.o.showbreak = "⤦"
+vim.o.list = false
 vim.o.timeoutlen = 700
 vim.o.laststatus = 3
 
@@ -38,8 +39,7 @@ lvim.builtin.dap.active = true -- (default: false)
 --  -- Nvim tree configuration
 lvim.builtin.nvimtree.setup.view.side = "left"
 lvim.builtin.nvimtree.setup.view.width = "25%"
-lvim.builtin.nvimtree.show_icons.git = 0
-vim.g.nvim_tree_highlight_opened_files = 2
+lvim.builtin.nvimtree.setup.renderer.highlight_opened_files = "all"
 
 -- if you don't want all the parsers change this to a table of the ones you want
 lvim.builtin.treesitter.ensure_installed = {
