@@ -9,8 +9,10 @@ tap "homebrew/cask-versions"
 tap "homebrew/core"
 tap "homebrew/services"
 tap "scalacenter/bloop"
+tap "thecasualcoder/stable"
 tap "twlz0ne/ccls"
 tap "universal-ctags/universal-ctags"
+tap "virtuslab/scala-cli"
 tap "wagoodman/dive"
 brew "ammonite-repl"
 brew "ca-certificates"
@@ -21,8 +23,8 @@ brew "bash-git-prompt"
 brew "bat"
 brew "bfg"
 brew "cabal-install"
-brew "python@3.9"
 brew "glib"
+brew "python@3.9"
 brew "cairo"
 brew "llvm"
 brew "ccls"
@@ -108,6 +110,7 @@ brew "ripgrep-all"
 brew "ruby-build"
 brew "sbt"
 brew "scalariform"
+brew "sd"
 brew "shfmt"
 brew "starship"
 brew "terraform", link: false
@@ -128,8 +131,11 @@ brew "zsh"
 brew "cormacrelf/tap/dark-notify"
 brew "coursier/formulas/coursier"
 brew "eth-p/software/bat-extras"
+brew "thecasualcoder/stable/csvdiff"
 brew "universal-ctags/universal-ctags/universal-ctags", args: ["HEAD"]
+brew "virtuslab/scala-cli/scala-cli"
 cask "1password-cli"
+cask "anaconda"
 cask "chromedriver"
 cask "dash"
 cask "font-dejavu"
@@ -141,7 +147,6 @@ cask "font-victor-mono"
 cask "github"
 cask "jetbrains-toolbox"
 cask "keybase"
-cask "logitech-options"
 cask "mactex"
 cask "nvalt"
 cask "openrefine"
@@ -150,19 +155,3 @@ cask "sourcetree"
 cask "visual-studio-code"
 cask "weka"
 cask "zotero"
-mas "1Password for Safari", id: 1569813296
-mas "Compressor", id: 424390742
-mas "GarageBand", id: 682658836
-mas "iMovie", id: 408981434
-mas "Keynote", id: 409183694
-mas "LastPass", id: 926036361
-mas "Magnet", id: 441258766
-mas "Micro Snitch", id: 972028355
-mas "Neeva", id: 1540663248
-mas "Notability", id: 360593530
-mas "Notability", id: 736189492
-mas "Numbers", id: 409203825
-mas "Pages", id: 409201541
-mas "Paste", id: 967805235
-mas "Spark", id: 1176895641
-mas "XMind", id: 1327661892
