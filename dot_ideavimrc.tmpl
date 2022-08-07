@@ -66,6 +66,7 @@ nnoremap [c :action VcsShowPrevChangeMarker<CR>
 " similar to nvim telescope config
 "
 nnoremap <Leader>sr :action RecentFiles<CR>
+nnoremap <S-Tab>    :action RecentFiles<CR>
 nnoremap <Leader>sf :action GotoFile<CR>
 nnoremap <Leader>st :action FindInPath<CR>
 
@@ -74,10 +75,14 @@ nnoremap <Leader>st :action FindInPath<CR>
 nnoremap gr :action FindUsages<CR>
 nnoremap gI :action GotoImplementation<CR>
 nnoremap gD :action GotoDeclaration<CR>
-nnoremap <Leader>lS :action GotoSymbol<CR>
-nnoremap <Leader>ls :action FileStructurePopup<CR>
-nnoremap <Leader>la :action ActivateStructureToolWindow<CR>
+
+nnoremap <Leader>sS :action GotoSymbol<CR>
+nnoremap <Leader>ss :action FileStructurePopup<CR>
+
+nnoremap <Leader>lo :action ActivateStructureToolWindow<CR>
+
 nnoremap gp :action QuickImplementations<CR>
+
 nnoremap <Leader>lj :action GotoNextError<CR>
 nnoremap <Leader>lk :action GotoPreviousError<CR>
 
@@ -88,3 +93,4 @@ nnoremap <Leader>dl :action EditorPopupMenuDebug<CR>
 nnoremap <Leader>ds :action Debug<CR>
 nnoremap <Leader>de :action Debugger.EvaluationDialogPopup<CR>
 
+nnoremap <Leader>p :action ParameterInfo<CR>
