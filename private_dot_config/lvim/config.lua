@@ -9,12 +9,11 @@ an executable
 -- THESE ARE EXAMPLE CONFIGS FEEL FREE TO CHANGE TO WHATEVER YOU WANT
 
 -- general
-lvim.log.level = "debug"
+-- lvim.log.level = "debug"
 lvim.format_on_save = false
 vim.o.wrap = true
 vim.o.linebreak = true
-vim.o.showbreak="      ⤦ "
--- vim.o.showbreak = "⤦"
+vim.o.showbreak="  ⤦ "
 vim.o.list = false
 vim.o.timeoutlen = 700
 vim.o.laststatus = 3
@@ -39,7 +38,7 @@ lvim.builtin.dap.active = true -- (default: false)
 --  -- Nvim tree configuration
 lvim.builtin.nvimtree.setup.view.side = "left"
 lvim.builtin.nvimtree.setup.view.width = "25%"
-lvim.builtin.nvimtree.setup.renderer.highlight_opened_files = "all"
+lvim.builtin.nvimtree.renderer.highlight_opened_files = "all"
 
 -- if you don't want all the parsers change this to a table of the ones you want
 lvim.builtin.treesitter.ensure_installed = {
@@ -57,7 +56,7 @@ lvim.builtin.treesitter.ensure_installed = {
   "scala",
 }
 
-lvim.builtin.treesitter.ignore_install = { "haskell" }
+lvim.builtin.treesitter.ignore_install = { "ocaml" }
 lvim.builtin.treesitter.highlight.enabled = true
 
 lvim.format_on_save = false
@@ -75,6 +74,18 @@ formatters.setup {
 
 -- Required for rmagatti/goto-preview plugin
 lvim.keys.normal_mode["gp"] = false -- Disable lunarvim keybinding
+
+-- Use for show signature
+lvim.builtin.which_key.mappings["<leader>p"] = false
+lvim.builtin.which_key.mappings["<leader>P"] = {
+    name = "Packer",
+    c = { "<cmd>PackerCompile<cr>", "Compile" },
+    i = { "<cmd>PackerInstall<cr>", "Install" },
+    r = { "<cmd>lua require('lvim.plugin-loader').recompile()<cr>", "Re-compile" },
+    s = { "<cmd>PackerSync<cr>", "Sync" },
+    S = { "<cmd>PackerStatus<cr>", "Status" },
+    u = { "<cmd>PackerUpdate<cr>", "Update" },
+}
 
 vim.list_extend(lvim.lsp.automatic_configuration.skipped_servers, { "metals" })
 
@@ -104,21 +115,7 @@ lvim.plugins = {
 --  -- Git wrapper in vim
     {
       "tpope/vim-fugitive",
-      cmd = {
-        "G",
-        "Git",
-        "Gdiffsplit",
-        "Gread",
-        "Gwrite",
-        "Ggrep",
-        "GMove",
-        "GDelete",
-        "GBrowse",
-        "GRemove",
-        "GRename",
-        "Glgrep",
-        "Gedit"
-      },
+      cmd = { "G", "Git", "Gdiffsplit", "Gread", "Gwrite", "Ggrep", "GMove", "GDelete", "GBrowse", "GRemove", "GRename", "Glgrep", "Gedit" },
       ft = {"fugitive"}
     },
 --  -- Custom search
@@ -129,8 +126,6 @@ lvim.plugins = {
         require("user.spectre").config()
       end,
     },
---   -- keybindings
-   {'tpope/vim-unimpaired'},
 --   -- tmux
    {'christoomey/vim-tmux-navigator'},
 --   -- Custom Quickfix window
@@ -167,7 +162,7 @@ lvim.plugins = {
         require("treesitter-context").setup{
           enable = true, -- Enable this plugin (Can be enabled/disabled later via commands)
           throttle = true, -- Throttles plugin updates (may improve performance)
-          max_lines = 0, -- How many lines the window should span. Values <= 0 mean no limit.
+          max_lines = -1, -- How many lines the window should span. Values <= 0 mean no limit.
           patterns = { -- Match patterns for TS nodes. These get wrapped to match at word boundaries.
             -- For all filetypes
             -- Note that setting an entry here replaces all other patterns for this entry.
@@ -190,7 +185,7 @@ lvim.plugins = {
         require("aerial").setup({
           on_attach = function(bufnr)
             -- Toggle the aerial window with <leader>a
-            vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>a', '<cmd>AerialToggle!<CR>', {})
+            vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>o', '<cmd>AerialToggle!<CR>', {})
             -- Jump forwards/backwards with '{' and '}'
             vim.api.nvim_buf_set_keymap(bufnr, 'n', '{', '<cmd>AerialPrev<CR>', {})
             vim.api.nvim_buf_set_keymap(bufnr, 'n', '}', '<cmd>AerialNext<CR>', {})
@@ -249,8 +244,11 @@ lvim.plugins = {
       event = "BufRead",
       config = function()
         require("lsp_signature").setup({
+          floating_window = false,
+          doc_lines = 5,
           always_trigger = false,
           timer_interval = 300,
+          toggle_key = '<leader>p'
       })
       end
     },
@@ -321,6 +319,8 @@ lvim.plugins = {
         --  vim.o.timeoutlen = 500
       -- end
     },
+--   -- keybindings
+   {'tpope/vim-unimpaired'},
 --  -- Telescope extensions
     {'nvim-telescope/telescope-dap.nvim'},
     {'nvim-telescope/telescope-ui-select.nvim' },
@@ -340,12 +340,15 @@ vim.g.minimap_block_filetypes = ignore_file_buff_types
 vim.g.minimap_block_buftypes = ignore_file_buff_types
 
 --  -- Speectre configuration
-lvim.builtin.which_key.mappings["ss"] = {
-  name = "+ripgrep search",
-  f = { "<cmd>lua require('spectre').open()<cr>", "files" },
-  b = { "<cmd>lua require('spectre').open_file_search()<cr>", "buffers" },
-  w = { "<cmd>lua require('spectre').open_visual({select_word=true})<cr>", "selected word" },
-}
+lvim.builtin.which_key.mappings["sx"] = { "<cmd>lua require('spectre').open()<cr>", "ripgrep search files" }
+lvim.builtin.which_key.mappings["sX"] = { "<cmd>lua require('spectre').open_file_search()<cr>", "ripgrep search buffers" }
+lvim.builtin.which_key.mappings["sw"] = { "<cmd>lua require('spectre').open_visual({select_word=true})<cr>", "ripgrep search selected word" }
+
+--  -- LSP keymappings / keybindings
+lvim.builtin.which_key.mappings["ls"] = false
+lvim.builtin.which_key.mappings["lS"] = false
+lvim.builtin.which_key.mappings["ss"] = { "<cmd>Telescope lsp_document_symbols<cr>", "Document Symbols" }
+lvim.builtin.which_key.mappings["sS"] = { "<cmd>Telescope lsp_dynamic_workspace_symbols<cr>", "Workspace Symbols"}
 
 --  -- WIP for better configuration: https://github.com/LunarVim/LunarVim/issues/2426
 lvim.builtin.telescope.on_config_done = function(tele)
@@ -418,7 +421,7 @@ lvim.builtin.lualine.sections.lualine_y = {
 }
 
 
--- keymappings [view all the defaults by pressing <leader>Lk]
+-- keymappings / keybindings [view all the defaults by pressing <leader>Lk]
 lvim.leader = "space"
 lvim.builtin.which_key.mappings["j"] = { "<cmd>Telescope jumplist<cr>", "Jump List" }
 
@@ -428,10 +431,12 @@ lvim.builtin.which_key.mappings["j"] = { "<cmd>Telescope jumplist<cr>", "Jump Li
 -- lvim.keys.normal_mode["gr"] = { "<cmd>Telescope lsp_references<cr>", "Goto references"}
 -- lvim.keys.normal_mode["gI"] = { "<cmd>Telescope lsp_implementations<cr>", "Goto implementations"}
 -- lvim.keys.normal_mode["<S-Tab>"] = { "<cmd>Telescope buffers<cr>", "Find buffer"}
+
 vim.api.nvim_set_keymap('n', '<S-Tab>',
   [[<Cmd>Telescope buffers<CR>]],
   { noremap = true, silent = true }
 )
+
 ---- search highlighted text
 lvim.keys.visual_mode["//"] = 'y/<C-R>"<CR>'
 
