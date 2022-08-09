@@ -75,18 +75,6 @@ formatters.setup {
 -- Required for rmagatti/goto-preview plugin
 lvim.keys.normal_mode["gp"] = false -- Disable lunarvim keybinding
 
--- Use for show signature
-lvim.keys.normal_mode["<leader>p"] = false
-lvim.builtin.which_key.mappings["<leader>P"] = {
-    name = "Packer",
-    c = { "<cmd>PackerCompile<cr>", "Compile" },
-    i = { "<cmd>PackerInstall<cr>", "Install" },
-    r = { "<cmd>lua require('lvim.plugin-loader').recompile()<cr>", "Re-compile" },
-    s = { "<cmd>PackerSync<cr>", "Sync" },
-    S = { "<cmd>PackerStatus<cr>", "Status" },
-    u = { "<cmd>PackerUpdate<cr>", "Update" },
-}
-
 vim.list_extend(lvim.lsp.automatic_configuration.skipped_servers, { "metals" })
 
 -- Additional Plugins
@@ -248,7 +236,7 @@ lvim.plugins = {
           doc_lines = 5,
           always_trigger = false,
           timer_interval = 300,
-          toggle_key = '<leader>p'
+          toggle_key = '<C-p>'
       })
       end
     },
@@ -307,6 +295,11 @@ lvim.plugins = {
         require('neoscroll').setup()
       end
     },
+--  -- View all the trouble in code
+    {
+      "folke/trouble.nvim",
+        cmd = "TroubleToggle",
+    },
 --  -- Repeat plugin maps not just default
     {'tpope/vim-repeat'},
 --  -- Change surroundings of word groups
@@ -343,6 +336,17 @@ vim.g.minimap_block_buftypes = ignore_file_buff_types
 lvim.builtin.which_key.mappings["sx"] = { "<cmd>lua require('spectre').open()<cr>", "ripgrep search files" }
 lvim.builtin.which_key.mappings["sX"] = { "<cmd>lua require('spectre').open_file_search()<cr>", "ripgrep search buffers" }
 lvim.builtin.which_key.mappings["sw"] = { "<cmd>lua require('spectre').open_visual({select_word=true})<cr>", "ripgrep search selected word" }
+
+--  -- Trouble keymappings / keybindings
+lvim.builtin.which_key.mappings["t"] = {
+  name = "Diagnostics",
+  a = { "<cmd>TroubleToggle<cr>", "trouble" },
+  T = { "<cmd>TroubleToggle workspace_diagnostics<cr>", "workspace" },
+  t = { "<cmd>TroubleToggle document_diagnostics<cr>", "document" },
+  q = { "<cmd>TroubleToggle quickfix<cr>", "quickfix" },
+  l = { "<cmd>TroubleToggle loclist<cr>", "loclist" },
+  r = { "<cmd>TroubleToggle lsp_references<cr>", "references" },
+}
 
 --  -- LSP keymappings / keybindings
 lvim.keys.normal_mode["ls"] = false
@@ -422,7 +426,7 @@ lvim.builtin.lualine.sections.lualine_y = {
 
 
 -- keymappings / keybindings [view all the defaults by pressing <leader>Lk]
-lvim.leader = "space"
+lvim.leader = ";"
 lvim.builtin.which_key.mappings["j"] = { "<cmd>Telescope jumplist<cr>", "Jump List" }
 
 -- TODO: Delete this line and the following.
@@ -432,7 +436,9 @@ lvim.builtin.which_key.mappings["j"] = { "<cmd>Telescope jumplist<cr>", "Jump Li
 -- lvim.keys.normal_mode["gI"] = { "<cmd>Telescope lsp_implementations<cr>", "Goto implementations"}
 -- lvim.keys.normal_mode["<S-Tab>"] = { "<cmd>Telescope buffers<cr>", "Find buffer"}
 
-vim.api.nvim_set_keymap('n', '<S-Tab>',
+vim.api.nvim_set_keymap(
+  'n',
+  '<S-Tab>',
   [[<Cmd>Telescope buffers<CR>]],
   { noremap = true, silent = true }
 )
