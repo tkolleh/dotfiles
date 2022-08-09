@@ -1,13 +1,10 @@
-#!/bin/bash
-# -*-mode:bash-*- vim:ft=bash
+#!/bin/zsh
+# -*-mode:zsh-*- vim:ft=zsh
 #
-# ~/.bash_functions
+# ~/.zsh_functions
 # ====================================
 #
-# Executed for non-login shells.
-#
-
-# If not running interactively, don't do anything.
+# Executed for interactive non-login shells. Otherwise, don't do anything.
 case $- in
 *i*) ;;
 *) return ;;
@@ -299,6 +296,18 @@ function print_color_band() {
       printf "\n";
   }'
 }
+
+function edit_dot_files() {
+  local hasChezmoi="$(cmd_path chezmoi)"
+  if [[ -f $hasChezmoi ]]; then
+    local hasLvim="$(cmd_path lvim)" 
+    if [[ -f $hasLvim ]]; then
+      lvim $CHEZMOI_SOURCE_PATH
+      chezmoi apply
+    fi
+  fi
+} 
+
 
 # Check if the function exists (bash specific)
 #[ -z "$1" ] || {

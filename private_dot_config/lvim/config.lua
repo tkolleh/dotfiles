@@ -38,7 +38,7 @@ lvim.builtin.dap.active = true -- (default: false)
 --  -- Nvim tree configuration
 lvim.builtin.nvimtree.setup.view.side = "left"
 lvim.builtin.nvimtree.setup.view.width = "25%"
-lvim.builtin.nvimtree.renderer.highlight_opened_files = "all"
+-- lvim.builtin.nvimtree.renderer.highlight_opened_files = "all"
 
 -- if you don't want all the parsers change this to a table of the ones you want
 lvim.builtin.treesitter.ensure_installed = {
@@ -76,7 +76,7 @@ formatters.setup {
 lvim.keys.normal_mode["gp"] = false -- Disable lunarvim keybinding
 
 -- Use for show signature
-lvim.builtin.which_key.mappings["<leader>p"] = false
+lvim.keys.normal_mode["<leader>p"] = false
 lvim.builtin.which_key.mappings["<leader>P"] = {
     name = "Packer",
     c = { "<cmd>PackerCompile<cr>", "Compile" },
@@ -184,7 +184,7 @@ lvim.plugins = {
       config = function ()
         require("aerial").setup({
           on_attach = function(bufnr)
-            -- Toggle the aerial window with <leader>a
+            -- Toggle the aerial window with <leader>o (<leader>a default)
             vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>o', '<cmd>AerialToggle!<CR>', {})
             -- Jump forwards/backwards with '{' and '}'
             vim.api.nvim_buf_set_keymap(bufnr, 'n', '{', '<cmd>AerialPrev<CR>', {})
@@ -345,8 +345,8 @@ lvim.builtin.which_key.mappings["sX"] = { "<cmd>lua require('spectre').open_file
 lvim.builtin.which_key.mappings["sw"] = { "<cmd>lua require('spectre').open_visual({select_word=true})<cr>", "ripgrep search selected word" }
 
 --  -- LSP keymappings / keybindings
-lvim.builtin.which_key.mappings["ls"] = false
-lvim.builtin.which_key.mappings["lS"] = false
+lvim.keys.normal_mode["ls"] = false
+lvim.keys.normal_mode["lS"] = false
 lvim.builtin.which_key.mappings["ss"] = { "<cmd>Telescope lsp_document_symbols<cr>", "Document Symbols" }
 lvim.builtin.which_key.mappings["sS"] = { "<cmd>Telescope lsp_dynamic_workspace_symbols<cr>", "Workspace Symbols"}
 
