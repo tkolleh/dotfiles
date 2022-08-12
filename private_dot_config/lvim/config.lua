@@ -204,7 +204,7 @@ lvim.plugins = {
     {'Shatur/neovim-session-manager'},
 --   -- Auto save
     {
-      'Pocco81/AutoSave.nvim',
+      'pocco81/auto-save.nvim',
       config = function ()
         require("autosave").setup({
           enabled = false,
