@@ -300,6 +300,10 @@ lvim.plugins = {
       "folke/trouble.nvim",
         cmd = "TroubleToggle",
     },
+--  -- View code context details
+    {
+      "SmiteshP/nvim-navic",
+    },
 --  -- Repeat plugin maps not just default
     {'tpope/vim-repeat'},
 --  -- Change surroundings of word groups
