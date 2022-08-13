@@ -13,7 +13,7 @@ an executable
 lvim.format_on_save = false
 vim.o.wrap = true
 vim.o.linebreak = true
-vim.o.showbreak="  ⤦ "
+vim.o.showbreak="      ⤦ "
 vim.o.list = false
 vim.o.timeoutlen = 700
 vim.o.laststatus = 3
@@ -108,7 +108,8 @@ lvim.plugins = {
     },
 --  -- Custom search
     {
-      "windwp/nvim-spectre",
+      --"windwp/nvim-spectre",
+      "nvim-pack/nvim-spectre",
       event = "BufRead",
       config = function()
         require("user.spectre").config()
@@ -201,12 +202,26 @@ lvim.plugins = {
 --  -- Thrift syntax plugin
     { "solarnz/thrift.vim" },
 --   -- sessiom manager
-    {'Shatur/neovim-session-manager'},
+    {
+      'Shatur/neovim-session-manager',
+      config = function ()
+        local Path = require('plenary.path')
+        require("session_manager").setup({
+          sessions_dir = Path:new(vim.fn.stdpath('data'), 'sessions'),
+          autoload_mode = require('session_manager.config').AutoloadMode.CurrentDir, -- Define what to do when Neovim is started without arguments. Possible values: Disabled, CurrentDir, LastSession
+          autosave_last_session = true, -- Automatically save last session on exit and on session switch.
+          autosave_ignore_not_normal = true, -- Plugin will not save a session when no buffers are opened, or all of them aren't writable or listed.
+          autosave_ignore_filetypes = { -- All buffers of these file types will be closed before the session is saved.
+            'gitcommit',
+          },
+      })
+      end
+    },
 --   -- Auto save
     {
       'pocco81/auto-save.nvim',
       config = function ()
-        require("autosave").setup({
+        require("auto-save").setup({
           enabled = false,
           on_off_commands = true,
           conditions = {
@@ -303,6 +318,14 @@ lvim.plugins = {
 --  -- View code context details
     {
       "SmiteshP/nvim-navic",
+      config = function ()
+        local navic = require("nvim-navic")
+        navic.setup()
+
+        lvim.lsp.on_attach_callback = function(client, bufrn)
+          navic.attach(client, bufrn)
+        end
+      end,
     },
 --  -- Repeat plugin maps not just default
     {'tpope/vim-repeat'},
@@ -365,6 +388,7 @@ lvim.builtin.telescope.on_config_done = function(tele)
   local opts = {
     pickers = {
       find_files = {
+        hidden = true,
         find_command = { "fd", "--type=file", "--hidden", "--strip-cwd-prefix" },
         theme = "dropdown",
       },
@@ -374,6 +398,7 @@ lvim.builtin.telescope.on_config_done = function(tele)
         theme = "dropdown",
       },
       buffers = {
+        only_sort_text = true,
         theme = "dropdown"
       },
       oldfiles = {
@@ -385,6 +410,7 @@ lvim.builtin.telescope.on_config_done = function(tele)
       prompt_prefix = "❯",
       sorting_strategy = "ascending",
       layout_strategy = "horizontal",
+      theme = "dropdown",
       layout_config = {
           horizontal = {
               prompt_position = "top",
