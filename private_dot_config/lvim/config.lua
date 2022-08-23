@@ -223,12 +223,11 @@ lvim.plugins = {
       config = function ()
         require("auto-save").setup({
           enabled = false,
+          trigger_events = {"InsertLeave"},
           on_off_commands = true,
-          conditions = {
-              exists = true,
-          },
+          debounce_delay = 250,
           write_all_buffers = false,
-      })
+        })
       end,
     },
 --   -- Delete buffer without rearraging windows
