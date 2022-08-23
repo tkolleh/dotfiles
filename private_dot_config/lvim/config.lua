@@ -203,19 +203,15 @@ lvim.plugins = {
     { "solarnz/thrift.vim" },
 --   -- sessiom manager
     {
-      'Shatur/neovim-session-manager',
-      config = function ()
-        local Path = require('plenary.path')
-        require("session_manager").setup({
-          sessions_dir = Path:new(vim.fn.stdpath('data'), 'sessions'),
-          autoload_mode = require('session_manager.config').AutoloadMode.CurrentDir, -- Define what to do when Neovim is started without arguments. Possible values: Disabled, CurrentDir, LastSession
-          autosave_last_session = true, -- Automatically save last session on exit and on session switch.
-          autosave_ignore_not_normal = true, -- Plugin will not save a session when no buffers are opened, or all of them aren't writable or listed.
-          autosave_ignore_filetypes = { -- All buffers of these file types will be closed before the session is saved.
-            'gitcommit',
-          },
-      })
-      end
+      "folke/persistence.nvim",
+        event = "BufReadPre", -- this will only start session saving when an actual file was opened
+        module = "persistence",
+        config = function()
+          require("persistence").setup {
+            dir = vim.fn.expand(vim.fn.stdpath "config" .. "/session/"),
+            options = { "buffers", "curdir", "tabpages", "winsize" },
+          }
+        end,
     },
 --   -- Auto save
     {
@@ -372,6 +368,14 @@ lvim.builtin.which_key.mappings["t"] = {
   q = { "<cmd>TroubleToggle quickfix<cr>", "quickfix" },
   l = { "<cmd>TroubleToggle loclist<cr>", "loclist" },
   r = { "<cmd>TroubleToggle lsp_references<cr>", "references" },
+}
+
+--  -- Persistence session manager keybindings / keymappings
+lvim.builtin.which_key.mappings["S"]= {
+  name = "Session",
+  c = { "<cmd>lua require('persistence').load()<cr>", "Restore last session for current dir" },
+  l = { "<cmd>lua require('persistence').load({ last = true })<cr>", "Restore last session" },
+  Q = { "<cmd>lua require('persistence').stop()<cr>", "Quit without saving session" },
 }
 
 --  -- LSP keymappings / keybindings
