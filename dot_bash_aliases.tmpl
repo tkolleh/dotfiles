@@ -50,7 +50,7 @@ alias eat="NODE_PATH=`npm root -g` eat"
 
 # Reloads the configuration.
 if [ -n "$ZSH_VERSION" ]; then
-    __alias resource 'source $HOME/.zshrc ; zpm clean'
+    __alias resource 'source $HOME/.zshrc'
 else
     __alias resource 'source $HOME/.bash_profile'
 fi
@@ -67,6 +67,8 @@ __alias gloudtoken "gcloud auth login --brief && gcloud auth print-identity-toke
 __alias trash_pycharm_remote_resources "trash -v ~/Library/Caches/JetBrains/PyCharm2021.2/remote_sources ~/Library/Caches/JetBrains/PyCharm2021.2/tmp"
 
 __alias tg "terragrunt"
+
+__alias tmuxm "tmux new-session -A -s main"
 
 # -- configuration paths ------------------------------------------------------
 

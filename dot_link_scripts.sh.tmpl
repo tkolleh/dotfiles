@@ -1,6 +1,6 @@
 #! /usr/bin/env bash
 
-[ "$user_functions_loaded" ] || source {{ .chezmoi.homeDir }}/.bash_functions
+[ "$user_functions_loaded" ] || source {{ .chezmoi.homeDir }}/.zsh_functions
 
 {{ if eq .chezmoi.os "darwin" }}
 bluebox="/usr/local/bin/bluebox"

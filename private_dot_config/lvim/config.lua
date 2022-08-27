@@ -382,10 +382,16 @@ lvim.builtin.which_key.mappings["S"]= {
 }
 
 --  -- LSP keymappings / keybindings
+lvim.keys.normal_mode["<leader>ss"] = false
 lvim.builtin.which_key.mappings["ss"] = { "<cmd>Telescope lsp_document_symbols<cr>", "Document Symbols" }
+
+lvim.keys.normal_mode["<leader>sS"] = false
 lvim.builtin.which_key.mappings["sS"] = { "<cmd>Telescope lsp_dynamic_workspace_symbols<cr>", "Workspace Symbols"}
 
+lvim.keys.normal_mode["<leader>sb"] = false
 lvim.builtin.which_key.mappings["sb"] = { "<cmd>Telescope buffers<cr>", "Find Buffer" }
+
+lvim.keys.normal_mode["<leader>sB"] = false
 lvim.builtin.which_key.mappings["sB"] = { "<cmd>Telescope git_branches<cr>", "Checkout branch" }
 
 --  -- WIP for better configuration: https://github.com/LunarVim/LunarVim/issues/2426
