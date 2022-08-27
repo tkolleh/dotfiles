@@ -172,6 +172,9 @@ lvim.plugins = {
       event = { "BufRead", "BufNew" },
       config = function ()
         require("aerial").setup({
+          -- Priority list of preferred backends for aerial.
+          -- This can be a filetype map (see :help aerial-filetype-map)
+          backends = { "markdown", "treesitter", "lsp" },
           on_attach = function(bufnr)
             -- Toggle the aerial window with <leader>o (<leader>a default)
             vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>o', '<cmd>AerialToggle!<CR>', {})
@@ -344,7 +347,7 @@ lvim.plugins = {
 }
 
 --  -- Telescope configuration
-lvim.builtin.telescope.defaults.layout_config.width = 0.95
+--  -- lvim.builtin.telescope.defaults.layout_config.width = 0.95
 
 --  -- minimap configuration
 vim.g.minimap_width = 10
@@ -414,6 +417,8 @@ lvim.builtin.telescope.on_config_done = function(tele)
       prompt_prefix = "❯",
       sorting_strategy = "ascending",
       layout_strategy = "horizontal",
+      path_display = { "smart" },
+      dynamic_preview_title = true,
       theme = "dropdown",
       layout_config = {
           horizontal = {
