@@ -23,7 +23,6 @@ function cmd_path() {
 #
 # Alias helper functions
 #
-#
 function __remove_alias() {
   local CMDTYPE=$(type "$1") 
   case $CMDTYPE in
@@ -180,21 +179,15 @@ function contentlength() {
 }
 
 function viml() {
-  if [[ -f "$LAST_NVIM_SESSION" ]]; then
-    lvim -S $LAST_NVIM_SESSION
-  else
-    echo "Last lvim session not found at $LAST_NVIM_SESSION"
-    touch $LAST_NVIM_SESSION
-    echo "Made a new file"
-  fi
+  lvim "+lua require('persistence').load()"
 }
 
-# function vims() {
-#   SESSION=$(fd . -a $NVIM_SESSION | fzf)
-#   lvim -S "$SESSION"
-# }
+function vims() {
+  SESSION=$(fd . -a $NVIM_SESSION | fzf)
+  lvim -S "$SESSION"
+}
 
-function updatenvim() {
+function update_nvim() {
   echo ".  .     .    ,     .  .     .  .      ";
   echo "|  |._  _| _.-+-_   |\ | _  _\  /*._ _ ";
   echo "|__|[_)(_](_] |(/,  | \|(/,(_)\/ |[ | )";
@@ -203,12 +196,6 @@ function updatenvim() {
   echo -e '  \u001b[34mInstalling, updating and cleaning neovim plugins\u001b[0m'
   echo -e '============================================================'
   {
-    nvim "+call minpac#update('', {'do': 'quitall'})"
-  } || { echo -e '  \u001b[31mError updating minpac\u001b[0m'; }
-  sleep 2s
-  { 
-    conda update -n base --all --yes
-    npm update -g neovim
     brew reinstall -q nvim
   } && { 
     echo -e '  \u001b[34m\n============================================================\u001b[0m'; 
@@ -217,7 +204,7 @@ function updatenvim() {
   # ASCII art by http://patorjk.com/software/taag/#p=display&h=1&c=echo&f=Contessa&t=Update%20NeoVim
 }
 
-function updatetmux() {
+function update_tmux() {
   echo "                                                                     ";
   echo " | | ._   _|  _. _|_  _    _|_ ._ _           ._  |      _  o ._   _ ";
   echo " |_| |_) (_| (_|  |_ (/_    |_ | | | |_| ><   |_) | |_| (_| | | | _> ";
@@ -225,6 +212,9 @@ function updatetmux() {
   echo -e '  \u001b[34mUpdate all tmux plugins\u001b[0m'
   echo -e '  \u001b[34mTPM updating plugins\u001b[0m'
   echo -e '==========================='
+
+  echo -e '  \u001b[34mCreating TMUX main session or attaching if exists\u001b[0m'
+  tmux new-session -A -s main
 
   if $HOME/.tmux/plugins/tpm/bin/update_plugins all; then
     echo -e '==========================='
@@ -239,17 +229,6 @@ function updatetmux() {
     echo -e '  \u001b[34mError updating tmux plugins\u001b[0m'
     echo -e '  \u001b[34mvisit: https://github.com/tmux-plugins/tpm/blob/master/docs/managing_plugins_via_cmd_line.md\u001b[0m'
   fi
-}
-
-function updatezshcustom() {
-  printf "\n${BLUE}%s${RESET}\n" "Updating custom plugins and themes"
-  cd $ZSH_CUSTOM
-  for plugin in plugins/*/ themes/*/; do
-    if [ -d "$plugin/.git" ]; then
-      printf "${YELLOW}%s${RESET}\n" "${plugin%/}"
-      git -C "$plugin" pull
-    fi
-  done
 }
 
 # fuzzy find alias 
@@ -308,16 +287,8 @@ function edit_dot_files() {
   fi
 } 
 
-
-# Check if the function exists (bash specific)
-#[ -z "$1" ] || {
-#  if declare -f "$1" > /dev/null
-#  then
-#    # call arguments verbatim
-#    "$@"
-#  else
-#    # Show a helpful error
-#    echo "'$1' is not a known function name" >&2
-#    exit 1
-#  fi
-#}
+function update_term_tools() {
+  update_nvim
+  zpm upgrade
+  brew update
+}
