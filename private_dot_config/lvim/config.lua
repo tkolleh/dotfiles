@@ -57,7 +57,7 @@ lvim.builtin.treesitter.ensure_installed = {
 }
 
 lvim.builtin.treesitter.ignore_install = { "ocaml" }
-lvim.builtin.treesitter.highlight.enabled = true
+lvim.builtin.treesitter.highlight.enabled = false
 
 lvim.format_on_save = false
 -- set a formatter if you want to override the default lsp one (if it exists)
@@ -79,6 +79,7 @@ vim.list_extend(lvim.lsp.automatic_configuration.skipped_servers, { "metals" })
 
 -- Additional Plugins
 lvim.plugins = {
+    {'tpope/vim-abolish'},
 --   -- colors
     {'tjdevries/colorbuddy.vim'},
     {'Mofiqul/vscode.nvim'},
