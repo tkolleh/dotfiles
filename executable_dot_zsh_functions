@@ -292,3 +292,14 @@ function update_term_tools() {
   zpm upgrade
   brew update
 }
+
+function notes_sync() {
+  if [[ -d ${MARKDOWN_NOTES} ]];
+  then
+    echo $MARKDOWN_NOTES
+    git commit -am "Sync notes"
+    git push
+  else
+    echo "MARKDOWN_NOTES is not set"
+  fi
+}
