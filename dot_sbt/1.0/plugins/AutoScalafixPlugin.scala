@@ -8,7 +8,7 @@ object AutoScalafixPlugin extends AutoPlugin {
   override def requires = ScalafixPlugin
 
   override def projectSettings = Seq(
-    //scalacOptions += "-Ywarn-unused-import", // you might have to set this one at the config level, not sure
+    scalacOptions += "-Ywarn-unused-import", // required by `RemoveUnused` rule
     semanticdbEnabled := true,
     scalafixOnCompile := false,
     semanticdbVersion := scalafixSemanticdb.revision,
