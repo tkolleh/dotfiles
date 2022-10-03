@@ -71,6 +71,13 @@ formatters.setup {
     filetypes = {'scala','sc'},
   },
 }
+-- local linters = require "lvim.lsp.null-ls.linters"
+-- linters.setup {
+--   {
+--     command = "thriftcheck",
+--     args = { "--errors-only", "--config", "/Users/tj.kolleh/.thriftcheck.toml" },
+--   },
+-- }
 
 -- Required for rmagatti/goto-preview plugin
 lvim.keys.normal_mode["gp"] = false -- Disable lunarvim keybinding
@@ -104,8 +111,8 @@ lvim.plugins = {
 --  -- Git wrapper in vim
     {
       "tpope/vim-fugitive",
-      cmd = { "G", "Git", "Gdiffsplit", "Gread", "Gwrite", "Ggrep", "GMove", "GDelete", "GBrowse", "GRemove", "GRename", "Glgrep", "Gedit" },
-      ft = {"fugitive"}
+      cmd = { "G", "Git", "Gdiffsplit!", "Gvdiffsplit", "Gdiffsplit", "Gread", "Gwrite", "Ggrep", "GMove", "GDelete", "GBrowse", "GRemove", "GRename", "Glgrep", "Gedit" },
+      -- ft = {"fugitive"}
     },
 --  -- Custom search
     {
