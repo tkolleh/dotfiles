@@ -13,3 +13,4 @@ dependencyOverrides += "ch.epfl.scala" % "scalafix-interfaces" % "0.10.3"
 addSbtPlugin("ch.epfl.scala" %% "sbt-scalafix" % "0.10.3")
 addSbtPlugin("ch.epfl.scala" %% "sbt-bloop" % "1.5.3")
 
+addDependencyTreePlugin
