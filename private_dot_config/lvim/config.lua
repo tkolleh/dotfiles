@@ -482,13 +482,6 @@ lvim.builtin.lualine.sections.lualine_y = {
 lvim.leader = ";"
 lvim.builtin.which_key.mappings["j"] = { "<cmd>Telescope jumplist<cr>", "Jump List" }
 
--- TODO: Delete this line and the following.
--- The following commands are not needed as this is done by default
--- lvim.keys.normal_mode["gd"] = { "<cmd>Telescope lsp_definitions<cr>", "Goto definition"}
--- lvim.keys.normal_mode["gr"] = { "<cmd>Telescope lsp_references<cr>", "Goto references"}
--- lvim.keys.normal_mode["gI"] = { "<cmd>Telescope lsp_implementations<cr>", "Goto implementations"}
--- lvim.keys.normal_mode["<S-Tab>"] = { "<cmd>Telescope buffers<cr>", "Find buffer"}
-
 vim.api.nvim_set_keymap(
   'n',
   '<S-Tab>',
@@ -499,4 +492,8 @@ vim.api.nvim_set_keymap(
 ---- search highlighted text
 lvim.keys.visual_mode["//"] = 'y/<C-R>"<CR>'
 
-
+--- ESC from insert mode
+lvim.keys.insert_mode["jk"] = '<ESC>'
+lvim.keys.normal_mode["<S-l>"] = ":BufferLineCycleNext<CR>"
+lvim.keys.normal_mode["<S-h>"] = ":BufferLineCyclePrev<CR>"
+lvim.keys.normal_mode["<C-s>"] = ":w<cr>"

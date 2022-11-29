@@ -19,6 +19,8 @@ export ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE="50"
 # Uncomment the following line to change how often to auto-update (in days).
 export UPDATE_ZSH_DAYS=7
 
+export GPG_TTY=$(tty)
+
 # Install zpm-zsh
 if [[ ! -f ~/.zpm/zpm.zsh ]]; then
   git clone --recursive https://github.com/zpm-zsh/zpm ~/.zpm
