@@ -70,7 +70,8 @@ bindkey "$terminfo[kcud1]" history-substring-search-down
 # bindkey -M vicmd 'k' history-substring-search-up
 # bindkey -M vicmd 'j' history-substring-search-down
 
-ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=253,bg=white,underline"
+# ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=253,bg=white,underline"
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=236"
 
 
 # -- Initialize tools ----------------------------------------
@@ -134,7 +135,7 @@ fi
 
 if (( ${+commands[scala-cli]} )); then
   # >>> scala-cli completions >>>
-  fpath=("/Users/tj.kolleh/Library/Application Support/ScalaCli/completions/zsh" $fpath)
+  fpath=("$HOME/Library/Application Support/ScalaCli/completions/zsh" $fpath)
   compinit
   # <<< scala-cli completions <<<
 fi

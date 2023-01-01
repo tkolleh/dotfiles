@@ -11,8 +11,8 @@ error_symbol = ""
 [directory]
 truncate_to_repo = false
 fish_style_pwd_dir_length = 1
-style = "#faafeb"
-format = "[](bg:$style fg:bright-white)[$path[$read_only]($read_only_style)](bg:$style)[](fg:$style) "
+style = "#1B1B25"
+format = "[](bg:$style fg:black)[$path[$read_only]($read_only_style)](bg:$style)[](fg:$style) "
 
 [cmd_duration]
 min_time = 8000
@@ -61,12 +61,12 @@ format = "\b[](bg:$style fg:#faafeb)[$symbol$status](bg:$style)[](fg:$styl
 # VCS
 [git_branch]
 symbol = "  "
-style = "#ebfffc"
-format = "\b\b[](fg:#faafeb bg:$style)[$symbol$branch](fg:white bg:$style)[](fg:$style) "
+style = "#1B1B25"
+format = "\b[](fg:black bg:$style)[$symbol$branch](fg:white bg:$style)[](fg:$style) "
 
 [git_commit]
 style = "#ebfffc"
-format = "\b\b[ ﰖ $hash](fg:white bg:$style)[](fg:$style) "
+format = "\b[ ﰖ $hash](fg:white bg:$style)[](fg:$style) "
 
 [git_state]
 am = "APPLYING-MAILBOX"

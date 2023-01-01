@@ -2,7 +2,7 @@ local M = {}
 
 M.config = function()
   local dn = require('dark_notify')
-  local scheme = "vscode"
+  local scheme = "lunar"
   dn.run({
     schemes = {
       -- you can use a different colorscheme for each
@@ -11,7 +11,7 @@ M.config = function()
         background = "dark",
        },
       light = {
-        colorscheme = scheme,
+        colorscheme = "vscode",
         background = "light",
       }
     },
