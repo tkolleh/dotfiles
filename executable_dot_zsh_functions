@@ -257,10 +257,14 @@ function k8nsv() {
   fi
 }
 
-# Check term support for true color. Prints a color band showing gradients
-# if there is a difference between gradients i.e no smooth color band, then
-# there is something wrong with true color support.
 function print_color_band() {
+  echo -n "
+    # Check term support for true color. Prints a color band showing gradients
+    # if there is a difference between gradients i.e no smooth color band, then
+    # there is something wrong with true color support.
+    #
+    # See clicolors() for full list of console colors
+  "
   awk 'BEGIN{
       s="/\\/\\/\\/\\/\\"; s=s s s s s s s s;
       for (colnum = 0; colnum<77; colnum++) {
@@ -274,6 +278,20 @@ function print_color_band() {
       }
       printf "\n";
   }'
+}
+
+# colors, a lot of colors!
+function clicolors() {
+    i=1
+    for color in {000..255}; do;
+        c=$c"$FG[$color]$color✔$reset_color  ";
+        if [ `expr $i % 8` -eq 0 ]; then
+            c=$c"\n"
+        fi
+        i=`expr $i + 1`
+    done;
+    echo $c | sed 's/%//g' | sed 's/{//g' | sed 's/}//g' | sed '$s/..$//';
+    c=''
 }
 
 function edit_dot_files() {

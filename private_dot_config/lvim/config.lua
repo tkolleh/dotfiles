@@ -82,7 +82,7 @@ formatters.setup {
 -- Required for rmagatti/goto-preview plugin
 lvim.keys.normal_mode["gp"] = false -- Disable lunarvim keybinding
 
-vim.list_extend(lvim.lsp.automatic_configuration.skipped_servers, { "metals" })
+-- vim.list_extend(lvim.lsp.automatic_configuration.skipped_servers, { "metals" })
 
 -- Additional Plugins
 lvim.plugins = {
@@ -183,17 +183,15 @@ lvim.plugins = {
           -- Priority list of preferred backends for aerial.
           -- This can be a filetype map (see :help aerial-filetype-map)
           backends = { "markdown", "treesitter", "lsp" },
-          on_attach = function(bufnr)
-            -- Toggle the aerial window with <leader>o (<leader>a default)
-            vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>o', '<cmd>AerialToggle!<CR>', {})
-            -- Jump forwards/backwards with '{' and '}'
-            vim.api.nvim_buf_set_keymap(bufnr, 'n', '{', '<cmd>AerialPrev<CR>', {})
-            vim.api.nvim_buf_set_keymap(bufnr, 'n', '}', '<cmd>AerialNext<CR>', {})
-            -- Jump up the tree with '[[' or ']]'
-            vim.api.nvim_buf_set_keymap(bufnr, 'n', '[[', '<cmd>AerialPrevUp<CR>', {})
-            vim.api.nvim_buf_set_keymap(bufnr, 'n', ']]', '<cmd>AerialNextUp<CR>', {})
-          end
         })
+        -- Toggle the aerial window with <leader>o (<leader>a default)
+        vim.keymap.set('n', '<leader>o', '<cmd>AerialToggle!<CR>')
+        -- Jump forwards/backwards with '{' and '}'
+        vim.keymap.set('n', '{', '<cmd>AerialPrev<CR>')
+        vim.keymap.set('n', '}', '<cmd>AerialNext<CR>')
+        -- Jump up the tree with '[[' or ']]'
+        vim.keymap.set('n', '[[', '<cmd>AerialPrevUp<CR>')
+        vim.keymap.set('n', ']]', '<cmd>AerialNextUp<CR>')
       end
     },
 --  -- Debugger UI
