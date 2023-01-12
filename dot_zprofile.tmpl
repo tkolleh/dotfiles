@@ -5,6 +5,18 @@ export LANG=en_US.UTF-8
 export XDG_CONFIG_HOME="$HOME/.config"
 export XDG_DATA_HOME="$HOME/.local/share"
 
+# Change Starship prompt configuration based on Apple appearance setting (light / dark)
+if [[ "$(uname -s)" == "Darwin" ]]; then
+  set_prompt_mode() {
+    interface_mode=$(defaults read -g AppleInterfaceStyle 2>/dev/null)
+    if [[ $interface_mode == "Dark" ]] && [[ $ITERM_PROFILE == "Github" ]]; then
+        echo -ne "\033]50;Starship going $interface_mode\a"
+        export STARSHIP_CONFIG="$XDG_CONFIG_HOME/starship_dark.toml"
+    fi
+  }
+  set_prompt_mode
+fi
+
 # Load app configurations from separate configuration file.
 if [[ -a "$HOME"/.bash_secrets ]]; then
     source "$HOME"/.bash_secrets

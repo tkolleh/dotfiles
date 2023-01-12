@@ -13,8 +13,8 @@ truncation_symbol = ""
 truncate_to_repo = false
 truncation_length = 100
 fish_style_pwd_dir_length = 1
-style = "bg:#9c64a6 fg:white"
-format = "[]($style)[$path]($style)[$read_only]($read_only_style)[](inverted $style) "
+style = "bg:#9c64a6 fg:black"
+format = "[]($style)[$path]($style)[$read_only]($read_only_style)[](bg:black fg:#9c64a6) "
 
 [cmd_duration]
 min_time = 5000
@@ -63,7 +63,7 @@ format = "\b[](bg:$style fg:#faafeb)[$symbol$status](bg:$style)[](fg:$styl
 # VCS
 [git_branch]
 symbol = "  "
-style = "bg:#ccb9bc fg:white"
+style = "bg:#ffebee fg:black"
 format = "\b[]($style)[$symbol$branch]($style)[](inverted $style) "
 
 [git_commit]
@@ -110,7 +110,6 @@ ignore_base = true
 format = "[$symbol$environment]($style) "
 disabled = false
 truncation_length = 10
-
 
 [dart]
 symbol = " "
