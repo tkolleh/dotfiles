@@ -14,7 +14,7 @@ truncate_to_repo = false
 truncation_length = 100
 fish_style_pwd_dir_length = 1
 style = "bg:#9c64a6 fg:black"
-format = "[]($style)[$path]($style)[$read_only]($read_only_style)[](bg:black fg:#9c64a6) "
+format = "[]($style)[$path]($style)[$read_only]($read_only_style)[](inverted $style) "
 
 [cmd_duration]
 min_time = 5000
