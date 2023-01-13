@@ -19,8 +19,6 @@ export ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE="50"
 # Uncomment the following line to change how often to auto-update (in days).
 export UPDATE_ZSH_DAYS=7
 
-export GPG_TTY=$(tty)
-
 # Install zpm-zsh
 if [[ ! -f ~/.zpm/zpm.zsh ]]; then
   git clone --recursive https://github.com/zpm-zsh/zpm ~/.zpm
@@ -131,6 +129,15 @@ if (( ${+commands[asdf]} )); then
     if [[ -d "$JAVA_HOME"/bin ]]; then
       export PATH="$JAVA_HOME/bin:$SCALA_HOME/bin:$SBT_HOME/bin:$PATH"
     fi
+
+    # Node JS added to path
+    # export NODEJS_HOME="$(asdf where nodejs $(asdf current nodejs | awk '{ print $2 }'))"
+    # if [[ -d "$NODEJS_HOME"/bin ]]; then
+    #   export PATH="$PATH:$NODEJS_HOME/bin"
+    # fi 
+    export PATH="/opt/homebrew/opt/node@16/bin:$PATH"
+    export LDFLAGS="-L/opt/homebrew/opt/node@16/lib"
+    export CPPFLAGS="-I/opt/homebrew/opt/node@16/include"
 fi
 
 if (( ${+commands[scala-cli]} )); then
