@@ -7,17 +7,48 @@
 # Hide default user from local prompt.
 export DEFAULT_USER="${USER}"
 
-# Disable autosuggestion for large buffers.
-export ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE="50"
-
-# Enable aynchronous mode.
-# export ZSH_AUTOSUGGEST_USE_ASYNC=true
-
 # Uncomment the following line to automatically update without prompting.
 # DISABLE_UPDATE_PROMPT="true"
 
 # Uncomment the following line to change how often to auto-update (in days).
 export UPDATE_ZSH_DAYS=7
+
+# -- Light / Dark mode styles ----------------------------------
+#
+
+# Light mode is the default. Check if apple settings are for darkmode
+is_dark_mode() {
+  if [[ "$(uname -s)" == "Darwin" ]]; then
+    interface_mode=$(defaults read -g AppleInterfaceStyle 2>/dev/null)
+    if [[ $interface_mode == "Dark" ]]; then
+      1
+    fi
+  fi
+}
+
+set_prompt_mode() {
+  # Change Starship prompt configuration based on Apple appearance 
+  # setting (light / dark mode) and the active iTerm2 profile
+  if is_dark_mode; then
+    interface_mode=$(defaults read -g AppleInterfaceStyle 2>/dev/null)
+    if [[ $interface_mode == "Dark" ]] && [[ $ITERM_PROFILE == "Github" ]]; then
+        echo -ne "\033]50;Starship going $interface_mode\a"
+        export STARSHIP_CONFIG="$XDG_CONFIG_HOME/starship_dark.toml"
+    fi
+  fi
+}
+
+set_zsh_auto_suggest_colors() {
+  if is_dark_mode; then
+    # Set zsh auto suggest colors
+    ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=253"
+  else
+    ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=248"
+  fi
+}
+
+# -- Plugins -------------------------------------------------- 
+#
 
 # Install zpm-zsh
 if [[ ! -f ~/.zpm/zpm.zsh ]]; then
@@ -25,7 +56,6 @@ if [[ ! -f ~/.zpm/zpm.zsh ]]; then
 fi
 source ~/.zpm/zpm.zsh
 
-# -- Plugins -------------------------------------------------- 
 # Pull in OMZ (doesn't actually source anything)
 zpm load @omz
 
@@ -56,6 +86,14 @@ zpm if-not ssh load                                   \
 
 autoload -U compinit && compinit
 
+# Disable autosuggestion for large buffers.
+export ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE="50"
+
+# Enable aynchronous mode.
+export ZSH_AUTOSUGGEST_USE_ASYNC=true
+
+set_zsh_auto_suggest_colors
+
 # Bind keys for zsh-history-substring-search. Plugin must be loaded 
 # after fast-syntax-highlighting.
 
@@ -67,10 +105,6 @@ bindkey "$terminfo[kcud1]" history-substring-search-down
 
 # bindkey -M vicmd 'k' history-substring-search-up
 # bindkey -M vicmd 'j' history-substring-search-down
-
-# ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=253,bg=white,underline"
-ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=236"
-
 
 # -- Initialize tools ----------------------------------------
 #
@@ -180,7 +214,11 @@ if [[ -f "$HOME"/.bash_aliases ]]; then
 fi
 
 # -- Prompt --------------------------------------------------
+#
+
 # Starship cross-shell prompt
+#
+set_prompt_mode
 # Install starship
 eval "$(starship init zsh)"
 
