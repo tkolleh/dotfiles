@@ -3,10 +3,20 @@ add_newline = true
 scan_timeout = 10
 command_timeout = 20
 
+# Color palette
+# #9c64a6 - Main background
+# #ffebee - Secondary background
+# black - Main text (paragraph)
+# #b61827 - Error 
+# #b2dfdb - Mode change
+
+# Order of modules on prompt
+format = "[╭─](fg:#9c64a6)$directory$all$cmd_duration[╰](fg:#9c64a6)$character"
+
 [character]
-success_symbol = ""
-vicmd_symbol = ""
-error_symbol = ""
+success_symbol = "[](#9c64a6)"
+error_symbol = "[](bold #b61827)"
+vicmd_symbol = "[V](#b2dfdb)"
 
 [directory]
 truncation_symbol = ""
@@ -35,7 +45,7 @@ full_symbol = ""
 
 [[battery.display]]
 threshold = 10
-style = "bold fg:red"
+style = "bold fg:#b61827"
 
 [[battery.display]]
 threshold = 30
@@ -56,7 +66,7 @@ format = "[](bg:$style fg:black)[🕙 $time](bg:$style fg:white)[](fg:$sty
 
 [status]
 disabled = false
-style = "red"
+style = "#b61827"
 symbol = "\\(╯°□°）╯︵ ┻━┻ "
 format = "\b[](bg:$style fg:#faafeb)[$symbol$status](bg:$style)[](fg:$style)"
 
@@ -81,10 +91,10 @@ style = "#ebfffc"
 format = "($conflicted$staged$modified$renamed$deleted$untracked$stashed$ahead_behind\b )"
 conflicted = "[ ](fg:88)[   ${count} ](fg:white bg:88)[ ](fg:88)"
 #staged = "[M$count ](fg:green)"
-#modified = "[M${count} ](fg:red)"
+#modified = "[M${count} ](fg:#b61827)"
 #renamed = "[R${count} ](fg:208)"
 deleted = "[ ${count} ](fg:208)"
-untracked = "[?${count} ](fg:red)"
+untracked = "[?${count} ](fg:#b61827)"
 stashed = " ${count} "
 ahead = "[ ${count} ](fg:purple)"
 behind = "[ ${count} ](fg:yellow)"
