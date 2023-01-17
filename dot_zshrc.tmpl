@@ -32,8 +32,9 @@ set_prompt_mode() {
   # Change Starship prompt configuration based on Apple appearance 
   # setting (light / dark mode) and the active iTerm2 profile
   if is_dark_mode && [[ $ITERM_PROFILE == "Github" ]]; then
-      echo "Starship going dark"
-      export STARSHIP_CONFIG="$HOME/.config/starship_dark.toml"
+      starship config palette dark
+  else
+      starship config palette light
   fi
 }
 
@@ -216,10 +217,10 @@ fi
 #
 
 # Starship cross-shell prompt
-#
-set_prompt_mode
+# 
 # Install starship
 eval "$(starship init zsh)"
+set_prompt_mode
 
 # Must be last
 source $(brew --prefix asdf)/libexec/asdf.sh
