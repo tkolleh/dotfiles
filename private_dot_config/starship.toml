@@ -3,27 +3,40 @@ add_newline = true
 scan_timeout = 10
 command_timeout = 20
 
-# Color palette
-# #9c64a6 - Main background
-# #ffebee - Secondary background
-# black - Main text (paragraph)
-# #b61827 - Error 
-# #b2dfdb - Mode change
-
 # Order of modules on prompt
-format = "[╭─](fg:#9c64a6)$directory$all$cmd_duration[╰](fg:#9c64a6)$character"
+format = "[╭─](fg:main_clr)$directory$all$cmd_duration[╰](fg:main_clr)$character$status"
+
+# Color palette for light/dark mode
+palette = "light"
+
+[palettes.light] #default color palette
+main_clr = "#9c64a6" # -- Directory chevron background
+secondary_clr = "#ffebee" # -- Program background (git)
+txt_clr = "#212121"   # -- Main text (paragraph)
+light_txt_clr = "#f5f5f5" # -- Text for dark background (paragraph)
+red_clr = "#b61827" # -- Warning and/or error color
+mode_clr = "#b2dfdb" # -- Sky blue / green color
+term_bg_clr = "#ffffff" # -- Background color
+
+[palettes.dark]
+main_clr = "#9c64a6" # -- Directory chevron background
+secondary_clr = "#ffebee" # -- Program background (git)
+txt_clr = "#212121"   # -- Main text (paragraph)
+red_clr = "#b61827" # -- Warning and/or error color
+mode_clr = "#b2dfdb" # -- Sky blue / green color
+term_bg_clr = "#000000" # -- Background color
 
 [character]
-success_symbol = "[](#9c64a6)"
-error_symbol = "[](bold #b61827)"
-vicmd_symbol = "[V](#b2dfdb)"
+success_symbol = "[](main_clr)"
+error_symbol = " [](bold red_clr)"
+vicmd_symbol = " [](mode_clr)"
 
 [directory]
 truncation_symbol = ""
 truncate_to_repo = false
 truncation_length = 100
 fish_style_pwd_dir_length = 1
-style = "bg:#9c64a6 fg:white"
+style = "bg:main_clr fg:term_bg_clr"
 format = "[]($style)[$path]($style)[$read_only]($read_only_style)[](inverted $style) "
 
 [cmd_duration]
@@ -45,7 +58,7 @@ full_symbol = ""
 
 [[battery.display]]
 threshold = 10
-style = "bold fg:#b61827"
+style = "bold fg:red_clr"
 
 [[battery.display]]
 threshold = 30
@@ -61,44 +74,43 @@ symbol = " "
 
 [time]
 disabled = true
-style = "#faafeb"
-format = "[](bg:$style fg:black)[🕙 $time](bg:$style fg:white)[](fg:$style)"
+style = "light_txt_clr"
+format = "[](bg:$style fg:txt_clr)[🕙 $time](bg:$style fg:term_bg_clr)[](fg:$style)"
 
 [status]
 disabled = false
-style = "#b61827"
-symbol = "\\(╯°□°）╯︵ ┻━┻ "
-format = "\b[](bg:$style fg:#faafeb)[$symbol$status](bg:$style)[](fg:$style)"
+symbol = "  "
+format = "[$status$symbol](fg:red_clr)"
 
 # VCS
 [git_branch]
 symbol = "  "
-style = "bg:#ccb9bc fg:white"
-format = "\b[]($style)[$symbol$branch]($style)[](inverted $style) "
+style = "bg:secondary_clr fg:term_bg_clr"
+format = "\b[]($style)[$symbol$branch](bg:secondary_clr fg:txt_clr)[](inverted $style) "
 
 [git_commit]
 style = "#ebfffc"
-format = "\b[ ﰖ $hash](fg:white bg:$style)[](fg:$style) "
+format = "\b[ ﰖ $hash](fg:term_bg_clr bg:$style)[](fg:$style) "
 
 [git_state]
 am = "APPLYING-MAILBOX"
 am_or_rebase = "APPLYING-MAILBOX/REBASE"
 style = "#ebfffc"
-format = "\b\b[ \\($state( $progress_current/$progress_total)\\)](fg:white bg:$style)[](fg:$style) "
+format = "\b\b[ \\($state( $progress_current/$progress_total)\\)](fg:term_bg_clr bg:$style)[](fg:$style) "
 
 [git_status]
 style = "#ebfffc"
 format = "($conflicted$staged$modified$renamed$deleted$untracked$stashed$ahead_behind\b )"
-conflicted = "[ ](fg:88)[   ${count} ](fg:white bg:88)[ ](fg:88)"
+conflicted = "[ ](fg:88)[   ${count} ](fg:term_bg_clr bg:88)[ ](fg:88)"
 #staged = "[M$count ](fg:green)"
-#modified = "[M${count} ](fg:#b61827)"
+#modified = "[M${count} ](fg:red_clr)"
 #renamed = "[R${count} ](fg:208)"
 deleted = "[ ${count} ](fg:208)"
-untracked = "[?${count} ](fg:#b61827)"
+untracked = "[?${count} ](fg:red_clr)"
 stashed = " ${count} "
 ahead = "[ ${count} ](fg:purple)"
 behind = "[ ${count} ](fg:yellow)"
-diverged = "[](fg:88)[  נּ ](fg:white bg:88)[ ${ahead_count} ](fg:purple bg:88)[ ${behind_count} ](fg:yellow bg:88)[ ](fg:88)"
+diverged = "[](fg:88)[  נּ ](fg:term_bg_clr bg:88)[ ${ahead_count} ](fg:purple bg:88)[ ${behind_count} ](fg:yellow bg:88)[ ](fg:88)"
 
 [shlvl]
 disabled = false
