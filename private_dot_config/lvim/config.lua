@@ -349,6 +349,9 @@ lvim.plugins = {
     {'nvim-telescope/telescope-dap.nvim'},
     {'nvim-telescope/telescope-ui-select.nvim' },
 
+--  -- Align text with motion
+    {'junegunn/vim-easy-align'},
+
 --  end additional plugins bloc
 }
 
