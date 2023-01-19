@@ -321,3 +321,8 @@ function notes_sync() {
     echo "MARKDOWN_NOTES is not set"
   fi
 }
+
+# Style command help doc
+function help(){
+  "$@" --help 2>&1 | bat --plain --language=help
+}
