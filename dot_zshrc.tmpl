@@ -28,6 +28,15 @@ is_dark_mode() {
   fi
 }
 
+set_zsh_auto_suggest_colors() {
+  if is_dark_mode; then
+    # Set zsh auto suggest colors
+    ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=237"
+  else
+    ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=248"
+  fi
+}
+
 set_prompt_mode() {
   # Change Starship prompt configuration based on Apple appearance 
   # setting (light / dark mode) and the active iTerm2 profile
@@ -36,15 +45,7 @@ set_prompt_mode() {
   else
       starship config palette light
   fi
-}
-
-set_zsh_auto_suggest_colors() {
-  if is_dark_mode; then
-    # Set zsh auto suggest colors
-    ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=237"
-  else
-    ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=248"
-  fi
+  set_zsh_auto_suggest_colors
 }
 
 # -- Plugins -------------------------------------------------- 
@@ -140,7 +141,7 @@ if (( ${+commands[conda]} )); then
     #
 fi
 
-if (( ${+commands[fd]} )) && (( ${+commands[rg]} )) && (( ${+commands[fzf]} )); then
+if (( ${+commands[fd]} )) && (( ${+commands[rg]} )) && (( ${+commands[fzf]} )) && (( ${+commands[bat]} )); then
     zpm load @github/unixorn/fzf-zsh-plugin    
 
     export FZF_DEFAULT_COMMAND='fd --type f --color=never --ignore-case --no-ignore --hidden --follow'
@@ -187,8 +188,13 @@ if (( ${+commands[cs]} )); then
   eval "$(cs install --env)" 
 fi
 
-if (( ${+commands[delta]} )); then
-  export BATDIFF_USE_DELTA=false
+if (( ${+commands[bat]} )) && (( ${+commands[delta]} )); then
+  # export BAT_THEME=GitHub
+  export BATDIFF_USE_DELTA=true
+fi
+
+if (( ${+commands[atuin]} )); then
+  eval "$(atuin init zsh)"
 fi
 
 # The next line updates PATH for the Google Cloud SDK.
