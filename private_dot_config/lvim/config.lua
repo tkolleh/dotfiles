@@ -352,6 +352,9 @@ lvim.plugins = {
 --  -- Align text with motion
     {'junegunn/vim-easy-align'},
 
+-- -- GitHub copilot
+    {'github/copilot.vim'}
+
 --  end additional plugins bloc
 }
 
