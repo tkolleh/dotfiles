@@ -186,11 +186,11 @@ lvim.plugins = {
         -- Toggle the aerial window with <leader>o (<leader>a default)
         vim.keymap.set('n', '<leader>o', '<cmd>AerialToggle!<CR>')
         -- Jump forwards/backwards with '{' and '}'
-        vim.keymap.set('n', '{', '<cmd>AerialPrev<CR>')
-        vim.keymap.set('n', '}', '<cmd>AerialNext<CR>')
+        vim.keymap.set('n', '{', '<cmd>aerial.prev<CR>')
+        vim.keymap.set('n', '}', '<cmd>aerial.next<CR>')
         -- Jump up the tree with '[[' or ']]'
-        vim.keymap.set('n', '[[', '<cmd>AerialPrevUp<CR>')
-        vim.keymap.set('n', ']]', '<cmd>AerialNextUp<CR>')
+        vim.keymap.set('n', '[[', '<cmd>aerial.prev_up<CR>')
+        vim.keymap.set('n', ']]', '<cmd>aerial.next_up<CR>')
       end
     },
 --  -- Scala LSP
@@ -237,17 +237,16 @@ lvim.plugins = {
         require("todo-comments").setup()
       end,
     },
---   -- Function signature hint while typing
+--   -- Function signature hint while typing. This one is the panda icon
     {
       "ray-x/lsp_signature.nvim",
       event = "BufRead",
       config = function()
         require("lsp_signature").setup({
-          floating_window = false,
-          doc_lines = 5,
+          floating_window = true,
+          doc_lines = 0,
           always_trigger = false,
-          timer_interval = 300,
-          toggle_key = '<C-p>'
+          timer_interval = 100,
       })
       end
     },
@@ -337,6 +336,14 @@ lvim.plugins = {
 -- -- GitHub Copilot
     {'github/copilot.vim'},
 
+-- -- LSP file operations
+    {
+      'antosha417/nvim-lsp-file-operations',
+      requires = {
+        { "nvim-lua/plenary.nvim" },
+        { "kyazdani42/nvim-tree.lua" },
+      }
+    },
 --  end additional plugins bloc
 }
 
