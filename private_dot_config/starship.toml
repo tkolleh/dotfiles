@@ -4,7 +4,7 @@ scan_timeout = 10
 command_timeout = 20
 
 # Order of modules on prompt
-format = "[╭─](fg:main_clr)$directory$all$cmd_duration[╰](fg:main_clr)$character$status"
+format = "[╭─](fg:main_clr)$cmd_duration$directory$all[╰](fg:main_clr)$character$status"
 
 # Color palette for light/dark mode
 palette = "light"
