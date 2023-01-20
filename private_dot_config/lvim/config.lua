@@ -90,7 +90,6 @@ lvim.plugins = {
 --   -- colors
     {'tjdevries/colorbuddy.vim'},
     {'Mofiqul/vscode.nvim'},
-    {'folke/tokyonight.nvim'},
 --  -- Change colorscheme based on OS
     {
       "cormacrelf/dark-notify",
@@ -192,13 +191,6 @@ lvim.plugins = {
         -- Jump up the tree with '[[' or ']]'
         vim.keymap.set('n', '[[', '<cmd>AerialPrevUp<CR>')
         vim.keymap.set('n', ']]', '<cmd>AerialNextUp<CR>')
-      end
-    },
---  -- Debugger UI
-    {
-      "rcarriga/nvim-dap-ui",
-      config = function ()
-        require('dapui').setup()
       end
     },
 --  -- Scala LSP
@@ -319,20 +311,10 @@ lvim.plugins = {
       "folke/trouble.nvim",
         cmd = "TroubleToggle",
     },
---  -- View code context details
-    {
-      "SmiteshP/nvim-navic",
-      config = function ()
-        local navic = require("nvim-navic")
-        navic.setup()
 
-        lvim.lsp.on_attach_callback = function(client, bufrn)
-          navic.attach(client, bufrn)
-        end
-      end,
-    },
 --  -- Repeat plugin maps not just default
     {'tpope/vim-repeat'},
+
 --  -- Change surroundings of word groups
     {
       "tpope/vim-surround",
@@ -351,6 +333,9 @@ lvim.plugins = {
 
 --  -- Align text with motion
     {'junegunn/vim-easy-align'},
+
+-- -- GitHub Copilot
+    {'github/copilot.vim'},
 
 --  end additional plugins bloc
 }
@@ -480,7 +465,6 @@ lvim.builtin.lualine.sections.lualine_y = {
 
 
 -- keymappings / keybindings [view all the defaults by pressing <leader>Lk]
-lvim.leader = ";"
 lvim.builtin.which_key.mappings["j"] = { "<cmd>Telescope jumplist<cr>", "Jump List" }
 
 vim.api.nvim_set_keymap(
