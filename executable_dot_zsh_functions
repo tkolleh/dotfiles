@@ -178,32 +178,6 @@ function contentlength() {
   fi
 }
 
-function viml() {
-  lvim "+lua require('persistence').load()"
-}
-
-function vims() {
-  SESSION=$(fd . -a $NVIM_SESSION | fzf)
-  lvim -S "$SESSION"
-}
-
-function update_nvim() {
-  echo ".  .     .    ,     .  .     .  .      ";
-  echo "|  |._  _| _.-+-_   |\ | _  _\  /*._ _ ";
-  echo "|__|[_)(_](_] |(/,  | \|(/,(_)\/ |[ | )";
-  echo "    |                                  ";
-
-  echo -e '  \u001b[34mInstalling, updating and cleaning neovim plugins\u001b[0m'
-  echo -e '============================================================'
-  {
-    brew reinstall -q nvim
-  } && { 
-    echo -e '  \u001b[34m\n============================================================\u001b[0m'; 
-  }
-  echo
-  # ASCII art by http://patorjk.com/software/taag/#p=display&h=1&c=echo&f=Contessa&t=Update%20NeoVim
-}
-
 function update_tmux() {
   echo "                                                                     ";
   echo " | | ._   _|  _. _|_  _    _|_ ._ _           ._  |      _  o ._   _ ";
@@ -306,19 +280,14 @@ function edit_dot_files() {
 } 
 
 function update_term_tools() {
-  update_nvim
-  zpm upgrade
-  brew update
-}
-
-function notes_sync() {
-  if [[ -d ${MARKDOWN_NOTES} ]];
-  then
-    echo $MARKDOWN_NOTES
-    git commit -am "Sync notes"
-    git push
-  else
-    echo "MARKDOWN_NOTES is not set"
+  if (( ${+commands[atuin]} )); then 
+    atuin sync
+  fi
+  if (( ${+commands[zpm]} )); then 
+    zpm upgrade
+  fi
+  if (( ${+commands[brew]} )); then 
+    brew upgrade nvim chezmoi atuin tmux
   fi
 }
 
