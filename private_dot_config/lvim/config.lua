@@ -1,19 +1,27 @@
---[[
-lvim is the global options object
+-- Helper functions
+--
+-- re-assign lvim defaults
+local function reassign_which_key(from, to)
+  local mapping = lvim.builtin.which_key.mappings[from]
+  lvim.builtin.which_key.mappings[to] = mapping
+  lvim.builtin.which_key.mappings[from] = nil
+end
 
-Linters should be
-filled in as strings with either
-a global executable or a path to
-an executable
-]]
--- THESE ARE EXAMPLE CONFIGS FEEL FREE TO CHANGE TO WHATEVER YOU WANT
+-- Changes an existing mapping to a completely new one. Old mapping is deleted,
+-- so should be re-assigned first.
+local function change_which_key(key, mapping)
+  lvim.builtin.which_key.mappings[key] = nil
+  lvim.builtin.which_key.mappings[key] = mapping
+end
 
 -- general
--- lvim.log.level = "debug"
+lvim.log.level = "warn"
 lvim.format_on_save = false
 vim.o.wrap = true
 vim.o.linebreak = true
-vim.o.showbreak="      ⤦ "
+-- vim.o.showbreak = "      ⤦ "
+vim.o.showbreak = "⤦ "
+vim.o.breakindent = true
 vim.o.list = false
 vim.o.timeoutlen = 700
 vim.o.laststatus = 3
@@ -28,36 +36,25 @@ vim.o.foldcolumn = "2"
 vim.o.foldmethod = "expr"
 vim.o.foldexpr = "nvim_treesitter#foldexpr()"
 
-
 --  -- Optional core plugins
+lvim.builtin.alpha.active = true
 lvim.builtin.alpha.mode = "startify"
+
+-- Don't set cwd which causes issues when it re-roots within the same repository and
+-- then searching in parent won't work. To manually set cwd, use
+-- `:ProjectRoot`.
+lvim.builtin.project.manual_mode = true
+
 lvim.builtin.terminal.active = true
+-- This was remapped to `<C-\>` in a recent update.
+lvim.builtin.terminal.open_mapping = "<C-t>"
+
 lvim.builtin.cmp.completion.keyword_length = 2
 lvim.builtin.dap.active = true -- (default: false)
 
 --  -- Nvim tree configuration
 lvim.builtin.nvimtree.setup.view.side = "left"
 lvim.builtin.nvimtree.setup.view.width = "25%"
--- lvim.builtin.nvimtree.renderer.highlight_opened_files = "all"
-
--- if you don't want all the parsers change this to a table of the ones you want
-lvim.builtin.treesitter.ensure_installed = {
-  "bash",
-  "c",
-  "javascript",
-  "json",
-  "lua",
-  "python",
-  "typescript",
-  "css",
-  "rust",
-  "java",
-  "yaml",
-  "scala",
-}
-
-lvim.builtin.treesitter.ignore_install = { "ocaml" }
-lvim.builtin.treesitter.highlight.enabled = false
 
 lvim.format_on_save = false
 -- set a formatter if you want to override the default lsp one (if it exists)
@@ -71,18 +68,9 @@ formatters.setup {
     filetypes = {'scala','sc'},
   },
 }
--- local linters = require "lvim.lsp.null-ls.linters"
--- linters.setup {
---   {
---     command = "thriftcheck",
---     args = { "--errors-only", "--config", "/Users/tj.kolleh/.thriftcheck.toml" },
---   },
--- }
 
 -- Required for rmagatti/goto-preview plugin
 lvim.keys.normal_mode["gp"] = false -- Disable lunarvim keybinding
-
--- vim.list_extend(lvim.lsp.automatic_configuration.skipped_servers, { "metals" })
 
 -- Additional Plugins
 lvim.plugins = {
@@ -345,6 +333,7 @@ lvim.plugins = {
     },
 --   -- keybindings
    {'tpope/vim-unimpaired'},
+
 --  -- Telescope extensions
     {'nvim-telescope/telescope-dap.nvim'},
     {'nvim-telescope/telescope-ui-select.nvim' },
@@ -365,9 +354,6 @@ lvim.plugins = {
     },
 --  end additional plugins bloc
 }
-
---  -- Telescope configuration
---  -- lvim.builtin.telescope.defaults.layout_config.width = 0.95
 
 --  -- minimap configuration
 vim.g.minimap_width = 10
@@ -401,69 +387,11 @@ lvim.builtin.which_key.mappings["S"]= {
   Q = { "<cmd>lua require('persistence').stop()<cr>", "Quit without saving session" },
 }
 
---  -- LSP keymappings / keybindings
-lvim.keys.normal_mode["<leader>ss"] = false
-lvim.builtin.which_key.mappings["ss"] = { "<cmd>Telescope lsp_document_symbols<cr>", "Document Symbols" }
+--  -- Telescope configuration
+require("user.telescope").config()
 
-lvim.keys.normal_mode["<leader>sS"] = false
-lvim.builtin.which_key.mappings["sS"] = { "<cmd>Telescope lsp_dynamic_workspace_symbols<cr>", "Workspace Symbols"}
-
-lvim.keys.normal_mode["<leader>sb"] = false
-lvim.builtin.which_key.mappings["sb"] = { "<cmd>Telescope buffers<cr>", "Find Buffer" }
-
-lvim.keys.normal_mode["<leader>sB"] = false
-lvim.builtin.which_key.mappings["sB"] = { "<cmd>Telescope git_branches<cr>", "Checkout branch" }
-
---  -- WIP for better configuration: https://github.com/LunarVim/LunarVim/issues/2426
-lvim.builtin.telescope.on_config_done = function(tele)
-  pcall(tele.load_extension, "dap")
-  pcall(tele.load_extension, "ui-select")
-  local opts = {
-    pickers = {
-      find_files = {
-        hidden = true,
-        find_command = { "fd", "--type=file", "--hidden", "--strip-cwd-prefix" },
-        theme = "dropdown",
-      },
-      live_grep = {
-        --@usage don't include the filename in the search results
-        only_sort_text = true,
-        theme = "dropdown",
-      },
-      buffers = {
-        only_sort_text = true,
-        theme = "dropdown"
-      },
-      oldfiles = {
-        theme = "dropdown"
-      },
-    },
-    defaults = {
-      file_ignore_patterns = { "target", "node_modules", "parser.c", "out", "%.min.js" },
-      prompt_prefix = "❯",
-      sorting_strategy = "ascending",
-      layout_strategy = "horizontal",
-      path_display = { "smart" },
-      dynamic_preview_title = true,
-      theme = "dropdown",
-      layout_config = {
-          horizontal = {
-              prompt_position = "top",
-              preview_width = 0.55,
-              results_width = 0.8,
-          },
-          vertical = {
-              mirror = false,
-          },
-          width = 0.87,
-          height = 0.80,
-          preview_cutoff = 120,
-      },
-    },
-  }
-  tele.setup(opts)
-end
-
+-- -- Treesitter configuration
+require("user.treesitter").config()
 
 -- Configure nvim-dap and dap-ui
 require("user.dap").config()
@@ -489,17 +417,6 @@ lvim.builtin.lualine.sections.lualine_y = {
  dap_status(),
 }
 
-
--- keymappings / keybindings [view all the defaults by pressing <leader>Lk]
-lvim.builtin.which_key.mappings["j"] = { "<cmd>Telescope jumplist<cr>", "Jump List" }
-
-vim.api.nvim_set_keymap(
-  'n',
-  '<S-Tab>',
-  [[<Cmd>Telescope buffers<CR>]],
-  { noremap = true, silent = true }
-)
-
 ---- search highlighted text
 lvim.keys.visual_mode["//"] = 'y/<C-R>"<CR>'
 
@@ -508,3 +425,8 @@ lvim.keys.insert_mode["jk"] = '<ESC>'
 lvim.keys.normal_mode["<S-l>"] = ":BufferLineCycleNext<CR>"
 lvim.keys.normal_mode["<S-h>"] = ":BufferLineCyclePrev<CR>"
 lvim.keys.normal_mode["<C-s>"] = ":w<cr>"
+
+-- For inspiration:
+-- https://github.com/ChristianChiarulli/lvim
+-- https://github.com/abzcoding/lvim/blob/main/config.lua
+-- https://github.com/mandreyel/dotfiles/tree/master/lvim/.config/lvim
