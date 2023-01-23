@@ -2,19 +2,42 @@ local M = {}
 
 M.config = function()
   lvim.builtin.dap.on_config_done = function(dap)
-    -- print("bufferline: " .. vim.inspect(dap ~= nil))
     dap.configurations.scala = {
+      {
+        type = "scala",
+        request = "launch",
+        name = "RunOrTest",
+        metals = {
+          runType = "runOrTestFile",
+          --args = { "firstArg", "secondArg", "thirdArg" }, -- here just as an example
+          -- jvmOptions = { "-Dpropert=123" },
+          -- env = {}, -- Environment variables
+          envFile = ".env",
+        },
+      },
+      {
+      type = "scala",
+      request = "launch",
+      name = "Run",
+      metals = {
+        runType = "run"
+      }
+    },
     {
       type = "scala",
       request = "launch",
-      name = "RunOrTest",
+      name = "Test File",
       metals = {
-        runType = "runOrTestFile",
-        --args = { "firstArg", "secondArg", "thirdArg" }, -- here just as an example
-        -- jvmOptions = { "-Dpropert=123" },
-        -- env = {}, -- Environment variables
-        envFile = ".env",
-      },
+        runType = "testFile"
+      }
+    },
+    {
+      type = "scala",
+      request = "launch",
+      name = "Test Target",
+      metals = {
+        runType = "testTarget"
+      }
     },
   }
   -- Setup dap UI

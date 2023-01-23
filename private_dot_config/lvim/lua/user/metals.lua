@@ -28,29 +28,17 @@ M.config = function()
       "akka.stream.javadsl",
       "akka.http.javadsl",
     },
-    fallbackScalaVersion = "2.12.15",
-    serverVersion = "latest.snapshot",
     scalafixConfigPath = ".scalafix.conf",
     scalafixRulesDependencies = {
       "com.github.liancheng::organize-imports",
-      "com.github.zio::zio-shield",
-      "com.timushev::zio-magic-comments",
     },
   }
-
   -- *READ THIS*
   -- I *highly* recommend setting statusBarProvider to true, however if you do,
   -- you *have* to have a setting to display this in your statusline or else
   -- you'll not see any messages from metals. There is more info in the help
   -- docs about this
   metals_config.init_options.statusBarProvider = "on"
-
-  local capabilities = vim.lsp.protocol.make_client_capabilities()
-  local status_ok, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
-  -- if status_ok then
-  --   capabilities = cmp_nvim_lsp.default_capabilities(capabilities)
-  --   metals_config.capabilities = capabilities
-  -- end
 
   metals_config.on_attach = function(client, bufnr)
     require("lvim.lsp").common_on_attach(client, bufnr)
@@ -74,7 +62,7 @@ M.config = function()
   lvim.builtin.which_key.mappings["m"] = {
     name = "metals",
     c = { "<cmd>lua require('telescope').extensions.metals.commands()<cr>", "Commands"},
-    w = { "<cmd>lua require('metals').hover_worksheet()<cr>", "Worksheet"},
+    w = { "<cmd>lua require('metals').hover_worksheet()<cr>", "hover Worksheet"},
     t = { "<cmd>lua require('metals.tvp').toggle_tree_view()<cr>", "Tree view"},
     r = { "<cmd>lua require('metals.tvp').reveal_in_tree()<cr>", "Reveal in tree"},
     s = { "<cmd>lua require('metals').toggle_setting('showImplicitArguments')<cr>", "Show implicit arguments"},

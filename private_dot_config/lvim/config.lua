@@ -14,6 +14,9 @@ local function change_which_key(key, mapping)
   lvim.builtin.which_key.mappings[key] = mapping
 end
 
+-- default makes quitting the editor too easy
+lvim.builtin.which_key.mappings["q"] = nil
+
 -- general
 lvim.log.level = "warn"
 lvim.format_on_save = false
@@ -39,11 +42,6 @@ vim.o.foldexpr = "nvim_treesitter#foldexpr()"
 --  -- Optional core plugins
 lvim.builtin.alpha.active = true
 lvim.builtin.alpha.mode = "startify"
-
--- Don't set cwd which causes issues when it re-roots within the same repository and
--- then searching in parent won't work. To manually set cwd, use
--- `:ProjectRoot`.
-lvim.builtin.project.manual_mode = true
 
 lvim.builtin.terminal.active = true
 -- This was remapped to `<C-\>` in a recent update.
@@ -341,9 +339,6 @@ lvim.plugins = {
 --  -- Align text with motion
     {'junegunn/vim-easy-align'},
 
--- -- GitHub Copilot
-    {'github/copilot.vim'},
-
 -- -- LSP file operations
     {
       'antosha417/nvim-lsp-file-operations',
@@ -352,8 +347,35 @@ lvim.plugins = {
         { "kyazdani42/nvim-tree.lua" },
       }
     },
+
+-- -- View diffs, use fugitive for merge conflicts
+    {
+      'sindrets/diffview.nvim',
+      requires = 'nvim-lua/plenary.nvim'
+    },
+
+-- -- Copilot
+  {
+    "zbirenbaum/copilot.lua",
+    cmd = "Copilot",
+    event = "InsertEnter",
+    config = function ()
+      vim.schedule(function()
+        require("copilot").setup()
+      end)
+    end,
+  },
+  {
+    "zbirenbaum/copilot-cmp",
+    after = { "copilot.lua", "nvim-cmp" },
+  },
+
 --  end additional plugins bloc
 }
+
+-- Can not be placed into the config method of the plugins.
+lvim.builtin.cmp.formatting.source_names["copilot"] = "(Copilot)"
+table.insert(lvim.builtin.cmp.sources, 1, { name = "copilot" })
 
 --  -- minimap configuration
 vim.g.minimap_width = 10
@@ -425,6 +447,7 @@ lvim.keys.insert_mode["jk"] = '<ESC>'
 lvim.keys.normal_mode["<S-l>"] = ":BufferLineCycleNext<CR>"
 lvim.keys.normal_mode["<S-h>"] = ":BufferLineCyclePrev<CR>"
 lvim.keys.normal_mode["<C-s>"] = ":w<cr>"
+
 
 -- For inspiration:
 -- https://github.com/ChristianChiarulli/lvim
