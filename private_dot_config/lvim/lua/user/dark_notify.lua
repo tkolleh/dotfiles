@@ -2,7 +2,7 @@ local M = {}
 
 M.config = function()
   local dn = require('dark_notify')
-  local scheme = "lunar"
+  local scheme = "onedarker"
   dn.run({
     schemes = {
       -- you can use a different colorscheme for each
