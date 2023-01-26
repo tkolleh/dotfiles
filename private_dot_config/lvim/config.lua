@@ -75,11 +75,14 @@ lvim.plugins = {
     {'tpope/vim-abolish'},
 --   -- colors
     {'tjdevries/colorbuddy.vim'},
-    {'Mofiqul/vscode.nvim'},
 --  -- Change colorscheme based on OS
     {
       "cormacrelf/dark-notify",
-      requires = {"Mofiqul/vscode.nvim", "folke/tokyonight.nvim"},
+      requires = {
+        "Mofiqul/vscode.nvim",
+        "folke/tokyonight.nvim",
+        'lunarvim/Onedarker.nvim',
+      },
       config = function()
         require("user.dark_notify").config()
       end
@@ -151,9 +154,15 @@ lvim.plugins = {
             -- By setting the 'default' entry below, you can control which nodes you want to
             -- appear in the context window.
             default = {
-              'class',
-              'function',
-              'method',
+                'class',
+                'function',
+                'method',
+                'for',
+                'switch',
+                'case',
+                'interface',
+                'struct',
+                'enum',
             },
           },
         }
@@ -164,19 +173,20 @@ lvim.plugins = {
       'stevearc/aerial.nvim',
       event = { "BufRead", "BufNew" },
       config = function ()
-        require("aerial").setup({
+        local aerial = require("aerial")
+        aerial.setup({
           -- Priority list of preferred backends for aerial.
           -- This can be a filetype map (see :help aerial-filetype-map)
-          backends = { "markdown", "treesitter", "lsp" },
+          backends = { "markdown", "treesitter", "lsp"},
         })
-        -- Toggle the aerial window with <leader>o (<leader>a default)
-        vim.keymap.set('n', '<leader>o', '<cmd>AerialToggle!<CR>')
-        -- Jump forwards/backwards with '{' and '}'
-        vim.keymap.set('n', '{', '<cmd>aerial.prev<CR>')
-        vim.keymap.set('n', '}', '<cmd>aerial.next<CR>')
-        -- Jump up the tree with '[[' or ']]'
-        vim.keymap.set('n', '[[', '<cmd>aerial.prev_up<CR>')
-        vim.keymap.set('n', ']]', '<cmd>aerial.next_up<CR>')
+        -- Aerial keybindings
+        lvim.builtin.which_key.mappings["<leader>o"] = { "<cmd>AerialToggle!<CR>", "Toggle Aerial" }
+        -- Jump forwards/backwards with '[' and ']'
+        lvim.builtin.which_key.mappings["<leader>["] = { aerial.prev, "Aerial previous symbol" }
+        lvim.builtin.which_key.mappings["<leader>]"] = { aerial.next, "Aerial next symbol" }
+        -- Jump up the tree with '{' or '}'
+        lvim.builtin.which_key.mappings["<leader>{"] = { aerial.prev_up, "Aerial previous" }
+        lvim.builtin.which_key.mappings["<leader>}"] = { aerial.next_up, "Aerial next" }
       end
     },
 --  -- Scala LSP
@@ -448,6 +458,7 @@ lvim.keys.normal_mode["<S-l>"] = ":BufferLineCycleNext<CR>"
 lvim.keys.normal_mode["<S-h>"] = ":BufferLineCyclePrev<CR>"
 lvim.keys.normal_mode["<C-s>"] = ":w<cr>"
 
+lvim.builtin.illuminate.options.under_cursor = true
 
 -- For inspiration:
 -- https://github.com/ChristianChiarulli/lvim

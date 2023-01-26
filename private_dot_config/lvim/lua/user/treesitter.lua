@@ -15,10 +15,12 @@ M.config = function ()
     "java",
     "yaml",
     "scala",
+    "sql",
+    "query",
   }
-
   lvim.builtin.treesitter.ignore_install = { "ocaml" }
   lvim.builtin.treesitter.highlight.enabled = true
+  lvim.builtin.treesitter.playground.enable = true
 end
 
 return M
