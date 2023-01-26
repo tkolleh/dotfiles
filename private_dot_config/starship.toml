@@ -1,7 +1,7 @@
 # Timeout for commands executed by starship (in milliseconds)
 add_newline = true
-scan_timeout = 10
-command_timeout = 20
+scan_timeout = 5
+command_timeout = 5
 
 # Order of modules on prompt
 format = "[╭─](fg:main_clr)$cmd_duration$directory$all[╰](fg:main_clr)$character$status"
