@@ -7,15 +7,14 @@
 # Hide default user from local prompt.
 export DEFAULT_USER="${USER}"
 
-# Uncomment the following line to automatically update without prompting.
-# DISABLE_UPDATE_PROMPT="true"
+# Automatically update without prompting.
+export DISABLE_UPDATE_PROMPT="false"
 
 # Uncomment the following line to change how often to auto-update (in days).
 export UPDATE_ZSH_DAYS=7
 
 # -- Light / Dark mode styles ----------------------------------
 #
-
 # Light mode is the default. Check if apple settings are for darkmode
 function is_dark_mode() {
   if [[ "$(uname -s)" == "Darwin" ]]; then
