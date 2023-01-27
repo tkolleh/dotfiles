@@ -295,3 +295,9 @@ function update_term_tools() {
 function help(){
   "$@" --help 2>&1 | bat --plain --language=help
 }
+
+# Debug what the heck is going on with gpg
+function debug-gpg(){
+  echo RELOADAGENT | gpg-connect-agent
+  echo "test" | gpg --clearsign
+}
