@@ -47,7 +47,6 @@ lvim.builtin.terminal.active = true
 -- This was remapped to `<C-\>` in a recent update.
 lvim.builtin.terminal.open_mapping = "<C-t>"
 
-lvim.builtin.cmp.completion.keyword_length = 2
 lvim.builtin.dap.active = true -- (default: false)
 
 --  -- Nvim tree configuration
@@ -173,20 +172,11 @@ lvim.plugins = {
       'stevearc/aerial.nvim',
       event = { "BufRead", "BufNew" },
       config = function ()
-        local aerial = require("aerial")
-        aerial.setup({
+        require("aerial").setup({
           -- Priority list of preferred backends for aerial.
           -- This can be a filetype map (see :help aerial-filetype-map)
           backends = { "markdown", "treesitter", "lsp"},
         })
-        -- Aerial keybindings
-        lvim.builtin.which_key.mappings["<leader>o"] = { "<cmd>AerialToggle!<CR>", "Toggle Aerial" }
-        -- Jump forwards/backwards with '[' and ']'
-        lvim.builtin.which_key.mappings["<leader>["] = { aerial.prev, "Aerial previous symbol" }
-        lvim.builtin.which_key.mappings["<leader>]"] = { aerial.next, "Aerial next symbol" }
-        -- Jump up the tree with '{' or '}'
-        lvim.builtin.which_key.mappings["<leader>{"] = { aerial.prev_up, "Aerial previous" }
-        lvim.builtin.which_key.mappings["<leader>}"] = { aerial.next_up, "Aerial next" }
       end
     },
 --  -- Scala LSP
@@ -367,23 +357,42 @@ lvim.plugins = {
 -- -- Copilot
   {
     "zbirenbaum/copilot.lua",
-    cmd = "Copilot",
-    event = "InsertEnter",
-    config = function ()
-      vim.schedule(function()
-        require("copilot").setup()
-      end)
+    event = { "VimEnter" },
+    config = function()
+      vim.defer_fn(
+        function()
+          require("copilot").setup({
+            suggestion = { enabled = false },
+            panel = { enabled = false },
+            plugin_manager_path = get_runtime_dir() .. "/site/pack/packer",
+          })
+        end,
+      100)
     end,
   },
   {
     "zbirenbaum/copilot-cmp",
     after = { "copilot.lua", "nvim-cmp" },
+    config = function ()
+      require("copilot_cmp").setup()
+    end
   },
-
 --  end additional plugins bloc
 }
 
+-- -- Aerial keybindings
+local aerial = require("aerial")
+lvim.builtin.which_key.mappings["<leader>o"] = { "<cmd>AerialToggle!<CR>", "Toggle Aerial" }
+-- Jump forwards/backwards with '[' and ']'
+lvim.builtin.which_key.mappings["<leader>["] = { aerial.prev, "Aerial previous symbol" }
+lvim.builtin.which_key.mappings["<leader>]"] = { aerial.next, "Aerial next symbol" }
+-- Jump up the tree with '{' or '}'
+lvim.builtin.which_key.mappings["<leader>{"] = { aerial.prev_up, "Aerial previous" }
+lvim.builtin.which_key.mappings["<leader>}"] = { aerial.next_up, "Aerial next" }
+
+-- -- nvim-cmp
 -- Can not be placed into the config method of the plugins.
+lvim.builtin.cmp.completion.keyword_length = 2
 lvim.builtin.cmp.formatting.source_names["copilot"] = "(Copilot)"
 table.insert(lvim.builtin.cmp.sources, 1, { name = "copilot" })
 

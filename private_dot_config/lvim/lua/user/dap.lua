@@ -3,41 +3,35 @@ local M = {}
 M.config = function()
   lvim.builtin.dap.on_config_done = function(dap)
     dap.configurations.scala = {
-      {
-        type = "scala",
-        request = "launch",
-        name = "RunOrTest",
-        metals = {
-          runType = "runOrTestFile",
-          --args = { "firstArg", "secondArg", "thirdArg" }, -- here just as an example
-          -- jvmOptions = { "-Dpropert=123" },
-          -- env = {}, -- Environment variables
-          envFile = ".env",
-        },
-      },
-      {
-      type = "scala",
-      request = "launch",
-      name = "Run",
-      metals = {
-        runType = "run"
-      }
-    },
     {
       type = "scala",
       request = "launch",
-      name = "Test File",
+      name = "RunOrTest",
       metals = {
-        runType = "testFile"
-      }
+        runType = "runOrTestFile",
+        --args = { "firstArg", "secondArg", "thirdArg" }, -- here just as an example
+        -- jvmOptions = { "-Dpropert=123" },
+        env = {
+          "ACTIVE_PROFILE=feature-resolver",
+          "DEPLOYMENT_ZONE=member",
+        },
+        envFile = ".env",
+      },
     },
     {
       type = "scala",
       request = "launch",
       name = "Test Target",
       metals = {
-        runType = "testTarget"
-      }
+        runType = "testTarget",
+        --args = { "firstArg", "secondArg", "thirdArg" }, -- here just as an example
+        -- jvmOptions = { "-Dpropert=123" },
+        env = {
+          "ACTIVE_PROFILE=feature-resolver",
+          "DEPLOYMENT_ZONE=member",
+        },
+        envFile = ".env",
+      },
     },
   }
   -- Setup dap UI
@@ -50,9 +44,9 @@ M.config = function()
   -- dap.listeners.before.event_terminated["dapui_config"] = function()
   --   dapui.close()
   -- end
-  -- dap.listeners.before.event_exited["dapui_config"] = function()
-  --   dapui.close()
-  -- end
+  dap.listeners.before.event_exited["dapui_config"] = function()
+    dapui.close()
+  end
   dap.listeners.after["event_terminated"]["nvim-metals"] = function()
     vim.notify("Tests have finished!")
     dap.repl.open()

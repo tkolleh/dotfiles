@@ -1,38 +1,35 @@
 local M = {}
 
 M.config = function()
-  --- vim.opt_global.shortmess:remove("F"):append("c")
-
+  local lvim_lsp = require("lvim.lsp")
   local metals_config = require("metals").bare_config()
-
-  metals_config.root_patterns = {
-    "build.sbt",
-    "build.sc",
-    "build.gradle",
-    "pom.xml",
-    ".scala-build",
-  }
+  metals_config.on_init = lvim_lsp.common_on_init
+  metals_config.on_exit = lvim_lsp.common_on_exit
+  metals_config.capabilities = lvim_lsp.common_capabilities()
+  metals_config.on_attach = function(client, bufnr)
+    lvim_lsp.common_on_attach(client, bufnr)
+    require("metals").setup_dap()
+    require("aerial").on_attach(client, bufnr)
+  end
   metals_config.settings = {
     disabledMode = false,
     bloopSbtAlreadyInstalled = false,
     ammoniteJvmProperties = {
       "-Xmx2G", "-Xms256M"
     },
-    showImplicitArguments = true,
-    showImplicitConversionsAndClasses = true,
-    showInferredType = true,
     superMethodLensesEnabled = true,
+    showImplicitArguments = true,
+    showInferredType = true,
+    showImplicitConversionsAndClasses = true,
+    scalafixConfigPath = ".scalafix.conf",
     excludedPackages = {
       "akka.actor.typed.javadsl",
       "com.github.swagger.akka.javadsl",
       "akka.stream.javadsl",
       "akka.http.javadsl",
     },
-    scalafixConfigPath = ".scalafix.conf",
-    scalafixRulesDependencies = {
-      "com.github.liancheng::organize-imports",
-    },
   }
+  metals_config.init_options.statusBarProvider = false
   -- *READ THIS*
   -- I *highly* recommend setting statusBarProvider to true, however if you do,
   -- you *have* to have a setting to display this in your statusline or else
@@ -40,24 +37,17 @@ M.config = function()
   -- docs about this
   metals_config.init_options.statusBarProvider = "on"
 
-  metals_config.on_attach = function(client, bufnr)
-    require("lvim.lsp").common_on_attach(client, bufnr)
-    require("metals").setup_dap()
-    require("aerial").on_attach(client, bufnr)
-  end
-
-  -- Autocmd that will actually be in charging of starting the whole thing
-   local nvim_metals_group = vim.api.nvim_create_augroup("nvim-metals", { clear = true })
-   vim.api.nvim_create_autocmd("FileType", {
+  vim.api.nvim_create_autocmd("FileType", {
      -- NOTE: You may or may not want java included here. You will need it if you
      -- want basic Java support but it may also conflict if you are using
      -- something like nvim-jdtls which also works on a java filetype autocmd.
-     pattern = { "scala", "sbt", "java" },
-     callback = function()
-       require("metals").initialize_or_attach(metals_config)
-     end,
-     group = nvim_metals_group,
-   })
+    pattern = { "scala", "sbt", "java" },
+    callback = function()
+      require("metals").initialize_or_attach(metals_config)
+    end,
+    -- Autocmd that will actually be in charging of starting the whole thing
+    group = vim.api.nvim_create_augroup("nvim-metals", { clear = true }),
+  })
 
   lvim.builtin.which_key.mappings["m"] = {
     name = "metals",
@@ -67,7 +57,6 @@ M.config = function()
     r = { "<cmd>lua require('metals.tvp').reveal_in_tree()<cr>", "Reveal in tree"},
     s = { "<cmd>lua require('metals').toggle_setting('showImplicitArguments')<cr>", "Show implicit arguments"},
   }
-
 end
 
 M.metals_status = function()
@@ -80,6 +69,5 @@ M.metals_status = function()
   }
   return status
 end
-
 
 return M
