@@ -29,7 +29,7 @@ vim.o.list = false
 vim.o.timeoutlen = 700
 vim.o.laststatus = 3
 
-local ignore_file_buff_types = {"gitcommit", "gitrebase", "svn", "hgcommit", "quickfix", "nofile", "help", 'fugitive', 'nerdtree', 'tagbar', 'fzf', 'diff', 'nvimtree', 'nofile', 'nowrite', 'quickfix', 'terminal', 'prompt'}
+local ignore_file_buff_types = {"gitcommit", "gitrebase", "svn", "hgcommit", "quickfix", "nofile", "help", 'fugitive', 'nerdtree', 'tagbar', 'fzf', 'diff', 'NvimTree', 'aerial', 'Outline', 'DapSidebar', 'UltestSummary', 'nofile', 'nowrite', 'quickfix', 'terminal', 'prompt'}
 
 -- code folding
 vim.o.foldenable = true
@@ -170,12 +170,24 @@ lvim.plugins = {
 --  -- Document outline (structure)
     {
       'stevearc/aerial.nvim',
-      event = { "BufRead", "BufNew" },
       config = function ()
         require("aerial").setup({
           -- Priority list of preferred backends for aerial.
           -- This can be a filetype map (see :help aerial-filetype-map)
-          backends = { "markdown", "treesitter", "lsp"},
+          backends = { "treesitter"},
+          -- A list of all symbols to display. Set to false to display all symbols.
+          -- This can be a filetype map (see :help aerial-filetype-map)
+          -- To see all available values, see :help SymbolKind
+          filter_kind = {
+            "Class",
+            "Constructor",
+            "Enum",
+            "Function",
+            "Interface",
+            "Module",
+            "Method",
+            "Struct",
+          },
         })
       end
     },
@@ -367,7 +379,7 @@ lvim.plugins = {
             plugin_manager_path = get_runtime_dir() .. "/site/pack/packer",
           })
         end,
-      100)
+      100.0)
     end,
   },
   {
@@ -377,18 +389,26 @@ lvim.plugins = {
       require("copilot_cmp").setup()
     end
   },
+-- -- Better matching ( % )
+  {
+    "andymass/vim-matchup",
+    event = "CursorMoved",
+    config = function()
+      vim.g.matchup_matchparen_offscreen = { method = "popup" }
+    end,
+  },
 --  end additional plugins bloc
 }
 
 -- -- Aerial keybindings
 local aerial = require("aerial")
-lvim.builtin.which_key.mappings["<leader>o"] = { "<cmd>AerialToggle!<CR>", "Toggle Aerial" }
+lvim.builtin.which_key.mappings["o"] = { "<cmd>AerialToggle!<CR>", "Toggle Aerial" }
 -- Jump forwards/backwards with '[' and ']'
-lvim.builtin.which_key.mappings["<leader>["] = { aerial.prev, "Aerial previous symbol" }
-lvim.builtin.which_key.mappings["<leader>]"] = { aerial.next, "Aerial next symbol" }
+lvim.builtin.which_key.mappings["["] = { aerial.prev, "Aerial previous symbol" }
+lvim.builtin.which_key.mappings["]"] = { aerial.next, "Aerial next symbol" }
 -- Jump up the tree with '{' or '}'
-lvim.builtin.which_key.mappings["<leader>{"] = { aerial.prev_up, "Aerial previous" }
-lvim.builtin.which_key.mappings["<leader>}"] = { aerial.next_up, "Aerial next" }
+lvim.builtin.which_key.mappings["{"] = { aerial.prev_up, "Aerial previous" }
+lvim.builtin.which_key.mappings["}"] = { aerial.next_up, "Aerial next" }
 
 -- -- nvim-cmp
 -- Can not be placed into the config method of the plugins.
