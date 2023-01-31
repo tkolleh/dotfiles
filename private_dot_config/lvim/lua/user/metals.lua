@@ -9,7 +9,6 @@ M.config = function()
   metals_config.on_attach = function(client, bufnr)
     lvim_lsp.common_on_attach(client, bufnr)
     require("metals").setup_dap()
-    require("aerial").on_attach(client, bufnr)
   end
   metals_config.settings = {
     disabledMode = false,
