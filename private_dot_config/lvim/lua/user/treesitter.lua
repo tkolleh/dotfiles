@@ -30,6 +30,12 @@ M.config = function ()
         -- [options]
       },
     }
+    local hocon_group = vim.api.nvim_create_augroup("hocon", { clear = true })
+    vim.api.nvim_create_autocmd({ 'BufNewFile', 'BufRead' }, {
+      group = hocon_group,
+      pattern = '*/resources/*.conf',
+      command = 'set ft=hocon'
+    })
   end
 end
 
