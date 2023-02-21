@@ -457,6 +457,9 @@ require("user.treesitter").config()
 -- Configure nvim-dap and dap-ui
 require("user.dap").config()
 
+-- Autocommands and helpers
+-- require("user.autocommands").chezmoi()
+
 -- status line (lualine)
 lvim.builtin.lualine.style = "default" -- or "none"
 lvim.builtin.lualine.options = {
