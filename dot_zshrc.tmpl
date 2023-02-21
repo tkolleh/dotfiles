@@ -4,6 +4,11 @@
 # =============================================================================
 #
 #
+ export CK_IDL_GIT_URI='ssh://git@code.corp.creditkarma.com/ck-private/con_idl.git'
+ export SBT_OPTS='-Dfile.encoding=utf-8 -Xms4G -Xmx4G -Xss4M -XX:+UnlockExperimentalVMOptions -XX:+UseG1GC -XX:+UseStringDeduplication -Dsbt.repository.config=repositories'
+ launchctl setenv CK_IDL_GIT_URI "$CK_IDL_GIT_URI"
+
+
 # Hide default user from local prompt.
 export DEFAULT_USER="${USER}"
 
@@ -48,7 +53,6 @@ function set_prompt_mode() {
 }
 
 function dark!() {
-  set_zsh_auto_suggest_colors
   set_prompt_mode
   if is_dark_mode && (( ${+commands[bat]} )); then
     export BAT_THEME="Dracula"
