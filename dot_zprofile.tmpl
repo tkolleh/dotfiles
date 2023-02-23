@@ -40,6 +40,9 @@ export CHEZMOI_SOURCE_PATH="$(chezmoi source-path)"
 
 export MARKDOWN_NOTES=$HOME/Documents/Notes
 
+# Add JetBrains toolbox scripts to path
+export PATH="$PATH:$HOME/Library/Application Support/JetBrains/Toolbox/scripts"
+
 # TODO: Remove
 #export NVIM_PY2_HOME="$CONDA_ENVS/nvim-py2/bin"
 #export NVIM_PY3_HOME="$CONDA_ENVS/nvim-py3/bin"
@@ -60,3 +63,4 @@ export NEW_RELIC_API_KEY={{ range (onepassword "eehrc6lejvajtfcpejah3e5uem").fie
                           {{ end }}
 {{ end }}
 
+if [[ -f "$HOME"/.host_functions.zsh ]]; then source "$HOME"/.host_functions.zsh; fi

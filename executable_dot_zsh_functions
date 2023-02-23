@@ -10,7 +10,6 @@ case $- in
 *) return ;;
 esac
 
-
 # Print path to command if exist
 function cmd_path() {
   if [[ $ZSH_VERSION ]]; then
@@ -269,13 +268,9 @@ function clicolors() {
 }
 
 function edit_dot_files() {
-  local hasChezmoi="$(cmd_path chezmoi)"
-  if [[ -f $hasChezmoi ]]; then
-    local hasLvim="$(cmd_path lvim)" 
-    if [[ -f $hasLvim ]]; then
-      lvim $CHEZMOI_SOURCE_PATH
-      chezmoi apply
-    fi
+  if (( ${+commands[chezmoi]} )) && (( ${+commands[lvim]} )) && [[ -d $CHEZMOI_SOURCE_PATH ]]; then
+    lvim $CHEZMOI_SOURCE_PATH
+    chezmoi apply
   fi
 } 
 
@@ -284,10 +279,8 @@ function update_term_tools() {
     atuin sync
   fi
   if (( ${+commands[zpm]} )); then 
+    zpm clean
     zpm upgrade
-  fi
-  if (( ${+commands[brew]} )); then 
-    brew upgrade nvim chezmoi atuin tmux
   fi
 }
 
