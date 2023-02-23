@@ -1,19 +1,3 @@
--- Helper functions
---
--- re-assign lvim defaults
-local function reassign_which_key(from, to)
-  local mapping = lvim.builtin.which_key.mappings[from]
-  lvim.builtin.which_key.mappings[to] = mapping
-  lvim.builtin.which_key.mappings[from] = nil
-end
-
--- Changes an existing mapping to a completely new one. Old mapping is deleted,
--- so should be re-assigned first.
-local function change_which_key(key, mapping)
-  lvim.builtin.which_key.mappings[key] = nil
-  lvim.builtin.which_key.mappings[key] = mapping
-end
-
 -- default makes quitting the editor too easy
 lvim.builtin.which_key.mappings["q"] = nil
 
