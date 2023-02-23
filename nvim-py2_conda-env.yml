@@ -1,9 +1,0 @@
-name: nvim-py2
-channels:
-  - defaults
-  - conda-forge
-dependencies:
-  - python=2
-  - neovim
-  - jupyter
-prefix: /usr/local/anaconda3/envs/nvim-py2
