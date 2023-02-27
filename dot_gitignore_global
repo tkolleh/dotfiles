@@ -55,6 +55,9 @@ idea-scratches
 .idea/**/uiDesigner.xml
 .idea/**/dbnavigator.xml
 
+# plugin related
+*.scala.semanticgraphdb
+
 # Gradle
 .idea/**/gradle.xml
 .idea/**/libraries

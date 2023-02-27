@@ -65,13 +65,12 @@ __alias ipython "EDITOR=lvim ipython"
 __alias gloudtoken "gcloud auth login --brief && gcloud auth print-identity-token"
 __alias trash_pycharm_remote_resources "trash -v ~/Library/Caches/JetBrains/PyCharm2021.2/remote_sources ~/Library/Caches/JetBrains/PyCharm2021.2/tmp"
 
-__alias tg "terragrunt"
+# __alias tg "terragrunt"
 
 __alias tmuxm "tmux new-session -A -s main"
 
-__alias clear_sbt_cache "trash ~/.ivy2/cache ~/.m2/repository"
-
-__alias sbt__ "sbt --sbt-version 1.8.0 -Dsbt.semanticdb=true"
+# __alias clear_sbt_cache "trash ~/.ivy2/cache ~/.m2/repository"
+# __alias sbt__ "sbt --sbt-version 1.8.0 -Dsbt.semanticdb=true"
 
 # -- configuration paths ------------------------------------------------------
 
