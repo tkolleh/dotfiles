@@ -229,15 +229,29 @@ fi
 eval "$(starship init zsh)"
 set_prompt_mode
 
-# Must be last
+# Make this last to avoid path overwrite
 if (( ${+commands[asdf]} )); then
     zpm load @omz/lib/asdf
     # TODO: Use below or delete above line. The above plugin should do this not sure why its not
     source $(brew --prefix asdf)/libexec/asdf.sh
 
+    local ASDF_JAVA_HOME="$(asdf where java $(asdf current java | awk '{ print $2 }'))"
+    local ASDF_JAVA_HOME_BIN="$(asdf where java $(asdf current java | awk '{ print $2 }'))/bin"
+    local AMAZON_JAVA_HOME="/Library/Java/JavaVirtualMachines/amazon-corretto-8.jdk/Contents/Home"
+    local AMAZON_JAVA_HOME_BIN="/Library/Java/JavaVirtualMachines/amazon-corretto-8.jdk/Contents/Home/bin"
+
+    # If isn't using system java path then JAVA_HOME is asdf controlled else 
+    # remove asdf from path and use system path which should've been set 
+    # when that java version was installed/added
     if [[ "$(asdf current java | awk '{ print $2 }')" != "system" ]]; then
-      export JAVA_HOME="$(asdf where java $(asdf current java | awk '{ print $2 }'))"
-      export PATH="$JAVA_HOME/bin:$PATH"
+      echo "Not set to system"
+      export JAVA_HOME="$ASDF_JAVA_HOME"
+    elif ((${path[(ie)$ASDF_JAVA_HOME_BIN]} <= ${#path})); then
+      echo "Set to system"
+      export JAVA_HOME="$AMAZON_JAVA_HOME"
+      path[${path[(ie)$ASDF_JAVA_HOME_BIN]}]=()
+    else
+      export JAVA_HOME="$AMAZON_JAVA_HOME"
     fi
     export SCALA_HOME="$(asdf where scala $(asdf current scala | awk '{ print $2 }'))"
     export SBT_HOME="$(asdf where sbt $(asdf current sbt | awk '{ print $2 }'))"
