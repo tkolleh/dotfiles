@@ -45,7 +45,7 @@ alias rg="$(brew --prefix rg)/bin/rg --smart-case"
 alias batgrep="batgrep --smart-case"
 alias ranger="TERM=xterm-256color $(brew --prefix ranger)/bin/ranger --choosedir=$HOME/.rangerdir"
 # https://github.com/antonmedv/fx
-alias fx="NODE_PATH=`npm root -g` fx"
+alias fx="FX_LANG=python3 NODE_PATH=`npm root -g` fx"
 # https://github.com/antonmedv/eat
 alias eat="NODE_PATH=`npm root -g` eat"
 

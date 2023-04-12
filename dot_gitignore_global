@@ -1,4 +1,5 @@
 # Project specific config
+project/graphbuddy.sbt
 src/main/scala/com/creditkarma/assets/fraudservice/FeatureResolverClientApp.scala
 src/main/scala/com/creditkarma/assets/fraudservice/ProphecyClientApp.scala
 

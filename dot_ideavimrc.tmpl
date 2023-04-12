@@ -43,11 +43,17 @@ set notimeout
 " Use system clipboard
 set clipboard+=unnamed
 
-" Open nerd tree in intellij. Same as nvim file explorer mapping
+" Equal to Nvim Tree file explorer mapping
 "
 " nnoremap <Leader>e :action SelectInProjectView<CR>
 "
 nnoremap <Leader>e :NERDTreeFind<CR>
+
+nnoremap <Leader>o :action ActivateStructureToolWindow<CR>
+
+" similar to trouble configuration
+"
+nnoremap <Leader>tt :action ActivateProblemsViewToolWindow<CR>
 
 nnoremap <Leader>rn :action RenameElement<CR>
 nnoremap <Leader>fp :action Tool_External Tools_darker<CR>
@@ -66,6 +72,7 @@ nnoremap [c :action VcsShowPrevChangeMarker<CR>
 " similar to nvim telescope config
 "
 nnoremap <Leader>sr :action RecentFiles<CR>
+nnoremap <Leader>j :action RecentLocations<CR>
 nnoremap <S-Tab>    :action RecentFiles<CR>
 nnoremap <Leader>sf :action GotoFile<CR>
 nnoremap <Leader>st :action FindInPath<CR>
@@ -94,10 +101,6 @@ nnoremap <Leader>ds :action Debug<CR>
 nnoremap <Leader>de :action Debugger.EvaluationDialogPopup<CR>
 
 nnoremap <C-p> :action ParameterInfo<CR>
-
-" similar to trouble configuration
-"
-nnoremap <Leader>tt :action ToggleLineBreakpoint<CR>
 
 " similar to jump to previous buffer
 "
