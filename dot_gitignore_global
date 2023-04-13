@@ -1,8 +1,12 @@
 # Project specific config
+#
 project/graphbuddy.sbt
+AlchemyV2ClientApp.scala
 src/main/scala/com/creditkarma/assets/fraudservice/FeatureResolverClientApp.scala
 src/main/scala/com/creditkarma/assets/fraudservice/ProphecyClientApp.scala
-
+src/it/scala/com/creditkarma/assets/fraudservice/AlchemyV2ClientApp.scala
+*.run
+*.run.xml
 .env
 
 # Metals
@@ -57,6 +61,8 @@ idea-scratches
 .idea/**/dbnavigator.xml
 
 # plugin related
+.semanticgraphs/
+project/graphbuddy.sbt
 *.scala.semanticgraphdb
 
 # Gradle
