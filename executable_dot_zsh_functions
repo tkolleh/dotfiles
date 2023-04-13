@@ -53,14 +53,6 @@ function runtime_homedir(){
   asdf where ${1} $(asdf current ${1} | awk '{ print $2 }')
 }
 
-# Commented out infavor of using zoxide (`z`) command
-#
-# Change directory to folder in workspace folder
-# function ws() {
-#   workspace=$(fd --type d -uu -a . "$HOME/ws" | fzf)
-#   cd $workspace
-# }
-
 # Open Marked 2, passing provided file path to the application
 function marked() {
   if [ -n "${1}" ]; then
@@ -324,5 +316,6 @@ function sbt_clear_cache(){
 
 # Search all commits in heads or remotes for changes matching pattern
 function grep_refs(){
-  git grep -i "${2}" \$(git for-each-ref --format='%(refname)' refs/$1)
+  echo "\t======= Searching '${1}' for '${2}' ========="
+  git grep -i "${2}" $(git for-each-ref --format='%(refname)' refs/"${1}")
 }
