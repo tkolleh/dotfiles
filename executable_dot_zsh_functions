@@ -321,3 +321,8 @@ function sbt_clear_cache(){
 
   sbt clean update
 }
+
+# Search all commits in heads or remotes for changes matching pattern
+function grep_refs(){
+  git grep -i "${2}" \$(git for-each-ref --format='%(refname)' refs/$1)
+}
