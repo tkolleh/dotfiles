@@ -118,9 +118,10 @@ function fid() {
     --bind="f9:execute:lvim {} < /dev/tty"
 }
 
-# fbr - checkout git branch (including remote branches), sorted by most recent commit, limit 30 last branches
+# fbc - fuzzy Find Branch Checkout 
+# checkout git branch (including remote branches), sorted by most recent commit, limit 30 last branches
 # reference: https://github.com/junegunn/fzf/wiki/examples#git
-function fbr() {
+function fbc() {
   local branches branch
   branches=$(git for-each-ref --count=30 --sort=-committerdate refs/heads/ --format="%(refname:short)") &&
     branch=$(echo "$branches" |
@@ -288,29 +289,30 @@ function debug-gpg(){
 }
 
 function sbt_clear_cache(){
+  echo -e "\nRun with '-a' to clean all cache files\n"
   if [[ $1 == "-a" ]]; then 
-    echo "emptying the ivy cache (this may take some time to rebuild)"
+    echo -e "\nemptying the ivy cache (this may take some time to rebuild)\n"
     rm -rfv ~/.ivy2/cache/*
 
     # or even better just backup it to sync it later on ...
     # mv ~/.ivy2/cache ~/.ivy2/cache.`date "+%Y%m%d_%H%M%S`.bak
+    # remove all sbt lock files
+    find ~/.sbt ~/.ivy2 -name "*.lock" -print -delete
+    find ~/.sbt ~/.ivy2 -name "ivydata-*.properties" -print -delete
+
+
+    echo -e "\nRemoving all sbt project related class files\n"
+    rm -fvr ~/.sbt/1.0/plugins/target
+    rm -fvr ~/.sbt/1.0/plugins/project/target
+    rm -fvr ~/.sbt/1.0/target
+    rm -fvr ~/.sbt/0.13/plugins/target
+    rm -fvr ~/.sbt/0.13/plugins/project/target
+    rm -fvr ~/.sbt/0.13/target
+    rm -fvr ./project/target
+    rm -fvr ./project/project/target
   fi
 
-  echo "remove all sbt lock files"
-  find ~/.sbt ~/.ivy2 -name "*.lock" -print -delete
-  find ~/.sbt ~/.ivy2 -name "ivydata-*.properties" -print -delete
-
-
-  echo "remove all the class files"
-  rm -fvr ~/.sbt/1.0/plugins/target
-  rm -fvr ~/.sbt/1.0/plugins/project/target
-  rm -fvr ~/.sbt/1.0/target
-  rm -fvr ~/.sbt/0.13/plugins/target
-  rm -fvr ~/.sbt/0.13/plugins/project/target
-  rm -fvr ~/.sbt/0.13/target
-  rm -fvr ./project/target
-  rm -fvr ./project/project/target
-
+  echo -e "\nRunning 'sbt clean update'\n"
   sbt clean update
 }
 
