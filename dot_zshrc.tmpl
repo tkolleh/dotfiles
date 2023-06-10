@@ -244,7 +244,7 @@ if (( ${+commands[asdf]} )); then
     # remove asdf from path and use system path which should've been set 
     # when that java version was installed/added
     if [[ "$(asdf current java | awk '{ print $2 }')" != "system" ]]; then
-      echo "Not set to system"
+      echo "Jave Home is not set to system"
       export JAVA_HOME="$ASDF_JAVA_HOME"
     elif ((${path[(ie)$ASDF_JAVA_HOME_BIN]} <= ${#path})); then
       echo "Set to system"
