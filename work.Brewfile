@@ -2,6 +2,7 @@ tap "cormacrelf/tap"
 tap "coursier/formulas"
 tap "ellie/atuin"
 tap "eth-p/software"
+tap "graalvm/tap"
 tap "homebrew/bundle"
 tap "homebrew/cask"
 tap "homebrew/cask-drivers"
@@ -12,6 +13,8 @@ tap "homebrew/services"
 tap "jakehilborn/jakehilborn"
 tap "microsoft/git"
 tap "scalacenter/bloop"
+tap "sourcegraph/app"
+tap "sourcegraph/src-cli"
 tap "thecasualcoder/stable"
 tap "twlz0ne/ccls"
 tap "universal-ctags/universal-ctags"
@@ -89,6 +92,7 @@ brew "ios-deploy"
 brew "jfrog-cli"
 brew "jq"
 brew "lazydocker"
+brew "lefthook"
 brew "libproxy"
 brew "llvm"
 brew "luarocks"
@@ -167,6 +171,7 @@ cask "font-source-code-pro"
 cask "font-victor-mono"
 cask "github"
 cask "gpg-suite"
+cask "graalvm-ce-java17"
 cask "jd-gui"
 cask "jetbrains-toolbox"
 cask "keybase"
@@ -183,9 +188,11 @@ mas "1Password for Safari", id: 1569813296
 mas "Compressor", id: 424390742
 mas "Dark Reader for Safari", id: 1438243180
 mas "GarageBand", id: 682658836
+mas "iBar", id: 6443843900
 mas "iMovie", id: 408981434
 mas "Keynote", id: 409183694
 mas "Kindle", id: 405399194
+mas "LINER", id: 1463530746
 mas "Magnet", id: 441258766
 mas "Micro Snitch", id: 972028355
 mas "Notability", id: 360593530
@@ -193,8 +200,11 @@ mas "Numbers", id: 409203825
 mas "Okta Extension App", id: 1439967473
 mas "Pages", id: 409201541
 mas "Paste", id: 967805235
-mas "Save to Pocket", id: 1477385213
 mas "Sourcegraph for Safari", id: 1543262193
-mas "Spark", id: 1176895641
-mas "Tabz", id: 1449417295
+mas "Tabs Switcher", id: 1406718335
 mas "Xmind", id: 1327661892
+vscode "googlecloudtools.cloudcode"
+vscode "ms-azuretools.vscode-docker"
+vscode "ms-kubernetes-tools.vscode-kubernetes-tools"
+vscode "ms-vscode-remote.remote-containers"
+vscode "redhat.vscode-yaml"
