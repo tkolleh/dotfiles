@@ -321,3 +321,14 @@ function grep_refs(){
   echo "\t======= Searching '${1}' for '${2}' ========="
   git grep -i "${2}" $(git for-each-ref --format='%(refname)' refs/"${1}")
 }
+
+function print_jvm_related_versions(){
+  echo -e "\nPrinting runtime and tool versions that use the JVM.\n"
+  local arr=("java" "scala" "mvn" "sbt")
+  for i in "${arr[@]}"; do
+      echo -e "\n---- ${i} version ----\n"
+      if (( ${+commands[$i]} )); then
+        $i -version
+      fi
+  done
+}
