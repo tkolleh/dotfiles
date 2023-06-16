@@ -118,10 +118,10 @@ function fid() {
     --bind="f9:execute:lvim {} < /dev/tty"
 }
 
-# fbc - fuzzy Find Branch Checkout 
+# fbc - fuzzy Find Branch to Checkout 
 # checkout git branch (including remote branches), sorted by most recent commit, limit 30 last branches
 # reference: https://github.com/junegunn/fzf/wiki/examples#git
-function fbc() {
+function fcb() {
   local branches branch
   branches=$(git for-each-ref --count=30 --sort=-committerdate refs/heads/ --format="%(refname:short)") &&
     branch=$(echo "$branches" |

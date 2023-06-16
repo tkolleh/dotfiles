@@ -253,8 +253,14 @@ if (( ${+commands[asdf]} )); then
     else
       export JAVA_HOME="$AMAZON_JAVA_HOME"
     fi
-    export SCALA_HOME="$(asdf where scala $(asdf current scala | awk '{ print $2 }'))"
-    export SBT_HOME="$(asdf where sbt $(asdf current sbt | awk '{ print $2 }'))"
+
+    local maybe_scala_home="$(asdf where scala $(asdf current scala | awk '{ print $2 }'))"
+    if [[ -d "$maybe_scala_home"/bin ]]; then
+      export SCALA_HOME="$(asdf where scala $(asdf current scala | awk '{ print $2 }'))"
+      export SBT_HOME="$(asdf where sbt $(asdf current sbt | awk '{ print $2 }'))"
+      export SBT_OPTS="-Dfile.encoding=utf-8 -Xms4G -Xmx8G -Xss4M -XX:ReservedCodeCacheSize=2G -XX:+UnlockExperimentalVMOptions -Dsbt.repository.config=repositories"
+    fi
+
     if [[ -d "$JAVA_HOME"/bin ]]; then
       export PATH="$JAVA_HOME/bin:$SCALA_HOME/bin:$SBT_HOME/bin:$PATH"
     fi
