@@ -329,6 +329,10 @@ function print_jvm_related_versions(){
       echo -e "\n---- ${i} version ----\n"
       if (( ${+commands[$i]} )); then
         $i -version
+        if (( ${+commands[asdf]} )); then
+          echo -e "\n-- asdf current ${i} version"
+          asdf current $i
+        fi
       fi
   done
 }
