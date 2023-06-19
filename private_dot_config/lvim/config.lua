@@ -158,8 +158,7 @@ lvim.plugins = {
         require("aerial").setup({
           -- Priority list of preferred backends for aerial.
           -- This can be a filetype map (see :help aerial-filetype-map)
-          backends = { "treesitter"},
-          -- A list of all symbols to display. Set to false to display all symbols.
+          backends = { "treesitter", "lsp", "man" },
           -- This can be a filetype map (see :help aerial-filetype-map)
           -- To see all available values, see :help SymbolKind
           filter_kind = {
@@ -373,14 +372,7 @@ lvim.plugins = {
       require("copilot_cmp").setup()
     end
   },
--- -- Better matching ( % )
-  {
-    "andymass/vim-matchup",
-    event = "CursorMoved",
-    config = function()
-      vim.g.matchup_matchparen_offscreen = { method = "popup" }
-    end,
-  },
+
 --  end additional plugins bloc
 }
 
