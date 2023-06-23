@@ -23,11 +23,11 @@ M.config = function ()
       'jsdoc',
       'make',
       'toml',
-      'help',
+      'vimdoc',
     })
   end
   if type(builtin_opts.ignore_install) == 'table' then
-    vim.list_extend(builtin_opts, { 'vimdoc', 'ocaml'})
+    vim.list_extend(builtin_opts, { 'help', 'ocaml'})
   end
   builtin_opts.highlight.enabled = true
   builtin_opts.playground.enable = true
