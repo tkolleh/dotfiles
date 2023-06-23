@@ -14,6 +14,17 @@ export DISABLE_UPDATE_PROMPT="false"
 # Uncomment the following line to change how often to auto-update (in days).
 export UPDATE_ZSH_DAYS=7
 
+export EDITOR='lvim'
+
+# Use ESC to edit the current command line:
+autoload -U edit-command-line
+zle -N edit-command-line
+bindkey '\033' edit-command-line
+
+# Reduce delay of loading the editor
+export KEYTIMEOUT=1
+
+
 # -- Light / Dark mode styles ----------------------------------
 #
 # Light mode is the default. Check if apple settings are for darkmode
@@ -113,12 +124,6 @@ set_zsh_auto_suggest_colors
 
 bindkey '^[[A' history-substring-search-up
 bindkey '^[[B' history-substring-search-down
-
-# bindkey "$terminfo[kcuu1]" history-substring-search-up
-# bindkey "$terminfo[kcud1]" history-substring-search-down
-
-# bindkey -M vicmd 'k' history-substring-search-up
-# bindkey -M vicmd 'j' history-substring-search-down
 
 # -- Initialize tools ----------------------------------------
 #
