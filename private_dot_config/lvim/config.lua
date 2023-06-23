@@ -64,7 +64,7 @@ lvim.plugins = {
       requires = {
         "Mofiqul/vscode.nvim",
         "folke/tokyonight.nvim",
-        'lunarvim/Onedarker.nvim',
+        -- 'lunarvim/Onedarker.nvim',
       },
       config = function()
         require("user.dark_notify").config()
@@ -82,7 +82,8 @@ lvim.plugins = {
 --  -- Git wrapper in vim
     {
       "tpope/vim-fugitive",
-      cmd = { "G", "Git", "Gdiffsplit!", "Gvdiffsplit", "Gdiffsplit", "Gread", "Gwrite", "Ggrep", "GMove", "GDelete", "GBrowse", "GRemove", "GRename", "Glgrep", "Gedit" },
+      cmd = { "G", "Git","Gread", "Gwrite", "Ggrep", "GMove", "GDelete", "GBrowse", "GRemove", "GRename", "Glgrep", "Gedit" },
+      -- cmd = { "G", "Git", "Gdiffsplit!", "Gvdiffsplit", "Gdiffsplit", "Gread", "Gwrite", "Ggrep", "GMove", "GDelete", "GBrowse", "GRemove", "GRename", "Glgrep", "Gedit" },
       -- ft = {"fugitive"}
     },
 --  -- Custom search
