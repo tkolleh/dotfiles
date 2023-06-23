@@ -66,9 +66,9 @@ local function setup_pickers()
   lvim.builtin.telescope.pickers.git_files.previewer = nil
   -- show all files, including hidden ones (e.g. .gitignore, .gitmodule, etc are all useful).
   -- `hidden = true` will still show the inside of `.git/` as it's not `.gitignore`d.
-  lvim.builtin.telescope.defaults.pickers.find_files.find_command = { "fd","--type=file","--hidden","--glob","!.git/*","--strip-cwd-prefix"}
-  lvim.builtin.telescope.defaults.pickers.live_grep.only_sort_text = true
-  lvim.builtin.telescope.defaults.pickers.buffers.only_sort_text = true
+  lvim.builtin.telescope.pickers.find_files.find_command = { "fd","--type=file","--hidden","--glob","!.git/*","--strip-cwd-prefix"}
+  lvim.builtin.telescope.pickers.live_grep.only_sort_text = true
+  lvim.builtin.telescope.pickers.buffers.only_sort_text = true
 end
 
 local function setup_mappings()
