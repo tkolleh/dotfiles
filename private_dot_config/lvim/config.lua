@@ -61,10 +61,10 @@ lvim.plugins = {
 --  -- Change colorscheme based on OS
     {
       "cormacrelf/dark-notify",
-      requires = {
+      dependencies = {
         "Mofiqul/vscode.nvim",
         "folke/tokyonight.nvim",
-        'lunarvim/Onedarker.nvim',
+        -- 'lunarvim/Onedarker.nvim',
       },
       config = function()
         require("user.dark_notify").config()
@@ -74,7 +74,7 @@ lvim.plugins = {
     {
       "ruifm/gitlinker.nvim",
       event = "BufRead",
-      requires = "nvim-lua/plenary.nvim",
+      dependencies = "nvim-lua/plenary.nvim",
       config = function()
         require("user.gitlinker").config()
       end
@@ -82,7 +82,8 @@ lvim.plugins = {
 --  -- Git wrapper in vim
     {
       "tpope/vim-fugitive",
-      cmd = { "G", "Git", "Gdiffsplit!", "Gvdiffsplit", "Gdiffsplit", "Gread", "Gwrite", "Ggrep", "GMove", "GDelete", "GBrowse", "GRemove", "GRename", "Glgrep", "Gedit" },
+      cmd = { "G", "Git","Gread", "Gwrite", "Ggrep", "GMove", "GDelete", "GBrowse", "GRemove", "GRename", "Glgrep", "Gedit" },
+      -- cmd = { "G", "Git", "Gdiffsplit!", "Gvdiffsplit", "Gdiffsplit", "Gread", "Gwrite", "Ggrep", "GMove", "GDelete", "GBrowse", "GRemove", "GRename", "Glgrep", "Gedit" },
       -- ft = {"fugitive"}
     },
 --  -- Custom search
@@ -187,7 +188,6 @@ lvim.plugins = {
     {
       "folke/persistence.nvim",
         event = "BufReadPre", -- this will only start session saving when an actual file was opened
-        module = "persistence",
         config = function()
           require("persistence").setup {
             dir = vim.fn.expand(vim.fn.stdpath "config" .. "/session/"),
@@ -337,7 +337,7 @@ lvim.plugins = {
 -- -- LSP file operations
     {
       'antosha417/nvim-lsp-file-operations',
-      requires = {
+      dependencies = {
         { "nvim-lua/plenary.nvim" },
         { "kyazdani42/nvim-tree.lua" },
       }
@@ -346,7 +346,7 @@ lvim.plugins = {
 -- -- View diffs, use fugitive for merge conflicts
     {
       'sindrets/diffview.nvim',
-      requires = 'nvim-lua/plenary.nvim'
+      dependencies = 'nvim-lua/plenary.nvim'
     },
 
 -- -- Copilot

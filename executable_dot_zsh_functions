@@ -290,13 +290,13 @@ function debug-gpg(){
 
 function sbt_clear_cache(){
   echo -e "\nRun with '-a' to clean all cache files\n"
-  if [[ $1 == "-a" ]]; then 
-    echo -e "\nemptying the ivy cache (this may take some time to rebuild)\n"
-    rm -rfv ~/.ivy2/cache/*
 
-    # or even better just backup it to sync it later on ...
-    # mv ~/.ivy2/cache ~/.ivy2/cache.`date "+%Y%m%d_%H%M%S`.bak
-    # remove all sbt lock files
+  if [[ $1 == "-a" ]]; then 
+    echo -e "\nEmptying the maven cache (this may take some time to rebuild)\n"
+    rm -fvr ~/.m2/repository
+
+    echo -e "\nEmptying the ivy cache (this may take some time to rebuild)\n"
+    rm -fvr ~/.ivy2/cache/*
     find ~/.sbt ~/.ivy2 -name "*.lock" -print -delete
     find ~/.sbt ~/.ivy2 -name "ivydata-*.properties" -print -delete
 
@@ -312,7 +312,10 @@ function sbt_clear_cache(){
     rm -fvr ./project/project/target
   fi
 
+  echo -e "\nEmptying the idl cache\n"
+  rm -fvr ~/.idl-sbt-cache
   echo -e "\nRunning 'sbt clean update'\n"
+  rm -fvr ~/.idl-sbt-cache
   sbt clean update
 }
 
