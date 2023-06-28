@@ -135,6 +135,11 @@ if (( ${+commands[zoxide]} )); then
   export _ZO_ECHO=1
 fi
 
+if (( ${+commands[lefthook]} )); then
+  export LEFTHOOK_HOME="$(brew --prefix lefthook)"
+  export PATH="$LEFTHOOK_HOME/bin:$PATH"
+fi
+
 if (( ${+commands[conda]} )); then
     zpm load @github/esc/conda-zsh-completion
     export CONDA_ENVS="/usr/local/anaconda3/envs"
