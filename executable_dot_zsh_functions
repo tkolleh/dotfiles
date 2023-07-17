@@ -313,6 +313,7 @@ function sbt_clear_cache(){
   fi
 
   echo -e "\nEmptying the idl cache\n"
+  rm -fvr ./idl/lib
   rm -fvr ~/.idl-sbt-cache
   echo -e "\nRunning 'sbt clean update'\n"
   rm -fvr ~/.idl-sbt-cache
