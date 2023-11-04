@@ -1,0 +1,72 @@
+# theme = "github_dark_high_contrast"
+theme = "github_light_high_contrast"
+
+[editor]
+color-modes = true               # Color mode indicator
+bufferline = "multiple"          # Show currently open buffers, only when more than one exists.
+true-color = true                # Force the theme to show colors
+auto-format = true
+auto-save = true
+
+
+#
+# Show a bar cursor in insert mode, 
+# a block cursor in normal mode, and 
+# underline cursor in select mode.
+#
+[editor.cursor-shape]
+insert = "bar"
+normal = "block"
+select = "underline"
+
+[editor.soft-wrap]
+enable = true
+max-wrap = 40                    # increase value to reduce forced mid-word wrapping
+max-indent-retain = 0
+wrap-indicator = "⤦ "            # set wrap-indicator to "" to hide it
+
+[editor.statusline]
+left = [
+ "mode", 
+ "separator",
+ "spinner", 
+ "file-name", 
+ "file-modification-indicator",
+ "version-control"
+]
+center = ["spacer", "diagnostics"]
+right = [
+  "selections",
+  "position-percentage", 
+  "total-line-numbers",
+  "file-encoding",
+  "file-type"
+]
+separator = "▒"
+
+[editor.lsp]
+auto-signature-help = true               # enable popups of signature parameter help
+display-messages = true                  # Show LSP messages in the status line
+display-inlay-hints = true
+
+#
+# Key bindings / keymaps
+# At most one section each of 'keys.normal', 'keys.insert' and 'keys.select'
+#
+[keys.normal]
+H = "goto_previous_buffer"
+L = "goto_next_buffer"
+A-w = ":buffer-close"
+
+A-x = "extend_to_line_bounds"
+X = ["extend_line_up", "extend_to_line_bounds"]
+
+C-s = ":w"                       # Maps Ctrl-s to the typable command :w which is an alias for :write (save file)
+g = { a = "code_action" }        # Maps `ga` to show possible code actions
+
+[keys.select]
+A-x = "extend_to_line_bounds"
+X = ["extend_line_up", "extend_to_line_bounds"]
+
+[keys.insert]
+j = { k = "normal_mode" }                 # Maps `jk` to exit insert mode

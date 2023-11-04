@@ -1,0 +1,28 @@
+[[language]]
+name = "txt"
+scope = "source.txt"
+roots = []
+file-types = [{ suffix = ".txt" }, "text"]
+auto-format = false
+language-servers = ["ltex-ls"]
+
+[[language]]
+name = "markdown"
+scope = "source.md"
+injection-regex = "md|markdown"
+file-types = ["md", "markdown"]
+language-servers = ["marksman","ltex-ls", "logseqlsp"]
+
+[language-server.ltex-ls]
+command = "ltex-ls"
+config = { provideFormatter = false, documentFormatting = false }
+environment = { "JAVA_OPTS" = "-Xmx1024m" }
+
+[language-server.logseqlsp]
+command = "logseqlsp"
+args = [
+  "--token", "ajkf20292fj2jakljfe", 
+  "-p", "12315", 
+  "--log-file", "/Users/tkolleh/.config/logseqlsp/log.json"
+]
+indent = { tab-width = 2, unit = "  " }
