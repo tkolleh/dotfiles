@@ -33,7 +33,7 @@ local function setup_defaults()
       preview_cutoff = 120,
     },
     center = {
-      height = 0.7,
+      height = 0.9,
       preview_cutoff = 40,
       width = 0.9,
     },
@@ -43,10 +43,10 @@ local function setup_defaults()
     horizontal = {
       width = 0.9,
       preview_cutoff = 120,
-      preview_width = 0.6,
+      preview_width = 0.9,
     },
     vertical = {
-      preview_cutoff = 40,
+      preview_cutoff = 70,
     },
     flex = {
       flip_columns = 150,
@@ -71,45 +71,10 @@ local function setup_pickers()
   lvim.builtin.telescope.pickers.buffers.only_sort_text = true
 end
 
-local function setup_mappings()
-  lvim.builtin.telescope.defaults.mappings = {
-    -- for insert mode
-    i = {
-      ["<C-j>"] = actions.move_selection_next,
-      ["<C-n>"] = actions.cycle_history_next,
-      ["<C-r>"] = actions.cycle_history_prev,
-      ["<c-h>"] = "which_key",
-      ["<C-u>"] = false, -- clear input line rather than scroll preview
-    },
-    -- for normal mode
-    n = {
-      ["j"] = actions.move_selection_next,
-      ["k"] = actions.move_selection_previous,
-      ["q"] = actions.smart_send_to_qflist + actions.open_qflist,
-      ["Q"] = actions.smart_add_to_qflist + actions.open_qflist,
-    },
-  }
-  --  -- Telescope LSP keymappings / keybindings
-  h.which_key_set_key("ss", { "<cmd>Telescope lsp_document_symbols<cr>", "Document Symbols" })
-  h.which_key_set_key("sS", { "<cmd>Telescope lsp_dynamic_workspace_symbols<cr>", "Workspace Symbols"})
-  h.which_key_set_key("sb", { "<cmd>Telescope buffers<cr>", "Find Buffer" })
-
-  -- keymappings / keybindings [view all the defaults by pressing <leader>Lk]
-  h.which_key_set_key("j", { "<cmd>Telescope jumplist<cr>", "Jump List" })
-
-  vim.api.nvim_set_keymap(
-    'n',
-    '<S-Tab>',
-    [[<Cmd>Telescope buffers<CR>]],
-    { noremap = true, silent = true }
-  )
-end
-
 local M = {}
 M.config = function()
   setup_defaults()
   setup_pickers()
-  setup_mappings()
   --  -- See configuration details: https://github.com/LunarVim/LunarVim/issues/2426
   lvim.builtin.telescope.on_config_done = function(tele)
     -- we use protected-mode (pcall) just in case the plugin wasn't loaded yet.

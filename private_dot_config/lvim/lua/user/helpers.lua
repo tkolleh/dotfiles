@@ -1,23 +1,21 @@
 local M = {}
 -- Helper functions
 --
--- re-assign lvim defaults
-M.which_key_change_key = function(from, to)
-  local mapping = lvim.builtin.which_key.mappings[from]
-  lvim.builtin.which_key.mappings[to] = mapping
 
-  local k = "<leader>" .. from
-  lvim.keys.normal_mode[k] = false
-  lvim.builtin.which_key.mappings[from] = nil
+-- Map a single key, leader key is included.
+M.which_key_map_key = function(key, mapping)
+  lvim.builtin.which_key.mappings[key] = mapping
 end
 
--- Changes an existing mapping to a completely new one. Old mapping is deleted,
--- so should be re-assigned first.
-M.which_key_set_key = function(key, mapping)
-  local k = "<leader>" .. key
-  lvim.keys.normal_mode[k] = false
-  lvim.builtin.which_key.mappings[key] = nil
-  lvim.builtin.which_key.mappings[key] = mapping
+-- Remove a single Whichkey keybinding
+M.which_key_remove_key = function(key)
+  lvim.builtin.which_key.mappings[key] = {}
+end
+
+-- Add a single key to a Whichkey submenu
+M.which_key_map_submenu_key = function(menu, key, mapping)
+  local k = menu .. key
+  lvim.builtin.which_key.mappings[k] = mapping
 end
 
 return M
