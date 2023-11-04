@@ -262,7 +262,7 @@ function clicolors() {
 
 function edit_dot_files() {
   if (( ${+commands[chezmoi]} )) && (( ${+commands[lvim]} )) && [[ -d $CHEZMOI_SOURCE_PATH ]]; then
-    lvim $CHEZMOI_SOURCE_PATH
+    lvim $CHEZMOI_SOURCE_PATH -c 'cd $CHEZMOI_SOURCE_PATH'
     chezmoi apply
   fi
 } 
