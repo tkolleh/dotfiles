@@ -1,6 +1,3 @@
--- default makes quitting the editor too easy
-lvim.builtin.which_key.mappings["q"] = nil
-
 -- general
 lvim.log.level = "warn"
 lvim.format_on_save = false
@@ -13,8 +10,6 @@ vim.o.list = false
 vim.o.timeoutlen = 700
 vim.o.laststatus = 3
 
-local ignore_file_buff_types = {"gitcommit", "gitrebase", "svn", "hgcommit", "quickfix", "nofile", "help", 'fugitive', 'nerdtree', 'tagbar', 'fzf', 'diff', 'NvimTree', 'aerial', 'Outline', 'DapSidebar', 'UltestSummary', 'nofile', 'nowrite', 'quickfix', 'terminal', 'prompt'}
-
 -- code folding
 vim.o.foldenable = true
 vim.o.foldlevel = 2
@@ -22,6 +17,8 @@ vim.o.foldlevelstart = 50
 vim.o.foldcolumn = "2"
 vim.o.foldmethod = "expr"
 vim.o.foldexpr = "nvim_treesitter#foldexpr()"
+
+local ignore_file_buff_types = {"gitcommit", "gitrebase", "svn", "hgcommit", "quickfix", "nofile", "help", 'fugitive', 'nerdtree', 'tagbar', 'fzf', 'diff', 'NvimTree', 'aerial', 'Outline', 'DapSidebar', 'UltestSummary', 'nofile', 'nowrite', 'quickfix', 'terminal', 'prompt'}
 
 --  -- Optional core plugins
 lvim.builtin.alpha.active = true
@@ -31,7 +28,7 @@ lvim.builtin.terminal.active = true
 -- This was remapped to `<C-\>` in a recent update.
 lvim.builtin.terminal.open_mapping = "<C-t>"
 
-lvim.builtin.dap.active = true -- (default: false)
+lvim.builtin.dap.active = false -- (default: false)
 
 --  -- Nvim tree configuration
 lvim.builtin.nvimtree.setup.view.side = "left"
@@ -88,7 +85,6 @@ lvim.plugins = {
     },
 --  -- Custom search
     {
-      --"windwp/nvim-spectre",
       "nvim-pack/nvim-spectre",
       event = "BufRead",
       config = function()
@@ -376,16 +372,6 @@ lvim.plugins = {
 --  end additional plugins bloc
 }
 
--- -- Aerial keybindings
-local aerial = require("aerial")
-lvim.builtin.which_key.mappings["o"] = { "<cmd>AerialToggle!<CR>", "Toggle Aerial" }
--- Jump forwards/backwards with '[' and ']'
-lvim.builtin.which_key.mappings["["] = { aerial.prev, "Aerial previous symbol" }
-lvim.builtin.which_key.mappings["]"] = { aerial.next, "Aerial next symbol" }
--- Jump up the tree with '{' or '}'
-lvim.builtin.which_key.mappings["{"] = { aerial.prev_up, "Aerial previous" }
-lvim.builtin.which_key.mappings["}"] = { aerial.next_up, "Aerial next" }
-
 -- -- nvim-cmp
 -- Can not be placed into the config method of the plugins.
 lvim.builtin.cmp.completion.keyword_length = 2
@@ -400,38 +386,18 @@ vim.g.minimap_git_colors = 1
 vim.g.minimap_block_filetypes = ignore_file_buff_types
 vim.g.minimap_block_buftypes = ignore_file_buff_types
 
---  -- Speectre configuration
-lvim.builtin.which_key.mappings["sx"] = { "<cmd>lua require('spectre').open()<cr>", "ripgrep search files" }
-lvim.builtin.which_key.mappings["sX"] = { "<cmd>lua require('spectre').open_file_search()<cr>", "ripgrep search buffers" }
-lvim.builtin.which_key.mappings["sw"] = { "<cmd>lua require('spectre').open_visual({select_word=true})<cr>", "ripgrep search selected word" }
 
---  -- Trouble keymappings / keybindings
-lvim.builtin.which_key.mappings["t"] = {
-  name = "Diagnostics",
-  a = { "<cmd>TroubleToggle<cr>", "trouble" },
-  T = { "<cmd>TroubleToggle workspace_diagnostics<cr>", "workspace" },
-  t = { "<cmd>TroubleToggle document_diagnostics<cr>", "document" },
-  q = { "<cmd>TroubleToggle quickfix<cr>", "quickfix" },
-  l = { "<cmd>TroubleToggle loclist<cr>", "loclist" },
-  r = { "<cmd>TroubleToggle lsp_references<cr>", "references" },
-}
-
---  -- Persistence session manager keybindings / keymappings
-lvim.builtin.which_key.mappings["S"]= {
-  name = "Session",
-  c = { "<cmd>lua require('persistence').load()<cr>", "Restore last session for current dir" },
-  l = { "<cmd>lua require('persistence').load({ last = true })<cr>", "Restore last session" },
-  Q = { "<cmd>lua require('persistence').stop()<cr>", "Quit without saving session" },
-}
-
---  -- Telescope configuration
+-- Configure telescope
 require("user.telescope").config()
 
--- -- Treesitter configuration
+-- Configure treesitter
 require("user.treesitter").config()
 
 -- Configure nvim-dap and dap-ui
 require("user.dap").config()
+
+-- Configure keymappings
+require("user.keymappings").config()
 
 -- Autocommands and helpers
 -- require("user.autocommands").chezmoi()
@@ -457,18 +423,4 @@ lvim.builtin.lualine.sections.lualine_y = {
  dap_status(),
 }
 
----- search highlighted text
-lvim.keys.visual_mode["//"] = 'y/<C-R>"<CR>'
-
---- ESC from insert mode
-lvim.keys.insert_mode["jk"] = '<ESC>'
-lvim.keys.normal_mode["<S-l>"] = ":BufferLineCycleNext<CR>"
-lvim.keys.normal_mode["<S-h>"] = ":BufferLineCyclePrev<CR>"
-lvim.keys.normal_mode["<C-s>"] = ":w<cr>"
-
 lvim.builtin.illuminate.options.under_cursor = true
-
--- For inspiration:
--- https://github.com/ChristianChiarulli/lvim
--- https://github.com/abzcoding/lvim/blob/main/config.lua
--- https://github.com/mandreyel/dotfiles/tree/master/lvim/.config/lvim
