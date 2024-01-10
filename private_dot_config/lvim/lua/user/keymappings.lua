@@ -5,6 +5,10 @@ local h = require("user.helpers")
 
 local M = {}
 M.config = function()
+  ---- Remap delete and cut to not copy to unnamed / unnamedplus system clipboard
+  lvim.keys.normal_mode["d"] = '"_d'
+  lvim.keys.normal_mode["x"] = '"_x'
+
   ---- search highlighted text
   lvim.keys.visual_mode["//"] = 'y/<C-R>"<CR>'
 
@@ -13,9 +17,6 @@ M.config = function()
   lvim.keys.normal_mode["<S-l>"] = ":BufferLineCycleNext<CR>"
   lvim.keys.normal_mode["<S-h>"] = ":BufferLineCyclePrev<CR>"
   lvim.keys.normal_mode["<C-s>"] = ":w<cr>"
-
-  -- default makes quitting the editor too easy
-  h.which_key_remove_key("q")
 
   -- Cycle through buffers using telescope with <leader>b or <S-tab>
   h.which_key_remove_key("b")
@@ -52,9 +53,6 @@ M.config = function()
 
   -- -- Aerial keybindings
   h.which_key_map_key("o", { ":AerialToggle!<CR>", "Toggle Aerial" })
-  -- Jump forwards/backwards with '[' and ']'
-  h.which_key_map_key("[", { ":AerialPrev<CR>", "Aerial previous symbol" })
-  h.which_key_map_key("]", { ":AerialNext<CR>", "Aerial next symbol" })
 
   -- Speectre configuration
   h.which_key_remove_key("/") -- dont use for comment toggle
@@ -78,6 +76,17 @@ M.config = function()
     l = { ":lua require('persistence').load({ last = true })<cr>", "Restore last session" },
     Q = { ":lua require('persistence').stop()<cr>", "Quit without saving session" },
   }
+
+  h.which_key_remove_key("c")    -- don't use to close buffer
+  h.which_key_map_key("c", { "<cmd>Telescope commands<cr>", "Commands" })
+  h.which_key_remove_key("q")  -- default makes quitting the editor too easy
+  h.which_key_map_key("q", { "<cmd>BufferKill<CR>", "Close Buffer" })
+
+  lvim.lsp.buffer_mappings.normal_mode["]d"] = {"<cmd>lua vim.diagnostic.goto_next()<cr>", "Next Diagnostic"}
+  lvim.lsp.buffer_mappings.normal_mode["[d"] = { "<cmd>lua vim.diagnostic.goto_prev()<cr>", "Prev Diagnostic"}
+  
+  lvim.lsp.buffer_mappings.normal_mode["]h"]= { "<cmd>lua require 'gitsigns'.next_hunk({navigation_message = false})<cr>", "Next Hunk" }
+  lvim.lsp.buffer_mappings.normal_mode["[h"]= { "<cmd>lua require 'gitsigns'.prev_hunk({navigation_message = false})<cr>", "Prev Hunk" }
 
 end
 

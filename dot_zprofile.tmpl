@@ -25,11 +25,8 @@ fi
 # - /usr/local for macOS Intel 
 # - /opt/homebrew for Apple Silicon 
 # - /home/linuxbrew/.linuxbrew for Linux
-{{ if (eq .chezmoi.arch "arm64")}}
 eval "$(/opt/homebrew/bin/brew shellenv)"
-{{ else }}
-eval "$(/usr/local/bin/brew shellenv)"
-{{ end }}
+
 
 FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
 
@@ -42,6 +39,9 @@ export MARKDOWN_NOTES=$HOME/Documents/Notes
 
 # Add JetBrains toolbox scripts to path
 export PATH="$PATH:$HOME/Library/Application Support/JetBrains/Toolbox/scripts"
+
+# Add LunarVim to path
+export PATH="$PATH:/opt"
 
 # export MYVIMRC="$XDG_CONFIG_HOME/nvim/init.vim"
 # export MYVIMOPTS="$XDG_CONFIG_HOME/nvim/options.vim"

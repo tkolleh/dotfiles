@@ -32,8 +32,10 @@ M.config = function()
       end
 
       -- Color scheme must be set last
-      vim.o.background = mode
-      lvim.background = mode
+      -- vim.o.background = mode
+      -- lvim.background = mode
+      vim.o.backgroud = 'light'
+      lvim.background = 'light'
       lvim.colorscheme = dark_scheme
     end,
   })
