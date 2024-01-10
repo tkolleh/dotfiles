@@ -232,10 +232,10 @@ function is_newer_ncurses_version() {
   fi
 }
 
-if is_newer_ncurses_version; then
-  echo "Latest ncurses version installed. Review terminfo and comment out this function"
-  echo "might need to update the use of tmux-256color"
-fi
+# if is_newer_ncurses_version; then
+#   echo "Latest ncurses version installed. Review terminfo and comment out this function"
+#   echo "might need to update the use of tmux-256color"
+# fi
 
 # Starship cross-shell prompt
 # 
