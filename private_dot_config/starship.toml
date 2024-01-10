@@ -7,7 +7,7 @@ command_timeout = 5
 format = "[╭─](fg:main_clr)$cmd_duration$directory$all[╰](fg:main_clr)$character$status"
 
 # Color palette for light/dark mode
-palette = "light"
+palette = "dark"
 
 [palettes.light] #default color palette
 main_clr = "#9c64a6" # -- Directory chevron background

@@ -2,7 +2,7 @@ local M={}
 
 M.config = function ()
   local builtin_opts = lvim.builtin.treesitter
-  -- if you don't want all the parsers change this to a table of the ones you want
+  -- Expand the list of installed parsers
   if type(builtin_opts.ensure_installed) == 'table' then
     vim.list_extend(builtin_opts.ensure_installed, {
       'bash',
@@ -26,11 +26,11 @@ M.config = function ()
       'vimdoc',
     })
   end
+
   if type(builtin_opts.ignore_install) == 'table' then
     vim.list_extend(builtin_opts, { 'help', 'ocaml'})
   end
-  builtin_opts.highlight.enabled = true
-  builtin_opts.playground.enable = true
+
   builtin_opts.on_config_done = function(config)
     config.setup {
       matchup = {
@@ -38,12 +38,6 @@ M.config = function ()
         enable = true,
       },
     }
-    local hocon_group = vim.api.nvim_create_augroup("hocon", { clear = true })
-    vim.api.nvim_create_autocmd({ 'BufNewFile', 'BufRead' }, {
-      group = hocon_group,
-      pattern = '*/resources/*.conf',
-      command = 'set ft=hocon'
-    })
   end
 end
 

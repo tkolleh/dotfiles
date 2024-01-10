@@ -23,7 +23,6 @@ tap "wagoodman/dive"
 brew "glib"
 brew "cairo"
 brew "harfbuzz"
-brew "ammonite-repl"
 brew "ca-certificates"
 brew "coreutils"
 brew "asdf", args: ["HEAD"]
@@ -157,7 +156,6 @@ brew "jakehilborn/jakehilborn/displayplacer"
 brew "thecasualcoder/stable/csvdiff"
 brew "universal-ctags/universal-ctags/universal-ctags", args: ["HEAD"]
 brew "virtuslab/scala-cli/scala-cli"
-cask "1password-cli"
 cask "anaconda"
 cask "chromedriver"
 cask "dash"
@@ -187,20 +185,10 @@ cask "zotero"
 mas "1Password for Safari", id: 1569813296
 mas "Compressor", id: 424390742
 mas "Dark Reader for Safari", id: 1438243180
-mas "GarageBand", id: 682658836
-mas "iBar", id: 6443843900
-mas "iMovie", id: 408981434
-mas "Keynote", id: 409183694
 mas "Kindle", id: 405399194
-mas "LINER", id: 1463530746
 mas "Magnet", id: 441258766
 mas "Micro Snitch", id: 972028355
-mas "Notability", id: 360593530
-mas "Numbers", id: 409203825
-mas "Okta Extension App", id: 1439967473
-mas "Pages", id: 409201541
 mas "Paste", id: 967805235
-mas "Sourcegraph for Safari", id: 1543262193
 mas "Tabs Switcher", id: 1406718335
 mas "Xmind", id: 1327661892
 vscode "googlecloudtools.cloudcode"

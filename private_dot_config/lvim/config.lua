@@ -3,17 +3,17 @@ lvim.log.level = "warn"
 lvim.format_on_save = false
 vim.o.wrap = true
 vim.o.linebreak = true
--- vim.o.showbreak = "      ⤦ "
 vim.o.showbreak = "⤦ "
 vim.o.breakindent = true
 vim.o.list = false
 vim.o.timeoutlen = 700
 vim.o.laststatus = 3
+vim.opt.relativenumber = true
 
 -- code folding
 vim.o.foldenable = true
-vim.o.foldlevel = 2
-vim.o.foldlevelstart = 50
+vim.o.foldlevel = 20
+vim.o.foldlevelstart = 999
 vim.o.foldcolumn = "2"
 vim.o.foldmethod = "expr"
 vim.o.foldexpr = "nvim_treesitter#foldexpr()"
@@ -28,7 +28,7 @@ lvim.builtin.terminal.active = true
 -- This was remapped to `<C-\>` in a recent update.
 lvim.builtin.terminal.open_mapping = "<C-t>"
 
-lvim.builtin.dap.active = false -- (default: false)
+lvim.builtin.dap.active = true -- (default: false)
 
 --  -- Nvim tree configuration
 lvim.builtin.nvimtree.setup.view.side = "left"
@@ -52,6 +52,16 @@ lvim.keys.normal_mode["gp"] = false -- Disable lunarvim keybinding
 
 -- Additional Plugins
 lvim.plugins = {
+    {
+      'fei6409/log-highlight.nvim',
+      config = function()
+          require('log-highlight').setup {}
+      end,
+    },
+    {
+      "JoosepAlviste/nvim-ts-context-commentstring",
+      event = "BufRead",
+    },
     {'tpope/vim-abolish'},
 --   -- colors
     {'tjdevries/colorbuddy.vim'},
@@ -280,8 +290,6 @@ lvim.plugins = {
         )
       end
     },
---  -- Syntax highlighting for the HOCON language used by JVM config files
-    {'jvirtanen/vim-hocon'},
 --  -- Focus on the last place of edit
     {
       'ethanholz/nvim-lastplace',
@@ -321,7 +329,7 @@ lvim.plugins = {
       -- end
     },
 --   -- keybindings
-   {'tpope/vim-unimpaired'},
+   -- {'tpope/vim-unimpaired'},
 
 --  -- Telescope extensions
     {'nvim-telescope/telescope-dap.nvim'},
@@ -368,6 +376,75 @@ lvim.plugins = {
       require("copilot_cmp").setup()
     end
   },
+  {
+    "nvim-treesitter/nvim-treesitter-textobjects",
+    after = "nvim-treesitter",
+    config = function()
+      require 'nvim-treesitter.configs'.setup {
+        textobjects = {
+          select = {
+            enable = true,
+            -- Automatically jump forward to textobj, similar to targets.vim
+            lookahead = true,
+            keymaps = {
+              -- You can use the capture groups defined in textobjects.scm
+              ["af"] = "@function.outer",
+              ["if"] = "@function.inner",
+              ["ac"] = "@class.outer",
+              -- You can optionally set descriptions to the mappings (used in the desc parameter of
+              -- nvim_buf_set_keymap) which plugins like which-key display
+              ["ic"] = { query = "@class.inner", desc = "Select inner part of a class region" },
+              -- You can also use captures from other query groups like `locals.scm`
+              ["as"] = { query = "@scope", query_group = "locals", desc = "Select language scope" },
+            },
+            selection_modes = {
+              ['@parameter.outer'] = 'v', -- charwise
+              ['@function.outer'] = 'V',  -- linewise
+              ['@class.outer'] = '<c-v>', -- blockwise
+            },
+            include_surrounding_whitespace = true,
+          },
+          move = {
+            enable = true,
+            set_jumps = false, -- whether to set jumps in the jumplist
+            goto_next_start = {
+              ["]]"] = "@function.outer",
+              -- ["]["] = "@function.outer",
+              ["]l"] = "@loop.outer",
+              -- ["]o"] = { query = { "@loop.inner", "@loop.outer" } }
+            },
+            goto_next_end = {
+              ["]["] = "@function.outer",
+              -- ["]["] = "@class.outer",
+            },
+            goto_previous_start = {
+              ["[["] = "@function.outer",
+              -- ["[]"] = "@function.outer",
+            },
+            goto_previous_end = {
+              ["[]"] = "@function.outer",
+              -- ["[]"] = "@class.outer",
+            },
+            goto_next = {
+              ["]c"] = "@conditional.outer",
+            },
+            goto_previous = {
+              ["[c"] = "@conditional.outer",
+            },
+          },
+          lsp_interop = {
+            enable = true,
+            border = 'none',
+            -- peek_definition_code = {
+            --   ["<leader>pf"] = "@function.outer",
+            --   ["<leader>pF"] = "@class.outer",
+            -- },
+          },
+        },
+      }
+    end,
+    dependencies = "nvim-treesitter/nvim-treesitter",
+  },
 
 --  end additional plugins bloc
 }
@@ -398,6 +475,13 @@ require("user.dap").config()
 
 -- Configure keymappings
 require("user.keymappings").config()
+
+-- Configure hocon filetype behavior
+require("user.autocommands").hocon()
+
+-- Configure drools filetype behavior
+require("user.autocommands").drools()
+
 
 -- Autocommands and helpers
 -- require("user.autocommands").chezmoi()

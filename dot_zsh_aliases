@@ -27,7 +27,7 @@ function grmci () {
   git ls-files --others | xargs -n1 -I '{}' git rm --cached --quiet --ignore-unmatch -- ./{}
 }
 
-__alias gignored "git ls-files -v $(git rev-parse --show-toplevel) | (grep '^[[:lower:]]' || echo 'None ignored.') && echo '\nIgnore changes with:   git update-index --assume-unchanged <file> \nor track again with:   git update-index --no-assume-unchanged <file>'"
+# __alias gignored "git ls-files -v $(git rev-parse --show-toplevel) | (grep '^[[:lower:]]' || echo 'None ignored.') && echo '\nIgnore changes with:   git update-index --assume-unchanged <file> \nor track again with:   git update-index --no-assume-unchanged <file>'"
 
 __alias gst "git status -b"
 __alias gsta " git log --oneline \
