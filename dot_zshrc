@@ -1,0 +1,291 @@
+# -*-mode:sh-*- vim:ft=zsh
+#
+# ~/.zshrc
+# =============================================================================
+#
+#
+zmodload zsh/zprof
+
+# Hide default user from local prompt.
+export DEFAULT_USER="${USER}"
+
+# Automatically update without prompting.
+export DISABLE_UPDATE_PROMPT="false"
+
+# Uncomment the following line to change how often to auto-update (in days).
+export UPDATE_ZSH_DAYS=7
+
+export EDITOR='lvim'
+
+# Use ESC to edit the current command line:
+autoload -U edit-command-line
+zle -N edit-command-line
+bindkey '\033' edit-command-line
+
+# Reduce delay of loading the editor
+export KEYTIMEOUT=1
+
+# -- Light / Dark mode styles ----------------------------------
+#
+# Light mode is the default. Check if apple settings are for darkmode
+function is_dark_mode() {
+  if [[ "$(uname -s)" == "Darwin" ]]; then
+    local interface_mode=$(defaults read -g AppleInterfaceStyle 2>/dev/null)
+    if [[ $interface_mode == "Dark" ]]; then
+      return 0
+    else
+      return 1
+    fi
+  fi
+}
+
+function set_zsh_auto_suggest_colors() {
+  if is_dark_mode; then
+    # Set zsh auto suggest colors
+    ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=237"
+  else
+    ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=248"
+  fi
+}
+
+function set_prompt_mode() {
+  # Change Starship prompt configuration based on Apple appearance 
+  # setting (light / dark mode) and the active iTerm2 profile
+  if is_dark_mode && [[ $ITERM_PROFILE == "Github" ]]; then
+      starship config palette dark
+  else
+      starship config palette light
+  fi
+  set_zsh_auto_suggest_colors
+}
+
+function set_bat_theme() {
+  if is_dark_mode && (( ${+commands[bat]} )); then
+    export BAT_THEME="Dracula"
+  else
+    export BAT_THEME="GitHub"
+  fi
+}
+
+function dark!() {
+  set_prompt_mode
+  set_bat_theme
+}
+
+# -- Plugins -------------------------------------------------- 
+#
+
+# Install zpm-zsh
+if [[ ! -f ~/.zpm/zpm.zsh ]]; then
+  git clone --recursive https://github.com/zpm-zsh/zpm ~/.zpm
+fi
+source ~/.zpm/zpm.zsh
+
+# Pull in OMZ (doesn't actually source anything)
+zpm load @omz
+
+zpm load                         \
+  @omz/lib/functions             \
+  @omz/lib/prompt_info_functions \
+  @omz/lib/git                   \
+  @omz/lib/compfix               \
+  @omz/lib/grep                  \
+  @omz/lib/termsupport           \
+  @omz/lib/spectrum              \
+  @omz/lib/history               \
+  @omz/lib/key-bindings          \
+  @omz/lib/completion
+
+# Load some OMZ plugins and theme
+zpm load                  \
+  @omz/git                \
+  @omz/colored-man-pages
+
+# Plugins for local host
+zpm if-not ssh load                                   \
+  zdharma-continuum/fast-syntax-highlighting          \
+  zpm-zsh/zsh-history-substring-search                \
+  zpm-zsh/zsh-autosuggestions,async                   \
+  zsh-users/zsh-completions,async                     \
+  zpm-zsh/zsh-better-npm-completion,async
+
+autoload -U compinit && compinit
+
+# Disable autosuggestion for large buffers.
+export ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE="50"
+
+# Enable aynchronous mode.
+export ZSH_AUTOSUGGEST_USE_ASYNC=true
+
+set_zsh_auto_suggest_colors
+
+# Bind keys for zsh-history-substring-search. Plugin must be loaded 
+# after fast-syntax-highlighting.
+
+bindkey '^[[A' history-substring-search-up
+bindkey '^[[B' history-substring-search-down
+
+# -- Initialize tools ----------------------------------------
+#
+# Alternative to cd
+# The default command is `z` the `--cmd cd` option replaces `cd` 
+# command.
+if (( ${+commands[zoxide]} )); then
+  eval "$(zoxide init zsh)"
+  export _ZO_ECHO=1
+fi
+
+if (( ${+commands[lefthook]} )); then
+  export LEFTHOOK_HOME="$(brew --prefix lefthook)"
+  export PATH="$LEFTHOOK_HOME/bin:$PATH"
+fi
+
+if (( ${+commands[conda]} )); then
+    zpm load @github/esc/conda-zsh-completion
+    export CONDA_ENVS="/usr/local/anaconda3/envs"
+
+    conda_path="$(whence -cp conda)"
+    #
+    # >>> conda initialize >>>
+    #
+    __conda_setup="$($conda_path 'shell.zsh' 'hook' 2> /dev/null)"
+    if [ $? -eq 0 ]; then
+        eval "$__conda_setup"
+    else
+        if [ -f "/opt/anaconda3/etc/profile.d/conda.sh" ]; then
+            . "/opt/anaconda3/etc/profile.d/conda.sh"
+        else
+            export PATH="/opt/anaconda3/bin:$PATH"
+        fi
+    fi
+    unset __conda_setup
+    #
+    # <<< conda initialize <<<
+    #
+fi
+
+if (( ${+commands[fd]} )) && (( ${+commands[rg]} )) && (( ${+commands[fzf]} )) && (( ${+commands[bat]} )); then
+    zpm load @github/unixorn/fzf-zsh-plugin    
+
+    export FZF_DEFAULT_COMMAND='fd --type f --color=never --ignore-case --no-ignore --hidden --follow'
+    export FZF_DEFAULT_OPTS="
+    --bind 'f1:execute(bat --paging=always --color=always {})'
+    --bind 'f2:execute($EDITOR {})+abort'
+    --bind 'ctrl-y:execute-silent(echo -n {2..} | pbcopy)+abort' 
+    --bind '?:toggle-preview' 
+    --preview='bat --number --color=always {} | head -700' --preview-window='right:50%:hidden'
+    --color header:italic 
+    --header 'Press CTRL-Y to copy command into clipboard - F2 to open'"
+
+    export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+
+    # Search for files
+    export FZF_ALT_C_COMMAND='fd --type d --color=never --no-ignore --ignore-case --hidden --follow '
+
+    # Search recent commands
+    export FZF_CTRL_R_OPTS="$FZF_DEFAULT_OPTS"
+fi
+
+if [[ -d "$HOME/Library/Application Support/ScalaCli/completions/zsh" ]] && (( ${+commands[scala-cli]} )); then
+  # Install scala-cli completions
+  # Reference: https://github.com/VirtusLab/scala-cli/blob/main/website/docs/commands/completions.md
+  fpath=("$HOME/Library/Application Support/ScalaCli/completions/zsh" $fpath)
+  compinit
+fi
+
+if (( ${+commands[cs]} )); then
+  # Scala application manager
+  # add installation directory in PATH in the current session
+  eval "$(cs install --env)" 
+fi
+
+if (( ${+commands[bat]} )) && (( ${+commands[delta]} )); then
+  set_bat_theme
+  export BATDIFF_USE_DELTA=true
+fi
+
+if (( ${+commands[atuin]} )); then
+  eval "$(atuin init zsh)"
+fi
+
+
+# Load custom code from separate configuration file.
+if [[ -f "$HOME"/.zsh_functions ]]; then source "$HOME"/.zsh_functions; fi
+
+if [[ -f "$HOME"/.host_functions.zsh ]]; then source "$HOME"/.host_functions.zsh; fi
+
+# Load aliases
+# TODO why is this not working in warp?
+if [[ -a "$HOME"/.zsh_aliases ]]; then
+  source "$HOME"/.zsh_aliases
+fi
+
+function is_newer_ncurses_version() {
+  # As of 2021 MacOS comes with an older ncurses version (< 6.2). The newer 
+  # ncurses version does not work properly for my usage in TMUX.
+  # see: https://gist.github.com/bbqtd/a4ac060d6f6b9ea6fe3aabe735aa9d95
+  local tic_version=$(tic -V | gawk 'BEGIN { FS="[^0-9]+"; OFS=ORS; ORS="" } NF=2')
+  if (( $tic_version >= 6 )); then
+    return 0
+  else
+    return 1
+  fi
+}
+
+if is_newer_ncurses_version; then
+  echo "Latest ncurses version installed. Review terminfo and comment out this function"
+  echo "might need to update the use of tmux-256color"
+fi
+
+# Starship cross-shell prompt
+# 
+# Install starship
+eval "$(starship init zsh)"
+set_prompt_mode
+
+# Make this last to avoid path overwrite
+if (( ${+commands[asdf]} )); then
+    zpm load @omz/lib/asdf
+    # TODO: Use below or delete above line. The above plugin should do this not sure why its not
+    source $(brew --prefix asdf)/libexec/asdf.sh
+
+    local ASDF_JAVA_HOME="$(asdf where java $(asdf current java | awk '{ print $2 }'))"
+    local ASDF_JAVA_HOME_BIN="$(asdf where java $(asdf current java | awk '{ print $2 }'))/bin"
+    local AMAZON_JAVA_HOME="/Library/Java/JavaVirtualMachines/amazon-corretto-8.jdk/Contents/Home"
+    local AMAZON_JAVA_HOME_BIN="/Library/Java/JavaVirtualMachines/amazon-corretto-8.jdk/Contents/Home/bin"
+
+    # If isn't using system java path then JAVA_HOME is asdf controlled else 
+    # remove asdf from path and use system path which should've been set 
+    # when that java version was installed/added
+    if [[ "$(asdf current java | awk '{ print $2 }')" != "system" ]]; then
+      echo "Jave Home is not set to system"
+      export JAVA_HOME="$ASDF_JAVA_HOME"
+    elif ((${path[(ie)$ASDF_JAVA_HOME_BIN]} <= ${#path})); then
+      echo "Set to system"
+      export JAVA_HOME="$AMAZON_JAVA_HOME"
+      path[${path[(ie)$ASDF_JAVA_HOME_BIN]}]=()
+    else
+      export JAVA_HOME="$AMAZON_JAVA_HOME"
+    fi
+
+    local maybe_scala_home="$(asdf where scala $(asdf current scala | awk '{ print $2 }'))"
+    if [[ -d "$maybe_scala_home"/bin ]]; then
+      export SCALA_HOME="$(asdf where scala $(asdf current scala | awk '{ print $2 }'))"
+      export SBT_HOME="$(asdf where sbt $(asdf current sbt | awk '{ print $2 }'))"
+      export SBT_OPTS="-Dfile.encoding=utf-8 -Xms4G -Xmx8G -Xss4M -XX:ReservedCodeCacheSize=2G -Dsbt.color=true"
+    fi
+
+    if [[ -d "$JAVA_HOME"/bin ]]; then
+      # SBT_HOME for ASDF is broken
+      # export PATH="$JAVA_HOME/bin:$SCALA_HOME/bin:$SBT_HOME/bin:$PATH"
+      export PATH="$JAVA_HOME/bin:$PATH"
+    fi
+fi
+
+# The next line enables shell command completion for gcloud.
+if [[ -f "$HOME/google-cloud-sdk/completion.zsh.inc" ]]; then 
+  export PATH="$PATH:$HOME/google-cloud-sdk/bin"
+  local ASDF_PYTHON_HOME_BIN="$(asdf where python $(asdf current python latest:3.10 | awk '{ print $2 }'))/bin"
+  export CLOUDSDK_PYTHON="${ASDF_PYTHON_HOME_BIN}/python"
+  source "$HOME/google-cloud-sdk/completion.zsh.inc"
+fi
