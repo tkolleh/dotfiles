@@ -81,6 +81,13 @@
   cmd = /Applications/Sourcetree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
   trustExitCode = true
 
+[mergetool "idea"]
+    cmd = idea merge $(cd $(dirname "$LOCAL") && pwd)/$(basename "$LOCAL") $(cd $(dirname "$REMOTE") && pwd)/$(basename "$REMOTE") $(cd $(dirname "$BASE") && pwd)/$(basename "$BASE") $(cd $(dirname "$MERGED") && pwd)/$(basename "$MERGED")
+    trustExitCode = true
+[difftool "idea"]
+    cmd = idea diff $(cd $(dirname "$LOCAL") && pwd)/$(basename "$LOCAL") $(cd $(dirname "$REMOTE") && pwd)/$(basename "$REMOTE")
+
+
 [filter "lfs"]
   clean = git-lfs clean -- %f
   smudge = git-lfs smudge -- %f
@@ -88,12 +95,12 @@
   required = true
 
 [merge]
-  tool = fugitive
-  guitool = pycharm
+  tool = idea
+  guitool = idea
   conflictstyle = diff3
 [diff]
-  tool = vimdiff
-  guitool = pycharm
+  tool = idea
+  guitool = idea
   colorMoved = default
 
 [init]
@@ -114,3 +121,6 @@
 	program = /usr/local/MacGPG2/bin/gpg2
 [grep]
 	extendedRegexp = true
+
+[http]
+  connecttimeout = 20
