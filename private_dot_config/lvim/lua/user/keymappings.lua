@@ -54,6 +54,10 @@ M.config = function()
   -- -- Aerial keybindings
   h.which_key_map_key("o", { ":AerialToggle!<CR>", "Toggle Aerial" })
 
+  -- Jump forwards/backwards with '[' and ']'
+  -- h.which_key_map_key("[", { ":AerialPrev<CR>", "Aerial previous symbol" })
+  -- h.which_key_map_key("]", { ":AerialNext<CR>", "Aerial next symbol" })
+
   -- Speectre configuration
   h.which_key_remove_key("/") -- dont use for comment toggle
   h.which_key_map_key("/", { ":lua require('spectre').open()<cr>", "Search project files" })
