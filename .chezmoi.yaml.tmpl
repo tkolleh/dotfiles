@@ -1,0 +1,13 @@
+---
+edit:
+  command: "lvim"
+
+merge:
+  command: "/Users/tkolleh/.config/chezmoi/idea_merge_tool.sh"
+  args: ["{{ .Destination }}", "{{ .Destination }}", "{{ .Source }}"]
+
+data:
+  gmail-email: {{ onepasswordRead "op://Private/personal-google/username" }}
+  work-email: {{ onepasswordRead "op://Private/CK PagerDuty/username" }}
+  first-name: {{ "op://Private/Simple-Identity/first name" }}
+  last-name: {{ "op://Private/Simple-Identity/last name" }}

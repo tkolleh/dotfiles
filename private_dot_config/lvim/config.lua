@@ -477,11 +477,10 @@ require("user.dap").config()
 require("user.keymappings").config()
 
 -- Configure hocon filetype behavior
-require("user.autocommands").hocon()
+-- require("user.autocommands").hocon()
 
 -- Configure drools filetype behavior
-require("user.autocommands").drools()
-
+-- require("user.autocommands").drools()
 
 -- Autocommands and helpers
 -- require("user.autocommands").chezmoi()
