@@ -6,7 +6,7 @@
 #
 
 local dest="${1}"
-local chezmoi="${2}"
-local base="${3}"
+local remote="${3}"
+local base="${2}"
 
-idea merge "${dest}" "${chezmoi}" "${base}" "${chezmoi}"
+idea merge "${dest}" "${base}" "${remote}"
