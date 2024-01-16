@@ -272,7 +272,7 @@ if (( ${+commands[asdf]} )); then
     if [[ -d "$maybe_scala_home"/bin ]]; then
       export SCALA_HOME="$(asdf where scala $(asdf current scala | awk '{ print $2 }'))"
       export SBT_HOME="$(asdf where sbt $(asdf current sbt | awk '{ print $2 }'))"
-      export SBT_OPTS="-Dfile.encoding=utf-8 -Xms4G -Xmx8G -Xss4M -XX:ReservedCodeCacheSize=2G -Dsbt.color=true"
+      export SBT_OPTS="-Dfile.encoding=utf-8 -Xms8G -Xmx8G -Xss8M -XX:ReservedCodeCacheSize=2G -Dsbt.color=true"
     fi
 
     if [[ -d "$JAVA_HOME"/bin ]]; then
