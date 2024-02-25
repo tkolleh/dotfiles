@@ -347,3 +347,8 @@ function cd_with_fzf(){
   cd $HOME && cd $(fd -t d | fzf --preview="exa --long --tree --level=1 {}") && echo "${PWD}" && exa --long --tree --level=2
 }
 
+function batFollow(){
+  echo -e "\nConsider using batwatch instead. \n"
+  tail -f "${1}" | bat -l syslog --paging=never
+}
+
