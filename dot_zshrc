@@ -17,12 +17,9 @@ export UPDATE_ZSH_DAYS=7
 
 export EDITOR='lvim'
 
-# Use ESC to edit the current command line:
-autoload -U edit-command-line
-zle -N edit-command-line
-bindkey '\033' edit-command-line
-
 # Reduce delay of loading the editor
+# $KEYTIMEOUT controls the number of milliseconds that must pass 
+# before a key press is read.
 export KEYTIMEOUT=1
 
 # -- Light / Dark mode styles ----------------------------------
@@ -99,7 +96,12 @@ zpm load                         \
 # Load some OMZ plugins and theme
 zpm load                  \
   @omz/git                \
-  @omz/colored-man-pages
+  @omz/colored-man-pages  \
+  @omz/vi-mode
+
+VI_MODE_RESET_PROMPT_ON_MODE_CHANGE=true
+VI_MODE_SET_CURSOR=true
+bindkey -M vicmd 'V' edit-command-line # this remaps `vv` to `V` (but overrides `visual-mode`)
 
 # Plugins for local host
 zpm if-not ssh load                                   \
@@ -131,7 +133,7 @@ bindkey '^[[B' history-substring-search-down
 # The default command is `z` the `--cmd cd` option replaces `cd` 
 # command.
 if (( ${+commands[zoxide]} )); then
-  eval "$(zoxide init zsh)"
+  eval "$(zoxide init --cmd cd zsh)"
   export _ZO_ECHO=1
 fi
 

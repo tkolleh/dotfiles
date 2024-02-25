@@ -53,6 +53,9 @@ lvim.keys.normal_mode["gp"] = false -- Disable lunarvim keybinding
 -- Additional Plugins
 lvim.plugins = {
     {
+      'norcalli/nvim-terminal.lua'
+    },
+    {
       'fei6409/log-highlight.nvim',
       config = function()
           require('log-highlight').setup {}

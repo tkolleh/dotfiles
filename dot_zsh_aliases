@@ -38,6 +38,7 @@ __alias glog "git log --oneline --decorate --graph --show-signature"
 __alias gloga "git log --oneline --decorate --graph --show-signature --all"
 __alias gwch "git whatchanged -p --abbrev-commit --pretty=medium"
 __alias gcd "git checkout development"
+  __alias glos "git log --oneline --pretty='%Cred%h%Creset -%C(auto)%d%Creset %<(50,trunc)%s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --no-merges"
 
 # -- miscellaneous --------------------------------------------------
 
