@@ -6,8 +6,13 @@ local h = require("user.helpers")
 local M = {}
 M.config = function()
   ---- Remap delete and cut to not copy to unnamed / unnamedplus system clipboard
+  ---- d means delete
   lvim.keys.normal_mode["d"] = '"_d'
   lvim.keys.normal_mode["x"] = '"_x'
+  lvim.keys.normal_mode["x"] = '"_x'
+  lvim.keys.normal_mode["d"] = '"_d'
+  lvim.keys.normal_mode["D"] = '"_D'
+  lvim.keys.visual_mode["d"] = '"_d'
 
   ---- search highlighted text
   lvim.keys.visual_mode["//"] = 'y/<C-R>"<CR>'

@@ -19,6 +19,12 @@ nnoremap <Leader>h :nohl<CR><C-L>
 " map jk to <ESC> when in insert mode
 inoremap jk <Esc>
 
+" d is for delete
+nnoremap x "_x
+nnoremap d "_d
+nnoremap D "_D
+vnoremap d "_d
+
 " quick movements
 inoremap II <Esc>I
 inoremap AA <Esc>A
@@ -55,21 +61,23 @@ nnoremap <Leader>o :action ActivateStructureToolWindow<CR>
 
 " similar to trouble configuration
 "
-nnoremap <Leader>tt :action ActivateProblemsViewToolWindow<CR>
+:map <Leader>tt <Action>(ActivateProblemsViewToolWindow)
+:map ]d <Action>(GotoNextError)
+:map [d <Action>(GotoPreviousError)
 
 nnoremap <Leader>rn :action RenameElement<CR>
 nnoremap <Leader>fp :action Tool_External Tools_darker<CR>
 
 nnoremap <Leader><C-h> :action TypeHierarchy<CR>
 
-" gitgutter mapping
+" Git related mappings
+"
+" Move to next/last change (hunk)
+" Whats a hunk: http://www.gnu.org/software/diffutils/manual/html_node/Hunks.html
 " Unlike gitgutter Jumps are based on timeline not line number in file
 "
-nnoremap ]c :action VcsShowNextChangeMarker<CR>
-nnoremap [c :action VcsShowPrevChangeMarker<CR>
-
-"nnoremap ]c :action Diff.NextChange<CR>
-"nnoremap [c :action Diff.PrevChange<CR>
+:map ]h <Action>(VcsShowNextChangeMarker)
+:map [h <Action>(VcsShowPrevChangeMarker)
 
 " similar to nvim telescope config
 "
@@ -92,8 +100,6 @@ nnoremap <Leader>lo :action ActivateStructureToolWindow<CR>
 
 nnoremap gp :action QuickImplementations<CR>
 
-nnoremap <Leader>lj :action GotoNextError<CR>
-nnoremap <Leader>lk :action GotoPreviousError<CR>
 
 " similar to nvim dap configuration
 "
@@ -107,3 +113,4 @@ nnoremap <C-p> :action ParameterInfo<CR>
 " similar to jump to previous buffer
 "
 nmap <leader>bb :action JumpToLastWindow<cr>
+
