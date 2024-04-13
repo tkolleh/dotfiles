@@ -174,10 +174,11 @@ if (( ${+commands[fd]} )) && (( ${+commands[rg]} )) && (( ${+commands[fzf]} )) &
     --bind 'f1:execute(bat --paging=always --color=always {})'
     --bind 'f2:execute($EDITOR {})+abort'
     --bind 'ctrl-y:execute-silent(echo -n {2..} | pbcopy)+abort' 
+    --bind 'ctrl-z:toggle-up'
     --bind '?:toggle-preview' 
     --preview='bat --number --color=always {} | head -700' --preview-window='right:50%:hidden'
     --color header:italic 
-    --header 'Press CTRL-Y to copy command into clipboard - F2 to open'"
+    --header 'Press CTRL-Y to copy command into clipboard - F2 to open - CTRL-Z to toggle selection'"
 
     export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 
@@ -274,7 +275,7 @@ if (( ${+commands[asdf]} )); then
     if [[ -d "$maybe_scala_home"/bin ]]; then
       export SCALA_HOME="$(asdf where scala $(asdf current scala | awk '{ print $2 }'))"
       export SBT_HOME="$(asdf where sbt $(asdf current sbt | awk '{ print $2 }'))"
-      export SBT_OPTS="-Dfile.encoding=utf-8 -Xms8G -Xmx8G -Xss8M -XX:ReservedCodeCacheSize=2G -Dsbt.color=true"
+      # export SBT_OPTS="-Dfile.encoding=utf-8 -J-Xms8G -J-Xmx8G -J-Xss8M -J-XX:ReservedCodeCacheSize=2G -Dsbt.color=true"
     fi
 
     if [[ -d "$JAVA_HOME"/bin ]]; then
