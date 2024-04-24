@@ -480,7 +480,7 @@ require("user.dap").config()
 require("user.keymappings").config()
 
 -- Configure hocon filetype behavior
--- require("user.autocommands").hocon()
+require("user.autocommands").hocon()
 
 -- Configure drools filetype behavior
 -- require("user.autocommands").drools()
@@ -510,3 +510,7 @@ lvim.builtin.lualine.sections.lualine_y = {
 }
 
 lvim.builtin.illuminate.options.under_cursor = true
+
+if vim.g.neovide then
+  require("user.neovide").config()
+end
