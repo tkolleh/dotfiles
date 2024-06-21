@@ -272,9 +272,21 @@ function update_term_tools() {
   fi
 }
 
+function check_for_man_page() {
+  man "$1" > /dev/null 2>&1
+}
+
 # Style command help doc
 function help(){
-  "$@" --help 2>&1 | bat --plain --language=help
+  if check_for_man_page "$1"; then
+    if (( ${+commands[batman]} )); then
+      batman "$@"
+    else 
+      man "$1"
+    fi
+  else
+    "$@" --help 2>&1 | bat --plain --language=help
+  fi
 }
 
 # Debug what the heck is going on with gpg
@@ -352,3 +364,17 @@ function batFollow(){
   tail -f "${1}" | bat -l syslog --paging=never
 }
 
+function extract_file_from_image(){
+  if [ $# -eq 3 ]; then
+    echo -e "\nExtracting file [$2] from image [$1]"
+    echo -e "Saving file to [$3]\n"
+    local image=$1
+    local source_path=$2
+    local destination_path=$3
+    local container_id=$(docker create "$image")
+    docker cp "$container_id:$source_path" "$destination_path"
+    docker rm "$container_id"
+  else
+    echo -e "\nRequires <image id> <source path> <destination path>"
+  fi
+}

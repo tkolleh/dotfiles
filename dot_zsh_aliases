@@ -49,6 +49,7 @@ alias ranger="TERM=xterm-256color $(brew --prefix ranger)/bin/ranger --choosedir
 alias fx="FX_LANG=python3 NODE_PATH=`npm root -g` fx"
 # https://github.com/antonmedv/eat
 alias eat="NODE_PATH=`npm root -g` eat"
+alias fd="fd --unrestricted --ignore-case"
 
 # Reloads the configuration.
 if [ -n "$ZSH_VERSION" ]; then
