@@ -75,6 +75,7 @@ __alias tmuxm "tmux new-session -A -s main"
 
 # __alias clear_sbt_cache "trash ~/.ivy2/cache ~/.m2/repository"
 # __alias sbt__ "sbt --sbt-version 1.8.0 -Dsbt.semanticdb=true"
+alias sbtn="SCALACTIC_FILL_FILE_PATHNAMES=yes sbtn --verbose"
 
 __alias tmux-save-pane 'tmux capture-pane -pS -'
 
@@ -91,3 +92,6 @@ if command -v chezmoi > /dev/null; then
 else
     __alias chezmoiconf 'cd $HOME/.local/share/chezmoi'
 fi
+
+# Because I keep forgetting the name of this command
+alias macos_info=neofetch
