@@ -96,14 +96,6 @@ lvim.plugins = {
       -- cmd = { "G", "Git", "Gdiffsplit!", "Gvdiffsplit", "Gdiffsplit", "Gread", "Gwrite", "Ggrep", "GMove", "GDelete", "GBrowse", "GRemove", "GRename", "Glgrep", "Gedit" },
       -- ft = {"fugitive"}
     },
---  -- Custom search
-    {
-      "nvim-pack/nvim-spectre",
-      event = "BufRead",
-      config = function()
-        require("user.spectre").config()
-      end,
-    },
 --   -- tmux
    {'christoomey/vim-tmux-navigator'},
 --   -- Custom Quickfix window
