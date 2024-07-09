@@ -21,6 +21,12 @@ else
   export EDITOR='lvim'
 fi
 
+# Preferred pager for git diff
+#
+if (( ${+commands[delta]} )); then
+  export GIT_PAGER='delta -s --color-only'
+fi
+
 # Homebrew installs to its preferred prefix; 
 # - /usr/local for macOS Intel 
 # - /opt/homebrew for Apple Silicon 
@@ -57,4 +63,9 @@ export NEW_RELIC_API_KEY={{ range (onepassword "eehrc6lejvajtfcpejah3e5uem").fie
                           {{ end }}
 {{ end }}
 
+if (( ${+commands[go]} )); then
+  export PATH="$(go env GOPATH)"/bin:$PATH.
+fi
+
+# Last line in this script 
 if [[ -f "$HOME"/.host_functions.zsh ]]; then source "$HOME"/.host_functions.zsh; fi
