@@ -2,13 +2,13 @@ local M = {}
 
 M.chezmoi = function()
 -- Configure vim to run chezmoi apply when a dotfile is saved
--- source: https://www.chezmoi.io/user-guide/tools/editor/#configure-vim-to-run-chezmoi-apply-whenever-you-save-a-dotfile
+-- source: https://github.com/xvzc/chezmoi.nvim?tab=readme-ov-file#treat-all-files-in-chezmoi-source-directory-as-chezmoi-files
   if vim.fn.executable('chezmoi') == 1 then
-    vim.api.nvim_create_augroup('Chezmoi', {
-      event = 'BufWritePost',
-      pattern = '~/.local/share/chezmoi/*',
-      command = [[silent! chezmoi apply --source-path "%"]],
-      desc = 'apply dotfiles modifications with chezmoi if executable',
+    vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
+      pattern = { os.getenv("HOME") .. "/.local/share/chezmoi/*" },
+      callback = function()
+        vim.schedule(require("chezmoi.commands.__edit").watch)
+      end,
     })
   end
 end

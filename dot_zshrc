@@ -15,63 +15,28 @@ export DISABLE_UPDATE_PROMPT="false"
 # Uncomment the following line to change how often to auto-update (in days).
 export UPDATE_ZSH_DAYS=7
 
-export EDITOR='lvim'
+# 
+# The preferred visual editor for local or set the remote
+# visual editor. The EDITOR variable technically shouldn't be set to a
+# "visual" editor like vi but something like ed
+#
+if [[ -f "$HOME"/.local/bin/lvim ]]; then
+  export PATH="$HOME/.local/bin:$PATH"
+  export NVIM_SESSION="$XDG_CONFIG_HOME/nvim/session"
+  export VISUAL='lvim'
+  export EDITOR='lvim'
+fi
+if [[ -n $SSH_CONNECTION ]]; then
+  export VISUAL='vim'
+fi
 
 # Reduce delay of loading the editor
 # $KEYTIMEOUT controls the number of milliseconds that must pass 
 # before a key press is read.
 export KEYTIMEOUT=1
 
-# -- Light / Dark mode styles ----------------------------------
+# -- Plugins --------------------------------------------------
 #
-# Light mode is the default. Check if apple settings are for darkmode
-function is_dark_mode() {
-  if [[ "$(uname -s)" == "Darwin" ]]; then
-    local interface_mode=$(defaults read -g AppleInterfaceStyle 2>/dev/null)
-    if [[ $interface_mode == "Dark" ]]; then
-      return 0
-    else
-      return 1
-    fi
-  fi
-}
-
-function set_zsh_auto_suggest_colors() {
-  if is_dark_mode; then
-    # Set zsh auto suggest colors
-    ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=237"
-  else
-    ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=248"
-  fi
-}
-
-function set_prompt_mode() {
-  # Change Starship prompt configuration based on Apple appearance 
-  # setting (light / dark mode) and the active iTerm2 profile
-  if is_dark_mode && [[ $ITERM_PROFILE == "Github" ]]; then
-      starship config palette dark
-  else
-      starship config palette light
-  fi
-  set_zsh_auto_suggest_colors
-}
-
-function set_bat_theme() {
-  if is_dark_mode && (( ${+commands[bat]} )); then
-    export BAT_THEME="Dracula"
-  else
-    export BAT_THEME="GitHub"
-  fi
-}
-
-function dark!() {
-  set_prompt_mode
-  set_bat_theme
-}
-
-# -- Plugins -------------------------------------------------- 
-#
-
 # Install zpm-zsh
 if [[ ! -f ~/.zpm/zpm.zsh ]]; then
   git clone --recursive https://github.com/zpm-zsh/zpm ~/.zpm
@@ -129,12 +94,17 @@ bindkey '^[[B' history-substring-search-down
 
 # -- Initialize tools ----------------------------------------
 #
+#
+
 # Alternative to cd
-# The default command is `z` the `--cmd cd` option replaces `cd` 
-# command.
+#
+# The default command is `z` add the `--cmd cd` option to 
+# replaces `cd` command.
 if (( ${+commands[zoxide]} )); then
-  eval "$(zoxide init --cmd cd zsh)"
   export _ZO_ECHO=1
+  eval "$(zoxide init zsh)"
+else 
+  echo "zoxide not found"
 fi
 
 if (( ${+commands[lefthook]} )); then
@@ -167,17 +137,17 @@ if (( ${+commands[conda]} )); then
 fi
 
 if (( ${+commands[fd]} )) && (( ${+commands[rg]} )) && (( ${+commands[fzf]} )) && (( ${+commands[bat]} )); then
-    zpm load @github/unixorn/fzf-zsh-plugin    
+    zpm load @github/unixorn/fzf-zsh-plugin
 
     export FZF_DEFAULT_COMMAND='fd --type f --color=never --ignore-case --no-ignore --hidden --follow'
     export FZF_DEFAULT_OPTS="
     --bind 'f1:execute(bat --paging=always --color=always {})'
     --bind 'f2:execute($EDITOR {})+abort'
-    --bind 'ctrl-y:execute-silent(echo -n {2..} | pbcopy)+abort' 
+    --bind 'ctrl-y:execute-silent(echo -n {2..} | pbcopy)+abort'
     --bind 'ctrl-z:toggle-up'
-    --bind '?:toggle-preview' 
+    --bind '?:toggle-preview'
     --preview='bat --number --color=always {} | head -700' --preview-window='right:50%:hidden'
-    --color header:italic 
+    --color header:italic
     --header 'Press CTRL-Y to copy command into clipboard - F2 to open - CTRL-Z to toggle selection'"
 
     export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
@@ -199,7 +169,7 @@ fi
 if (( ${+commands[cs]} )); then
   # Scala application manager
   # add installation directory in PATH in the current session
-  eval "$(cs install --env)" 
+  eval "$(cs install --env)"
 fi
 
 if (( ${+commands[bat]} )) && (( ${+commands[delta]} )); then
@@ -224,7 +194,7 @@ if [[ -a "$HOME"/.zsh_aliases ]]; then
 fi
 
 function is_newer_ncurses_version() {
-  # As of 2021 MacOS comes with an older ncurses version (< 6.2). The newer 
+  # As of 2021 MacOS comes with an older ncurses version (< 6.2). The newer
   # ncurses version does not work properly for my usage in TMUX.
   # see: https://gist.github.com/bbqtd/a4ac060d6f6b9ea6fe3aabe735aa9d95
   local tic_version=$(tic -V | gawk 'BEGIN { FS="[^0-9]+"; OFS=ORS; ORS="" } NF=2')
@@ -240,11 +210,24 @@ function is_newer_ncurses_version() {
 #   echo "might need to update the use of tmux-256color"
 # fi
 
+# -- Light / Dark mode styles ----------------------------------
+#
+# Light mode is the default. Check if apple settings are for darkmode
+if [[ -f "$HOME"/.zsh_dark-notify.zsh ]]; then
+  source "$HOME"/.zsh_dark-notify.zsh
+  set_terminal_to_dark_mode
+  # TODO use evry and background
+  # while :; do
+  #   (( ${+commands[dark-notify]} )) && dark-notify -c '$HOME/.zsh_dark-notify.zsh'
+  # done &
+fi
+
 # Starship cross-shell prompt
-# 
+#
 # Install starship
-eval "$(starship init zsh)"
-set_prompt_mode
+if (( ${+commands[starship]} )); then
+  eval "$(starship init zsh)"
+fi
 
 # Make this last to avoid path overwrite
 if (( ${+commands[asdf]} )); then
@@ -257,8 +240,8 @@ if (( ${+commands[asdf]} )); then
     local AMAZON_JAVA_HOME="/Library/Java/JavaVirtualMachines/amazon-corretto-8.jdk/Contents/Home"
     local AMAZON_JAVA_HOME_BIN="/Library/Java/JavaVirtualMachines/amazon-corretto-8.jdk/Contents/Home/bin"
 
-    # If isn't using system java path then JAVA_HOME is asdf controlled else 
-    # remove asdf from path and use system path which should've been set 
+    # If isn't using system java path then JAVA_HOME is asdf controlled else
+    # remove asdf from path and use system path which should've been set
     # when that java version was installed/added
     if [[ "$(asdf current java | awk '{ print $2 }')" != "system" ]]; then
       echo "Jave Home is not set to system"
@@ -285,8 +268,12 @@ if (( ${+commands[asdf]} )); then
     fi
 fi
 
+if (( ${+commands[git-machete]} )); then
+  eval "$(git machete completion zsh)"
+fi
+
 # The next line enables shell command completion for gcloud.
-if [[ -f "$HOME/google-cloud-sdk/completion.zsh.inc" ]]; then 
+if [[ -f "$HOME/google-cloud-sdk/completion.zsh.inc" ]]; then
   export PATH="$PATH:$HOME/google-cloud-sdk/bin"
   local ASDF_PYTHON_HOME_BIN="$(asdf where python $(asdf current python latest:3.10 | awk '{ print $2 }'))/bin"
   export CLOUDSDK_PYTHON="${ASDF_PYTHON_HOME_BIN}/python"

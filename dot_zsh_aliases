@@ -58,7 +58,7 @@ else
     __alias resource 'source $HOME/.bash_profile'
 fi
 
-__alias note 'cd $MARKDOWN_NOTES && lvim -c "NV!"'
+__alias note 'cd $MARKDOWN_NOTES && lvim .'
 # __alias gradle "TERM=xterm ./gradlew"
 
 #__alias lldb "PATH=/usr/bin:$PATH lldb"

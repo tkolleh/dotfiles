@@ -53,7 +53,25 @@ lvim.keys.normal_mode["gp"] = false -- Disable lunarvim keybinding
 -- Additional Plugins
 lvim.plugins = {
     {
+      'alker0/chezmoi.vim',
+      lazy = false,
+      init = function()
+        -- This option is required.
+        vim.g['chezmoi#use_tmp_buffer'] = true
+        -- add other options here if needed.
+      end,
+    },
+    {
       'norcalli/nvim-terminal.lua'
+    },
+    {
+      'xvzc/chezmoi.nvim',
+      dependencies = { 'nvim-lua/plenary.nvim' },
+      config = function()
+        require("chezmoi").setup {
+          -- your configurations
+        }
+      end
     },
     {
       'fei6409/log-highlight.nvim',
@@ -478,7 +496,7 @@ require("user.autocommands").hocon()
 -- require("user.autocommands").drools()
 
 -- Autocommands and helpers
--- require("user.autocommands").chezmoi()
+require("user.autocommands").chezmoi()
 
 -- status line (lualine)
 lvim.builtin.lualine.style = "default" -- or "none"

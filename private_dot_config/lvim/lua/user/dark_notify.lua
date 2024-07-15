@@ -2,10 +2,11 @@ local M = {}
 
 M.config = function()
   local dn = require('dark_notify')
-  local dark_scheme = "lunar"
+  local dark_scheme = "tokyonight"
   dn.run({
     schemes = {
-      -- you can use a different colorscheme for each
+      -- This will just execute :set bg=dark or :set bg=light as soon as the system appearance changes
+      -- using the dark-notify cmd on the terminal.
       dark  = {
         colorscheme = dark_scheme,
         background = "dark",
@@ -16,8 +17,7 @@ M.config = function()
       }
     },
     onchange = function(mode)
-      -- optional, you can configure your own things to react to changes.
-      -- this is called at startup and every time dark mode is switched,
+      -- Called at startup and every time dark mode is switched,
       -- either via the OS, or because you manually set/toggled the mode.
       -- mode is either "light" or "dark"
       if dark_scheme == "tokyonight" then
@@ -30,13 +30,6 @@ M.config = function()
         vim.g.vscode_style = mode
         vim.g.vscode_italic_comment = 1
       end
-
-      -- Color scheme must be set last
-      -- vim.o.background = mode
-      -- lvim.background = mode
-      vim.o.background = 'light'
-      lvim.background = 'light'
-      lvim.colorscheme = dark_scheme
     end,
   })
   dn.update()
