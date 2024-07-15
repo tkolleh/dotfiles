@@ -10,49 +10,28 @@ if [[ -a "$HOME"/.bash_secrets ]]; then
     source "$HOME"/.bash_secrets
 fi
 
-# The preferred visual editor for local or set the remote
-# visual editor. The EDITOR variable technically shouldn't be set to a
-# "visual" editor like vi but something like ed
-#
-if [[ -n $SSH_CONNECTION ]]; then
-  export VISUAL='vim'
-else
-  export VISUAL='lvim'
-  export EDITOR='lvim'
-fi
-
 # Preferred pager for git diff
 #
 if (( ${+commands[delta]} )); then
   export GIT_PAGER='delta -s --color-only'
 fi
 
-# Homebrew installs to its preferred prefix; 
-# - /usr/local for macOS Intel 
-# - /opt/homebrew for Apple Silicon 
+# Homebrew installs to its preferred prefix;
+# - /usr/local for macOS Intel
+# - /opt/homebrew for Apple Silicon
 # - /home/linuxbrew/.linuxbrew for Linux
 eval "$(/opt/homebrew/bin/brew shellenv)"
-
 
 FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
 
 export CURL_HOME="$(brew --prefix curl)"
 
-export ICLOUD_DIR="{{ .chezmoi.homeDir }}/Library/Mobile Documents/com~apple~CloudDocs/"
+export ICLOUD_DIR="$HOME/Library/Mobile Documents/com~apple~CloudDocs/"
 export CHEZMOI_SOURCE_PATH="$(chezmoi source-path)"
-
-export MARKDOWN_NOTES=$HOME/Documents/Notes
 
 # Add JetBrains toolbox scripts to path
 export PATH="$PATH:$HOME/Library/Application Support/JetBrains/Toolbox/scripts"
 
-# Add LunarVim to path
-export PATH="$PATH:/opt"
-
-# export MYVIMRC="$XDG_CONFIG_HOME/nvim/init.vim"
-# export MYVIMOPTS="$XDG_CONFIG_HOME/nvim/options.vim"
-# export MYVIMPACKS="$XDG_CONFIG_HOME/nvim/packages.vim"
-export NVIM_SESSION="$XDG_CONFIG_HOME/nvim/session"
 
 {{ if (eq .chezmoi.username "tj.kolleh")}}
 # Gaurded by one password
