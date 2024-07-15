@@ -115,3 +115,6 @@ nnoremap <C-p> :action ParameterInfo<CR>
 "
 nmap <leader>bb :action JumpToLastWindow<cr>
 
+" Open project switcher
+"
+nmap <leader>sP :action ManageRecentProjects<cr>
