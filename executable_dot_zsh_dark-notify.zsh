@@ -51,8 +51,9 @@ function set_prompt_mode() {
 }
 
 function set_bat_theme() {
-  if is_dark_mode && (( ${+commands[bat]} )); then
+  if is_dark_mode && (( ${+commands[bat]} )) && (( ${+commands[delta]} )); then
     export BAT_THEME="Dracula"
+    export BATDIFF_USE_DELTA=true
   else
     export BAT_THEME="GitHub"
   fi

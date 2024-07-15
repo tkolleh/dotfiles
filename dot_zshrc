@@ -172,11 +172,6 @@ if (( ${+commands[cs]} )); then
   eval "$(cs install --env)"
 fi
 
-if (( ${+commands[bat]} )) && (( ${+commands[delta]} )); then
-  set_bat_theme
-  export BATDIFF_USE_DELTA=true
-fi
-
 if (( ${+commands[atuin]} )); then
   eval "$(atuin init zsh)"
 fi
