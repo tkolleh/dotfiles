@@ -39,6 +39,8 @@ M.config = function()
     local _, actions = pcall(require, "telescope.actions")
     tele.load_extension("dap")
     tele.load_extension("ui-select")
+    tele.load_extension('chezmoi')
+    vim.keymap.set('n', '<leader>cz', telescope.extensions.chezmoi.find_files, {})
   end
 end
 

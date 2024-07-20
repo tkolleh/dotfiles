@@ -84,11 +84,8 @@ export ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE="50"
 # Enable aynchronous mode.
 export ZSH_AUTOSUGGEST_USE_ASYNC=true
 
-set_zsh_auto_suggest_colors
-
 # Bind keys for zsh-history-substring-search. Plugin must be loaded 
 # after fast-syntax-highlighting.
-
 bindkey '^[[A' history-substring-search-up
 bindkey '^[[B' history-substring-search-down
 
