@@ -11,11 +11,6 @@ M.config = function()
         runType = "runOrTestFile",
         --args = { "firstArg", "secondArg", "thirdArg" }, -- here just as an example
         -- jvmOptions = { "-Dpropert=123" },
-        env = {
-          "ACTIVE_PROFILE=feature-resolver",
-          "DEPLOYMENT_ZONE=member",
-        },
-        envFile = ".env",
       },
     },
     {
