@@ -356,7 +356,7 @@ function afzf(){
 }
 
 function cd_with_fzf(){
-  cd $HOME && cd $(fd -t d | fzf --preview="exa --long --tree --level=1 {}") && echo "${PWD}" && exa --long --tree --level=2
+  cd $HOME && cd $(fd -t d | fzf --preview="eza --long --tree --level=1 {}") && echo "${PWD}" && eza --long --tree --level=2
 }
 
 function batFollow(){
