@@ -16,7 +16,7 @@
 # TODO: use oh-my-zshell alias functions
 #
 # -- Local navigation --------------------------------------------------
-if (( ${commands[eza]} )); then
+if (( ${+commands[eza]} )); then
   __alias ll "eza --time modified --all --binary --git --header --long --color=always "
   __alias lt "eza --long --tree --level=3 "
 fi
@@ -31,6 +31,7 @@ function grmci () {
 
 # __alias gignored "git ls-files -v $(git rev-parse --show-toplevel) | (grep '^[[:lower:]]' || echo 'None ignored.') && echo '\nIgnore changes with:   git update-index --assume-unchanged <file> \nor track again with:   git update-index --no-assume-unchanged <file>'"
 
+__remove_alias gcp # Use gnu cp command as default for `gcp`. Gnu cp is installed with `brew install coreutils`
 __alias gst "git status -b"
 __alias gsta " git log --oneline \
   --pretty='%Cred%h%Creset -%C(auto)%d%Creset %<(50,trunc)%s %Cgreen(%cr) %C(bold blue)<%an>%Creset' -5; \
