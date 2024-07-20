@@ -47,8 +47,8 @@ brew "pango"
 brew "librsvg"
 brew "graphviz"
 brew "eralchemy"
-brew "exa"
 brew "exiftool"
+brew "eza"
 brew "fd"
 brew "libass"
 brew "tesseract"
@@ -157,7 +157,6 @@ cask "logitech-options"
 cask "logseq"
 cask "mactex"
 cask "nvalt"
-cask "openrefine"
 cask "postman"
 cask "private-internet-access"
 cask "slack"
@@ -166,6 +165,8 @@ cask "temurin"
 cask "visual-studio-code"
 cask "weka"
 cask "zotero"
+mas "1Password for Safari", id: 1569813296
+mas "AdBlock", id: 1402042596
 mas "AutoMounter", id: 1160435653
 mas "Canary Mail", id: 1236045954
 mas "Compressor", id: 424390742
@@ -174,6 +175,7 @@ mas "Day One", id: 1055511498
 mas "Dot's Home", id: 1588125402
 mas "Final Cut Pro", id: 424389933
 mas "GarageBand", id: 682658836
+mas "Grammarly for Safari", id: 1462114288
 mas "iMovie", id: 408981434
 mas "Jack", id: 1534312255
 mas "Keynote", id: 409183694
@@ -188,9 +190,11 @@ mas "Omnivore", id: 1564031042
 mas "Pages", id: 409201541
 mas "Paste", id: 967805235
 mas "Pixelmator Pro", id: 1289583905
+mas "reMarkable", id: 1276493162
 mas "Tabs Switcher", id: 1406718335
 mas "Todoist", id: 585829637
 mas "WhatsApp", id: 1147396723
+mas "‎WhatsApp", id: 310633997
 vscode "eamodio.gitlens"
 vscode "ecmel.vscode-html-css"
 vscode "formulahendry.code-runner"
