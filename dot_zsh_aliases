@@ -16,8 +16,10 @@
 # TODO: use oh-my-zshell alias functions
 #
 # -- Local navigation --------------------------------------------------
-__alias ll "exa --time modified --all --binary --git --header --long --color=always "
-__alias lt "exa --long --tree --level=3 "
+if (( ${commands[eza]} )); then
+  __alias ll "eza --time modified --all --binary --git --header --long --color=always "
+  __alias lt "eza --long --tree --level=3 "
+fi
 
 # -- Git -------------------------------------------------- 
 __remove_alias grmci
