@@ -9,6 +9,7 @@ set which-key
 set relativenumber
 set number
 set timeoutlen=90
+set multicursor
 
 " Map leader key
 let mapleader=" "
