@@ -18,7 +18,7 @@ function cmd_path() {
 # Alias helper functions
 #
 function __remove_alias() {
-  local CMDTYPE=$(type "$1") 
+  local CMDTYPE=$(type "$1")
   case $CMDTYPE in
     *"alias"*)
       unalias $1 2> >(grep -Ev 'no such hash table element' >&2)
@@ -70,7 +70,7 @@ function chezmoidiff() {
 
 # Install requirements.txt in conda environment
 #
-# Original solution via StackOverflow: 
+# Original solution via StackOverflow:
 # http://stackoverflow.com/questions/35802939/install-only-available-packages-using-conda-install-yes-file-requirements-t
 #
 function conda_install_requirements() {
@@ -84,7 +84,7 @@ function conda_install_requirements() {
   #  To go around issue above, one can
   #  iterate over all lines in the
   #  requirements.txt file.
-  while read requirement; do conda install --yes $requirement; done < requirements.txt 
+  while read requirement; do conda install --yes $requirement; done < requirements.txt
 }
 
 # using ripgrep combined with preview
@@ -113,7 +113,7 @@ function fid() {
     --bind="f9:execute:lvim {} < /dev/tty"
 }
 
-# fbc - fuzzy Find Branch to Checkout 
+# fbc - fuzzy Find Branch to Checkout
 # checkout git branch (including remote branches), sorted by most recent commit, limit 30 last branches
 # reference: https://github.com/junegunn/fzf/wiki/examples#git
 function fcb() {
@@ -192,7 +192,7 @@ function update_tmux() {
   fi
 }
 
-# fuzzy find alias 
+# fuzzy find alias
 function fzfa() {
   alias | bat --paging=never -n -f -l bash | fzf --ansi
 }
@@ -260,13 +260,13 @@ function edit_dot_files() {
     lvim $CHEZMOI_SOURCE_PATH -c 'cd $CHEZMOI_SOURCE_PATH'
     chezmoi apply
   fi
-} 
+}
 
 function update_term_tools() {
-  if (( ${+commands[atuin]} )); then 
+  if (( ${+commands[atuin]} )); then
     atuin sync
   fi
-  if (( ${+commands[zpm]} )); then 
+  if (( ${+commands[zpm]} )); then
     zpm clean
     zpm upgrade
   fi
@@ -281,7 +281,7 @@ function help(){
   if check_for_man_page "$1"; then
     if (( ${+commands[batman]} )); then
       batman "$@"
-    else 
+    else
       man "$1"
     fi
   else
@@ -298,7 +298,7 @@ function debug-gpg(){
 function sbt_clear_cache(){
   echo -e "\nRun with '-a' to clean all cache files\n"
 
-  if [[ $1 == "-a" ]]; then 
+  if [[ $1 == "-a" ]]; then
     echo -e "\nEmptying the maven cache (this may take some time to rebuild)\n"
     rm -fvr ~/.m2/repository
 
