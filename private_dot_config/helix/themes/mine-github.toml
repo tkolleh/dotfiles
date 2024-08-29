@@ -1,0 +1,7 @@
+inherits = "github_dark_tritanopia"
+
+"mine.black"                      = "#0E1825" 
+"mine.grey"                       = "#2F677C"
+
+"ui.statusline.normal"            = { fg = "fg.default", bg = "accent.muted" }
+"ui.statusline.separator"         = { fg = "accent.muted" }
