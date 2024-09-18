@@ -1,4 +1,5 @@
-inherits = "github_dark_tritanopia"
+#inherits = "github_dark_tritanopia"
+inherits = "github_light_high_contrast"
 
 "mine.black"                      = "#0E1825" 
 "mine.grey"                       = "#2F677C"

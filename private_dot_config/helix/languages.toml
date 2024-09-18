@@ -23,13 +23,6 @@ git = "https://github.com/rafamadriz/friendly-snippets.git" # git repo with snip
 # args = ["--handler","codeium","--logFile","~/tmp/helix-gpt.log"]
 # environment = { HANDLER = "codeium" }
 
-# https://github.com/helix-editor/helix/wiki/Language-Server-Configurations#scala
-[[language]]
-name = "scala"
-language-servers = [
-  "metals"
-]
-
 # https://github.com/helix-editor/helix/wiki/Language-Server-Configurations#rust
 [[language]]
 name = "rust"
@@ -160,3 +153,16 @@ codeAction = { disableRuleComment = { enable = true, location = "separateLine" }
 codeActionsOnSave = { mode = "all", "source.fixAll.eslint" = true }
 experimental = {}
 problems = { shortenToSingleLine = false }
+
+[[language]]
+name = "python"
+language-servers = [ "pyright", "ruff" ]
+
+[language-server.pyright.config.python.analysis]
+typeCheckingMode = "basic"
+
+# if you choose `ruff-lsp`
+[language-server.ruff]
+command = "ruff-lsp"
+[language-server.ruff.config.settings]
+args = ["--ignore", "E501"]

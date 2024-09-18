@@ -10,12 +10,6 @@ if [[ -a "$HOME"/.bash_secrets ]]; then
     source "$HOME"/.bash_secrets
 fi
 
-# Preferred pager for git diff
-#
-if (( ${+commands[delta]} )); then
-  export GIT_PAGER='delta -s --color-only'
-fi
-
 # Homebrew installs to its preferred prefix;
 # - /usr/local for macOS Intel
 # - /opt/homebrew for Apple Silicon
@@ -30,7 +24,7 @@ export ICLOUD_DIR="$HOME/Library/Mobile Documents/com~apple~CloudDocs/"
 export CHEZMOI_SOURCE_PATH="$(chezmoi source-path)"
 
 # Add JetBrains toolbox scripts to path
-export PATH="$PATH:$HOME/Library/Application Support/JetBrains/Toolbox/scripts"
+export PATH="$PATH:$HOME/.local/bin"
 
 
 {{ if (eq .chezmoi.username "tj.kolleh")}}
