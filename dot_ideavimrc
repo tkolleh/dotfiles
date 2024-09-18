@@ -8,8 +8,12 @@ set NERDTree
 set which-key
 set relativenumber
 set number
-set timeoutlen=90
+set timeoutlen=40
 set multicursor
+
+" Use helix comment keybind
+vnoremap <Leader>c :action CommentByLineComment
+nnoremap <Leader>c :action CommentByLineComment
 
 " Map leader key
 let mapleader=" "
@@ -68,7 +72,6 @@ nnoremap <Leader>o :action ActivateStructureToolWindow<CR>
 :map [d <Action>(GotoPreviousError)
 
 nnoremap <Leader>rn :action RenameElement<CR>
-nnoremap <Leader>fp :action Tool_External Tools_darker<CR>
 
 nnoremap <Leader><C-h> :action TypeHierarchy<CR>
 
@@ -83,11 +86,10 @@ nnoremap <Leader><C-h> :action TypeHierarchy<CR>
 
 " similar to nvim telescope config
 "
-nnoremap <Leader>sr :action RecentFiles<CR>
+nnoremap <Leader>b :action RecentFiles<CR>
 nnoremap <Leader>j :action RecentLocations<CR>
-nnoremap <S-Tab>    :action RecentFiles<CR>
-nnoremap <Leader>sf :action GotoFile<CR>
-nnoremap <Leader>st :action FindInPath<CR>
+nnoremap <Leader>f :action GotoFile<CR>
+" nnoremap <Leader>st :action FindInPath<CR>
 
 " nvim-lsp config mappings
 "
@@ -112,10 +114,6 @@ nnoremap <Leader>de :action Debugger.EvaluationDialogPopup<CR>
 
 nnoremap <C-p> :action ParameterInfo<CR>
 
-" similar to jump to previous buffer
-"
-nmap <leader>bb :action JumpToLastWindow<cr>
-
 " Open project switcher
 "
-nmap <leader>sP :action ManageRecentProjects<cr>
+nmap <leader>P :action ManageRecentProjects<cr>

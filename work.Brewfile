@@ -84,6 +84,7 @@ brew "git-delta"
 brew "git-gui"
 brew "git-lfs"
 brew "git-machete"
+brew "gitui"
 brew "gnu-sed"
 brew "gnupg"
 brew "lua"
@@ -91,7 +92,9 @@ brew "qt"
 brew "gnuplot"
 brew "gobject-introspection"
 brew "gpatch"
+brew "helix", args: ["HEAD"]
 brew "helm"
+brew "helm-ls"
 brew "httpie"
 brew "libusbmuxd"
 brew "libimobiledevice"
@@ -100,6 +103,7 @@ brew "shared-mime-info"
 brew "imagemagick"
 brew "ios-deploy"
 brew "jfrog-cli"
+brew "jless"
 brew "jq"
 brew "lazydocker"
 brew "lefthook"
@@ -107,6 +111,7 @@ brew "libproxy"
 brew "lnav"
 brew "luarocks"
 brew "luv"
+brew "marksman"
 brew "mas"
 brew "maven"
 brew "mtr"
@@ -132,6 +137,8 @@ brew "ranger", args: ["HEAD"]
 brew "ripgrep"
 brew "ripgrep-all"
 brew "ruby-build"
+brew "ruff-lsp"
+brew "rust"
 brew "sad"
 brew "scalariform"
 brew "sd"
@@ -139,7 +146,8 @@ brew "sevenzip"
 brew "shfmt"
 brew "starship"
 brew "subversion"
-brew "syncthing"
+brew "syncthing", restart_service: true
+brew "taplo"
 brew "terraform", link: false
 brew "terragrunt"
 brew "tfenv", link: false
@@ -155,6 +163,7 @@ brew "watch"
 brew "watchman"
 brew "wget"
 brew "whalebrew"
+brew "yaml-language-server"
 brew "yazi"
 brew "zoxide"
 brew "zsh"
@@ -209,7 +218,6 @@ mas "Micro Snitch", id: 972028355
 mas "Notability", id: 360593530
 mas "Numbers", id: 409203825
 mas "Okta Extension App", id: 1439967473
-mas "Pages", id: 409201541
 mas "Paste", id: 967805235
 mas "reMarkable", id: 1276493162
 mas "Snippety", id: 1530751461
