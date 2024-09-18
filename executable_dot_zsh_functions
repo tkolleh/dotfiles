@@ -98,7 +98,7 @@ function fif() {
   rg --files-with-matches --no-messages "$1" | fzf \
     -m \
     --preview "highlight -O ansi -l {} 2> /dev/null | rg --colors 'match:bg:yellow' --ignore-case --pretty --context 10 '$1' || rg --ignore-case --pretty --context 10 '$1' {}" \
-    --bind="f9:execute:lvim {} < /dev/tty"
+    --bind="f9:execute:hx {} < /dev/tty"
 }
 
 # an alternative to the above using ripgrep-all (rga)
@@ -110,7 +110,7 @@ function fid() {
   rga --files-with-matches --no-messages "$1" | fzf \
     -m \
     --preview "highlight -O ansi -l {} 2> /dev/null | rg --colors 'match:bg:yellow' --ignore-case --pretty --context 10 '$1' || rg --ignore-case --pretty --context 10 '$1' {}" \
-    --bind="f9:execute:lvim {} < /dev/tty"
+    --bind="f9:execute:hx {} < /dev/tty"
 }
 
 # fbc - fuzzy Find Branch to Checkout
@@ -256,8 +256,8 @@ function clicolors() {
 }
 
 function edit_dot_files() {
-  if (( ${+commands[chezmoi]} )) && (( ${+commands[lvim]} )) && [[ -d $CHEZMOI_SOURCE_PATH ]]; then
-    lvim $CHEZMOI_SOURCE_PATH -c 'cd $CHEZMOI_SOURCE_PATH'
+  if (( ${+commands[chezmoi]} )) && (( ${+commands[hx]} )) && [[ -d $CHEZMOI_SOURCE_PATH ]]; then
+    hx --working-dir $CHEZMOI_SOURCE_PATH
     chezmoi apply
   fi
 }

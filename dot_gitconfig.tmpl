@@ -19,12 +19,12 @@
 [core]
   excludesfile = {{ .chezmoi.homeDir }}/.gitignore_global
   autocrlf = input
-  pager = delta
+  pager = riff
   editor = hx
 [push]
   default = simple
 [interactive]
-  diffFilter = delta --color-only --features=interactive
+  diffFilter = riff --color=on
 
 [delta]
   navigate = true
