@@ -8,9 +8,32 @@
 // from the command palette or from `Zed` application menu.
 {
   "base_keymap": "JetBrains",
-  "theme": "Xcode Default Light",
+  "theme": "Xcode Midnight",
   "vim_mode": true,
   "ui_font_size": 14,
   "buffer_font_size": 13,
-  "soft_wrap": "none"
+  "soft_wrap": "none",
+  "vim": {
+    // "always": use system clipboard
+    // "never": don't use system clipboard
+    // "on_yank": use system clipboard for yank operations
+    "use_system_clipboard": "always",
+    // Lets `f` and `t` motions extend across multiple lines
+    "use_multiline_find": true,
+    "use_smartcase_find": true
+  },
+  "relative_line_numbers": true,
+  "scrollbar": {
+    "show": "never"
+  },
+  // allow cursor to reach edges of screen
+  "vertical_scroll_margin": 10,
+  "inlay_hints": {
+    "enabled": true
+  },
+  "git": {
+    "inline_blame": {
+      "enabled": true
+    }
+  }
 }

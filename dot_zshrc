@@ -28,11 +28,11 @@ fi
 if (( ${+commands[lefthook]} )); then
   # export PATH="$HOME/.local/bin:$PATH"
   # export NVIM_SESSION="$XDG_CONFIG_HOME/nvim/session"
-  export VISUAL='hx'
-  export EDITOR='hx'
+  export VISUAL='zed --wait'
+  export EDITOR='zed --wait'
 fi
 if [[ -n $SSH_CONNECTION ]]; then
-  export VISUAL='hx'
+  export VISUAL='zed --wait'
 fi
 
 # Reduce delay of loading the editor
