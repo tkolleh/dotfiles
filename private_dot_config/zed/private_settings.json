@@ -8,10 +8,10 @@
 // from the command palette or from `Zed` application menu.
 {
   "base_keymap": "JetBrains",
-  "theme": "Xcode Midnight",
+  "theme": "Xcode Default Light",
   "vim_mode": true,
   "ui_font_size": 14,
-  "buffer_font_size": 13,
+  "buffer_font_size": 14,
   "soft_wrap": "none",
   "vim": {
     // "always": use system clipboard

@@ -1,3 +1,66 @@
+[init]
+  defaultBranch = main
+[user]
+  name = "TJ Kolleh"
+
+[core]
+  excludesfile = {{ .chezmoi.homeDir }}/.gitignore_global
+  autocrlf = input
+  pager = riff
+  editor = zed
+
+[push]
+  default = simple
+  gpgSign = if-asked
+
+[credential]
+  helper = osxkeychain
+
+[commit]
+  gpgsign = true
+[gpg]
+  ## path created by `brew install --cask gpg-suite`
+  program = /usr/local/MacGPG2/bin/gpg2
+[grep]
+  extendedRegexp = true
+
+[http]
+  connecttimeout = 20
+
+[interactive]
+  diffFilter = riff --color=on
+
+[mergetool "vimdiff"]
+  prompt = true
+  cmd = lvim -d \"$LOCAL\" \"$REMOTE\" \"$MERGED\" -c '$wincmd w' -c 'wincmd J'
+[difftool "vimdiff"]
+  prompt = true
+  cmd = lvim -d \"$LOCAL\" \"$REMOTE\"
+
+[mergetool "idea"]
+    cmd = idea merge $(cd $(dirname "$LOCAL") && pwd)/$(basename "$LOCAL") $(cd $(dirname "$REMOTE") && pwd)/$(basename "$REMOTE") $(cd $(dirname "$BASE") && pwd)/$(basename "$BASE") $(cd $(dirname "$MERGED") && pwd)/$(basename "$MERGED")
+    trustExitCode = true
+[difftool "idea"]
+    cmd = idea diff $(cd $(dirname "$LOCAL") && pwd)/$(basename "$LOCAL") $(cd $(dirname "$REMOTE") && pwd)/$(basename "$REMOTE")
+
+[filter "lfs"]
+  clean = git-lfs clean -- %f
+  smudge = git-lfs smudge -- %f
+  process = git-lfs filter-process
+  required = true
+
+[merge]
+  tool = idea
+  guitool = idea
+  conflictstyle = diff3
+[diff]
+  tool = idea
+  guitool = idea
+  colorMoved = default
+
+[machete "github"]
+  annotateWithUrls = true
+
 [color]
   branch = auto
   diff = true
@@ -16,15 +79,6 @@
   added = yellow
   changed = green
   untracked = cyan
-[core]
-  excludesfile = {{ .chezmoi.homeDir }}/.gitignore_global
-  autocrlf = input
-  pager = riff
-  editor = zed
-[push]
-  default = simple
-[interactive]
-  diffFilter = riff --color=on
 
 [delta]
   navigate = true
@@ -51,79 +105,3 @@
   file-style = bold yellow ul
   file-decoration-style = none
   hunk-header-decoration-style = yellow box
-
-[credential]
-  helper = osxkeychain
-
-[difftool "pycharm"]
-  prompt = false
-  cmd = pycharm diff \"$LOCAL\" \"$REMOTE\"
-  trustExitCode = false
-[mergetool "pycharm"]
-  prompt = false
-  cmd = pycharm merge \"$(realpath \"${LOCAL}\")\" \"$(realpath \"${REMOTE}\")\" \"$(realpath \"${BASE}\")\" \"$(realpath \"${MERGED}\")\"
-  trustExitCode = true
-
-[mergetool "vimdiff"]
-  prompt = true
-  cmd = lvim -d \"$LOCAL\" \"$REMOTE\" \"$MERGED\" -c '$wincmd w' -c 'wincmd J'
-[difftool "vimdiff"]
-  prompt = true
-  cmd = lvim -d \"$LOCAL\" \"$REMOTE\"
-[mergetool "fugitive"]
-  prompt = true
-  cmd = lvim -c \"Gvdiffsplit!\" \"$MERGED\"
-
-[difftool "sourcetree"]
-  cmd = opendiff \"$LOCAL\" \"$REMOTE\"
-  path = 
-[mergetool "sourcetree"]
-  cmd = /Applications/Sourcetree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
-  trustExitCode = true
-
-[mergetool "idea"]
-    cmd = idea merge $(cd $(dirname "$LOCAL") && pwd)/$(basename "$LOCAL") $(cd $(dirname "$REMOTE") && pwd)/$(basename "$REMOTE") $(cd $(dirname "$BASE") && pwd)/$(basename "$BASE") $(cd $(dirname "$MERGED") && pwd)/$(basename "$MERGED")
-    trustExitCode = true
-[difftool "idea"]
-    cmd = idea diff $(cd $(dirname "$LOCAL") && pwd)/$(basename "$LOCAL") $(cd $(dirname "$REMOTE") && pwd)/$(basename "$REMOTE")
-
-
-[filter "lfs"]
-  clean = git-lfs clean -- %f
-  smudge = git-lfs smudge -- %f
-  process = git-lfs filter-process
-  required = true
-
-[merge]
-  tool = idea
-  guitool = idea
-  conflictstyle = diff3
-[diff]
-  tool = idea
-  guitool = idea
-  colorMoved = default
-
-[init]
-  templatedir = /Applications/SourceTree.app/Contents/Resources/git_local/share/git-core/templates
-  defaultBranch = main
-
-[pull]
-  rebase = false
-
-[user]
-	signingkey = 904C63B30549724E699147040FF30E885401BF1F
-  name = "TJ Kolleh"
-
-[commit]
-	gpgsign = true
-[gpg]
-  ## path created by `brew install --cask gpg-suite`
-	program = /usr/local/MacGPG2/bin/gpg2
-[grep]
-	extendedRegexp = true
-
-[http]
-  connecttimeout = 20
-
-[machete "github"]
-  annotateWithUrls = true

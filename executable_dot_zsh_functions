@@ -256,8 +256,8 @@ function clicolors() {
 }
 
 function edit_dot_files() {
-  if (( ${+commands[chezmoi]} )) && (( ${+commands[hx]} )) && [[ -d $CHEZMOI_SOURCE_PATH ]]; then
-    hx --working-dir $CHEZMOI_SOURCE_PATH
+  if (( ${+commands[chezmoi]} )) && (( ${+commands[zed]} )) && [[ -d $CHEZMOI_SOURCE_PATH ]]; then
+    zed --wait $CHEZMOI_SOURCE_PATH
     chezmoi apply
   fi
 }

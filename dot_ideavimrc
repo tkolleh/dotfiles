@@ -8,15 +8,14 @@ set NERDTree
 set which-key
 set relativenumber
 set number
-set timeoutlen=40
+set timeoutlen=10
 set multicursor
 
 " Use helix comment keybind
 vnoremap <Leader>c :action CommentByLineComment
 nnoremap <Leader>c :action CommentByLineComment
-
-" Map leader key
-let mapleader=" "
+vnoremap <C-c> :action CommentByLineComment
+nnoremap <C-c> :action CommentByLineComment
 
 " Map <C-L> (redraw screen) to also turn off search highlighting until the
 " next search
@@ -43,10 +42,6 @@ nnoremap <C-l> <C-w>l
 nnoremap <C-h> <C-w>h
 nnoremap <C-j> <C-w>j
 nnoremap <C-k> <C-w>k
-
-" search highlighted text
-vnoremap // y/<C-R>"<CR>
-
 
 " disable the timeout option
 set notimeout
@@ -117,3 +112,10 @@ nnoremap <C-p> :action ParameterInfo<CR>
 " Open project switcher
 "
 nmap <leader>P :action ManageRecentProjects<cr>
+
+" Toggle terminal
+nnoremap <C-t> :action ActivateTerminalToolWindow<CR>
+
+" Window splitting
+nnoremap <c-\> :action SplitVertically<CR>
+nnoremap <c--> :action SplitHorizontally<CR>
