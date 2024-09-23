@@ -62,6 +62,7 @@
       "space rn": "editor::Rename",
       "space a": "editor::ToggleCodeActions",
       "space h": "editor::SelectAllMatches",
+      "space /": "pane::DeploySearch",
       // Match mode
       "m m": "vim::Matching",
       // Misc
