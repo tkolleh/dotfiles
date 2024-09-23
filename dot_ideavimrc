@@ -1,3 +1,6 @@
+"Map leader key before all plugins
+let mapleader=" "
+
 set ignorecase
 set smartcase
 set visualbell
@@ -23,6 +26,9 @@ nnoremap <Leader>h :nohl<CR><C-L>
 
 " map jk to <ESC> when in insert mode
 inoremap jk <Esc>
+
+" mm to match brackets
+nnoremap mm %
 
 " d is for delete
 nnoremap d "_d
