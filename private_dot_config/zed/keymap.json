@@ -44,6 +44,8 @@
       "ctrl-\\": "pane::SplitRight",
       "ctrl--": "pane::SplitDown",
       // Space mode
+      // best we can do for now. Zed has no equivalent to open recently opened files see https://github.com/zed-industries/zed/issues/4663
+      "space b": ["tab_switcher::Toggle", { "select_last": true }],
       "space f": "file_finder::Toggle",
       "space k": "editor::Hover",
       "space s": "outline::Toggle",
