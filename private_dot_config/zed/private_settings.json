@@ -13,6 +13,7 @@
   "ui_font_size": 14,
   "buffer_font_size": 14,
   "soft_wrap": "none",
+  "show_completions_on_input": false,
   "vim": {
     // "always": use system clipboard
     // "never": don't use system clipboard

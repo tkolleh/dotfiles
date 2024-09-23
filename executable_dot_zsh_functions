@@ -378,3 +378,28 @@ function extract_file_from_image(){
     echo -e "\nRequires <image id> <source path> <destination path>"
   fi
 }
+
+function is_installed_by_brew(){
+    # Check if the file exists
+    local file="$1"
+    if [[ ! -e "$file" ]]; then
+      # Return an exit code without closing the shell while having -e set.
+      echo "File $file does not exist." && (exit 1)
+    fi
+
+  if (( ${+commands[rg]} )) && (( ${+commands[brew]} )); then
+    # Count the number of lines in the file
+    local pattern_cnt=$(wc -l "$file" | awk '{print $1}')
+    local rg_output=$(brew list --versions | rg -f "$file")
+    local line_count=$(echo "$rg_output" | sort | uniq | wc -l | awk '{print $1}')
+
+    # Compare line count with pattern_cnt
+    if (( "$line_count" == "$pattern_cnt" )); then
+      echo "The line count [$line_count] equals pattern_cnt [$pattern_cnt]." && (exit 0)
+    else
+      echo "The line count [$line_count] does not equal pattern_cnt [$pattern_cnt]." && (exit 2)
+    fi
+  else
+    echo "Requires ripgrep and brew to be installed." && (exit 1)
+  fi
+}
