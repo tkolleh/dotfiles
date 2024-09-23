@@ -117,6 +117,7 @@ brew "scalariform"
 brew "sd"
 brew "shfmt"
 brew "starship"
+brew "syncthing", restart_service: true
 brew "tealdeer"
 brew "telnet"
 brew "tidy-html5"
@@ -183,8 +184,8 @@ mas "Kindle Classic", id: 405399194
 mas "Magnet", id: 441258766
 mas "Micro Snitch", id: 972028355
 mas "MILK Books", id: 1486465681
-mas "Notability", id: 736189492
 mas "Notability", id: 360593530
+mas "Notability", id: 736189492
 mas "Numbers", id: 409203825
 mas "Omnivore", id: 1564031042
 mas "Pages", id: 409201541
@@ -193,7 +194,6 @@ mas "Pixelmator Pro", id: 1289583905
 mas "reMarkable", id: 1276493162
 mas "Tabs Switcher", id: 1406718335
 mas "Todoist", id: 585829637
-mas "WhatsApp", id: 1147396723
 mas "‎WhatsApp", id: 310633997
 vscode "eamodio.gitlens"
 vscode "ecmel.vscode-html-css"
