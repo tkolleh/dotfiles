@@ -35,15 +35,6 @@
       "H": "pane::ActivatePrevItem",
       // "g n": "pane::ActivateNextItem", -- Helix alternative to L
       "L": "pane::ActivateNextItem",
-      "g l": "vim::EndOfLine",
-      "g h": "vim::StartOfLine",
-      "g s": "vim::FirstNonWhitespace",
-      "g e": "vim::EndOfDocument",
-      "g y": "editor::GoToTypeDefinition",
-      "g r": "editor::FindAllReferences", // zed specific
-      "g t": "vim::WindowTop",
-      "g c": "vim::WindowMiddle",
-      "g b": "vim::WindowBottom",
       // Window mode
       "ctrl-h": ["workspace::ActivatePaneInDirection", "Left"],
       "ctrl-l": ["workspace::ActivatePaneInDirection", "Right"],
@@ -75,6 +66,16 @@
     "context": "Editor && (vim_mode == normal || vim_mode == visual) && !VimWaiting && !menu",
     "bindings": {
       // put key-bindings here if you want them to work in normal & visual mode
+      // Goto mode
+      "g l": "vim::EndOfLine",
+      "g h": "vim::StartOfLine",
+      "g s": "vim::FirstNonWhitespace",
+      "g e": "vim::EndOfDocument",
+      "g y": "editor::GoToTypeDefinition",
+      "g r": "editor::FindAllReferences", // zed specific
+      "g t": "vim::WindowTop",
+      "g c": "vim::WindowMiddle",
+      "g b": "vim::WindowBottom"
     }
   },
   {
