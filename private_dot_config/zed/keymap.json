@@ -16,6 +16,12 @@
     }
   },
   {
+    "context": "ProjectPanel",
+    "bindings": {
+      "space e": "workspace::ToggleLeftDock"
+    }
+  },
+  {
     "context": "Terminal",
     "bindings": {
       "ctrl-t": "workspace::ToggleBottomDock"
@@ -24,6 +30,8 @@
   {
     "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
     "bindings": {
+      // Project view
+      "space e": "pane::RevealInProjectPanel",
       // Terminal
       "ctrl-t": "terminal_panel::ToggleFocus",
       // Motion
