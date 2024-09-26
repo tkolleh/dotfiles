@@ -98,6 +98,7 @@
     "context": "Editor && vim_mode == visual && !VimWaiting && !menu",
     "bindings": {
       // visual, visual line & visual block modes
+      "C": ["editor::SelectNext", { "replace_newest": false }]
     }
   },
   {
