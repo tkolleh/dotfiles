@@ -105,15 +105,10 @@ alt-shift-j = 'move down'
 alt-shift-k = 'move up'
 alt-shift-l = 'move right'
 
-alt-left = ['join-with left', 'mode main']
-alt-down = ['join-with down', 'mode main']
-alt-up = ['join-with up', 'mode main']
-alt-right = ['join-with right', 'mode main']
-
-#alt-shift-left = ['split vertical', 'mode main']
-#alt-shift-down = ['split horizontal', 'mode main']
-#alt-shift-up = ['split horizontal', 'mode main']
-#alt-shift-right = ['split vertical', 'mode main']
+alt-ctrl-h = ['join-with left', 'mode main']
+alt-ctrl-j = ['join-with down', 'mode main']
+alt-ctrl-k = ['join-with up', 'mode main']
+alt-ctrl-l = ['join-with right', 'mode main']
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#resize
 alt-shift-minus = 'resize smart -50'
