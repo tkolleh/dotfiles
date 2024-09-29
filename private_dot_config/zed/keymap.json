@@ -5,7 +5,16 @@
 //
 // To see the default key bindings run `zed: open default keymap`
 // from the command palette.
+//
+// Key bindings are based on jetbrains + vim + helix key bindings
 [
+  {
+    "context": "Editor",
+    "bindings": {
+      // Disable default binding for project search. Use [space /] for project search
+      "g /": null
+    }
+  },
   {
     "context": "Editor && (showing_code_actions || showing_completions)",
     "bindings": {
@@ -98,7 +107,6 @@
     "context": "Editor && vim_mode == visual && !VimWaiting && !menu",
     "bindings": {
       // visual, visual line & visual block modes
-      "C": ["editor::SelectNext", { "replace_newest": false }]
     }
   },
   {
