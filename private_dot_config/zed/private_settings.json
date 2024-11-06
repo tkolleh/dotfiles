@@ -8,7 +8,11 @@
 // from the command palette or from `Zed` application menu.
 {
   "base_keymap": "JetBrains",
-  "theme": "Github Dark Tritanopia",
+  "theme": {
+    "mode": "system",
+    "light": "Github Light Tritanopia",
+    "dark": "Github Dark Tritanopia"
+  },
   "vim_mode": true,
   "ui_font_size": 14,
   "buffer_font_size": 14,
@@ -36,5 +40,30 @@
     "inline_blame": {
       "enabled": true
     }
+  },
+  "terminal": {
+    "cursor_shape": "block",
+    "blinking": "terminal_controlled",
+    "alternate_scroll": "off",
+    "copy_on_select": true,
+    "dock": "bottom",
+    "detect_venv": {
+      "on": {
+        "directories": [".env", "env", ".venv", "venv"],
+        "activate_script": "default"
+      }
+    },
+    "env": {
+      "TERM_CONTEXT": "zed_editor"
+    },
+    "font_family": "JetBrainsMono Nerd Font Mono",
+    "font_size": 14,
+    "line_height": "comfortable",
+    "option_as_meta": false,
+    "button": false,
+    "toolbar": {
+      "title": true
+    },
+    "working_directory": "current_project_directory"
   }
 }
