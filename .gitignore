@@ -1,1 +1,6 @@
-.keep
+event-log-metadata
+jdbc-drivers
+ssl
+port
+port.lock
+updatedBrokenPlugins.db
