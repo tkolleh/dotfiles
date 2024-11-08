@@ -257,7 +257,7 @@ function clicolors() {
 
 function edit_dot_files() {
   if (( ${+commands[chezmoi]} )) && (( ${+commands[zed]} )) && [[ -d $CHEZMOI_SOURCE_PATH ]]; then
-    zed --wait $CHEZMOI_SOURCE_PATH
+    zed --wait --new $CHEZMOI_SOURCE_PATH
     chezmoi apply
   fi
 }
@@ -419,6 +419,7 @@ function is_installed_by_brew(){
     echo "Requires ripgrep and brew to be installed." && (exit 1)
   fi
 }
+<<<<<<< HEAD
 
 function select_from_brew_info() {
   # Select fields from brew info JSON of installed homebrew formulas.
@@ -456,3 +457,45 @@ function select_from_brew_info() {
   duckdb -c "${query}"
   bat $query_rslt_path
 }
+||||||| fc4f6a7
+=======
+
+function print_pr_basics(){
+    if (( ${+commands[gh]} )); then
+        gh pr view $1 --json number,title,url,state,labels --template \
+        '[#{{ .number }}] {{.title}}
+            {{.state}} | {{.url}}
+            {{.labels | join ", "}}
+        '
+        exit 0
+    else
+        echo "Requires gh to be installed." && (exit 1)
+        exit 1
+    fi
+}
+
+function print_pr_failed_checks(){
+    local template='
+    {{- range . }}
+      {{- if eq .state "FAILURE" }}
+        {{ .name }} | {{ .description }}
+      {{- end }}
+    {{- end }}
+    '
+    if (( ${+commands[gh]} )); then
+        gh pr checks $1 --json name,description,state --template $template | bat --plain
+        exit 0
+    else
+        echo "Requires gh to be installed." && (exit 1)
+        exit 1
+    fi
+}
+
+function print_pr_review_request(){
+    local ask="Please review the following PR:"
+    local header=$(print_pr_basics)
+    local body=$(print_pr_failed_checks)
+    local msg="$ask\n$header\n$body"
+    echo -e "$msg"
+}
+>>>>>>> 3d5ca50dddca4e350e720fb88346431827e75faa
