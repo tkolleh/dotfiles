@@ -272,21 +272,35 @@ function update_term_tools() {
   fi
 }
 
-function check_for_man_page() {
+function has_tldr_page() {
+  tldr --language en "$1" > /dev/null 2>&1
+}
+
+function has_man_page() {
   man "$1" > /dev/null 2>&1
 }
 
-# Style command help doc
-function help(){
-  if check_for_man_page "$1"; then
-    if (( ${+commands[batman]} )); then
-      batman "$@"
-    else
-      man "$1"
-    fi
+function help() {
+  # Get some help for this command prefering the
+  #
+  if [[ -z "$1" ]]; then
+    echo "No command specified. The input string is empty."
   else
-    "$@" --help 2>&1 | bat --plain --language=help
+    if has_tldr_page "$1"; then
+      tldr "$@"
+      return
+    fi
+    if has_man_page "$1"; then
+        if (( ${+commands[batman]} )); then
+          batman "$@"
+          return
+        else
+          man "$1"
+          return
+        fi
+    fi
   fi
+  "$@" --help 2>&1 | bat --plain --language=help
 }
 
 # Debug what the heck is going on with gpg
@@ -360,7 +374,9 @@ function cd_with_fzf(){
 }
 
 function batFollow(){
-  echo -e "\nConsider using batwatch instead. \n"
+  echo -e "\nNot the best tool. Consider these alternatives;"
+  echo "- batwatch"
+  echo "- lnav"
   tail -f "${1}" | bat -l syslog --paging=never
 }
 
@@ -402,4 +418,41 @@ function is_installed_by_brew(){
   else
     echo "Requires ripgrep and brew to be installed." && (exit 1)
   fi
+}
+
+function select_from_brew_info() {
+  # Select fields from brew info JSON of installed homebrew formulas.
+  # Defaults to 'name, full_name, desc, homepage' when field names are not provided.
+  if ! (( ${+commands[brew]} )) || ! (( ${+commands[duckdb]} )); then
+    echo "Requires brew and duckdb to be installed" && (exit 1)
+  fi
+
+  local _fields
+  local default_fields="name, full_name, \"desc\""
+  local brew_info_json_path=$TMPDIR/brew_info_.json
+  local query_rslt_path=$TMPDIR/brew_info_result.txt
+  local _fields=$default_fields
+
+  if [[ -z "$1" ]]; then
+    _fields=$default_fields
+  else
+    _fields="$1"
+  fi
+
+#  local query=$(print -r -- ".mode duckbox
+#  .output $query_rslt_path
+#  select $_fields from read_json_auto('${brew_info_json_path}', ignore_errors := true);
+#  ")
+  local query=$(print -r -- ".output ${query_rslt_path}
+  select $_fields from read_json_auto('${brew_info_json_path}', ignore_errors := true);")
+
+  brew info --installed --json > $brew_info_json_path
+
+  echo -e "\nQuerying brew info table of installed formulas"
+  echo -e "\tQuery: [$query]"
+  echo -e "\tInput path: $brew_info_json_path"
+  echo -e "\tOutput path: $query_rslt_path"
+
+  duckdb -c "${query}"
+  bat $query_rslt_path
 }
