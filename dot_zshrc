@@ -20,23 +20,23 @@ if (( ${+commands[moar]} )); then
   export PAGER='moar'
 fi
 
-# 
+#
 # The preferred visual editor for local or set the remote
 # visual editor. The EDITOR variable technically shouldn't be set to a
 # "visual" editor like vi but something like ed
 #
 if (( ${+commands[lefthook]} )); then
   # export PATH="$HOME/.local/bin:$PATH"
-  # export NVIM_SESSION="$XDG_CONFIG_HOME/nvim/session"
-  export VISUAL='zed --wait'
-  export EDITOR='zed --wait'
+  export NVIM_SESSION="$XDG_CONFIG_HOME/nvim/session"
+  export VISUAL='zed --wait --new'
+  export EDITOR='zed --wait --new'
 fi
 if [[ -n $SSH_CONNECTION ]]; then
-  export VISUAL='zed --wait'
+  export VISUAL='zed --wait --new'
 fi
 
 # Reduce delay of loading the editor
-# $KEYTIMEOUT controls the number of milliseconds that must pass 
+# $KEYTIMEOUT controls the number of milliseconds that must pass
 # before a key press is read.
 export KEYTIMEOUT=1
 
@@ -89,7 +89,7 @@ export ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE="50"
 # Enable aynchronous mode.
 export ZSH_AUTOSUGGEST_USE_ASYNC=true
 
-# Bind keys for zsh-history-substring-search. Plugin must be loaded 
+# Bind keys for zsh-history-substring-search. Plugin must be loaded
 # after fast-syntax-highlighting.
 bindkey '^[[A' history-substring-search-up
 bindkey '^[[B' history-substring-search-down
@@ -100,12 +100,12 @@ bindkey '^[[B' history-substring-search-down
 
 # Alternative to cd
 #
-# The default command is `z` add the `--cmd cd` option to 
+# The default command is `z` add the `--cmd cd` option to
 # replaces `cd` command.
 if (( ${+commands[zoxide]} )); then
   export _ZO_ECHO=1
   eval "$(zoxide init zsh)"
-else 
+else
   echo "zoxide not found"
 fi
 
