@@ -29,12 +29,16 @@ inoremap jk <Esc>
 
 " mm to match brackets
 nnoremap mm %
+vnoremap mm %
 
 " d is for delete
 nnoremap d "_d
 nnoremap D "_D
 vnoremap d "_d
 vnoremap D "_D
+
+" p is for paste
+xnoremap p P
 
 " quick movements
 inoremap II <Esc>I
