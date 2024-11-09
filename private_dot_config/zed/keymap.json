@@ -107,6 +107,8 @@
     "context": "Editor && vim_mode == visual && !VimWaiting && !menu",
     "bindings": {
       // visual, visual line & visual block modes
+      "ctrl-c": "editor::ToggleComments",
+      "space c": "editor::ToggleComments"
     }
   },
   {

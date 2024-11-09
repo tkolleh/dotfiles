@@ -43,11 +43,6 @@ function syspath(){
    echo $PATH | sed 's/:/\n/g' | sort | uniq -c
 }
 
-# Runtime home directory for asdf managed language runtimes
-function runtime_homedir(){
-  asdf where ${1} $(asdf current ${1} | awk '{ print $2 }')
-}
-
 # Open Marked 2, passing provided file path to the application
 function marked() {
   if [ -n "${1}" ]; then
@@ -350,17 +345,13 @@ function grep_refs(){
   git grep -i "${2}" $(git for-each-ref --format='%(refname)' refs/"${1}")
 }
 
-function print_jvm_related_versions(){
-  echo -e "\nPrinting runtime and tool versions that use the JVM.\n"
+function print_jvm_versions(){
+  echo -e "\nPrinting runtime and tool versions of the JVM.\n"
   local arr=("java" "scala" "mvn" "sbt")
   for i in "${arr[@]}"; do
       echo -e "\n---- ${i} version ----\n"
       if (( ${+commands[$i]} )); then
         $i -version
-        if (( ${+commands[asdf]} )); then
-          echo -e "\n-- asdf current ${i} version"
-          asdf current $i
-        fi
       fi
   done
 }
@@ -370,6 +361,7 @@ function afzf(){
 }
 
 function cd_with_fzf(){
+  echo "Use Yazi instead."
   cd $HOME && cd $(fd -t d | fzf --preview="eza --long --tree --level=1 {}") && echo "${PWD}" && eza --long --tree --level=2
 }
 
