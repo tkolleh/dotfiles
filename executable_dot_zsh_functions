@@ -430,7 +430,7 @@ function select_from_brew_info() {
   local _fields
   local default_fields="name, full_name, \"desc\""
   local brew_info_json_path=$TMPDIR/brew_info_.json
-  local query_rslt_path=$TMPDIR/brew_info_result.txt
+  local query_rslt_path=$TMPDIR/brew_info_result.csv
   local _fields=$default_fields
 
   if [[ -z "$1" ]]; then
@@ -439,12 +439,11 @@ function select_from_brew_info() {
     _fields="$1"
   fi
 
-#  local query=$(print -r -- ".mode duckbox
-#  .output $query_rslt_path
-#  select $_fields from read_json_auto('${brew_info_json_path}', ignore_errors := true);
-#  ")
-  local query=$(print -r -- ".output ${query_rslt_path}
-  select $_fields from read_json_auto('${brew_info_json_path}', ignore_errors := true);")
+  local query=$(print -r -- "COPY (
+      select $_fields
+      from read_json_auto('${brew_info_json_path}', ignore_errors := true)
+    ) TO '${query_rslt_path}';
+  ")
 
   brew info --installed --json > $brew_info_json_path
 
