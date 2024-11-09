@@ -170,8 +170,12 @@ fi
 
 if (( ${+commands[cs]} )); then
   # Scala application manager
-  # add installation directory in PATH in the current session
+  # Add coursier bin directory to PATH
   eval "$(cs install --env)"
+
+  # Define JAVA_HOME and add it to the PATH. Assign existing JAVA_HOME to CS_FORMER_JAVA_HOME
+  eval "$(cs java --jvm corretto:21 --env)"
+  export PATH="$JAVA_HOME/bin:$PATH"
 fi
 
 if (( ${+commands[atuin]} )); then
@@ -190,17 +194,17 @@ if [[ -a "$HOME"/.zsh_aliases ]]; then
   source "$HOME"/.zsh_aliases
 fi
 
-function is_newer_ncurses_version() {
-  # As of 2021 MacOS comes with an older ncurses version (< 6.2). The newer
-  # ncurses version does not work properly for my usage in TMUX.
-  # see: https://gist.github.com/bbqtd/a4ac060d6f6b9ea6fe3aabe735aa9d95
-  local tic_version=$(tic -V | gawk 'BEGIN { FS="[^0-9]+"; OFS=ORS; ORS="" } NF=2')
-  if (( $tic_version >= 6 )); then
-    return 0
-  else
-    return 1
-  fi
-}
+# function is_newer_ncurses_version() {
+#   # As of 2021 MacOS comes with an older ncurses version (< 6.2). The newer
+#   # ncurses version does not work properly for my usage in TMUX.
+#   # see: https://gist.github.com/bbqtd/a4ac060d6f6b9ea6fe3aabe735aa9d95
+#   local tic_version=$(tic -V | gawk 'BEGIN { FS="[^0-9]+"; OFS=ORS; ORS="" } NF=2')
+#   if (( $tic_version >= 6 )); then
+#     return 0
+#   else
+#     return 1
+#   fi
+# }
 
 # if is_newer_ncurses_version; then
 #   echo "Latest ncurses version installed. Review terminfo and comment out this function"
@@ -227,54 +231,13 @@ if (( ${+commands[starship]} )); then
   eval "$(starship init zsh)"
 fi
 
-# Make this last to avoid path overwrite
-if (( ${+commands[asdf]} )); then
-    # zpm load @omz/lib/asdf
-    # TODO: Use below or delete above line. The above plugin should do this not sure why its not
-    source $(brew --prefix asdf)/libexec/asdf.sh
-
-    local ASDF_JAVA_HOME="$(asdf where java $(asdf current java | awk '{ print $2 }'))"
-    local ASDF_JAVA_HOME_BIN="$(asdf where java $(asdf current java | awk '{ print $2 }'))/bin"
-    local AMAZON_JAVA_HOME="/Library/Java/JavaVirtualMachines/amazon-corretto-8.jdk/Contents/Home"
-    local AMAZON_JAVA_HOME_BIN="/Library/Java/JavaVirtualMachines/amazon-corretto-8.jdk/Contents/Home/bin"
-
-    # If isn't using system java path then JAVA_HOME is asdf controlled else
-    # remove asdf from path and use system path which should've been set
-    # when that java version was installed/added
-    if [[ "$(asdf current java | awk '{ print $2 }')" != "system" ]]; then
-      echo "Jave Home is not set to system"
-      export JAVA_HOME="$ASDF_JAVA_HOME"
-    elif ((${path[(ie)$ASDF_JAVA_HOME_BIN]} <= ${#path})); then
-      echo "Set to system"
-      export JAVA_HOME="$AMAZON_JAVA_HOME"
-      path[${path[(ie)$ASDF_JAVA_HOME_BIN]}]=()
-    else
-      export JAVA_HOME="$AMAZON_JAVA_HOME"
-    fi
-
-    # local maybe_scala_home="$(asdf where scala $(asdf current scala | awk '{ print $2 }'))"
-    # if [[ -d "$maybe_scala_home"/bin ]]; then
-    #   export SCALA_HOME="$(asdf where scala $(asdf current scala | awk '{ print $2 }'))"
-    #   export SBT_HOME="$(asdf where sbt $(asdf current sbt | awk '{ print $2 }'))"
-    #   # export SBT_OPTS="-Dfile.encoding=utf-8 -J-Xms8G -J-Xmx8G -J-Xss8M -J-XX:ReservedCodeCacheSize=2G -Dsbt.color=true"
-    # fi
-
-    if [[ -d "$JAVA_HOME"/bin ]]; then
-      # SBT_HOME for ASDF is broken
-      # export PATH="$JAVA_HOME/bin:$SCALA_HOME/bin:$SBT_HOME/bin:$PATH"
-      export PATH="$JAVA_HOME/bin:$PATH"
-    fi
-fi
-
 if (( ${+commands[git-machete]} )); then
   eval "$(git machete completion zsh)"
 fi
 
-# The next line enables shell command completion for gcloud.
 if [[ -f "$HOME/google-cloud-sdk/completion.zsh.inc" ]]; then
+  # Enable shell command completion for gcloud.
   export PATH="$PATH:$HOME/google-cloud-sdk/bin"
-  local ASDF_PYTHON_HOME_BIN="$(asdf where python $(asdf current python latest:3.10 | awk '{ print $2 }'))/bin"
-  export CLOUDSDK_PYTHON="${ASDF_PYTHON_HOME_BIN}/python"
   source "$HOME/google-cloud-sdk/completion.zsh.inc"
 fi
 
