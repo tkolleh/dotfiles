@@ -15,26 +15,6 @@ export DISABLE_UPDATE_PROMPT="false"
 # Uncomment the following line to change how often to auto-update (in days).
 export UPDATE_ZSH_DAYS=7
 
-# The preferred pager
-if (( ${+commands[moar]} )); then
-  export PAGER='moar'
-fi
-
-#
-# The preferred visual editor for local or set the remote
-# visual editor. The EDITOR variable technically shouldn't be set to a
-# "visual" editor like vi but something like ed
-#
-if (( ${+commands[lefthook]} )); then
-  # export PATH="$HOME/.local/bin:$PATH"
-  export NVIM_SESSION="$XDG_CONFIG_HOME/nvim/session"
-  export VISUAL='zed --wait --new'
-  export EDITOR='zed --wait --new'
-fi
-if [[ -n $SSH_CONNECTION ]]; then
-  export VISUAL='zed --wait --new'
-fi
-
 # Reduce delay of loading the editor
 # $KEYTIMEOUT controls the number of milliseconds that must pass
 # before a key press is read.
@@ -94,26 +74,6 @@ export ZSH_AUTOSUGGEST_USE_ASYNC=true
 bindkey '^[[A' history-substring-search-up
 bindkey '^[[B' history-substring-search-down
 
-# -- Initialize tools ----------------------------------------
-#
-#
-
-# Alternative to cd
-#
-# The default command is `z` add the `--cmd cd` option to
-# replaces `cd` command.
-if (( ${+commands[zoxide]} )); then
-  export _ZO_ECHO=1
-  eval "$(zoxide init zsh)"
-else
-  echo "zoxide not found"
-fi
-
-if (( ${+commands[lefthook]} )); then
-  export LEFTHOOK_HOME="$(brew --prefix lefthook)"
-  export PATH="$LEFTHOOK_HOME/bin:$PATH"
-fi
-
 if (( ${+commands[conda]} )); then
     zpm load @github/esc/conda-zsh-completion
     export CONDA_ENVS="/usr/local/anaconda3/envs"
@@ -160,28 +120,6 @@ if (( ${+commands[fd]} )) && (( ${+commands[rg]} )) && (( ${+commands[fzf]} )) &
     # Search recent commands
     export FZF_CTRL_R_OPTS="$FZF_DEFAULT_OPTS"
 fi
-
-if [[ -d "$HOME/Library/Application Support/ScalaCli/completions/zsh" ]] && (( ${+commands[scala-cli]} )); then
-  # Install scala-cli completions
-  # Reference: https://github.com/VirtusLab/scala-cli/blob/main/website/docs/commands/completions.md
-  fpath=("$HOME/Library/Application Support/ScalaCli/completions/zsh" $fpath)
-  compinit
-fi
-
-if (( ${+commands[cs]} )); then
-  # Scala application manager
-  # Add coursier bin directory to PATH
-  eval "$(cs install --env)"
-
-  # Define JAVA_HOME and add it to the PATH. Assign existing JAVA_HOME to CS_FORMER_JAVA_HOME
-  eval "$(cs java --jvm corretto:21 --env)"
-  export PATH="$JAVA_HOME/bin:$PATH"
-fi
-
-if (( ${+commands[atuin]} )); then
-  eval "$(atuin init zsh)"
-fi
-
 
 # Load custom code from separate configuration file.
 if [[ -f "$HOME"/.zsh_functions ]]; then source "$HOME"/.zsh_functions; fi
@@ -231,25 +169,8 @@ if (( ${+commands[starship]} )); then
   eval "$(starship init zsh)"
 fi
 
-if (( ${+commands[git-machete]} )); then
-  eval "$(git machete completion zsh)"
+if (( ${+commands[scala-cli]} )); then
+  # >>> scala-cli completions >>>
+  fpath=("/Users/tkolleh/Library/Application Support/ScalaCli/completions/zsh" $fpath)
+  compinit
 fi
-
-if [[ -f "$HOME/google-cloud-sdk/completion.zsh.inc" ]]; then
-  # Enable shell command completion for gcloud.
-  export PATH="$PATH:$HOME/google-cloud-sdk/bin"
-  source "$HOME/google-cloud-sdk/completion.zsh.inc"
-fi
-
-# The following enables shell integration w/ iterm2
-# https://iterm2.com/documentation-shell-integration.html
-export ITERM_ENABLE_SHELL_INTEGRATION_WITH_TMUX=1
-source ~/.iterm2_shell_integration.zsh
-
-# MacOS alerting from terminal
-# https://github.com/vjeantet/alerter?tab=readme-ov-file
-if [[ -f /opt/alerter/bin/alerter ]]; then
-  export PATH="$PATH:/opt/alerter/bin"
-fi
-
-export PATH="$HOME/.local/bin:$PATH"
