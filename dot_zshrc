@@ -132,23 +132,6 @@ if [[ -a "$HOME"/.zsh_aliases ]]; then
   source "$HOME"/.zsh_aliases
 fi
 
-# function is_newer_ncurses_version() {
-#   # As of 2021 MacOS comes with an older ncurses version (< 6.2). The newer
-#   # ncurses version does not work properly for my usage in TMUX.
-#   # see: https://gist.github.com/bbqtd/a4ac060d6f6b9ea6fe3aabe735aa9d95
-#   local tic_version=$(tic -V | gawk 'BEGIN { FS="[^0-9]+"; OFS=ORS; ORS="" } NF=2')
-#   if (( $tic_version >= 6 )); then
-#     return 0
-#   else
-#     return 1
-#   fi
-# }
-
-# if is_newer_ncurses_version; then
-#   echo "Latest ncurses version installed. Review terminfo and comment out this function"
-#   echo "might need to update the use of tmux-256color"
-# fi
-
 # -- Light / Dark mode styles ----------------------------------
 #
 # Light mode is the default. Check if apple settings are for darkmode
