@@ -74,10 +74,10 @@ if (( ${+commands[cs]} )); then
   eval "$(cs install --env)"
 
   # Define JAVA_HOME and add it to the PATH. Assign existing JAVA_HOME to CS_FORMER_JAVA_HOME
+  {{ if .chezmoi.config.data.sys_java_version }}
+  eval "$(cs java --jvm corretto:{{ .chezmoi.config.data.sys_java_version }} --env)"
+  {{ else }}
   eval "$(cs java --jvm corretto:21 --env)"
-  {{ if (eq .chezmoi.username "tj.kolleh")}}
-    # Work computer is on JAVA 8 -- smh!
-    eval "$(cs java --jvm corretto:8 --env)"
   {{ end }}
   export PATH="$JAVA_HOME/bin:$PATH"
 fi
