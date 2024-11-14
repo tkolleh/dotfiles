@@ -132,7 +132,7 @@ if [[ -a "$HOME"/.zsh_aliases ]]; then
   source "$HOME"/.zsh_aliases
 fi
 
-# -- Light / Dark mode styles ----------------------------------
+# -- Prompt styles ----------------------------------
 #
 # Light mode is the default. Check if apple settings are for darkmode
 if [[ -f "$HOME"/.zsh_dark-notify.zsh ]]; then
@@ -150,6 +150,33 @@ fi
 if (( ${+commands[starship]} )); then
   export STARSHIP_LOG=error
   eval "$(starship init zsh)"
+fi
+
+# -- Initialize other tools ----------------------------------------
+#
+#
+# Alternative to cd
+#
+# The default command is `z` add the `--cmd cd` option to
+# replaces `cd` command.
+if (( ${+commands[zoxide]} )); then
+  export _ZO_ECHO=1
+  eval "$(zoxide init zsh)"
+else
+  echo "zoxide not found"
+fi
+
+# The following enables shell integration w/ iterm2
+# https://iterm2.com/documentation-shell-integration.html
+export ITERM_ENABLE_SHELL_INTEGRATION_WITH_TMUX=1
+source ~/.iterm2_shell_integration.zsh
+
+if (( ${+commands[atuin]} )); then
+  eval "$(atuin init zsh)"
+fi
+
+if (( ${+commands[git-machete]} )); then
+  eval "$(git machete completion zsh)"
 fi
 
 if (( ${+commands[scala-cli]} )); then
