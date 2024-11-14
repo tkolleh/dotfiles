@@ -16,19 +16,6 @@ fi
 # - /home/linuxbrew/.linuxbrew for Linux
 eval "$(/opt/homebrew/bin/brew shellenv)"
 
-# -- Initialize tools ----------------------------------------
-#
-#
-# Alternative to cd
-#
-# The default command is `z` add the `--cmd cd` option to
-# replaces `cd` command.
-if (( ${+commands[zoxide]} )); then
-  export _ZO_ECHO=1
-  eval "$(zoxide init zsh)"
-else
-  echo "zoxide not found"
-fi
 
 if (( ${+commands[lefthook]} )); then
   export LEFTHOOK_HOME="$(brew --prefix lefthook)"
@@ -82,24 +69,11 @@ if (( ${+commands[cs]} )); then
   export PATH="$JAVA_HOME/bin:$PATH"
 fi
 
-if (( ${+commands[atuin]} )); then
-  eval "$(atuin init zsh)"
-fi
-
-if (( ${+commands[git-machete]} )); then
-  eval "$(git machete completion zsh)"
-fi
-
 if [[ -f "$HOME/google-cloud-sdk/completion.zsh.inc" ]]; then
   # Enable shell command completion for gcloud.
   export PATH="$PATH:$HOME/google-cloud-sdk/bin"
   source "$HOME/google-cloud-sdk/completion.zsh.inc"
 fi
-
-# The following enables shell integration w/ iterm2
-# https://iterm2.com/documentation-shell-integration.html
-export ITERM_ENABLE_SHELL_INTEGRATION_WITH_TMUX=1
-source ~/.iterm2_shell_integration.zsh
 
 # MacOS alerting from terminal
 # https://github.com/vjeantet/alerter?tab=readme-ov-file
