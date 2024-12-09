@@ -44,7 +44,7 @@ function set_zsh_auto_suggest_colors() {
 function set_prompt_mode() {
   # Change the PROMPT based via [Starship](https://github.com/starship/starship)
   # based on Apple appearance light or dark mode setting
-  if is_dark_mode && [[ $ITERM_PROFILE == "Github" ]]; then
+  if is_dark_mode; then
       starship config palette dark
   else
       starship config palette light

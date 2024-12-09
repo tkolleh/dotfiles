@@ -16,6 +16,13 @@ fi
 # - /home/linuxbrew/.linuxbrew for Linux
 eval "$(/opt/homebrew/bin/brew shellenv)"
 
+export PATH="$(brew --prefix python3)/bin:$PATH"
+
+if [[ -f "$HOME/google-cloud-sdk/completion.zsh.inc" ]]; then
+  # Enable shell command completion for gcloud.
+  source "$HOME/google-cloud-sdk/path.zsh.inc"
+  source "$HOME/google-cloud-sdk/completion.zsh.inc"
+fi
 
 if (( ${+commands[lefthook]} )); then
   export LEFTHOOK_HOME="$(brew --prefix lefthook)"
@@ -67,12 +74,6 @@ if (( ${+commands[cs]} )); then
   eval "$(cs java --jvm corretto:21 --env)"
   {{ end }}
   export PATH="$JAVA_HOME/bin:$PATH"
-fi
-
-if [[ -f "$HOME/google-cloud-sdk/completion.zsh.inc" ]]; then
-  # Enable shell command completion for gcloud.
-  export PATH="$PATH:$HOME/google-cloud-sdk/bin"
-  source "$HOME/google-cloud-sdk/completion.zsh.inc"
 fi
 
 # MacOS alerting from terminal
