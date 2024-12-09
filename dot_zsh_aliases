@@ -31,7 +31,7 @@ function grmci () {
 
 # __alias gignored "git ls-files -v $(git rev-parse --show-toplevel) | (grep '^[[:lower:]]' || echo 'None ignored.') && echo '\nIgnore changes with:   git update-index --assume-unchanged <file> \nor track again with:   git update-index --no-assume-unchanged <file>'"
 
-__remove_alias gcp # Use gnu cp command as default for `gcp`. Gnu cp is installed with `brew install coreutils`
+#__remove_alias gcp # Use gnu cp command as default for `gcp`. Gnu cp is installed with `brew install coreutils`
 __alias gst "git status -b"
 __alias gsta " git log --oneline \
   --pretty='%Cred%h%Creset -%C(auto)%d%Creset %<(50,trunc)%s %Cgreen(%cr) %C(bold blue)<%an>%Creset' -5; \
@@ -98,3 +98,7 @@ fi
 
 # Because I keep forgetting the name of this command
 alias macos_info=neofetch
+
+alias poetry-run="poetry run python -m"
+alias ghe='GH_HOST=code.corp.creditkarma.com gh'
+alias ghorg="git remote get-url origin | cut -d/ -f 4"
