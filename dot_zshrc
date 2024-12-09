@@ -51,7 +51,8 @@ zpm load                  \
 
 VI_MODE_RESET_PROMPT_ON_MODE_CHANGE=true
 VI_MODE_SET_CURSOR=true
-bindkey -M vicmd 'V' edit-command-line # this remaps `vv` to `V` (but overrides `visual-mode`)
+bindkey -M viins 'jk' vi-cmd-mode       # this remaps `jk` to command mode
+bindkey -M vicmd 'V' edit-command-line  # this remaps `vv` to `V` (but overrides `visual-mode`)
 
 # Plugins for local host
 zpm if-not ssh load                                   \
@@ -152,8 +153,6 @@ if (( ${+commands[starship]} )); then
   eval "$(starship init zsh)"
 fi
 
-# -- Initialize other tools ----------------------------------------
-#
 #
 # Alternative to cd
 #
@@ -183,4 +182,18 @@ if (( ${+commands[scala-cli]} )); then
   # >>> scala-cli completions >>>
   fpath=("/Users/tkolleh/Library/Application Support/ScalaCli/completions/zsh" $fpath)
   compinit
+fi
+
+if (( ${+commands[pipx]} )); then
+  eval "$(register-python-argcomplete pipx)"
+fi
+
+if (( ${+commands[poetry]} )); then
+  # TODO: Move these to ZSH_CUSTOM similiar to how oh-my-zsh does it.
+  # See: https://github.com/ohmyzsh/ohmyzsh/blob/0d0042aad33562877dffd12baa6fe86e40642241/oh-my-zsh.sh#L16-L20
+  #
+  if [[ -z "$HOME"/.poetry_completions.zsh ]]; then
+    poetry completions bash > "$HOME"/.poetry_completions.zsh
+  fi
+  source "$HOME"/.poetry_completions.zsh
 fi
