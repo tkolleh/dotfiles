@@ -486,3 +486,12 @@ function print_pr_review_request(){
   local msg="$ask\n$header\n$body"
   echo -e "$msg"
 }
+
+function lzy() {
+	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
+	yazi "$@" --cwd-file="$tmp"
+	if cwd="$(command cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
+		builtin cd -- "$cwd"
+	fi
+	rm -f -- "$tmp"
+}

@@ -78,7 +78,7 @@ __alias tmuxm "tmux new-session -A -s main"
 
 # __alias clear_sbt_cache "trash ~/.ivy2/cache ~/.m2/repository"
 # __alias sbt__ "sbt --sbt-version 1.8.0 -Dsbt.semanticdb=true"
-alias sbtn="SCALACTIC_FILL_FILE_PATHNAMES=yes sbtn --verbose"
+alias sbtn="SCALACTIC_FILL_FILE_PATHNAMES=yes sbtn -Dsbt.color=always --verbose"
 
 __alias tmux-save-pane 'tmux capture-pane -pS -'
 

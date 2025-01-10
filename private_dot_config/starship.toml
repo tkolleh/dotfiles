@@ -4,10 +4,10 @@ scan_timeout = 2
 command_timeout = 2
 
 # Order of modules on prompt
-format = "[╭─](fg:main_clr)$cmd_duration$directory$all[╰](fg:main_clr)$character$status"
+format = "[╭─](fg:main_clr)$time$directory$all[╰](fg:main_clr)$character$status"
 
 # Color palette for light/dark mode
-palette = "dark"
+palette = "light"
 
 [palettes.light] #default color palette
 main_clr = "#9c64a6" # -- Directory chevron background
@@ -16,7 +16,7 @@ txt_clr = "#212121"   # -- Main text (paragraph)
 light_txt_clr = "#f5f5f5" # -- Text for dark background (paragraph)
 red_clr = "#b61827" # -- Warning and/or error color
 mode_clr = "#b2dfdb" # -- Sky blue / green color
-term_bg_clr = "#ffffff" # -- Background color
+term_bg_clr = "#f4f4f4" # -- Background color
 
 [palettes.dark]
 main_clr = "#9c64a6" # -- Directory chevron background
