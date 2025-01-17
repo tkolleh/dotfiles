@@ -1,30 +1,56 @@
-# Timeout for commands executed by starship (in milliseconds)
+# Disable blank line at the start of the prompt
 add_newline = true
+
+# Timeout for commands executed by starship (in milliseconds)
 scan_timeout = 2
 command_timeout = 2
 
 # Order of modules on prompt
-format = "[╭─](fg:main_clr)$time$directory$all[╰](fg:main_clr)$character$status"
+format = """
+[╭─](fg:main_clr)[░▒▓](fg:main_clr)\
+$directory\
+$git_branch\
+[](fg:#394260 bg:#212736)\
+$nodejs\
+$rust\
+$golang\
+$php\
+$python\
+$java\
+$scala\
+$gleam\
+$dart\
+$elm\
+$elixir\
+$ruby\
+[](fg:#212736 bg:#1d2230)\
+$time[ ](fg:#1d2230)
+[╰](fg:main_clr)\
+$status\
+$character"""
 
 # Color palette for light/dark mode
 palette = "light"
 
 [palettes.light] #default color palette
-main_clr = "#9c64a6" # -- Directory chevron background
+main_clr = "#9c64a6"      # -- Directory chevron background
 secondary_clr = "#ffebee" # -- Program background (git)
-txt_clr = "#212121"   # -- Main text (paragraph)
+txt_clr = "#212121"       # -- Main text (paragraph)
 light_txt_clr = "#f5f5f5" # -- Text for dark background (paragraph)
-red_clr = "#b61827" # -- Warning and/or error color
-mode_clr = "#b2dfdb" # -- Sky blue / green color
-term_bg_clr = "#f4f4f4" # -- Background color
+red_clr = "#b61827"       # -- Warning and/or error color
+mode_clr = "#b2dfdb"      # -- Sky blue / green color
+term_bg_clr = "#f4f4f4"   # -- Background color
 
 [palettes.dark]
-main_clr = "#9c64a6" # -- Directory chevron background
+main_clr = "#9c64a6"      # -- Directory chevron background
 secondary_clr = "#ffebee" # -- Program background (git)
-txt_clr = "#212121"   # -- Main text (paragraph)
-red_clr = "#b61827" # -- Warning and/or error color
-mode_clr = "#b2dfdb" # -- Sky blue / green color
-term_bg_clr = "#000000" # -- Background color
+txt_clr = "#212121"       # -- Main text (paragraph)
+red_clr = "#b61827"       # -- Warning and/or error color
+mode_clr = "#b2dfdb"      # -- Sky blue / green color
+term_bg_clr = "#000000"   # -- Background color
+
+[line_1_start]
+format = "[╭─](fg:main_clr)[░▒▓](fg:main_clr)"
 
 [character]
 success_symbol = "[](main_clr)"
@@ -34,98 +60,29 @@ vicmd_symbol = " [](mode_clr)"
 [directory]
 truncation_symbol = ""
 truncate_to_repo = false
-truncation_length = 100
+truncation_length = 60
 fish_style_pwd_dir_length = 1
 style = "bg:main_clr fg:term_bg_clr"
-format = "[]($style)[$path]($style)[$read_only]($read_only_style)[](inverted $style) "
-
-[cmd_duration]
-min_time = 5000
-show_milliseconds = true
-format = "[ $duration]($style)"
-
-[jobs]
-symbol = " "
-
-# harware config
-[battery]
-disabled = true
-unknown_symbol = ""
-empty_symbol = ""
-discharging_symbol = ""
-charging_symbol = ""
-full_symbol = ""
-
-[[battery.display]]
-threshold = 10
-style = "bold fg:red_clr"
-
-[[battery.display]]
-threshold = 30
-style = "fg:#ff8800"
-
-[[battery.display]]
-threshold = 50
-style = "fg:yellow"
-
-[memory_usage]
-disabled = true
-symbol = " "
+format = "[](fg:main_clr bg:main_clr)[$path](bg:main_clr fg:txt_clr)[$read_only]($read_only_style)[](inverted $style) "
 
 [time]
-disabled = true
-style = "light_txt_clr"
-format = "[](bg:$style fg:txt_clr)[🕙 $time](bg:$style fg:term_bg_clr)[](fg:$style)"
-
-[status]
 disabled = false
-symbol = "  "
-format = "[$status$symbol](fg:red_clr)"
+time_format = "%R" # Hour:Minute Format
+style = "bg:#1d2230"
+format = '[[  $time ](fg:#a0a9cb bg:#1d2230)]($style)'
 
 # VCS
 [git_branch]
 symbol = "  "
 style = "bg:secondary_clr fg:term_bg_clr"
-format = "\b[]($style)[$symbol$branch](bg:secondary_clr fg:txt_clr)[](inverted $style) "
+format = "\b[]($style)[$symbol$branch](bg:secondary_clr fg:txt_clr dimmed)[](fg:secondary_clr bg:#394260)"
 
 [git_commit]
-style = "#ebfffc"
+style = "bg:secondary_clr fg:term_bg_clr"
 format = "\b[ ﰖ $hash](fg:term_bg_clr bg:$style)[](fg:$style) "
 
-[git_state]
-am = "APPLYING-MAILBOX"
-am_or_rebase = "APPLYING-MAILBOX/REBASE"
-style = "#ebfffc"
-format = "\b\b[ \\($state( $progress_current/$progress_total)\\)](fg:term_bg_clr bg:$style)[](fg:$style) "
-
-[git_status]
-style = "#ebfffc"
-format = "($conflicted$staged$modified$renamed$deleted$untracked$stashed$ahead_behind\b )"
-conflicted = "[ ](fg:88)[   ${count} ](fg:term_bg_clr bg:88)[ ](fg:88)"
-#staged = "[M$count ](fg:green)"
-#modified = "[M${count} ](fg:red_clr)"
-#renamed = "[R${count} ](fg:208)"
-deleted = "[ ${count} ](fg:208)"
-untracked = "[?${count} ](fg:red_clr)"
-stashed = " ${count} "
-ahead = "[ ${count} ](fg:purple)"
-behind = "[ ${count} ](fg:yellow)"
-diverged = "[](fg:88)[  נּ ](fg:term_bg_clr bg:88)[ ${ahead_count} ](fg:purple bg:88)[ ${behind_count} ](fg:yellow bg:88)[ ](fg:88)"
-
-[shlvl]
-disabled = false
-style = "fg:bright-blue"
-symbol = " "
 
 # techno specific
-[aws]
-disabled = true
-symbol = " "
-
-[gcloud]
-disabled = true
-symbol = " "
-
 [conda]
 symbol = " "
 ignore_base = true
@@ -136,40 +93,59 @@ truncation_length = 10
 
 [dart]
 symbol = " "
+style = "bg:#212736"
+format = '[[ $symbol ](fg:#769ff0 bg:#212736)]($style)'
 
 [elixir]
 symbol = " "
+style = "bg:#212736"
+format = '[[ $symbol ](fg:#769ff0 bg:#212736)]($style)'
 
 [elm]
 symbol = " "
+style = "bg:#212736"
+format = '[[ $symbol ](fg:#769ff0 bg:#212736)]($style)'
 
 [golang]
 symbol = " "
+style = "bg:#212736"
+format = '[[ $symbol ](fg:#769ff0 bg:#212736)]($style)'
 
 [java]
 symbol = " "
-format = "[${symbol}(${version} )]($style) "
+style = "bg:#212736"
+format = '[[ $symbol ($version)](fg:#769ff0 bg:#212736)]($style)'
 
 [scala]
-format = "[${symbol}(${version} )]($style) "
-
-[nix_shell]
-symbol = " "
+symbol = " "
+style = "bg:#212736"
+format = '[[ $symbol ($version) ](fg:#769ff0 bg:#212736)]($style)'
 
 [nodejs]
 symbol = " "
-format = "[$symbol($version )]($style) "
+style = "bg:#212736"
+format = '[[ $symbol ($version) ](fg:#769ff0 bg:#212736)]($style)'
 
 [php]
 symbol = " "
+style = "bg:#212736"
+format = '[[ $symbol ($version) ](fg:#769ff0 bg:#212736)]($style)'
 
 [python]
 symbol = " "
-format = "[${symbol}${pyenv_prefix}(${version} )(($virtualenv) )]($style) "
+style = "bg:#212736"
+format = '[[ $symbol ${pyenv_prefix}(${version} )(($virtualenv) ) ](fg:#769ff0 bg:#212736)]($style)'
 
 [ruby]
 symbol = " "
+style = "bg:#212736"
+format = '[[ $symbol ](fg:#769ff0 bg:#212736)]($style)'
 
 [rust]
 symbol = " "
-style = "fg:#ffa07a"
+style = "bg:#212736"
+format = '[[ $symbol ](fg:#769ff0 bg:#212736)]($style)'
+
+[gleam]
+style = "bg:#212736"
+format = '[[ $symbol ](fg:#769ff0 bg:#212736)]($style)'
