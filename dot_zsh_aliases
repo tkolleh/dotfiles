@@ -68,7 +68,7 @@ __alias note 'cd $MARKDOWN_NOTES && lvim .'
 # alias pandoc="/usr/local/opt/pandoc/bin/pandoc"
 
 __alias chezmoidelta "chezmoi source pull -- --rebase && chezmoi diff | delta"
-__alias ipython "EDITOR=zed ipython"
+#__alias ipython "EDITOR=zed ipython"
 __alias gloudtoken "gcloud auth login --brief && gcloud auth print-identity-token"
 __alias trash_pycharm_remote_resources "trash -v ~/Library/Caches/JetBrains/PyCharm2021.2/remote_sources ~/Library/Caches/JetBrains/PyCharm2021.2/tmp"
 
