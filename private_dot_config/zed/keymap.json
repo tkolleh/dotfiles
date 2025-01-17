@@ -93,7 +93,6 @@
       "g y": "editor::GoToTypeDefinition",
       "g r": "editor::FindAllReferences", // zed specific
       "g t": "vim::WindowTop",
-      "g c": "vim::WindowMiddle",
       "g b": "vim::WindowBottom"
     }
   },
