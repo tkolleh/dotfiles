@@ -184,9 +184,9 @@ if (( ${+commands[scala-cli]} )); then
   compinit
 fi
 
-if (( ${+commands[pipx]} )); then
-  eval "$(register-python-argcomplete pipx)"
-fi
+# if (( ${+commands[pipx]} )); then
+#   register-python-argcomplete pipx
+# fi
 
 if (( ${+commands[poetry]} )); then
   # TODO: Move these to ZSH_CUSTOM similiar to how oh-my-zsh does it.
@@ -197,3 +197,32 @@ if (( ${+commands[poetry]} )); then
   fi
   source "$HOME"/.poetry_completions.zsh
 fi
+
+export CURL_HOME="$(brew --prefix curl)"
+
+export ICLOUD_DIR="$HOME/Library/Mobile Documents/com~apple~CloudDocs/"
+export CHEZMOI_SOURCE_PATH="$(chezmoi source-path)"
+
+# Add JetBrains toolbox scripts to path
+export PATH="$HOME/.local/bin:$PATH"
+
+if (( ${+commands[go]} )); then
+  export PATH="$(go env GOPATH)"/bin:$PATH.
+fi
+
+if (( ${+commands[cs]} )); then
+  # Scala application manager
+  # Add coursier bin directory to PATH
+  eval "$(cs install --env)"
+
+  # Define JAVA_HOME and add it to the PATH. Assign existing JAVA_HOME to CS_FORMER_JAVA_HOME
+  eval "$(cs java --jvm zulu:11 --env)"
+  export PATH="$JAVA_HOME/bin:$PATH"
+fi
+
+# MacOS alerting from terminal
+# https://github.com/vjeantet/alerter?tab=readme-ov-file
+if [[ -f /opt/alerter/bin/alerter ]]; then
+  export PATH="$PATH:/opt/alerter/bin"
+fi
+
