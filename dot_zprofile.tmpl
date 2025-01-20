@@ -50,32 +50,6 @@ fi
 
 FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
 
-export CURL_HOME="$(brew --prefix curl)"
-
-export ICLOUD_DIR="$HOME/Library/Mobile Documents/com~apple~CloudDocs/"
-export CHEZMOI_SOURCE_PATH="$(chezmoi source-path)"
-
-# Add JetBrains toolbox scripts to path
-export PATH="$HOME/.local/bin:$PATH"
-
-if (( ${+commands[go]} )); then
-  export PATH="$(go env GOPATH)"/bin:$PATH.
-fi
-
-if (( ${+commands[cs]} )); then
-  # Scala application manager
-  # Add coursier bin directory to PATH
-  eval "$(cs install --env)"
-
-  # Define JAVA_HOME and add it to the PATH. Assign existing JAVA_HOME to CS_FORMER_JAVA_HOME
-  {{ if .chezmoi.config.data.sys_java_version }}
-  eval "$(cs java --jvm corretto:{{ .chezmoi.config.data.sys_java_version }} --env)"
-  {{ else }}
-  eval "$(cs java --jvm corretto:21 --env)"
-  {{ end }}
-  export PATH="$JAVA_HOME/bin:$PATH"
-fi
-
 # MacOS alerting from terminal
 # https://github.com/vjeantet/alerter?tab=readme-ov-file
 if [[ -f /opt/alerter/bin/alerter ]]; then

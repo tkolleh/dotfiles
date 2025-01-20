@@ -8,11 +8,11 @@ set surround
 set commentary
 set ideajoin
 set NERDTree
-set which-key
+" set which-key
 set relativenumber
 set number
 set timeoutlen=10
-set multicursor
+" set multicursor
 
 " Use helix comment keybind
 vnoremap <Leader>c :action CommentByLineComment
