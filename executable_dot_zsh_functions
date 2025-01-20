@@ -192,14 +192,6 @@ function fzfa() {
   alias | bat --paging=never -n -f -l bash | fzf --ansi
 }
 
-# cd to the directory ranger was at when it closed
-function rangerdir() {
-  if [ -f "$HOME/.rangerdir" ] && [ "$(awk '{print $1}' $HOME/.rangerdir)" != "$(echo -n `pwd`)" ];
-  then
-      cd -- "$(awk '{print $1}' $HOME/.rangerdir)"
-  fi
-}
-
 # Kubernetes namesapce visualization tool
 # https://github.com/viralpoetry/kubesurveyor
 function k8nsv() {
