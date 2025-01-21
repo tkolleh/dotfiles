@@ -31,14 +31,19 @@ $character"""
 # Color palette for light/dark mode
 palette = "dark"
 
-[palettes.light] #default color palette
-bg_brown = "#D4A373"      # -- Directory chevron background
-bg_dark_cream = "#ffebee" # -- Program background (git)
-txt_clr = "#212121"       # -- Main text (paragraph)
-light_txt_clr = "#f5f5f5" # -- Text for dark background (paragraph)
-red_clr = "#b61827"       # -- Warning and/or error color
-mode_clr = "#b2dfdb"      # -- Sky blue / green color
-clear_clr = "#f4f4f4"   # -- Background color
+[palettes.light]
+bg_brown = "#D4A373"
+bg_dark_cream = "#b7b7a4"
+bg_cream = "#FEFAE0"
+bg_light_green = "#E9EDC9"
+bg_green = "#CCD5AE"
+txt_clr = "#463f3a"
+red_clr = "#b61827"
+grn_clr = "#b2dfdb"
+bright_grn_clr = "#adc178"
+clay_clr = "#b7b7a4"
+red_clay_clr = "#6f1d1b"
+clear_clr = "#000000"
 
 [palettes.dark]
 bg_brown = "#D4A373"
@@ -73,7 +78,7 @@ format = """
 
 [time]
 disabled = false
-time_format = "%R"                                      # Hour:Minute Format
+time_format = "%R"                                           # Hour:Minute Format
 style = "bg:#faedcd"
 format = '[[  $time ](fg:#a0a9cb bg:red_clay_clr)]($style)'
 
