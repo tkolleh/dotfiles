@@ -27,7 +27,8 @@
   {
     "context": "ProjectPanel",
     "bindings": {
-      "space e": "workspace::ToggleLeftDock"
+      "space e": "workspace::ToggleLeftDock",
+      "ctrl-l": ["workspace::ActivatePaneInDirection", "Right"]
     }
   },
   {
