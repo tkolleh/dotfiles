@@ -75,8 +75,6 @@ __alias trash_pycharm_remote_resources "trash -v ~/Library/Caches/JetBrains/PyCh
 
 __alias tmuxm "tmux new-session -A -s main"
 
-# __alias clear_sbt_cache "trash ~/.ivy2/cache ~/.m2/repository"
-# __alias sbt__ "sbt --sbt-version 1.8.0 -Dsbt.semanticdb=true"
 alias sbtn="SCALACTIC_FILL_FILE_PATHNAMES=yes sbtn -Dsbt.color=always --verbose"
 
 __alias tmux-save-pane 'tmux capture-pane -pS -'
@@ -101,3 +99,4 @@ alias macos_info=neofetch
 alias poetry-run="poetry run python -m"
 alias ghe='GH_HOST=code.corp.creditkarma.com gh'
 alias ghorg="git remote get-url origin | cut -d/ -f 4"
+alias sbt="sbtx"
