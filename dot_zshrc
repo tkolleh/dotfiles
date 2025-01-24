@@ -100,8 +100,6 @@ if (( ${+commands[conda]} )); then
 fi
 
 if (( ${+commands[fd]} )) && (( ${+commands[rg]} )) && (( ${+commands[fzf]} )) && (( ${+commands[bat]} )); then
-    zpm load @github/unixorn/fzf-zsh-plugin
-
     export FZF_DEFAULT_COMMAND='fd --type f --color=never --ignore-case --no-ignore --hidden --follow'
     export FZF_DEFAULT_OPTS="
     --bind 'f1:execute(bat --paging=always --color=always {})'
@@ -216,7 +214,7 @@ if (( ${+commands[cs]} )); then
   eval "$(cs install --env)"
 
   # Define JAVA_HOME and add it to the PATH. Assign existing JAVA_HOME to CS_FORMER_JAVA_HOME
-  eval "$(cs java --jvm zulu:11 --env)"
+  eval "$(cs java --architecture arm64 --jvm corretto:8 --env)"
   export PATH="$JAVA_HOME/bin:$PATH"
 fi
 
@@ -225,4 +223,3 @@ fi
 if [[ -f /opt/alerter/bin/alerter ]]; then
   export PATH="$PATH:/opt/alerter/bin"
 fi
-
