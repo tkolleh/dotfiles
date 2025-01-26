@@ -9,7 +9,9 @@ command_timeout = 2
 format = """
 [╭─](clay_clr)[░▒▓](clay_clr)\
 $directory\
+[](bg:bg_dark_cream fg:clear_clr)\
 $git_branch\
+[](fg:bg_dark_cream bg:#394260)\
 [](fg:#394260 bg:bright_grn_clr)\
 $nodejs\
 $rust\
@@ -59,7 +61,7 @@ format = """
 [](fg:#212736 bg:bg_brown)\
 [$path](bg:bg_brown fg:txt_clr)\
 [$read_only]($read_only_style)\
-[](bg:clear_clr fg:bg_brown) """
+[](bg:clear_clr fg:bg_brown)"""
 
 [time]
 disabled = false
@@ -71,7 +73,7 @@ format = '[[  $time ](fg:#a0a9cb bg:red_clay_clr)]($style)'
 [git_branch]
 symbol = "  "
 style = "bg:bg_dark_cream fg:clear_clr"
-format = "\b[]($style)[$symbol$branch](bg:bg_dark_cream fg:txt_clr)[](fg:bg_dark_cream bg:#394260)"
+format = "[$symbol$branch](bg:bg_dark_cream fg:txt_clr)"
 
 [git_commit]
 style = "bg:bg_dark_cream fg:clear_clr"
