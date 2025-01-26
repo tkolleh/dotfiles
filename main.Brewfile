@@ -7,6 +7,7 @@ tap "homebrew/bundle"
 tap "homebrew/cask-fonts"
 tap "homebrew/cask-versions"
 tap "homebrew/services"
+tap "jesseduffield/lazygit"
 tap "mongodb/brew"
 tap "nikitabobko/tap"
 tap "thecasualcoder/stable"
@@ -18,7 +19,6 @@ brew "python@3.13"
 brew "glib"
 brew "cairo"
 brew "harfbuzz"
-brew "icu4c@75"
 brew "openjdk"
 brew "ammonite-repl"
 brew "atuin"
@@ -41,12 +41,14 @@ brew "crane"
 brew "curl"
 brew "detox"
 brew "diff-so-fancy"
+brew "difftastic"
 brew "dive"
-brew "docker-completion"
+brew "docker-completion", link: false
 brew "docker", link: false
 brew "docker-compose"
 brew "duckdb"
 brew "dust"
+brew "icu4c@75"
 brew "folly"
 brew "fizz"
 brew "wangle"
@@ -86,7 +88,6 @@ brew "qt"
 brew "gnuplot"
 brew "gobject-introspection"
 brew "gpatch"
-brew "helix", args: ["HEAD"]
 brew "helm"
 brew "helm-ls"
 brew "httpie"
@@ -97,6 +98,7 @@ brew "shared-mime-info"
 brew "libheif"
 brew "imagemagick"
 brew "ios-deploy"
+brew "ipfs", args: ["HEAD"], restart_service: :changed
 brew "iproute2mac"
 brew "jless"
 brew "jq"
@@ -118,7 +120,7 @@ brew "mtr"
 brew "multimarkdown"
 brew "neofetch"
 brew "tree-sitter"
-brew "neovim"
+brew "neovim", args: ["HEAD"]
 brew "nghttp2"
 brew "node@16"
 brew "oauth2l"
@@ -129,22 +131,25 @@ brew "pandoc-include-code"
 brew "pandocomatic"
 brew "par"
 brew "pinentry-mac"
+brew "pnpm"
 brew "poppler"
 brew "pre-commit"
 brew "prettier"
 brew "procs"
 brew "pywhat"
+brew "ranger"
 brew "ripgrep"
 brew "ripgrep-all"
 brew "ruby-build"
 brew "ruff-lsp"
+brew "rust"
 brew "sad"
 brew "scalariform"
 brew "sd"
 brew "sevenzip"
 brew "shfmt"
 brew "starship"
-brew "syncthing", restart_service: true
+brew "syncthing", restart_service: :changed
 brew "taplo"
 brew "telnet"
 brew "tfenv", link: false
@@ -152,7 +157,7 @@ brew "tgenv", link: false
 brew "tidy-html5"
 brew "tlrc"
 brew "tmux"
-brew "trash"
+brew "trash", link: true
 brew "uncrustify"
 brew "universal-ctags", args: ["HEAD"]
 brew "vault"
@@ -175,6 +180,7 @@ brew "eth-p/software/bat-extras-batman", link: false
 brew "eth-p/software/bat-extras-batpipe", link: false
 brew "eth-p/software/bat-extras-batwatch", link: false
 brew "eth-p/software/bat-extras-prettybat", link: false
+brew "jesseduffield/lazygit/lazygit"
 brew "thecasualcoder/stable/csvdiff"
 brew "virtuslab/scala-cli/scala-cli"
 cask "1password-cli"
@@ -196,10 +202,10 @@ cask "font-open-dyslexic-nerd-font"
 cask "font-source-code-pro"
 cask "font-symbols-only-nerd-font"
 cask "font-victor-mono"
+cask "ghostty"
 cask "github"
 cask "google-chrome"
 cask "gpg-suite"
-cask "ipfs"
 cask "iterm2@beta"
 cask "jd-gui"
 cask "jetbrains-toolbox"
@@ -215,7 +221,6 @@ cask "temurin"
 cask "weka"
 cask "zotero"
 mas "1Password for Safari", id: 1569813296
-mas "AdBlock", id: 1402042596
 mas "AutoMounter", id: 1160435653
 mas "Canary Mail", id: 1236045954
 mas "Compressor", id: 424390742
@@ -229,6 +234,7 @@ mas "iMovie", id: 408981434
 mas "Jack", id: 1534312255
 mas "Keymapp", id: 6472865291
 mas "Keynote", id: 409183694
+mas "Kindle", id: 302584613
 mas "Kindle Classic", id: 405399194
 mas "Magnet", id: 441258766
 mas "Micro Snitch", id: 972028355
@@ -236,12 +242,11 @@ mas "MILK Books", id: 1486465681
 mas "Notability", id: 360593530
 mas "Notability", id: 736189492
 mas "Numbers", id: 409203825
-mas "Omnivore", id: 1564031042
 mas "Pages", id: 409201541
 mas "Paste", id: 967805235
 mas "Pixelmator Pro", id: 1289583905
 mas "reMarkable", id: 1276493162
 mas "Snippety", id: 1530751461
 mas "Todoist", id: 585829637
-mas "‎WhatsApp", id: 310633997
+mas "WhatsApp", id: 310633997
 whalebrew "directory"
