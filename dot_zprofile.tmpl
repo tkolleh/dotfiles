@@ -51,7 +51,7 @@ fi
 if (( ${+commands[zed]} )); then
   export NVIM_SESSION="$XDG_CONFIG_HOME/nvim/session"
   export VISUAL='zed --wait --new'
-  export EDITOR='zed --wait --new'
+  export EDITOR='nvim'
 fi
 if [[ -n $SSH_CONNECTION ]]; then
   export VISUAL='zed --wait --new'
