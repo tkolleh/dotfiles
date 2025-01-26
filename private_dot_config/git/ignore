@@ -1,14 +1,3 @@
-# Project specific config
-#
-project/graphbuddy.sbt
-AlchemyV2ClientApp.scala
-src/main/scala/com/creditkarma/assets/fraudservice/FeatureResolverClientApp.scala
-src/main/scala/com/creditkarma/assets/fraudservice/ProphecyClientApp.scala
-src/it/scala/com/creditkarma/assets/fraudservice/AlchemyV2ClientApp.scala
-*.run
-*.run.xml
-.env
-
 # Metals
 .bloop
 .metals 
