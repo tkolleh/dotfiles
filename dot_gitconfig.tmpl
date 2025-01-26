@@ -1,0 +1,80 @@
+[init]
+  defaultBranch = main
+[user]
+  name = "{{ .chezmoi.config.data.first_name }} {{ .chezmoi.config.data.last_name }}"
+{{ if (eq .chezmoi.username .chezmoi.config.data.work_username) }}
+  email = {{ .chezmoi.config.data.work_email }}
+{{ else }}
+  email = {{ .chezmoi.config.data.gmail_email }}
+{{ end }}
+[core]
+  autocrlf = input
+  pager = moar
+  editor = nvim
+
+[receive]
+  advertisePushOptions = true
+
+[push]
+  default = simple
+  gpgSign = if-asked
+
+[credential]
+  helper = osxkeychain
+
+[commit]
+  gpgsign = true
+[gpg]
+  ## path created by `brew install --cask gpg-suite`
+  program = /usr/local/MacGPG2/bin/gpg2
+[grep]
+  extendedRegexp = true
+
+[http]
+  connecttimeout = 20
+
+[interactive]
+  diffFilter = difft
+
+[mergetool "vimdiff"]
+  prompt = true
+  cmd = nvim -d \"$LOCAL\" \"$REMOTE\" \"$MERGED\" -c '$wincmd w' -c 'wincmd J'
+[difftool "vimdiff"]
+  prompt = true
+  cmd = nvim -d \"$LOCAL\" \"$REMOTE\"
+
+[mergetool "idea"]
+    cmd = idea merge $(cd $(dirname "$LOCAL") && pwd)/$(basename "$LOCAL") $(cd $(dirname "$REMOTE") && pwd)/$(basename "$REMOTE") $(cd $(dirname "$BASE") && pwd)/$(basename "$BASE") $(cd $(dirname "$MERGED") && pwd)/$(basename "$MERGED")
+    trustExitCode = true
+[difftool "idea"]
+    cmd = idea diff $(cd $(dirname "$LOCAL") && pwd)/$(basename "$LOCAL") $(cd $(dirname "$REMOTE") && pwd)/$(basename "$REMOTE")
+
+[filter "lfs"]
+  clean = git-lfs clean -- %f
+  smudge = git-lfs smudge -- %f
+  process = git-lfs filter-process
+  required = true
+
+[merge]
+  tool = idea
+  guitool = idea
+  conflictstyle = zdiff3
+[diff]
+  external = difft
+  tool = idea
+  guitool = idea
+  colorMoved = default
+
+[machete "github"]
+  annotateWithUrls = true
+
+[delta]
+  true-color = always
+  navigate = true
+  line-numbers = true
+  side-by-side = true
+  features = unobtrusive-line-numbers decorations
+  whitespace-error-style = 22 reverse
+  # delta detects terminal colors automatically; set one of these to disable auto-detection
+  # dark = true
+  # light = true
