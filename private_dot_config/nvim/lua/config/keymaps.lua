@@ -17,6 +17,14 @@ end
 
 _map({ "i", "v" }, "jk", "<ESC>")
 
+--
+-- Keymaps similar to Helix goto mode
+-- See: https://docs.helix-editor.com/keymap.html#goto-mode
+--
+_map({ "n", "v" }, "gs", "^") -- Go to first non-whitespace character of the line
+_map({ "n", "v" }, "gh", "0") -- Goto start of line
+_map({ "n", "v" }, "gl", "$") -- Goto end of line
+
 -- Disable default keymaps
 -- local del = vim.keymap.del
 -- del("n", "<leader>bb")
