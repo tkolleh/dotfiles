@@ -31,20 +31,6 @@ $character"""
 # Color palette for light/dark mode
 palette = "dark"
 
-[palettes.light]
-bg_brown = "#D4A373"
-bg_dark_cream = "#b7b7a4"
-bg_cream = "#FEFAE0"
-bg_light_green = "#E9EDC9"
-bg_green = "#CCD5AE"
-txt_clr = "#463f3a"
-red_clr = "#b61827"
-grn_clr = "#b2dfdb"
-bright_grn_clr = "#adc178"
-clay_clr = "#b7b7a4"
-red_clay_clr = "#6f1d1b"
-clear_clr = "#000000"
-
 [palettes.dark]
 bg_brown = "#D4A373"
 bg_dark_cream = "#b7b7a4"
@@ -64,9 +50,8 @@ success_symbol = "[](dimmed grn_clr)"
 error_symbol = " [](dimmed red_clr)"
 
 [directory]
-truncation_symbol = ""
+truncation_symbol = "../"
 truncation_length = 60
-fish_style_pwd_dir_length = 1
 style = "bg:bg_brown fg:clear_clr"
 format = """
 [](fg:clay_clr bg:txt_clr)\
