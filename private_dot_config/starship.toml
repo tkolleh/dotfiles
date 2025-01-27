@@ -53,7 +53,7 @@ error_symbol = " [](dimmed red_clr)"
 
 [directory]
 truncation_symbol = "../"
-truncation_length = 60
+truncation_length = 80
 style = "bg:bg_brown fg:clear_clr"
 format = """
 [](fg:clay_clr bg:txt_clr)\

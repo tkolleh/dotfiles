@@ -1,5 +1,6 @@
 tap "cormacrelf/tap"
 tap "coursier/formulas"
+tap "dwijnand/extras"
 tap "ellie/atuin"
 tap "eth-p/software"
 tap "graalvm/tap"
@@ -31,7 +32,6 @@ brew "asdf", args: ["HEAD"]
 brew "atuin"
 brew "bash"
 brew "bash-git-prompt"
-brew "libgit2@1.7"
 brew "bat"
 brew "bat-extras"
 brew "bfg"
@@ -46,6 +46,7 @@ brew "crane"
 brew "deno"
 brew "detox"
 brew "diff-so-fancy"
+brew "difftastic"
 brew "dive"
 brew "docker-completion"
 brew "docker"
@@ -111,6 +112,7 @@ brew "jq"
 brew "just"
 brew "lazydocker"
 brew "lefthook"
+brew "libgit2@1.7"
 brew "libproxy"
 brew "lnav"
 brew "luarocks"
@@ -125,7 +127,7 @@ brew "mvfst"
 brew "mysql@8.4", link: true
 brew "neofetch"
 brew "tree-sitter"
-brew "neovim"
+brew "neovim", args: ["HEAD"]
 brew "nghttp2"
 brew "oauth2l"
 brew "openldap"
@@ -142,7 +144,6 @@ brew "pre-commit"
 brew "prettier"
 brew "python@3.11"
 brew "python@3.9"
-brew "riff"
 brew "ripgrep"
 brew "ripgrep-all"
 brew "ruby-build"
@@ -179,6 +180,7 @@ brew "zsh"
 brew "zsh-history-substring-search"
 brew "cormacrelf/tap/dark-notify"
 brew "coursier/formulas/coursier"
+brew "dwijnand/extras/sbtx", args: ["HEAD"]
 brew "eth-p/software/bat-extras-batdiff", link: false
 brew "eth-p/software/bat-extras-batgrep", link: false
 brew "eth-p/software/bat-extras-batman", link: false
@@ -234,6 +236,7 @@ mas "Paste", id: 967805235
 mas "reMarkable", id: 1276493162
 mas "Snippety", id: 1530751461
 mas "Tabs Switcher", id: 1406718335
+mas "Todoist", id: 585829637
 mas "Xmind", id: 1327661892
 whalebrew "directory"
 vscode "google.geminicodeassist"

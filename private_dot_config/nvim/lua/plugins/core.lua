@@ -3,8 +3,6 @@
 -- ========================================
 --
 
-local utils = require("utils")
-
 -- every spec file under the "plugins" directory will be loaded automatically by lazy.nvim
 --
 -- In your plugin files, you can:
@@ -22,6 +20,7 @@ return {
     "LazyVim/LazyVim",
     opts = {
       colorscheme = function()
+        local utils = require("utils")
         if utils.is_background_dark() then
           utils.setDark()
         else
