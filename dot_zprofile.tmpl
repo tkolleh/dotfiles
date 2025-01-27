@@ -1,4 +1,4 @@
-# 
+# -*-mode:sh-*- vim:ft=zsh
 # ~/.zprofile
 # --------------------
 # Loaded at *login shells*
@@ -31,6 +31,20 @@ if [[ -f "$HOME/google-cloud-sdk/completion.zsh.inc" ]]; then
   # Enable shell command completion for gcloud.
   source "$HOME/google-cloud-sdk/path.zsh.inc"
   source "$HOME/google-cloud-sdk/completion.zsh.inc"
+fi
+
+if (( ${+commands[cs]} )); then
+  # Scala application manager
+  # Add coursier bin directory to PATH
+  eval "$(cs install --env)"
+
+  # Define JAVA_HOME and add it to the PATH. Assign existing JAVA_HOME to CS_FORMER_JAVA_HOME
+  {{ if (eq .chezmoi.username .chezmoi.config.data.work_username )}}
+  eval "$(cs java --architecture arm64 --jvm {{ .chezmoi.config.data.work_java_version }} --env)"
+  {{ else }}
+  eval "$(cs java --architecture arm64 --jvm {{ .chezmoi.config.data.sys_java_version }} --env)"
+  {{ end }}
+  export PATH="$JAVA_HOME/bin:$PATH"
 fi
 
 if (( ${+commands[lefthook]} )); then

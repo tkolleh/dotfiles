@@ -203,15 +203,8 @@ if (( ${+commands[go]} )); then
   export PATH="$(go env GOPATH)"/bin:$PATH.
 fi
 
-if (( ${+commands[cs]} )); then
-  # Scala application manager
-  # Add coursier bin directory to PATH
-  eval "$(cs install --env)"
-
-  # Define JAVA_HOME and add it to the PATH. Assign existing JAVA_HOME to CS_FORMER_JAVA_HOME
-  eval "$(cs java --architecture arm64 --jvm corretto:8 --env)"
-  export PATH="$JAVA_HOME/bin:$PATH"
-fi
+# Load Fuzzy finder completions and keybindings 
+if [[ -f "$HOME"/.fzf.zsh ]]; then source "$HOME"/.fzf.zsh; fi
 
 # MacOS alerting from terminal
 # https://github.com/vjeantet/alerter?tab=readme-ov-file
