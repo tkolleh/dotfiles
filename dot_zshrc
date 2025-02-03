@@ -151,6 +151,13 @@ if (( ${+commands[starship]} )); then
   eval "$(starship init zsh)"
 fi
 
+
+if (( ${+commands[cs]} )); then
+  # Scala application manager
+  # Add coursier bin directory to PATH
+  eval "$(cs install --env)"
+fi
+
 #
 # Alternative to cd
 #
@@ -177,9 +184,6 @@ if (( ${+commands[scala-cli]} )); then
   compinit
 fi
 
-# if (( ${+commands[pipx]} )); then
-#   register-python-argcomplete pipx
-# fi
 
 if (( ${+commands[poetry]} )); then
   # TODO: Move these to ZSH_CUSTOM similiar to how oh-my-zsh does it.

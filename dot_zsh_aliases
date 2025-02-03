@@ -99,4 +99,3 @@ alias macos_info=neofetch
 alias poetry-run="poetry run python -m"
 alias ghe='GH_HOST=code.corp.creditkarma.com gh'
 alias ghorg="git remote get-url origin | cut -d/ -f 4"
-alias sbt="sbtx"
