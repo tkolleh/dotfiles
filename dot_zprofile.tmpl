@@ -56,6 +56,8 @@ fi
 if (( ${+commands[moar]} )); then
   export PAGER='moar'
 fi
+export NVIM_SESSION="$XDG_CONFIG_HOME/nvim/session"
+export EDITOR='nvim'
 
 #
 # The preferred visual editor for local or set the remote
@@ -63,9 +65,7 @@ fi
 # "visual" editor like vi but something like ed
 #
 if (( ${+commands[zed]} )); then
-  export NVIM_SESSION="$XDG_CONFIG_HOME/nvim/session"
   export VISUAL='zed --wait --new'
-  export EDITOR='zed --wait --new'
 fi
 if [[ -n $SSH_CONNECTION ]]; then
   export VISUAL='zed --wait --new'
