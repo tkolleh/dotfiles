@@ -36,12 +36,16 @@
 [interactive]
   diffFilter = difft
 
-[mergetool "vimdiff"]
+[mergetool "neovim"]
   prompt = true
   cmd = nvim -d \"$LOCAL\" \"$REMOTE\" \"$MERGED\" -c '$wincmd w' -c 'wincmd J'
+
 [difftool "vimdiff"]
   prompt = true
   cmd = nvim -d \"$LOCAL\" \"$REMOTE\"
+[mergetool "vimdiff"]
+  prompt = true
+  cmd = nvim -c \"DiffviewOpen\" \"$MERGED\"
 
 [mergetool "idea"]
     cmd = idea merge $(cd $(dirname "$LOCAL") && pwd)/$(basename "$LOCAL") $(cd $(dirname "$REMOTE") && pwd)/$(basename "$REMOTE") $(cd $(dirname "$BASE") && pwd)/$(basename "$BASE") $(cd $(dirname "$MERGED") && pwd)/$(basename "$MERGED")
@@ -56,12 +60,12 @@
   required = true
 
 [merge]
-  tool = idea
+  tool = vimdiff
   guitool = idea
   conflictstyle = zdiff3
 [diff]
   external = difft
-  tool = idea
+  tool = vimdiff
   guitool = idea
   colorMoved = default
 

@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/usr/bin/env zsh
 # -*-mode:zsh-*- vim:ft=zsh
 #
 # ~/.zsh_functions
@@ -43,26 +43,6 @@ function syspath(){
    echo $PATH | sed 's/:/\n/g' | sort | uniq -c
 }
 
-# Open Marked 2, passing provided file path to the application
-function marked() {
-  if [ -n "${1}" ]; then
-    open -a "Marked 2" "${1}"
-  else
-    open -a "Marked 2"
-  fi
-}
-
-# Print the difference between the target state and the destination state for
-# targets. If no targets are specified, print the differences for all targets.
-function chezmoidiff() {
-  if [ -n "${1}" ]; then
-    chezmoi diff --format=git "${1}" | delta
-  else
-    chezmoi diff --format=git
-  fi
-}
-
-
 # Install requirements.txt in conda environment
 #
 # Original solution via StackOverflow:
@@ -86,14 +66,14 @@ function conda_install_requirements() {
 # find-in-file - usage: fif <searchTerm>
 # reference: https://github.com/junegunn/fzf/wiki/examples#searching-file-contents
 function fif() {
-  if [ ! "$#" -gt 0 ]; then
+  if [[ $# -eq 0 ]]; then
     echo "Need a string to search for!"
     return 1
   fi
-  rg --files-with-matches --no-messages "$1" | fzf \
-    -m \
-    --preview "highlight -O ansi -l {} 2> /dev/null | rg --colors 'match:bg:yellow' --ignore-case --pretty --context 10 '$1' || rg --ignore-case --pretty --context 10 '$1' {}" \
-    --bind="f9:execute:hx {} < /dev/tty"
+  rg --files-with-matches --no-messages "$1" | fzf -m | awk '{
+    gsub(/ /, "\\ ", $0);  # Escape spaces with backslashes
+    print "\"" $0 "\""
+  }' | xargs $EDITOR
 }
 
 # an alternative to the above using ripgrep-all (rga)
@@ -108,15 +88,22 @@ function fid() {
     --bind="f9:execute:hx {} < /dev/tty"
 }
 
-# fbc - fuzzy Find Branch to Checkout
+# fbc - fuzzy Find Branch or tag to Checkout
 # checkout git branch (including remote branches), sorted by most recent commit, limit 30 last branches
 # reference: https://github.com/junegunn/fzf/wiki/examples#git
 function fcb() {
-  local branches branch
-  branches=$(git for-each-ref --count=30 --sort=-committerdate refs/heads/ --format="%(refname:short)") &&
-    branch=$(echo "$branches" |
-      fzf-tmux -d $((2 + $(wc -l <<<"$branches"))) +m) &&
-    git checkout $(echo "$branch" | sed "s/.* //" | sed "s#remotes/[^/]*/##")
+  local tags branches target
+  branches=$(
+    git --no-pager branch --all \
+      --format="%(if)%(HEAD)%(then)%(else)%(if:equals=HEAD)%(refname:strip=3)%(then)%(else)%1B[0;34;1mbranch%09%1B[m%(refname:short)%(end)%(end)" \
+    | sed '/^$/d') || return
+  tags=$(
+    git --no-pager tag | awk '{print "\x1b[35;1mtag\x1b[m\t" $1}') || return
+  target=$(
+    (echo "$branches"; echo "$tags") |
+    fzf --no-hscroll --no-multi -n 2 \
+        --ansi) || return
+  git checkout $(awk '{print $2}' <<<"$target" )
 }
 
 __alias glNoGraph='git log --color=always --format="%C(auto)%h%d %s %C(black)%C(bold)%cr% C(auto)%an" "$@"'
@@ -157,33 +144,6 @@ function contentlength() {
     curl -sLI $1 | awk 'tolower($1) ~ /content-length/ {print $1, ($2/1000000), "MB"}'
   else
     echo "Enter URL to file"
-  fi
-}
-
-function update_tmux() {
-  echo "                                                                     ";
-  echo " | | ._   _|  _. _|_  _    _|_ ._ _           ._  |      _  o ._   _ ";
-  echo " |_| |_) (_| (_|  |_ (/_    |_ | | | |_| ><   |_) | |_| (_| | | | _> ";
-  echo "     |                                        |          _|          ";
-  echo -e '  \u001b[34mUpdate all tmux plugins\u001b[0m'
-  echo -e '  \u001b[34mTPM updating plugins\u001b[0m'
-  echo -e '==========================='
-
-  echo -e '  \u001b[34mCreating TMUX main session or attaching if exists\u001b[0m'
-  tmux new-session -A -s main
-
-  if $HOME/.tmux/plugins/tpm/bin/update_plugins all; then
-    echo -e '==========================='
-    echo -e '  \u001b[34mTMUX plugins updated\u001b[0m'
-    if tmux source-file $HOME/.tmux.conf; then
-      echo -e '  \u001b[34mSourced tmux config\u001b[0m'
-    else
-      echo -e '  \u001b[34mError sourcing tmux configuration\u001b[0m'
-    fi
-  else
-    echo -e '==========================='
-    echo -e '  \u001b[34mError updating tmux plugins\u001b[0m'
-    echo -e '  \u001b[34mvisit: https://github.com/tmux-plugins/tpm/blob/master/docs/managing_plugins_via_cmd_line.md\u001b[0m'
   fi
 }
 
@@ -348,22 +308,6 @@ function print_jvm_versions(){
   done
 }
 
-function afzf(){
-  atuin history list --cmd-only | fzf
-}
-
-function cd_with_fzf(){
-  echo "Use Yazi instead."
-  cd $HOME && cd $(fd -t d | fzf --preview="eza --long --tree --level=1 {}") && echo "${PWD}" && eza --long --tree --level=2
-}
-
-function batFollow(){
-  echo -e "\nNot the best tool. Consider these alternatives;"
-  echo "- batwatch"
-  echo "- lnav"
-  tail -f "${1}" | bat -l syslog --paging=never
-}
-
 function extract_file_from_image(){
   if [ $# -eq 3 ]; then
     echo -e "\nExtracting file [$2] from image [$1]"
@@ -487,3 +431,4 @@ function lzy() {
 	fi
 	rm -f -- "$tmp"
 }
+

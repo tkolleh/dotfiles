@@ -7,6 +7,10 @@ auto-update-channel = tip
 #foreground = feffff
 #split-divider-color = ef766d
 
+# Cursor configuration
+cursor-style-blink
+cursor-style-blink = true
+
 # apperance specific themes
 theme = dark:github dark,light:Raycast_Light
 

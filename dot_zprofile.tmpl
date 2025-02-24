@@ -40,9 +40,9 @@ if (( ${+commands[cs]} )); then
 
   # Define JAVA_HOME and add it to the PATH. Assign existing JAVA_HOME to CS_FORMER_JAVA_HOME
   {{ if (eq .chezmoi.username .chezmoi.config.data.work_username )}}
-  eval "$(cs java --architecture arm64 --jvm {{ .chezmoi.config.data.work_java_version }} --env)"
+  JAVA_HOME="$(cs java-home --architecture arm64 --jvm {{ .chezmoi.config.data.work_java_version }})"
   {{ else }}
-  eval "$(cs java --architecture arm64 --jvm {{ .chezmoi.config.data.sys_java_version }} --env)"
+  JAVA_HOME="$(cs java-home --architecture arm64 --jvm {{ .chezmoi.config.data.sys_java_version }})"
   {{ end }}
   export PATH="$JAVA_HOME/bin:$PATH"
 fi
@@ -58,16 +58,14 @@ if (( ${+commands[moar]} )); then
 fi
 export NVIM_SESSION="$XDG_CONFIG_HOME/nvim/session"
 export EDITOR='nvim'
+export VISUAL='nvim'
 
 #
 # The preferred visual editor for local or set the remote
 # visual editor. The EDITOR variable technically shouldn't be set to a
 # "visual" editor like vi but something like ed
 #
-if (( ${+commands[zed]} )); then
-  export VISUAL='zed --wait --new'
-fi
-if [[ -n $SSH_CONNECTION ]]; then
+if (( ${+commands[zed]} )) && [[ -n $SSH_CONNECTION ]]; then
   export VISUAL='zed --wait --new'
 fi
 
