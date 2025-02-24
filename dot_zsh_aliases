@@ -13,25 +13,15 @@
 # Redefine standard commands to improve their behavior
 # -----------------------------------------------------------------------------
 #
-# TODO: use oh-my-zshell alias functions
 #
-# -- Local navigation --------------------------------------------------
+
 if (( ${+commands[eza]} )); then
   __alias ll "eza --time modified --all --binary --git --header --long --color=always "
   __alias lt "eza --long --tree --level=3 "
 fi
 
-# -- Git --------------------------------------------------
-__remove_alias grmci
-function grmci () {
-  # TODO: Function needs to be reworked doesn't really do what I want
-  # Remove cached files that have been ignored by git locally or globally.
-  git ls-files --others | xargs -n1 -I '{}' git rm --cached --quiet --ignore-unmatch -- ./{}
-}
-
 # __alias gignored "git ls-files -v $(git rev-parse --show-toplevel) | (grep '^[[:lower:]]' || echo 'None ignored.') && echo '\nIgnore changes with:   git update-index --assume-unchanged <file> \nor track again with:   git update-index --no-assume-unchanged <file>'"
 
-#__remove_alias gcp # Use gnu cp command as default for `gcp`. Gnu cp is installed with `brew install coreutils`
 __alias gst "git status -b"
 __alias gsta " git log --oneline \
   --pretty='%Cred%h%Creset -%C(auto)%d%Creset %<(50,trunc)%s %Cgreen(%cr) %C(bold blue)<%an>%Creset' -5; \
@@ -41,61 +31,33 @@ __alias glog "git log --oneline --decorate --graph --show-signature"
 __alias gloga "git log --oneline --decorate --graph --show-signature --all"
 __alias gwch "git whatchanged -p --abbrev-commit --pretty=medium"
 __alias gcd "git checkout development"
-  __alias glos "git log --oneline --pretty='%Cred%h%Creset -%C(auto)%d%Creset %<(50,trunc)%s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --no-merges"
+__alias glos "git log --oneline --pretty='%Cred%h%Creset -%C(auto)%d%Creset %<(50,trunc)%s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --no-merges"
 
-# -- miscellaneous --------------------------------------------------
+__alias rg "$(brew --prefix rg)/bin/rg --smart-case"
+__alias batgrep "batgrep --smart-case"
 
-alias rg="$(brew --prefix rg)/bin/rg --smart-case"
-alias batgrep="batgrep --smart-case"
-# https://github.com/antonmedv/fx
-alias fx="FX_LANG=python3 NODE_PATH=`npm root -g` fx"
 # https://github.com/antonmedv/eat
-alias eat="NODE_PATH=`npm root -g` eat"
-alias fd="fd --unrestricted --ignore-case"
+__alias eat "NODE_PATH=`npm root -g` eat"
 
-# Reloads the configuration.
-if [ -n "$ZSH_VERSION" ]; then
-    __alias resource 'source $HOME/.zshrc'
-else
-    __alias resource 'source $HOME/.bash_profile'
-fi
+__alias fd "fd --unrestricted --ignore-case"
 
-__alias note 'cd $MARKDOWN_NOTES && lvim .'
-# __alias gradle "TERM=xterm ./gradlew"
-
-#__alias lldb "PATH=/usr/bin:$PATH lldb"
-# alias pandoc="/usr/local/opt/pandoc/bin/pandoc"
+__alias resource 'source $HOME/.zshrc; source $HOME/.zprofile; source $HOME/.zsh_functions'
 
 __alias chezmoidelta "chezmoi source pull -- --rebase && chezmoi diff | delta"
-#__alias ipython "EDITOR=zed ipython"
 __alias gloudtoken "gcloud auth login --brief && gcloud auth print-identity-token"
-__alias trash_pycharm_remote_resources "trash -v ~/Library/Caches/JetBrains/PyCharm2021.2/remote_sources ~/Library/Caches/JetBrains/PyCharm2021.2/tmp"
 
-# __alias tg "terragrunt"
+__alias sbtn "SCALACTIC_FILL_FILE_PATHNAMES=yes sbtn -Dsbt.color=always --verbose"
 
-__alias tmuxm "tmux new-session -A -s main"
-
-alias sbtn="SCALACTIC_FILL_FILE_PATHNAMES=yes sbtn -Dsbt.color=always --verbose"
-
-__alias tmux-save-pane 'tmux capture-pane -pS -'
-
-# -- configuration paths ------------------------------------------------------
 
 # Navigates to Chezmoi's local repo.
-if command -v chezmoi > /dev/null; then
-    if [[ "$OSTYPE" =~ ^(cygwin|mingw|msys) ]]; then
-        # shellcheck disable=SC2046,SC2139
-        __alias chezmoiconf "cd $(chezmoi source-path | tr '\\/' '/' | tr -d ':' | awk '{print "/"$1}')"
-    else
-        __alias chezmoiconf 'cd $(chezmoi source-path)'
-    fi
+if (( ${+commands[chezmoi]} )); then
+  __alias chezmoiconf 'cd $(chezmoi source-path)'
 else
-    __alias chezmoiconf 'cd $HOME/.local/share/chezmoi'
+  __alias chezmoiconf 'cd $HOME/.local/share/chezmoi'
 fi
 
-# Because I keep forgetting the name of this command
-alias macos_info=neofetch
+__alias macos_info neofetch
 
-alias poetry-run="poetry run python -m"
-alias ghe='GH_HOST=code.corp.creditkarma.com gh'
-alias ghorg="git remote get-url origin | cut -d/ -f 4"
+__alias poetry-run "poetry run python -m"
+__alias ghe 'GH_HOST code.corp.creditkarma.com gh'
+__alias ghorg "git remote get-url origin | cut -d/ -f 4"
