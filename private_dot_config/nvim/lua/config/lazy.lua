@@ -16,9 +16,28 @@ vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
   spec = {
-    -- add LazyVim and import its plugins
+    -- Load order 1: add LazyVim and import its plugins
     { "LazyVim/LazyVim", import = "lazyvim.plugins" },
-    -- import/override with your plugins
+    --Load order 2:  add LazyVim extras
+    { import = "lazyvim.plugins.extras.dap.core" },
+    { import = "lazyvim.plugins.extras.lang.docker" },
+    { import = "lazyvim.plugins.extras.lang.helm" },
+    { import = "lazyvim.plugins.extras.lang.java" },
+    { import = "lazyvim.plugins.extras.lang.markdown" },
+    { import = "lazyvim.plugins.extras.lang.python" },
+    { import = "lazyvim.plugins.extras.lang.scala" },
+    { import = "lazyvim.plugins.extras.lang.sql" },
+    { import = "lazyvim.plugins.extras.lang.terraform" },
+    { import = "lazyvim.plugins.extras.lang.thrift" },
+    { import = "lazyvim.plugins.extras.lang.toml" },
+    { import = "lazyvim.plugins.extras.lang.typescript" },
+    { import = "lazyvim.plugins.extras.lang.yaml" },
+    { import = "lazyvim.plugins.extras.formatting.prettier" },
+    { import = "lazyvim.plugins.extras.lang.json" },
+    { import = "lazyvim.plugins.extras.lang.rust" },
+    { import = "lazyvim.plugins.extras.lang.tailwind" },
+    { import = "lazyvim.plugins.extras.linting.eslint" },
+    -- Load order 3: import/override with your plugins
     { import = "plugins" },
   },
   defaults = {

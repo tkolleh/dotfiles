@@ -16,16 +16,26 @@ local function _map(mode, lhs, rhs, opts)
   end
 end
 
--- Escape to normal with 'jk'
-_map({ "i", "v" }, "jk", "<ESC>")
+_map({ "i", "v" }, "jk", "<ESC>", { desc = "Escape to normal with 'jk'" })
 
---
+-- d means delete not delete and copy
+_map({ "n", "v" }, "d", '"_d')
+_map({ "n", "v" }, "D", '"_D')
+
+-- dont copy on paste
+_map({ "v" }, "p", "P")
+
+vim.keymap.set({ "v" }, "<leader>/", LazyVim.pick("grep_cword"), { noremap = true, desc = "Word (Root Dir)" })
+
 -- Keymaps similar to Helix goto mode
 -- See: https://docs.helix-editor.com/keymap.html#goto-mode
---
-_map({ "n", "v" }, "gs", "^") -- Go to first non-whitespace character of the line
-_map({ "n", "v" }, "gh", "0") -- Goto start of line
-_map({ "n", "v" }, "gl", "$") -- Goto end of line
+_map({ "n", "v" }, "gh", "^", { desc = "Go to first non-whitespace character of the line" })
+_map({ "n", "v" }, "gl", "$", { desc = "Goto end of line" })
+
+-- Keymaps set the paste register to the current buffer path
+-- Includes the current line number thanks to `wsdjeg/vim-fetch`
+_map({ "n" }, "<leader>fy", ":call setreg('+', expand('%:.') .. ':' .. line('.'))<CR>", { desc = "Yank path" })
+_map({ "n" }, "<leader>fO", ":e <C-r>+<CR>", { noremap = true, desc = "Open path in clipboard" })
 
 --
 -- Keymaps similar to vim unimpaired
@@ -80,14 +90,6 @@ Snacks.toggle({
   end,
 }):map("yor")
 
--- Disable default keymaps
--- local del = vim.keymap.del
--- del("n", "<leader>bb")
--- del("n", "<leader>wd")
--- del("n", "<leader>l")
--- del("n", "<leader>ft")
--- del("n", "<leader>fT")
-
 Snacks.toggle({
   name = "Dark Colorscheme",
   get = utils.is_background_dark,
@@ -99,3 +101,10 @@ Snacks.toggle({
     end
   end,
 }):map("<leader>ub")
+
+-- Disable default keymaps
+local del = vim.keymap.del
+
+-- Unmap saving
+del("i", "<C-s>")
+del("v", "<C-s>")

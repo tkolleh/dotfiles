@@ -1,21 +1,24 @@
 --
 -- Utility functions
 --
-
 local M = {}
 
 M.setDark = function()
   vim.api.nvim_set_option_value("background", "dark", {})
-  vim.cmd("colorscheme tokyonight-moon")
+  vim.api.nvim_command("highlight clear")
+  vim.api.nvim_command("syntax reset")
+  vim.api.nvim_command("colorscheme github_dark_tritanopia")
 end
 
 M.setLight = function()
   vim.api.nvim_set_option_value("background", "light", {})
-  vim.cmd("colorscheme github_light_high_contrast")
+  vim.api.nvim_command("highlight clear")
+  vim.api.nvim_command("syntax reset")
+  vim.api.nvim_command("colorscheme github_light_tritanopia")
 end
 
 M.is_background_dark = function()
-  local bg = vim.opt.background:get()
+  local bg = vim.api.nvim_get_option_value("bg", {})
   local colorscheme = vim.g.colors_name
 
   -- Check if it's explicitly set to 'dark'.
