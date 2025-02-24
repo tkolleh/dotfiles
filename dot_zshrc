@@ -104,12 +104,12 @@ if (( ${+commands[fd]} )) && (( ${+commands[rg]} )) && (( ${+commands[fzf]} )) &
     export FZF_DEFAULT_OPTS="
     --bind 'f1:execute(bat --paging=always --color=always {})'
     --bind 'f2:execute($EDITOR {})+abort'
-    --bind 'ctrl-y:execute-silent(echo -n {2..} | pbcopy)+abort'
+    --bind 'ctrl-y:execute-silent(echo -n {} | pbcopy)+abort'
     --bind 'ctrl-z:toggle-up'
     --bind '?:toggle-preview'
     --preview='bat --number --color=always {} | head -700' --preview-window='right:50%:hidden'
     --color header:italic
-    --header 'Press CTRL-Y to copy command into clipboard - F2 to open - CTRL-Z to toggle selection'"
+    --header '<CTRL-Y>:copy - <F2>:open - <tab|CTRL-Z>:select'"
 
     export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 
