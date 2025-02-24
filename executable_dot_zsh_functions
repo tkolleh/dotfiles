@@ -17,25 +17,17 @@ function cmd_path() {
 #
 # Alias helper functions
 #
-function __remove_alias() {
-  local CMDTYPE=$(type "$1")
-  case $CMDTYPE in
-    *"alias"*)
-      unalias $1 2> >(grep -Ev 'no such hash table element' >&2)
-    ;;
-    *"function"*)
-      echo -e "\u001b[34mError: alias is a function\u001b[0m"
-    ;;
-    *"not found"*)
-    ;;
-    *)
-      echo -e "Error: unknown command type for $1 return message is '$CMDTYPE'"
-    ;;
-  esac
-}
+# Overwrite alias if argument is an aliase otherwi
 function __alias () {
-  __remove_alias "$1"
-  alias "${1}"="${2}"
+  if (( $+aliases[$1] )); then
+    unalias "$1"
+    alias "$1"="$2"
+  elif type -w "$1" >/dev/null 2>&1; then
+    local x=$(type -w "$1")
+    echo "'$1' cannot be assigned as an alias, already exists as: '$x'" >&2
+  else
+    alias "$1"="$2"
+  fi
 }
 
 # Print paths on new line and count
@@ -43,24 +35,6 @@ function syspath(){
    echo $PATH | sed 's/:/\n/g' | sort | uniq -c
 }
 
-# Install requirements.txt in conda environment
-#
-# Original solution via StackOverflow:
-# http://stackoverflow.com/questions/35802939/install-only-available-packages-using-conda-install-yes-file-requirements-t
-#
-function conda_install_requirements() {
-  #  Install via `conda` directly.
-  #  This will fail to install all
-  #  dependencies. If one fails,
-  #  all dependencies will fail to install.
-  conda install --yes --file requirements.txt
-
-  #
-  #  To go around issue above, one can
-  #  iterate over all lines in the
-  #  requirements.txt file.
-  while read requirement; do conda install --yes $requirement; done < requirements.txt
-}
 
 # using ripgrep combined with preview
 # find-in-file - usage: fif <searchTerm>
