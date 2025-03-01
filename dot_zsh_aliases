@@ -33,13 +33,13 @@ __alias gwch "git whatchanged -p --abbrev-commit --pretty=medium"
 __alias gcd "git checkout development"
 __alias glos "git log --oneline --pretty='%Cred%h%Creset -%C(auto)%d%Creset %<(50,trunc)%s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --no-merges"
 
-__alias rg "$(brew --prefix rg)/bin/rg --smart-case"
-__alias batgrep "batgrep --smart-case"
+alias rg "$(brew --prefix rg)/bin/rg --smart-case"
+alias batgrep "batgrep --smart-case"
 
 # https://github.com/antonmedv/eat
 __alias eat "NODE_PATH=`npm root -g` eat"
 
-__alias fd "fd --unrestricted --ignore-case"
+alias fd "fd --unrestricted --ignore-case"
 
 __alias resource 'source $HOME/.zshrc; source $HOME/.zprofile; source $HOME/.zsh_functions'
 
