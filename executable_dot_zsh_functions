@@ -44,7 +44,7 @@ function fif() {
     echo "Need a string to search for!"
     return 1
   fi
-  rg --files-with-matches --no-messages "$1" | fzf -m | awk '{
+  rg --ignore-case --files-with-matches --no-messages "$1" | fzf -m | awk '{
     gsub(/ /, "\\ ", $0);  # Escape spaces with backslashes
     print "\"" $0 "\""
   }' | xargs $EDITOR
@@ -94,8 +94,8 @@ function fcoc_preview() {
 }
 
 # fshow_preview - git commit browser with previews
-function fshow_preview() {
-  glNoGraph |
+function fgshow() {
+  glNoGraph "$@" |
     fzf --no-sort --reverse --tiebreak=index --no-multi \
       --ansi --preview="$_viewGitLogLine" \
       --header "enter to view, alt-y to copy hash" \
@@ -405,4 +405,3 @@ function lzy() {
 	fi
 	rm -f -- "$tmp"
 }
-
