@@ -3,7 +3,7 @@ return {
   dependencies = {
     "nvim-lua/plenary.nvim",
   },
-  ft = { "scala", "sbt", "java" },
+  ft = { "scala", "sbt", "sc", "java" },
   keys = {
     {
       "<leader>me",
