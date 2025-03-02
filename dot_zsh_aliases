@@ -37,7 +37,7 @@ alias rg "$(brew --prefix rg)/bin/rg --smart-case"
 alias batgrep "batgrep --smart-case"
 
 # https://github.com/antonmedv/eat
-__alias eat "NODE_PATH=`npm root -g` eat"
+alias eat "NODE_PATH=`npm root -g` eat"
 
 alias fd "fd --unrestricted --ignore-case"
 
@@ -46,7 +46,7 @@ __alias resource 'source $HOME/.zshrc; source $HOME/.zprofile; source $HOME/.zsh
 __alias chezmoidelta "chezmoi source pull -- --rebase && chezmoi diff | delta"
 __alias gloudtoken "gcloud auth login --brief && gcloud auth print-identity-token"
 
-__alias sbtn "SCALACTIC_FILL_FILE_PATHNAMES=yes sbtn -Dsbt.color=always --verbose"
+alias sbtn "SCALACTIC_FILL_FILE_PATHNAMES=yes sbtn -Dsbt.color=always --verbose"
 
 
 # Navigates to Chezmoi's local repo.
