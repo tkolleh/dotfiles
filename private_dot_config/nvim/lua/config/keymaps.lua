@@ -37,7 +37,6 @@ _map({ "n", "v" }, "gl", "$", { desc = "Goto end of line" })
 _map({ "n" }, "<leader>fy", ":call setreg('+', expand('%:.') .. ':' .. line('.'))<CR>", { desc = "Yank path" })
 _map({ "n" }, "<leader>fO", ":e <C-r>+<CR>", { noremap = true, desc = "Open path in clipboard" })
 
-_map({ "n" }, "//", LazyVim.pick("grep_cword"), { desc = "Word (Root Dir)" })
 _map({ "v" }, "//", LazyVim.pick("grep_visual"), { desc = "Selection (Root Dir)" })
 
 --
