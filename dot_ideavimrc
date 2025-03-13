@@ -76,9 +76,6 @@ set which-key
 " Extended matching.  A Neovim default plugin.
 set matchit
 
-" To track Action-IDs
-" :action VimFindActionIdAction
-
 " Go to Left Window
 nmap <C-h> <C-w>h
 " Go to Lower Window
@@ -259,7 +256,14 @@ nmap <leader><tab>f <Action>(StoreDefaultLayout)<Action>(ChangeToolWindowLayout)
 nmap <leader>cc :echo 'There is no equivalent mapping for Lsp Info.'<cr>
 " Goto Definition
 nmap gd <Action>(GotoDeclaration)
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" Preview implementation
+nnoremap gpi :action QuickImplementations<CR>
+" Preview definition 
+nnoremap gpd :action QuickImplementations<CR>
+" Preview type definition 
+nnoremap gpt :action QuickTypeDefinition<CR>
+
 " References
 nmap gr <Action>(FindUsages)
 " Goto Implementation
@@ -491,3 +495,7 @@ nmap <leader>tw <Action>(ToggleTestWatch)
 " nvim-dap
 " Debug Nearest
 nmap <leader>td <Action>(ChooseDebugConfiguration)
+
+" Open project switcher
+"
+nmap <leader>P :action ManageRecentProjects<cr>

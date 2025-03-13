@@ -110,3 +110,7 @@ local del = vim.keymap.del
 -- Unmap saving
 del("i", "<C-s>")
 del("v", "<C-s>")
+-- del("n", "<leader>gy")
+-- del("v", "<leader>gy")
+-- del("n", "<leader>gY")
+-- del("v", "<leader>gY")
