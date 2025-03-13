@@ -151,11 +151,18 @@ if (( ${+commands[starship]} )); then
   eval "$(starship init zsh)"
 fi
 
-
 if (( ${+commands[cs]} )); then
   # Scala application manager
   # Add coursier bin directory to PATH
   eval "$(cs install --env)"
+
+  # Define JAVA_HOME and add it to the PATH. Assign existing JAVA_HOME to CS_FORMER_JAVA_HOME
+  {{ if (eq .chezmoi.username .chezmoi.config.data.work_username )}}
+  JAVA_HOME="$(cs java-home --architecture arm64 --jvm {{ .chezmoi.config.data.work_java_version }})"
+  {{ else }}
+  JAVA_HOME="$(cs java-home --architecture arm64 --jvm {{ .chezmoi.config.data.sys_java_version }})"
+  {{ end }}
+  export PATH="$JAVA_HOME/bin:$PATH"
 fi
 
 #
