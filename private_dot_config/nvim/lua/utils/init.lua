@@ -50,4 +50,34 @@ M.is_background_dark = function()
   return false
 end
 
+M.cycle_diagnostics_display = function()
+  -- Cycle from:
+  -- * nothing displayed
+  -- * single diagnostic at the end of the line (`virtual_text`)
+  -- * full diagnostics using virtual text (`virtual_lines`)
+
+  -- check if text and lines are not (explicitly) equal to false ortherwise true
+  local text = vim.diagnostic.config().virtual_text ~= false
+  local lines = vim.diagnostic.config().virtual_lines ~= false
+
+  -- Text -> Lines transition
+  if text then
+    text = false
+    lines = true
+  -- Lines -> Nothing transition
+  elseif lines then
+    text = false
+    lines = false
+  -- Nothing -> Text transition
+  else
+    text = true
+    lines = false
+  end
+
+  vim.diagnostic.config({
+    virtual_text = text,
+    virtual_lines = lines,
+  })
+end
+
 return M
