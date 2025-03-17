@@ -39,6 +39,13 @@ _map({ "n" }, "<leader>fO", ":e <C-r>+<CR>", { noremap = true, desc = "Open path
 
 _map({ "v" }, "//", LazyVim.pick("grep_visual"), { desc = "Selection (Root Dir)" })
 
+vim.keymap.set(
+  { "n" },
+  "<leader>cD",
+  utils.cycle_diagnostics_display,
+  { noremap = true, desc = "Cycle diagnostic display" }
+)
+
 --
 -- Keymaps similar to vim unimpaired
 -- See: https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt
