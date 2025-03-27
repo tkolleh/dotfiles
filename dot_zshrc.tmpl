@@ -100,7 +100,7 @@ if (( ${+commands[fd]} )) && (( ${+commands[rg]} )) && (( ${+commands[fzf]} )) &
     --bind 'ctrl-y:execute-silent(echo -n {} | pbcopy)+abort'
     --bind 'ctrl-z:toggle-up'
     --bind '?:toggle-preview'
-    --preview='bat --number --color=always {} | head -700' --preview-window='right:50%:hidden'
+    --preview='bat --number --color=always --style=numbers,changes {} | head -700' --preview-window='right:50%:hidden'
     --color header:italic
     --header '<CTRL-Y>:copy - <F2>:open - <tab|CTRL-Z>:select'"
 
