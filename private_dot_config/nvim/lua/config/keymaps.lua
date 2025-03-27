@@ -16,7 +16,7 @@ local function _map(mode, lhs, rhs, opts)
   end
 end
 
-_map({ "i", "v" }, "jk", "<ESC>", { desc = "Escape to normal with 'jk'" })
+_map({ "i" }, "jk", "<ESC>", { desc = "Escape to normal with 'jk'" })
 
 -- d means delete not delete and copy
 _map({ "n", "v" }, "d", '"_d')
