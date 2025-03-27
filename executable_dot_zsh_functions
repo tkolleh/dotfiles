@@ -405,3 +405,8 @@ function lzy() {
 	fi
 	rm -f -- "$tmp"
 }
+
+function ssh_ghostty() {
+  infocmp -x | ssh -p $1 $2 -- tic -x -
+  ssh -p $1 $2
+}
