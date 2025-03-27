@@ -33,29 +33,29 @@ if [[ -f "$HOME/google-cloud-sdk/completion.zsh.inc" ]]; then
   source "$HOME/google-cloud-sdk/completion.zsh.inc"
 fi
 
-if (( ${+commands[cs]} )); then
+# if (( ${+commands[cs]} )); then
   # Scala application manager
   # Add coursier bin directory to PATH
   eval "$(cs install --env)"
 
   # Define JAVA_HOME and add it to the PATH. Assign existing JAVA_HOME to CS_FORMER_JAVA_HOME
   {{ if (eq .chezmoi.username .chezmoi.config.data.work_username )}}
-  JAVA_HOME="$(cs java-home --architecture arm64 --jvm {{ .chezmoi.config.data.work_java_version }})"
+  export JAVA_HOME="$(cs java-home --architecture arm64 --jvm {{ .chezmoi.config.data.work_java_version }})"
   {{ else }}
-  JAVA_HOME="$(cs java-home --architecture arm64 --jvm {{ .chezmoi.config.data.sys_java_version }})"
+  export JAVA_HOME="$(cs java-home --architecture arm64 --jvm {{ .chezmoi.config.data.sys_java_version }})"
   {{ end }}
   export PATH="$JAVA_HOME/bin:$PATH"
-fi
+# fi
 
-if (( ${+commands[lefthook]} )); then
+# if (( ${+commands[lefthook]} )); then
   export LEFTHOOK_HOME="$(brew --prefix lefthook)"
   export PATH="$LEFTHOOK_HOME/bin:$PATH"
-fi
+# fi
 
 # The preferred pager
-if (( ${+commands[moar]} )); then
+# if (( ${+commands[moar]} )); then
   export PAGER='moar'
-fi
+# fi
 export NVIM_SESSION="$XDG_CONFIG_HOME/nvim/session"
 export EDITOR='nvim'
 export VISUAL='nvim'

@@ -68,7 +68,10 @@ export ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE="50"
 # Enable aynchronous mode.
 export ZSH_AUTOSUGGEST_USE_ASYNC=true
 
-if (( ${+commands[conda]} )); then
+
+export CURL_HOME="$(brew --prefix curl)"
+
+# if (( ${+commands[conda]} )); then
     zpm load @github/esc/conda-zsh-completion
     export CONDA_ENVS="/usr/local/anaconda3/envs"
 
@@ -90,9 +93,9 @@ if (( ${+commands[conda]} )); then
     #
     # <<< conda initialize <<<
     #
-fi
+# fi
 
-if (( ${+commands[fd]} )) && (( ${+commands[rg]} )) && (( ${+commands[fzf]} )) && (( ${+commands[bat]} )); then
+# if (( ${+commands[fd]} )) && (( ${+commands[rg]} )) && (( ${+commands[fzf]} )) && (( ${+commands[bat]} )); then
     export FZF_DEFAULT_COMMAND='fd --type f --color=never --ignore-case --no-ignore --hidden --follow'
     export FZF_DEFAULT_OPTS="
     --bind 'f1:execute(bat --paging=always --color=always {})'
@@ -111,7 +114,7 @@ if (( ${+commands[fd]} )) && (( ${+commands[rg]} )) && (( ${+commands[fzf]} )) &
 
     # Search recent commands
     export FZF_CTRL_R_OPTS="$FZF_DEFAULT_OPTS"
-fi
+# fi
 
 # Load custom code from separate configuration file.
 if [[ -f "$HOME"/.zsh_functions ]]; then source "$HOME"/.zsh_functions; fi
@@ -139,63 +142,80 @@ fi
 # Starship cross-shell prompt
 #
 # Install starship
-if (( ${+commands[starship]} )); then
+# if (( ${+commands[starship]} )); then
   export STARSHIP_LOG=error
   eval "$(starship init zsh)"
-fi
+# fi
 
-if (( ${+commands[cs]} )); then
+# if (( ${+commands[cs]} )); then
   # Scala application manager
   # Add coursier bin directory to PATH
   eval "$(cs install --env)"
 
   # Define JAVA_HOME and add it to the PATH. Assign existing JAVA_HOME to CS_FORMER_JAVA_HOME
   {{ if (eq .chezmoi.username .chezmoi.config.data.work_username )}}
-  JAVA_HOME="$(cs java-home --architecture arm64 --jvm {{ .chezmoi.config.data.work_java_version }})"
+  export JAVA_HOME="$(cs java-home --architecture arm64 --jvm {{ .chezmoi.config.data.work_java_version }})"
   {{ else }}
-  JAVA_HOME="$(cs java-home --architecture arm64 --jvm {{ .chezmoi.config.data.sys_java_version }})"
+  export JAVA_HOME="$(cs java-home --architecture arm64 --jvm {{ .chezmoi.config.data.sys_java_version }})"
   {{ end }}
   export PATH="$JAVA_HOME/bin:$PATH"
-fi
+# fi
 
 #
 # Alternative to cd
 #
 # The default command is `z` add the `--cmd cd` option to
 # replaces `cd` command.
-if (( ${+commands[zoxide]} )); then
+# if (( ${+commands[zoxide]} )); then
   export _ZO_ECHO=1
   eval "$(zoxide init zsh)"
-else
-  echo "zoxide not found"
-fi
+# fi
 
-if (( ${+commands[atuin]} )); then
+# if (( ${+commands[atuin]} )); then
   eval "$(atuin init zsh)"
-fi
+# fi
 
-if (( ${+commands[git-machete]} )); then
+# Hooks `fre_chpwd` into the chpwd_functions array, effectively making it run
+# whenever the current working directory changes.
+#
+function fre_chpwd() {
+  fre --add "$(pwd)"
+}
+#
+#
+# Adds a hook that, before every command is executed, checks if the last word 
+# of the command is a file. If it is, it adds the absolute path of that file to the fre
+#
+function fre_preexec () {
+  local tmpcmd="$3"
+  local cand_fname=${(Q)${(z)tmpcmd}[-1]}
+  [[ -f "$cand_fname" ]] && fre --add "$(realpath $cand_fname)"
+}
+# if (( ${+commands[fre]} )); then
+  add-zsh-hook chpwd fre_chpwd
+  add-zsh-hook preexec fre_preexec
+# fi
+
+# if (( ${+commands[git-machete]} )); then
   eval "$(git machete completion zsh)"
-fi
+# fi
 
-if (( ${+commands[scala-cli]} )); then
+# if (( ${+commands[scala-cli]} )); then
   # >>> scala-cli completions >>>
   fpath=("/Users/tkolleh/Library/Application Support/ScalaCli/completions/zsh" $fpath)
   compinit
-fi
+# fi
 
 
-if (( ${+commands[poetry]} )); then
+# if (( ${+commands[poetry]} )); then
   # TODO: Move these to ZSH_CUSTOM similiar to how oh-my-zsh does it.
   # See: https://github.com/ohmyzsh/ohmyzsh/blob/0d0042aad33562877dffd12baa6fe86e40642241/oh-my-zsh.sh#L16-L20
   #
   if [[ -z "$HOME"/.poetry_completions.zsh ]]; then
     poetry completions bash > "$HOME"/.poetry_completions.zsh
   fi
-  source "$HOME"/.poetry_completions.zsh
-fi
-
-export CURL_HOME="$(brew --prefix curl)"
+  # source "$HOME"/.poetry_completions.zsh
+# fi
 
 export ICLOUD_DIR="$HOME/Library/Mobile Documents/com~apple~CloudDocs/"
 export CHEZMOI_SOURCE_PATH="$(chezmoi source-path)"
@@ -203,9 +223,9 @@ export CHEZMOI_SOURCE_PATH="$(chezmoi source-path)"
 # Add JetBrains toolbox scripts to path
 export PATH="$HOME/.local/bin:$PATH"
 
-if (( ${+commands[go]} )); then
+# if (( ${+commands[go]} )); then
   export PATH="$(go env GOPATH)"/bin:$PATH.
-fi
+# fi
 
 # Load Fuzzy finder completions and keybindings 
 if [[ -f "$HOME"/.fzf.zsh ]]; then source "$HOME"/.fzf.zsh; fi
