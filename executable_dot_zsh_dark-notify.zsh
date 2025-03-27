@@ -58,8 +58,6 @@ function set_terminal_to_dark_mode() {
   # if previous appearance differs from the current appearance then update.
   is_dark_mode
   local os_appearance_exit_code=$?
-  # echo "MacOS appearance is [${os_appearance_exit_code}] (dark=0, light=1)"
-  # echo "Terminal appearnace is [${_TERM_APPEARANCE}] (dark=0, light=1)"
   if [[ $os_appearance_exit_code -ne $_TERM_APPEARANCE ]]; then
     export _TERM_APPEARANCE=$os_appearance_exit_code
   fi

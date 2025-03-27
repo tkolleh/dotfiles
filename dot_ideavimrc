@@ -135,7 +135,7 @@ xnoremap p P
 set clipboard+=unnamed
 
 " Keywordprg
-nmap <leader>K :help<space><C-r><C-w><CR>
+nmap <leader>K <Action>(QuickJavaDoc)
 " Add Comment Below
 nmap gco o<c-o>gcc
 " Add Comment Above
@@ -169,6 +169,8 @@ nmap [e <Action>(GotoPreviousError)
 nmap ]w <Action>(GotoNextError)
 " Prev Warning
 nmap [w <Action>(GotoPreviousError)
+" File structure (symbols)
+nmap <leader>cs <Action>(FileStructurePopup)
 " Toggle Auto Format (Global)
 nmap <leader>ub :echo 'There is no equivalent mapping for Toggle Auto Format.'<cr>
 " Toggle Auto Format (Buffer)

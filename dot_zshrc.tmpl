@@ -39,7 +39,6 @@ zpm load                         \
   @omz/lib/grep                  \
   @omz/lib/termsupport           \
   @omz/lib/spectrum              \
-  @omz/lib/history               \
   @omz/lib/key-bindings          \
   @omz/lib/completion
 
@@ -57,7 +56,6 @@ bindkey -M vicmd 'V' edit-command-line  # this remaps `vv` to `V` (but overrides
 # Plugins for local host
 zpm if-not ssh load                                   \
   zdharma-continuum/fast-syntax-highlighting          \
-  zpm-zsh/zsh-history-substring-search                \
   zpm-zsh/zsh-autosuggestions,async                   \
   zsh-users/zsh-completions,async                     \
   zpm-zsh/zsh-better-npm-completion,async
@@ -69,11 +67,6 @@ export ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE="50"
 
 # Enable aynchronous mode.
 export ZSH_AUTOSUGGEST_USE_ASYNC=true
-
-# Bind keys for zsh-history-substring-search. Plugin must be loaded
-# after fast-syntax-highlighting.
-bindkey '^[[A' history-substring-search-up
-bindkey '^[[B' history-substring-search-down
 
 if (( ${+commands[conda]} )); then
     zpm load @github/esc/conda-zsh-completion
