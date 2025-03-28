@@ -7,14 +7,16 @@ M.setDark = function()
   vim.api.nvim_set_option_value("background", "dark", {})
   vim.api.nvim_command("highlight clear")
   vim.api.nvim_command("syntax reset")
-  vim.api.nvim_command("colorscheme github_dark_tritanopia")
+  -- vim.api.nvim_command("colorscheme github_dark_tritanopia")
+  vim.api.nvim_command("colorscheme tokyonight-moon")
 end
 
 M.setLight = function()
   vim.api.nvim_set_option_value("background", "light", {})
   vim.api.nvim_command("highlight clear")
   vim.api.nvim_command("syntax reset")
-  vim.api.nvim_command("colorscheme github_light_tritanopia")
+  -- vim.api.nvim_command("colorscheme github_light_tritanopia")
+  vim.api.nvim_command("colorscheme tokyonight-day")
 end
 
 M.is_background_dark = function()
