@@ -9,6 +9,8 @@ M.setDark = function()
   vim.api.nvim_command("syntax reset")
   -- vim.api.nvim_command("colorscheme github_dark_tritanopia")
   vim.api.nvim_command("colorscheme tokyonight-moon")
+  -- Change teminal colors to dark
+  vim.fn.jobstart("set_bat_theme 1", { detach = true })
 end
 
 M.setLight = function()
@@ -17,6 +19,7 @@ M.setLight = function()
   vim.api.nvim_command("syntax reset")
   -- vim.api.nvim_command("colorscheme github_light_tritanopia")
   vim.api.nvim_command("colorscheme tokyonight-day")
+  vim.fn.jobstart("set_bat_theme 0", { detach = true })
 end
 
 M.is_background_dark = function()

@@ -27,7 +27,7 @@ function is_dark_mode() {
 function set_zsh_auto_suggest_colors() {
   # Change [zsh auto suggestion](https://github.com/zsh-users/zsh-autosuggestions) plugin terminal color
   # based on Apple appearance light or dark mode setting
-  if is_dark_mode; then
+  if [[ "$1" == "1" ]]; then
     # Set zsh auto suggest colors
     export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=237"
   else
@@ -38,7 +38,7 @@ function set_zsh_auto_suggest_colors() {
 function set_bat_theme() {
   # Change the [bat](https://github.com/sharkdp/bat) theme
   # based on Apple appearance light or dark mode setting
-  if is_dark_mode && (( ${+commands[bat]} )) && (( ${+commands[delta]} )); then
+  if [[ "$1" == "1" && -n ${commands[bat]+x} ]]; then
     export BAT_THEME="Dracula"
   else
     export BAT_THEME="GitHub"
@@ -46,14 +46,15 @@ function set_bat_theme() {
 }
 
 function set_terminal_to_dark_mode() {
-  set_bat_theme
   # Change terminal appearance if the MacOS appearance differs from the terminal
   # appearance. Where _TERM_APPEARANCE stores the previous os_appearance value i.e.
   # if previous appearance differs from the current appearance then update.
   is_dark_mode
-  local os_appearance_exit_code=$?
-  if [[ $os_appearance_exit_code -ne $_TERM_APPEARANCE ]]; then
-    export _TERM_APPEARANCE=$os_appearance_exit_code
+  local is_dark_exit_code=$?
+  if [[ $is_dark_exit_code -ne $_TERM_APPEARANCE ]]; then
+    export _TERM_APPEARANCE_IS_DARK=$is_dark_exit_code
+    set_bat_theme $is_dark_mode
+    set_zsh_auto_suggest_colors $is_dark_mode
   fi
 }
 
