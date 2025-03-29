@@ -12,13 +12,7 @@
 
 function is_dark_mode() {
   # Return 0 if MacOs is in dark mode. Return non zero otherwise.
-  if (( ${+commands[dark-notify]} )); then
-    if dark-notify -e | grep -q "dark"; then
-      return 0
-    else
-      return 1
-    fi
-  elif [[ "$(uname -s)" == "Darwin" ]]; then
+  if [[ "$(uname -s)" == "Darwin" ]]; then
     local interface_mode=$(defaults read -g AppleInterfaceStyle 2>/dev/null)
     if [[ $interface_mode == "Dark" ]]; then
       return 0
