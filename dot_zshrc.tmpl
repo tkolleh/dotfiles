@@ -71,50 +71,46 @@ export ZSH_AUTOSUGGEST_USE_ASYNC=true
 
 export CURL_HOME="$(brew --prefix curl)"
 
-# if (( ${+commands[conda]} )); then
-    zpm load @github/esc/conda-zsh-completion
-    export CONDA_ENVS="/usr/local/anaconda3/envs"
+zpm load @github/esc/conda-zsh-completion
+export CONDA_ENVS="/usr/local/anaconda3/envs"
 
-    conda_path="$(whence -cp conda)"
-    #
-    # >>> conda initialize >>>
-    #
-    __conda_setup="$($conda_path 'shell.zsh' 'hook' 2> /dev/null)"
-    if [ $? -eq 0 ]; then
-        eval "$__conda_setup"
+conda_path="$(whence -cp conda)"
+#
+# >>> conda initialize >>>
+#
+__conda_setup="$($conda_path 'shell.zsh' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/opt/anaconda3/etc/profile.d/conda.sh" ]; then
+        . "/opt/anaconda3/etc/profile.d/conda.sh"
     else
-        if [ -f "/opt/anaconda3/etc/profile.d/conda.sh" ]; then
-            . "/opt/anaconda3/etc/profile.d/conda.sh"
-        else
-            export PATH="/opt/anaconda3/bin:$PATH"
-        fi
+        export PATH="/opt/anaconda3/bin:$PATH"
     fi
-    unset __conda_setup
-    #
-    # <<< conda initialize <<<
-    #
-# fi
+fi
+unset __conda_setup
+#
+# <<< conda initialize <<<
+#
 
-# if (( ${+commands[fd]} )) && (( ${+commands[rg]} )) && (( ${+commands[fzf]} )) && (( ${+commands[bat]} )); then
-    export FZF_DEFAULT_COMMAND='fd --type f --color=never --ignore-case --no-ignore --hidden --follow'
-    export FZF_DEFAULT_OPTS="
-    --bind 'f1:execute(bat --paging=always --color=always {})'
-    --bind 'f2:execute($EDITOR {})+abort'
-    --bind 'ctrl-y:execute-silent(echo -n {} | pbcopy)+abort'
-    --bind 'ctrl-z:toggle-up'
-    --bind '?:toggle-preview'
-    --preview='bat --number --color=always --style=numbers,changes {} | head -700' --preview-window='right:50%:hidden'
-    --color header:italic
-    --header '<CTRL-Y>:copy - <F2>:open - <tab|CTRL-Z>:select'"
+export FZF_DEFAULT_COMMAND='fd --type f --color=never --ignore-case --no-ignore --hidden --follow'
+export FZF_DEFAULT_OPTS="
+--bind 'f1:execute(bat --paging=always --color=always {})'
+--bind 'f2:execute($EDITOR {})+abort'
+--bind 'ctrl-y:execute-silent(echo -n {} | pbcopy)+abort'
+--bind 'ctrl-z:toggle-up'
+--bind '?:toggle-preview'
+--preview='bat --number --color=always --style=numbers,changes {} | head -700' --preview-window='right:50%:hidden'
+--color header:italic
+--header '<CTRL-Y>:copy - <F2>:open - <tab|CTRL-Z>:select'"
 
-    export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 
-    # Search for files
-    export FZF_ALT_C_COMMAND='fd --type d --color=never --no-ignore --ignore-case --hidden --follow '
+# Search for files
+export FZF_ALT_C_COMMAND='fd --type d --color=never --no-ignore --ignore-case --hidden --follow '
 
-    # Search recent commands
-    export FZF_CTRL_R_OPTS="$FZF_DEFAULT_OPTS"
-# fi
+# Search recent commands
+export FZF_CTRL_R_OPTS="$FZF_DEFAULT_OPTS"
 
 # Load custom code from separate configuration file.
 if [[ -f "$HOME"/.zsh_functions ]]; then source "$HOME"/.zsh_functions; fi
@@ -122,7 +118,6 @@ if [[ -f "$HOME"/.zsh_functions ]]; then source "$HOME"/.zsh_functions; fi
 if [[ -f "$HOME"/.host_functions.zsh ]]; then source "$HOME"/.host_functions.zsh; fi
 
 # Load aliases
-# TODO why is this not working in warp?
 if [[ -a "$HOME"/.zsh_aliases ]]; then
   source "$HOME"/.zsh_aliases
 fi
@@ -133,47 +128,36 @@ fi
 if [[ -f "$HOME"/.zsh_dark-notify.zsh ]]; then
   source "$HOME"/.zsh_dark-notify.zsh
   set_terminal_to_dark_mode
-  # TODO use evry and background
-  # while :; do
-  #   (( ${+commands[dark-notify]} )) && dark-notify -c '$HOME/.zsh_dark-notify.zsh'
-  # done &
 fi
 
 # Starship cross-shell prompt
 #
 # Install starship
-# if (( ${+commands[starship]} )); then
-  export STARSHIP_LOG=error
-  eval "$(starship init zsh)"
-# fi
+export STARSHIP_LOG=error
+eval "$(starship init zsh)"
 
-# if (( ${+commands[cs]} )); then
-  # Scala application manager
-  # Add coursier bin directory to PATH
-  eval "$(cs install --env)"
+# Scala application manager
+# Add coursier bin directory to PATH
+eval "$(cs install --env)"
 
-  # Define JAVA_HOME and add it to the PATH. Assign existing JAVA_HOME to CS_FORMER_JAVA_HOME
-  {{ if (eq .chezmoi.username .chezmoi.config.data.work_username )}}
-  export JAVA_HOME="$(cs java-home --architecture arm64 --jvm {{ .chezmoi.config.data.work_java_version }})"
-  {{ else }}
-  export JAVA_HOME="$(cs java-home --architecture arm64 --jvm {{ .chezmoi.config.data.sys_java_version }})"
-  {{ end }}
-  export PATH="$JAVA_HOME/bin:$PATH"
-# fi
+# Define JAVA_HOME and add it to the PATH. Assign existing JAVA_HOME to CS_FORMER_JAVA_HOME
+{{ if (eq .chezmoi.username .chezmoi.config.data.work_username )}}
+export JAVA_HOME="$(cs java-home --architecture arm64 --jvm {{ .chezmoi.config.data.work_java_version }})"
+{{ else }}
+export JAVA_HOME="$(cs java-home --architecture arm64 --jvm {{ .chezmoi.config.data.sys_java_version }})"
+{{ end }}
+export PATH="$JAVA_HOME/bin:$PATH"
 
 #
 # Alternative to cd
 #
 # The default command is `z` add the `--cmd cd` option to
 # replaces `cd` command.
-# if (( ${+commands[zoxide]} )); then
-  export _ZO_ECHO=1
-  eval "$(zoxide init zsh)"
-# fi
+export _ZO_ECHO=1
+eval "$(zoxide init zsh)"
 
-# if (( ${+commands[atuin]} )); then
-  eval "$(atuin init zsh)"
-# fi
+# Save and sync command history
+eval "$(atuin init zsh)"
 
 # Hooks `fre_chpwd` into the chpwd_functions array, effectively making it run
 # whenever the current working directory changes.
@@ -191,31 +175,22 @@ function fre_preexec () {
   local cand_fname=${(Q)${(z)tmpcmd}[-1]}
   [[ -f "$cand_fname" ]] && fre --add "$(realpath $cand_fname)"
 }
-# if (( ${+commands[fre]} )); then
-  add-zsh-hook chpwd fre_chpwd
-  add-zsh-hook preexec fre_preexec
-# fi
+add-zsh-hook chpwd fre_chpwd
+add-zsh-hook preexec fre_preexec
 
-# if (( ${+commands[git-machete]} )); then
-  eval "$(git machete completion zsh)"
-# fi
+eval "$(git machete completion zsh)"
 
-# if (( ${+commands[scala-cli]} )); then
-  # >>> scala-cli completions >>>
-  fpath=("/Users/tkolleh/Library/Application Support/ScalaCli/completions/zsh" $fpath)
-  compinit
-# fi
+# >>> scala-cli completions >>>
+fpath=("/Users/tkolleh/Library/Application Support/ScalaCli/completions/zsh" $fpath)
+compinit
 
-
-# if (( ${+commands[poetry]} )); then
-  # TODO: Move these to ZSH_CUSTOM similiar to how oh-my-zsh does it.
-  # See: https://github.com/ohmyzsh/ohmyzsh/blob/0d0042aad33562877dffd12baa6fe86e40642241/oh-my-zsh.sh#L16-L20
-  #
-  if [[ -z "$HOME"/.poetry_completions.zsh ]]; then
-    poetry completions bash > "$HOME"/.poetry_completions.zsh
-  fi
-  # source "$HOME"/.poetry_completions.zsh
-# fi
+# TODO: Move these to ZSH_CUSTOM similiar to how oh-my-zsh does it.
+# See: https://github.com/ohmyzsh/ohmyzsh/blob/0d0042aad33562877dffd12baa6fe86e40642241/oh-my-zsh.sh#L16-L20
+#
+if [[ -z "$HOME"/.poetry_completions.zsh ]]; then
+  poetry completions bash > "$HOME"/.poetry_completions.zsh
+fi
+# source "$HOME"/.poetry_completions.zsh
 
 export ICLOUD_DIR="$HOME/Library/Mobile Documents/com~apple~CloudDocs/"
 export CHEZMOI_SOURCE_PATH="$(chezmoi source-path)"
@@ -223,9 +198,7 @@ export CHEZMOI_SOURCE_PATH="$(chezmoi source-path)"
 # Add JetBrains toolbox scripts to path
 export PATH="$HOME/.local/bin:$PATH"
 
-# if (( ${+commands[go]} )); then
-  export PATH="$(go env GOPATH)"/bin:$PATH.
-# fi
+export PATH="$(go env GOPATH)"/bin:$PATH.
 
 # Load Fuzzy finder completions and keybindings 
 if [[ -f "$HOME"/.fzf.zsh ]]; then source "$HOME"/.fzf.zsh; fi
