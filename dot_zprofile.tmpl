@@ -33,29 +33,24 @@ if [[ -f "$HOME/google-cloud-sdk/completion.zsh.inc" ]]; then
   source "$HOME/google-cloud-sdk/completion.zsh.inc"
 fi
 
-# if (( ${+commands[cs]} )); then
-  # Scala application manager
-  # Add coursier bin directory to PATH
-  eval "$(cs install --env)"
+# Scala application manager
+# Add coursier bin directory to PATH
+eval "$(cs install --env)"
 
-  # Define JAVA_HOME and add it to the PATH. Assign existing JAVA_HOME to CS_FORMER_JAVA_HOME
-  {{ if (eq .chezmoi.username .chezmoi.config.data.work_username )}}
-  export JAVA_HOME="$(cs java-home --architecture arm64 --jvm {{ .chezmoi.config.data.work_java_version }})"
-  {{ else }}
-  export JAVA_HOME="$(cs java-home --architecture arm64 --jvm {{ .chezmoi.config.data.sys_java_version }})"
-  {{ end }}
-  export PATH="$JAVA_HOME/bin:$PATH"
-# fi
+# Define JAVA_HOME and add it to the PATH. Assign existing JAVA_HOME to CS_FORMER_JAVA_HOME
+{{ if (eq .chezmoi.username .chezmoi.config.data.work_username )}}
+export JAVA_HOME="$(cs java-home --architecture arm64 --jvm {{ .chezmoi.config.data.work_java_version }})"
+{{ else }}
+export JAVA_HOME="$(cs java-home --architecture arm64 --jvm {{ .chezmoi.config.data.sys_java_version }})"
+{{ end }}
+export PATH="$JAVA_HOME/bin:$PATH"
 
-# if (( ${+commands[lefthook]} )); then
-  export LEFTHOOK_HOME="$(brew --prefix lefthook)"
-  export PATH="$LEFTHOOK_HOME/bin:$PATH"
-# fi
+export LEFTHOOK_HOME="$(brew --prefix lefthook)"
+export PATH="$LEFTHOOK_HOME/bin:$PATH"
 
 # The preferred pager
-# if (( ${+commands[moar]} )); then
-  export PAGER='moar'
-# fi
+export PAGER='moar'
+
 export NVIM_SESSION="$XDG_CONFIG_HOME/nvim/session"
 export EDITOR='nvim'
 export VISUAL='nvim'
