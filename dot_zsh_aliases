@@ -26,7 +26,7 @@ __alias gst "git status -b"
 __alias gsta " git log --oneline \
   --pretty='%Cred%h%Creset -%C(auto)%d%Creset %<(50,trunc)%s %Cgreen(%cr) %C(bold blue)<%an>%Creset' -5; \
   git status -b --ignored"
-__alias gcm "git commit -a -S -m"
+__alias gcm "gum confirm "Commit changes?" && git commit -a -S -m "$SUMMARY" -m "$DESCRIPTION""
 __alias glog "git log --oneline --decorate --graph --show-signature"
 __alias gloga "git log --oneline --decorate --graph --show-signature --all"
 __alias gwch "git whatchanged -p --abbrev-commit --pretty=medium"
@@ -61,3 +61,6 @@ __alias macos_info neofetch
 __alias poetry-run "poetry run python -m"
 __alias ghe 'GH_HOST code.corp.creditkarma.com gh'
 __alias ghorg "git remote get-url origin | cut -d/ -f 4"
+
+alias nvim="JAVA_HOME=$(cs java-home --architecture arm64 --jvm corretto:17) nvim"
+

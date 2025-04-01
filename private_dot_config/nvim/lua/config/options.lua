@@ -14,3 +14,8 @@ vim.g.lazyvim_picker = "fzf"
 -- you need to have a working rust toolchain to build the plugin
 -- in this case.
 vim.g.lazyvim_blink_main = false
+
+-- Diable auto formatting via [confrom.nvim](https://github.com/stevearc/conform.nvim)
+-- See lavyvim ref: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/plugins/lsp/init.lua
+-- use <leader>uf to enable formatting
+vim.g.autoformat = false
