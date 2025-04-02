@@ -59,7 +59,6 @@ fi
 __alias macos_info neofetch
 
 __alias poetry-run "poetry run python -m"
-__alias ghe 'GH_HOST code.corp.creditkarma.com gh'
 __alias ghorg "git remote get-url origin | cut -d/ -f 4"
 
 alias nvim="JAVA_HOME=$(cs java-home --architecture arm64 --jvm corretto:17) nvim"
