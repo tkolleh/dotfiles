@@ -22,11 +22,11 @@ fi
 
 # __alias gignored "git ls-files -v $(git rev-parse --show-toplevel) | (grep '^[[:lower:]]' || echo 'None ignored.') && echo '\nIgnore changes with:   git update-index --assume-unchanged <file> \nor track again with:   git update-index --no-assume-unchanged <file>'"
 
+unalias gcm
 __alias gst "git status -b"
 __alias gsta " git log --oneline \
   --pretty='%Cred%h%Creset -%C(auto)%d%Creset %<(50,trunc)%s %Cgreen(%cr) %C(bold blue)<%an>%Creset' -5; \
   git status -b --ignored"
-__alias gcm "gum confirm "Commit changes?" && git commit -a -S -m "$SUMMARY" -m "$DESCRIPTION""
 __alias glog "git log --oneline --decorate --graph --show-signature"
 __alias gloga "git log --oneline --decorate --graph --show-signature --all"
 __alias gwch "git whatchanged -p --abbrev-commit --pretty=medium"
