@@ -19,19 +19,18 @@ return {
     opts = function(_, opts)
       local routers = require("gitlinker.routers")
       return vim.tbl_deep_extend("force", opts or {}, {
-        -- example: https://code.corp.creditkarma.com/ck-private/con_idl/blob/master/acquisition-context/shared/v1/acquisitionServiceBusV1.thrift#L66
         router = {
           browse = {
-            ["^code%.corp%.creditkarma%.com"] = routers.github_browse,
+            ["{{ (index (onepassword "p3zimt7otz5dfe64qtfzxgl3jm").fields 0).value }}"] = routers.github_browse,
           },
           blame = {
-            ["^code%.corp%.creditkarma%.com"] = routers.github_blame,
+            ["{{ (index (onepassword "p3zimt7otz5dfe64qtfzxgl3jm").fields 0).value }}"] = routers.github_blame,
           },
           default_branch = {
-            ["^code%.corp%.creditkarma%.com"] = routers.github_default_branch,
+            ["{{ (index (onepassword "p3zimt7otz5dfe64qtfzxgl3jm").fields 0).value }}"] = routers.github_default_branch,
           },
           current_branch = {
-            ["^code%.corp%.creditkarma%.com"] = routers.github_current_branch,
+            ["{{ (index (onepassword "p3zimt7otz5dfe64qtfzxgl3jm").fields 0).value }}"] = routers.github_current_branch,
           },
         },
       })
