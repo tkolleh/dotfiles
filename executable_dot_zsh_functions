@@ -425,9 +425,11 @@ function gcm() {
   # if [ -z "$(git status -s -uno | grep -v '^ ' | awk '{print $2}')" ]; then
   #     gum confirm "Stage all?" && git add .
   # fi
+  unalias gcm > /dev/null 2>&1 || true # TODO: Remove zpm git plugin
 
-  TYPE=$(gum choose "fix" "feat" "docs" "style" "refactor" "test" "chore" "revert")
-  SCOPE=$(gum input --placeholder "scope")
+  local TYPE=$(gum choose "fix" "feat" "docs" "style" "refactor" "test" "chore" "revert")
+  local DEFAULT_SCOPE_JIRA=$(git branch --show-current | rg --only-matching --regexp '[a-zA-Z]{3}\-[0-9]{4}')
+  local SCOPE=$(gum input --placeholder "scope" --value "${DEFAULT_SCOPE_JIRA}")
 
   # Since the scope is optional, wrap it in parentheses if it has a value.
   test -n "$SCOPE" && SCOPE="($SCOPE)"
