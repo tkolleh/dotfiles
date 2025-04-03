@@ -22,7 +22,6 @@ fi
 
 # __alias gignored "git ls-files -v $(git rev-parse --show-toplevel) | (grep '^[[:lower:]]' || echo 'None ignored.') && echo '\nIgnore changes with:   git update-index --assume-unchanged <file> \nor track again with:   git update-index --no-assume-unchanged <file>'"
 
-unalias gcm
 __alias gst "git status -b"
 __alias gsta " git log --oneline \
   --pretty='%Cred%h%Creset -%C(auto)%d%Creset %<(50,trunc)%s %Cgreen(%cr) %C(bold blue)<%an>%Creset' -5; \
@@ -33,8 +32,9 @@ __alias gwch "git whatchanged -p --abbrev-commit --pretty=medium"
 __alias gcd "git checkout development"
 __alias glos "git log --oneline --pretty='%Cred%h%Creset -%C(auto)%d%Creset %<(50,trunc)%s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --no-merges"
 
-alias rg "$(brew --prefix rg)/bin/rg --smart-case"
-alias batgrep "batgrep --smart-case"
+alias rg "rg --smart-case"
+alias batgrep "set_terminal_to_dark_mode; batgrep --smart-case"
+alias bat "set_terminal_to_dark_mode && bat"
 
 # https://github.com/antonmedv/eat
 alias eat "NODE_PATH=`npm root -g` eat"
