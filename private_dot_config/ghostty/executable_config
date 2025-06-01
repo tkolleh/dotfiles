@@ -8,11 +8,12 @@ auto-update-channel = tip
 #split-divider-color = ef766d
 
 # Cursor configuration
-cursor-style-blink
-cursor-style-blink = true
+# cursor-style-blink
+# cursor-style-blink = true
 
 # apperance specific themes
-theme = dark:github dark,light:Raycast_Light
+# theme = dark:github dark,light:Raycast_Light
+theme = dark:cyberdream,light:cyberdream-light
 
 # Comments start with a `#` and are only valid on their own line.
 # Blank lines are ignored!
@@ -22,7 +23,7 @@ keybind = ctrl+b>shift+l=next_tab
 keybind = ctrl+b>shift+h=previous_tab
 
 keybind = ctrl+b>\=new_split:right
-keybind = ctrl+b>-=new_split:up
+keybind = ctrl+b>-=new_split:down
 
 keybind = ctrl+b>h=goto_split:left
 keybind = ctrl+b>j=goto_split:bottom

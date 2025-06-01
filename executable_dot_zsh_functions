@@ -44,10 +44,10 @@ function fif() {
     echo "Need a string to search for!"
     return 1
   fi
-  rg --ignore-case --files-with-matches --no-messages "$1" | fzf -m | awk '{
+  rg --ignore-case --files-with-matches --no-messages "$1" | fzf | awk '{
     gsub(/ /, "\\ ", $0);  # Escape spaces with backslashes
     print "\"" $0 "\""
-  }' | xargs $EDITOR
+  }' | xargs -I {} $EDITOR "{}"
 }
 
 # an alternative to the above using ripgrep-all (rga)
@@ -302,7 +302,7 @@ function is_installed_by_brew(){
   local file="$1"
   if [[ ! -e "$file" ]]; then
     # Return an exit code without closing the shell while having -e set.
-    echo "File $file does not exist." && (exit 1)
+    echo "File $file does not exist." && (return 1)
   fi
 
   if (( ${+commands[rg]} )) && (( ${+commands[brew]} )); then
@@ -313,12 +313,12 @@ function is_installed_by_brew(){
 
     # Compare line count with pattern_cnt
     if (( "$line_count" == "$pattern_cnt" )); then
-      echo "The line count [$line_count] equals pattern_cnt [$pattern_cnt]." && (exit 0)
+      echo "The line count [$line_count] equals pattern_cnt [$pattern_cnt]." && (return 0)
     else
-      echo "The line count [$line_count] does not equal pattern_cnt [$pattern_cnt]." && (exit 2)
+      echo "The line count [$line_count] does not equal pattern_cnt [$pattern_cnt]." && (return 2)
     fi
   else
-    echo "Requires ripgrep and brew to be installed." && (exit 1)
+    echo "Requires ripgrep and brew to be installed." && (return 1)
   fi
 }
 
@@ -326,7 +326,7 @@ function select_from_brew_info() {
   # Select fields from brew info JSON of installed homebrew formulas.
   # Defaults to 'name, full_name, desc, homepage' when field names are not provided.
   if ! (( ${+commands[brew]} )) || ! (( ${+commands[duckdb]} )); then
-    echo "Requires brew and duckdb to be installed" && (exit 1)
+    echo "Requires brew and duckdb to be installed" && (return 1)
   fi
 
   local _fields
@@ -359,42 +359,47 @@ function select_from_brew_info() {
 }
 
 function print_pr_basics(){
+  local template='
+  Title:  {{.title}}
+  State:  {{.state}}
+  Is Draft PR:  {{.isDraft}}
+  Is Mergable:  {{.mergeable}}
+  Merge Status:  {{.mergeStateStatus}}
+  URL:  {{.url}}
+  '
   if (( ${+commands[gh]} )); then
-      gh pr view $1 --json number,title,url,state,labels --template \
-      '[#{{ .number }}] {{.title}}
-          {{.state}} | {{.url}}
-          {{.labels | join ", "}}
-      '
-      exit 0
+      ghe pr view $1 --json number,title,url,state,author,isDraft,mergeable,mergeStateStatus --template $template | cat
+      return 0
   else
-      echo "Requires gh to be installed." && (exit 1)
-      exit 1
+      echo "Requires gh to be installed." && (return 1)
+      return 1
   fi
 }
 
 function print_pr_failed_checks(){
   local template='
+  Failed Checks:
+  --------------
   {{- range . }}
-    {{- if eq .state "FAILURE" }}
-      {{ .name }} | {{ .description }}
-    {{- end }}
+  {{- if eq .state "FAILURE" }}
+  {{ .name }}: {{ .description }}
+  {{- end }}
   {{- end }}
   '
   if (( ${+commands[gh]} )); then
-      gh pr checks $1 --json name,description,state --template $template | bat --plain
-      exit 0
+      ghe pr checks $1 --json name,description,state --template $template
+      return 0
   else
-      echo "Requires gh to be installed." && (exit 1)
-      exit 1
+      echo "Requires gh to be installed." && (return 1)
+      return 1
   fi
 }
 
 function print_pr_review_request(){
-  local ask="Please review the following PR:"
+  local ask="Please review the following PR(s):"
   local header=$(print_pr_basics)
   local body=$(print_pr_failed_checks)
-  local msg="$ask\n$header\n$body"
-  echo -e "$msg"
+  printf "$ask $header $body"
 }
 
 function lzy() {

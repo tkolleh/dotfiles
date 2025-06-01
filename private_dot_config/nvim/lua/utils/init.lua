@@ -18,7 +18,10 @@ M.setLight = function()
   vim.api.nvim_command("highlight clear")
   vim.api.nvim_command("syntax reset")
   -- vim.api.nvim_command("colorscheme github_light_tritanopia")
-  vim.api.nvim_command("colorscheme tokyonight-day")
+  -- vim.api.nvim_command("colorscheme tokyonight-day")
+  -- vim.api.nvim_command("colorscheme newpaper")
+  -- vim.api.nvim_command("colorscheme cyberdream")
+  vim.api.nvim_command("colorscheme dayfox")
   vim.fn.jobstart("set_bat_theme 0", { detach = true })
 end
 
