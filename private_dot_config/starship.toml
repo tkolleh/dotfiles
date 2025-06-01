@@ -1,9 +1,12 @@
+# Get editor completions based on the config schema
+"$schema" = 'https://starship.rs/config-schema.json'
+
 # Disable blank line at the start of the prompt
-add_newline = true
+add_newline = false
 
 # Timeout for commands executed by starship (in milliseconds)
-scan_timeout = 2
-command_timeout = 2
+scan_timeout = 150
+command_timeout = 150
 
 # Order of modules on prompt
 format = """

@@ -19,3 +19,10 @@ vim.g.lazyvim_blink_main = false
 -- See lavyvim ref: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/plugins/lsp/init.lua
 -- use <leader>uf to enable formatting
 vim.g.autoformat = false
+
+-- Nvim 0.11.0+ has breaking change causing borders of floating windows to vanish
+-- due to Neovim no longer using global callbacks. Use `winborder` to set the 
+-- default border for all floating windows.
+vim.o.winborder = 'rounded'
+
+vim.o.showbreak = '↪ '

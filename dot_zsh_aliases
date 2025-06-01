@@ -16,50 +16,44 @@
 #
 
 if (( ${+commands[eza]} )); then
-  __alias ll "eza --time modified --all --binary --git --header --long --color=always "
-  __alias lt "eza --long --tree --level=3 "
+  alias ll="eza --time modified --all --binary --git --header --long --color=always "
+  alias lt="eza --long --tree --level=3 "
 fi
 
-# __alias gignored "git ls-files -v $(git rev-parse --show-toplevel) | (grep '^[[:lower:]]' || echo 'None ignored.') && echo '\nIgnore changes with:   git update-index --assume-unchanged <file> \nor track again with:   git update-index --no-assume-unchanged <file>'"
+# alias gignored="git ls-files -v $(git rev-parse --show-toplevel) | (grep '^[[:lower:]]' || echo 'None ignored.') && echo '\nIgnore changes with:   git update-index --assume-unchanged <file> \nor track again with:   git update-index --no-assume-unchanged <file>'"
 
-__alias gst "git status -b"
-__alias gsta " git log --oneline \
+alias gst="git status -b"
+alias gsta=" git log --oneline \
   --pretty='%Cred%h%Creset -%C(auto)%d%Creset %<(50,trunc)%s %Cgreen(%cr) %C(bold blue)<%an>%Creset' -5; \
   git status -b --ignored"
-__alias glog "git log --oneline --decorate --graph --show-signature"
-__alias gloga "git log --oneline --decorate --graph --show-signature --all"
-__alias gwch "git whatchanged -p --abbrev-commit --pretty=medium"
-__alias gcd "git checkout development"
-__alias glos "git log --oneline --pretty='%Cred%h%Creset -%C(auto)%d%Creset %<(50,trunc)%s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --no-merges"
+alias glog="git log --oneline --decorate --graph --show-signature"
+alias gloga="git log --oneline --decorate --graph --show-signature --all"
+alias gwch="git whatchanged -p --abbrev-commit --pretty=medium"
+alias gcd="git checkout development"
+alias glos="git log --oneline --pretty='%Cred%h%Creset -%C(auto)%d%Creset %<(50,trunc)%s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --no-merges"
 
-alias rg "rg --smart-case"
-alias batgrep "set_terminal_to_dark_mode; batgrep --smart-case"
-alias bat "set_terminal_to_dark_mode && bat"
+alias rg="rg --smart-case"
+alias batgrep="set_terminal_to_dark_mode; batgrep --smart-case"
+alias bat="set_terminal_to_dark_mode && bat"
 
 # https://github.com/antonmedv/eat
-alias eat "NODE_PATH=`npm root -g` eat"
-
-alias fd "fd --unrestricted --ignore-case"
-
-__alias resource 'source $HOME/.zshrc; source $HOME/.zprofile; source $HOME/.zsh_functions'
-
-__alias chezmoidelta "chezmoi source pull -- --rebase && chezmoi diff | delta"
-__alias gloudtoken "gcloud auth login --brief && gcloud auth print-identity-token"
-
-alias sbtn "SCALACTIC_FILL_FILE_PATHNAMES=yes sbtn -Dsbt.color=always --verbose"
-
+alias eat="NODE_PATH=`npm root -g` eat"
+alias fd="fd --ignore-case"
+alias resource='source $HOME/.zshrc; source $HOME/.zprofile; source $HOME/.zsh_functions'
+alias chezmoidelta="chezmoi source pull -- --rebase && chezmoi diff | delta"
+alias gloudtoken="gcloud auth login --brief && gcloud auth print-identity-token"
+alias sbtc='JAVA_HOME="$(cs java-home --architecture arm64 --jvm corretto:17)" PATH="$JAVA_HOME/bin:$PATH" SCALACTIC_FILL_FILE_PATHNAMES=yes sbtn'
 
 # Navigates to Chezmoi's local repo.
 if (( ${+commands[chezmoi]} )); then
-  __alias chezmoiconf 'cd $(chezmoi source-path)'
+  alias chezmoiconf='cd $(chezmoi source-path)'
 else
-  __alias chezmoiconf 'cd $HOME/.local/share/chezmoi'
+  alias chezmoiconf='cd $HOME/.local/share/chezmoi'
 fi
 
-__alias macos_info neofetch
+alias macos_info=neofetch
 
-__alias poetry-run "poetry run python -m"
-__alias ghorg "git remote get-url origin | cut -d/ -f 4"
+alias poetry_run="poetry run python -m"
+alias ghorg="git remote get-url origin | cut -d/ -f 4"
 
 alias nvim="JAVA_HOME=$(cs java-home --architecture arm64 --jvm corretto:17) nvim"
-

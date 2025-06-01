@@ -7,10 +7,21 @@ return {
       {
         type = "scala",
         request = "launch",
-        name = "RunOrTest",
+        name = "Run or test",
         metals = {
           runType = "runOrTestFile",
-          --args = { "firstArg", "secondArg", "thirdArg" }, -- here just as an example
+        },
+      },
+      {
+        type = "scala",
+        request = "launch",
+        name = "Run or test w/ args",
+        metals = {
+          runType = "runOrTestFile",
+          args = function()
+            local args_string = vim.fn.input("Arguments: ")
+            return vim.split(args_string, " +")
+          end,
         },
       },
       {
@@ -23,13 +34,12 @@ return {
       },
       {
         type = "scala",
-        request = "launch",
-        name = "Run minimal2 main",
-        metals = {
-          mainClass = "run",
-          buildTarget = "root",
-        },
-      },
+        request = "attach",
+        name = "Attach to Localhost",
+        hostName = "localhost",
+        port = 5005,
+        buildTarget = "root",
+      }
     }
   end,
 }
