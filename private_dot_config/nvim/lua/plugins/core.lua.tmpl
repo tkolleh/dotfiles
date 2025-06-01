@@ -56,6 +56,40 @@ return {
   -- Install without configuration
   { "projekt0n/github-nvim-theme", name = "github-theme" },
 
+  -- add newpaper theme
+  { "yorik1984/newpaper.nvim" },
+
+  -- add cyberdream theme
+  {
+    "scottmckendry/cyberdream.nvim",
+    lazy = false,
+    priority = 1000,
+    config = function()
+      require("cyberdream").setup({
+        variant = "light", -- "auto" will set the theme dynamically based on the colorscheme
+        italic_comments = true,
+
+        -- Replace all fillchars with ' ' for the ultimate clean look
+        hide_fillchars = true,
+
+        -- Enable transparent background
+        transparent = true,
+
+        -- Reduce the overall saturation of colours for a more muted look
+        saturation = 1, -- accepts a value between 0 and 1. 0 will be fully desaturated (greyscale) and 1 will be the full color (default)
+
+        -- Apply a modern borderless look to pickers like Telescope, Snacks Picker & Fzf-Lua
+        borderless_pickers = false,
+
+        -- Set terminal colors used in `:terminal`
+        terminal_colors = true,
+      })
+    end
+  },
+
+  -- add nightfox theme
+  { "EdenEast/nightfox.nvim" },
+
   -- Customize bufferline
   {
     "akinsho/nvim-bufferline.lua",

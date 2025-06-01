@@ -113,7 +113,7 @@ nmap <leader>ur :nohlsearch<CR>
 " map jk to <ESC> when in insert mode
 inoremap jk <Esc>
 " map jk to <ESC> when in visual mode
-vnoremap jk <Esc>
+" vnoremap jk <Esc>
 
 " Go to end of line
 nnoremap gl $
@@ -153,8 +153,8 @@ nmap [q <Action>(GotoPreviousError)
 " Next Quickfix
 nmap ]q <Action>(GotoNextError)
 " Format
-nmap <leader>cf <Action>(Format)
-vmap <leader>cf <Action>(Format)
+nmap <leader>cf <Action>(ReformatCode)
+vmap <leader>cf <Action>(ReformatCode)
 " Line Diagnostics
 nmap <leader>cd <Action>(ActivateProblemsViewToolWindow)
 " Next Diagnostic
@@ -230,10 +230,14 @@ nmap <C-/> <Action>(ActivateTerminalToolWindow)
 nmap <leader>- <c-w>s
 " Split Window Right
 nmap <leader><bar> <c-w>v
-" Delete Window
-nmap <leader>wd <Action>(CloseContent)
+" Delete buffer
+nmap <leader>bd <Action>(CloseContent)
 " Toggle Maximize
 nmap <leader>wm <Action>(ToggleDistractionFreeMode)
+" Unsplit window
+nmap <leader>wd <Action>(Unsplit)
+" Unsplit all windows
+nmap <leader>wo <Action>(UnsplitAll)
 
 " Tabs are treated as saved layouts
 "
@@ -336,7 +340,9 @@ nmap <leader>un <Action>(ClearAllNotifications)
 " Find Files (Root Dir)
 nmap <leader><space> <Action>(GotoFile)
 " Switch Buffer
-nmap <leader>, <Action>(Switcher)
+nmap <leader>, <Action>(RecentFiles)
+" nmap <leader>, <Action>(Switcher)
+
 " Grep (Root Dir)
 nmap <leader>/ <Action>(FindInPath)
 " Command History
