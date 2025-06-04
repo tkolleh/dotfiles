@@ -3,7 +3,7 @@ return {
   branch = "main",
   cmd = "CopilotChat",
   opts = function()
-    local user = "tj-kolleh-ck"
+    local user = "tkolleh"
     user = user:sub(1, 1):upper() .. user:sub(2)
     return {
       auto_insert_mode = true,

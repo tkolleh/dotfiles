@@ -3,6 +3,7 @@
 return {
 	{
 		"rmagatti/goto-preview",
+    dependencies = { "rmagatti/logger.nvim" },
 		event = "VeryLazy",
 		config = true,
 		opts = {

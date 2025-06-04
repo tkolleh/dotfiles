@@ -37,7 +37,6 @@ return {
     metals_config.settings = {
       showImplicitArguments = true,
       excludedPackages = { "akka.actor.typed.javadsl", "com.github.swagger.akka.javadsl" },
-      javaHome = "/Users/tj.kolleh/Library/Caches/Coursier/arc/https/corretto.aws/downloads/resources/17.0.14.7.1/amazon-corretto-17.0.14.7.1-macosx-aarch64.tar.gz/amazon-corretto-17.jdk/Contents/Home",
       superMethodLensesEnabled = true,  -- [default:false] Super method lenses are visible
       verboseCompilation = true,        -- [default:false] Show all possible debug information
       defaultBspToBuildTool = true,    -- [default:false] If build tool serves as build server, use it
