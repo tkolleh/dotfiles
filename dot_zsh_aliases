@@ -42,7 +42,6 @@ alias fd="fd --ignore-case"
 alias resource='source $HOME/.zshrc; source $HOME/.zprofile; source $HOME/.zsh_functions'
 alias chezmoidelta="chezmoi source pull -- --rebase && chezmoi diff | delta"
 alias gloudtoken="gcloud auth login --brief && gcloud auth print-identity-token"
-alias sbtc='JAVA_HOME="$(cs java-home --architecture arm64 --jvm corretto:17)" PATH="$JAVA_HOME/bin:$PATH" SCALACTIC_FILL_FILE_PATHNAMES=yes sbtn'
 
 # Navigates to Chezmoi's local repo.
 if (( ${+commands[chezmoi]} )); then
@@ -55,5 +54,3 @@ alias macos_info=neofetch
 
 alias poetry_run="poetry run python -m"
 alias ghorg="git remote get-url origin | cut -d/ -f 4"
-
-alias nvim="JAVA_HOME=$(cs java-home --architecture arm64 --jvm corretto:17) nvim"
