@@ -368,7 +368,7 @@ function print_pr_basics(){
   URL:  {{.url}}
   '
   if (( ${+commands[gh]} )); then
-      ghe pr view $1 --json number,title,url,state,author,isDraft,mergeable,mergeStateStatus --template $template | cat
+      gh pr view $1 --json number,title,url,state,author,isDraft,mergeable,mergeStateStatus --template $template | cat
       return 0
   else
       echo "Requires gh to be installed." && (return 1)
@@ -387,7 +387,7 @@ function print_pr_failed_checks(){
   {{- end }}
   '
   if (( ${+commands[gh]} )); then
-      ghe pr checks $1 --json name,description,state --template $template
+      gh pr checks $1 --json name,description,state --template $template
       return 0
   else
       echo "Requires gh to be installed." && (return 1)
