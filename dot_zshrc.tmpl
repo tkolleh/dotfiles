@@ -111,11 +111,11 @@ fi
 #
 # Install starship
 export STARSHIP_LOG=error
-eval "$(starship init zsh)"
+source <(starship init zsh) # Prefer source <() to eval "$()"
 
 # Scala application manager
 # Add coursier bin directory to PATH
-eval "$(cs install --env)"
+source <(cs install --env)
 
 # Define JAVA_HOME and add it to the PATH. Assign existing JAVA_HOME to CS_FORMER_JAVA_HOME
 {{ if (eq .chezmoi.username .chezmoi.config.data.work_username )}}
@@ -134,10 +134,10 @@ export PATH="$HOME/.volta/bin:$PATH"
 # The default command is `z` add the `--cmd cd` option to
 # replaces `cd` command.
 export _ZO_ECHO=1
-eval "$(zoxide init zsh)"
+source <(zoxide init zsh)
 
 # Save and sync command history
-eval "$(atuin init zsh)"
+source <(atuin init zsh)
 
 # Hooks `fre_chpwd` into the chpwd_functions array, effectively making it run
 # whenever the current working directory changes.
@@ -158,7 +158,7 @@ function fre_preexec () {
 add-zsh-hook chpwd fre_chpwd
 add-zsh-hook preexec fre_preexec
 
-eval "$(git machete completion zsh)"
+source <(git machete completion zsh)
 
 # >>> scala-cli completions >>>
 fpath=("/Users/tkolleh/Library/Application Support/ScalaCli/completions/zsh" $fpath)
