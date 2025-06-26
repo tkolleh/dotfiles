@@ -68,30 +68,7 @@ export ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE="50"
 # Enable aynchronous mode.
 export ZSH_AUTOSUGGEST_USE_ASYNC=true
 
-
 export CURL_HOME="$(brew --prefix curl)"
-
-zpm load @github/esc/conda-zsh-completion
-export CONDA_ENVS="/usr/local/anaconda3/envs"
-
-conda_path="$(whence -cp conda)"
-#
-# >>> conda initialize >>>
-#
-__conda_setup="$($conda_path 'shell.zsh' 'hook' 2> /dev/null)"
-if [ $? -eq 0 ]; then
-    eval "$__conda_setup"
-else
-    if [ -f "/opt/anaconda3/etc/profile.d/conda.sh" ]; then
-        . "/opt/anaconda3/etc/profile.d/conda.sh"
-    else
-        export PATH="/opt/anaconda3/bin:$PATH"
-    fi
-fi
-unset __conda_setup
-#
-# <<< conda initialize <<<
-#
 
 export FZF_DEFAULT_COMMAND='fd --type f --color=never --ignore-case --no-ignore --hidden --follow'
 export FZF_DEFAULT_OPTS="
@@ -147,6 +124,9 @@ export JAVA_HOME="$(cs java-home --architecture arm64 --jvm {{ .chezmoi.config.d
 export JAVA_HOME="$(cs java-home --architecture arm64 --jvm {{ .chezmoi.config.data.sys_java_version }})"
 {{ end }}
 export PATH="$JAVA_HOME/bin:$PATH"
+
+# Volta for managing the JavaScript toolchain
+export PATH="$HOME/.volta/bin:$PATH"
 
 #
 # Alternative to cd
