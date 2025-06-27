@@ -164,8 +164,9 @@ function print_color_band() {
 
 # colors, a lot of colors!
 function clicolors() {
-    i=1
-    for color in {000..255}; do;
+    local i=1
+    local c=""
+    for color in {000..255}; do
         c=$c"$FG[$color]$color✔$reset_color  ";
         if [ `expr $i % 8` -eq 0 ]; then
             c=$c"\n"
@@ -173,7 +174,6 @@ function clicolors() {
         i=`expr $i + 1`
     done;
     echo $c | sed 's/%//g' | sed 's/{//g' | sed 's/}//g' | sed '$s/..$//';
-    c=''
 }
 
 function edit_dot_files() {
@@ -190,6 +190,9 @@ function update_term_tools() {
   if (( ${+commands[zpm]} )); then
     zpm clean
     zpm upgrade
+  fi
+  if (( ${+commands[cs]} )); then
+    cs update
   fi
 }
 
@@ -445,4 +448,42 @@ function gcm() {
 
   # Commit these changes if user confirms
   gum confirm "Commit changes?" && git commit -m "$SUMMARY" -m "$DESCRIPTION"
+}
+
+# aig: Display the output of the last llm command using glow, with paging for long outputs.
+# Requirements: 'glow' and 'llm' must be installed.
+# - Runs 'llm' with provided arguments (output discarded).
+# - Fetches the last llm command output into a temporary markdown file.
+# - If output exceeds 20 lines, appends paging info and uses glow's pager.
+# - Otherwise, displays output directly with glow.
+# - Suggests installing coreutils for better mktemp experience if not present.
+function aig() {
+  if ! (( ${+commands[glow]} && ${+commands[llm]} )); then
+    echo "Error: Requires glow and llm to be installed"
+    return 1
+  fi
+
+  gum spin --show-output --title="Talking to the AI... " --spinner="meter" -- llm "$@" > /dev/null
+  local max_lines=20
+
+  local last_command_path
+  if (( ${+commands[gmktemp]} )); then
+    last_command_path=$(gmktemp --suffix=.md)
+  else
+    last_command_path=$(mktemp)
+    printf "\n%s\n" "Install coreutils for a better terminal experience: \`brew install coreutils\`"
+  fi
+
+  llm logs --count 1 > "$last_command_path"
+  local linecount=$(wc -l < "$last_command_path")
+  if (( linecount > $max_lines )); then
+    printf "\n%s\n" "
+     > Paging output because the last command output is longer than $max_lines lines:
+     > * Path to paged output: $last_command_path
+     > * Print original output: \`llm logs --count 1\`
+    " >> $last_command_path
+    glow --pager "$last_command_path"
+  else
+    glow "$last_command_path"
+  fi
 }

@@ -23,7 +23,7 @@ fi
 # - /usr/local for macOS Intel
 # - /opt/homebrew for Apple Silicon
 # - /home/linuxbrew/.linuxbrew for Linux
-eval "$(/opt/homebrew/bin/brew shellenv)"
+source <(/opt/homebrew/bin/brew shellenv)
 
 export PATH="$(brew --prefix python3)/bin:$PATH"
 
@@ -35,7 +35,7 @@ fi
 
 # Scala application manager
 # Add coursier bin directory to PATH
-eval "$(cs install --env)"
+source <(cs install --env)
 
 # Define JAVA_HOME and add it to the PATH. Assign existing JAVA_HOME to CS_FORMER_JAVA_HOME
 {{ if (eq .chezmoi.username .chezmoi.config.data.work_username )}}

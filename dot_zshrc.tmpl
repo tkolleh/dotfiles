@@ -89,6 +89,9 @@ export FZF_ALT_C_COMMAND='fd --type d --color=never --no-ignore --ignore-case --
 # Search recent commands
 export FZF_CTRL_R_OPTS="$FZF_DEFAULT_OPTS"
 
+# Volta for managing the JavaScript toolchain
+export PATH="$HOME/.volta/bin:$PATH"
+
 # Load custom code from separate configuration file.
 if [[ -f "$HOME"/.zsh_functions ]]; then source "$HOME"/.zsh_functions; fi
 
@@ -124,9 +127,6 @@ export JAVA_HOME="$(cs java-home --architecture arm64 --jvm {{ .chezmoi.config.d
 export JAVA_HOME="$(cs java-home --architecture arm64 --jvm {{ .chezmoi.config.data.sys_java_version }})"
 {{ end }}
 export PATH="$JAVA_HOME/bin:$PATH"
-
-# Volta for managing the JavaScript toolchain
-export PATH="$HOME/.volta/bin:$PATH"
 
 #
 # Alternative to cd
