@@ -3,6 +3,7 @@
 --
 return {
   "echasnovski/mini.files",
+  enabled = false,
   opts = function(_, opts)
     return vim.tbl_deep_extend("force", opts or {}, {
       windows = {
