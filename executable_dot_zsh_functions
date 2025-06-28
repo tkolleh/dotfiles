@@ -185,14 +185,20 @@ function edit_dot_files() {
 
 function update_term_tools() {
   if (( ${+commands[atuin]} )); then
-    atuin sync
+    gum spin --title "Syncing atuin history..." -- atuin sync || true
   fi
   if (( ${+commands[zpm]} )); then
-    zpm clean
-    zpm upgrade
+    gum spin --title "Cleaning zpm..." -- zpm clean || true
+    gum spin --title "Upgrading zpm..." -- zpm upgrade || true
   fi
   if (( ${+commands[cs]} )); then
-    cs update
+    gum spin --title "Updating coursier..." -- cs update --quiet || true
+  fi
+  if (( ${+commands[pipx]} )); then
+    gum spin --title "Upgrading all pipx packages..." -- pipx upgrade-all --quite || true
+  fi
+  if (( ${+commands[node]} )); then
+    gum spin --title "Updating global npm packages..." -- npm --global update || true
   fi
 }
 
@@ -361,22 +367,24 @@ function select_from_brew_info() {
   bat $query_rslt_path
 }
 
-function print_pr_basics(){
-  local template='
-  Title:  {{.title}}
-  State:  {{.state}}
-  Is Draft PR:  {{.isDraft}}
-  Is Mergable:  {{.mergeable}}
-  Merge Status:  {{.mergeStateStatus}}
-  URL:  {{.url}}
-  '
-  if (( ${+commands[gh]} )); then
-      gh pr view $1 --json number,title,url,state,author,isDraft,mergeable,mergeStateStatus --template $template | cat
-      return 0
-  else
-      echo "Requires gh to be installed." && (return 1)
-      return 1
+function print_pr_basics() {
+  if ! (( ${+commands[gh]} )); then
+    echo "Requires gh to be installed."
+    return 1
   fi
+
+  local template='
+#### {{.title}}
+
+| Attribute       | Value                      |
+|-----------------|----------------------------|
+| State           | {{.state}}                 |
+| Is Draft PR     | {{.isDraft}}               |
+| Updated At      | {{.updatedAt}}             |
+| Merge Status    | {{.mergeStateStatus}}      |
+| URL             | (PR:{{.number}})[{{.url}}] |
+ '
+  gh pr view "$1" --json number,title,url,state,author,isDraft,mergeable,mergeStateStatus --template "$template" | glow --width 100 --
 }
 
 function print_pr_failed_checks(){
@@ -452,7 +460,8 @@ function gcm() {
 
 # aig: Display the output of the last llm command using glow, with paging for long outputs.
 # Requirements: 'glow' and 'llm' must be installed.
-# - Runs 'llm' with provided arguments (output discarded).
+# - If the first argument is 'prev', prints the last llm logs output and exits.
+# - Otherwise, runs 'llm' with provided arguments (output discarded).
 # - Fetches the last llm command output into a temporary markdown file.
 # - If output exceeds 20 lines, appends paging info and uses glow's pager.
 # - Otherwise, displays output directly with glow.
@@ -461,6 +470,13 @@ function aig() {
   if ! (( ${+commands[glow]} && ${+commands[llm]} )); then
     echo "Error: Requires glow and llm to be installed"
     return 1
+  fi
+
+  if [[ "$1" == "prev" ]]; then
+    local prev_command_path=$(gmktemp --suffix=.md)
+    llm logs --count 1 > "$prev_command_path"
+    glow --pager $prev_command_path
+    return
   fi
 
   gum spin --show-output --title="Talking to the AI... " --spinner="meter" -- llm "$@" > /dev/null
@@ -478,9 +494,9 @@ function aig() {
   local linecount=$(wc -l < "$last_command_path")
   if (( linecount > $max_lines )); then
     printf "\n%s\n" "
-     > Paging output because the last command output is longer than $max_lines lines:
-     > * Path to paged output: $last_command_path
-     > * Print original output: \`llm logs --count 1\`
+>Paging output because the last command output is longer than $max_lines lines:
+>* Path to paged output: ${last_command_path}
+>* Print original output: \`llm logs --count 1\`
     " >> $last_command_path
     glow --pager "$last_command_path"
   else
