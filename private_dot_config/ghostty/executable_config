@@ -42,22 +42,22 @@ keybind = opt+cmd+h=previous_tab
 keybind = opt+cmd+z=toggle_split_zoom
 
 # keybind = ctrl+b>\=new_split:right
-keybind = unconsumed:opt+cmd+\=new_split:right
+keybind = opt+cmd+\=new_split:right
 
 # keybind = ctrl+b>-=new_split:down
-keybind = unconsumed:opt+cmd+-=new_split:down
+keybind = opt+cmd+-=new_split:down
 
 # keybind = ctrl+b>h=goto_split:left
-keybind = unconsumed:ctrl+h=goto_split:left
+keybind = opt+cmd+h=goto_split:left
 
 # keybind = ctrl+b>l=goto_split:right
-keybind = unconsumed:ctrl+l=goto_split:right
+keybind = opt+cmd+l=goto_split:right
 
 # keybind = ctrl+b>j=goto_split:bottom
-keybind = unconsumed:ctrl+j=goto_split:bottom
+keybind = opt+cmd+j=goto_split:bottom
 
 # keybind = ctrl+b>k=goto_split:top
-keybind = unconsumed:ctrl+k=goto_split:top
+keybind = opt+cmd+k=goto_split:top
 
 # Empty values reset the configuration to the default value
 font-family =
