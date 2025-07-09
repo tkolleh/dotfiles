@@ -3,7 +3,7 @@ return {
   dependencies = {
     "nvim-lua/plenary.nvim",
   },
-  ft = { "scala", "sbt", "sc", "java" },
+  ft = { "scala", "sbt", "sc", "java", "conf" },
   keys = {
     {
       "<leader>me",
@@ -44,6 +44,7 @@ return {
       bloopJvmProperties = { "-Xmx1G" },
       serverProperties = { "-Xmx3g", "-Xms1G" },
       serverVersion = "latest.snapshot",
+      testUserInterface = "Test Explorer",
     }
     -- *READ THIS*
     -- "off" will enable LSP progress notifications by Metals and you'll need

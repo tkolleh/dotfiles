@@ -373,7 +373,21 @@ function print_pr_basics() {
     return 1
   fi
 
-  local template='
+  if [[ "$1" == "slack" ]]; then
+    local template='
+#### {{.title}}
+
+- Number: {{.number}}
+- Title: {{.title}}
+- State: {{.state}}
+- Is Draft: {{.isDraft}}
+- Updated At: {{.updatedAt}}
+- Merge Status: {{.mergeStateStatus}}
+- URL: {{.url}}
+'
+    gh pr view --json number,title,url,updatedAt,state,author,isDraft,mergeable,mergeStateStatus --template "$template" | glow --width 100 --
+  else
+    local template='
 #### {{.title}}
 
 | Attribute       | Value                      |
@@ -384,7 +398,8 @@ function print_pr_basics() {
 | Merge Status    | {{.mergeStateStatus}}      |
 | URL             | (PR:{{.number}})[{{.url}}] |
  '
-  gh pr view "$1" --json number,title,url,state,author,isDraft,mergeable,mergeStateStatus --template "$template" | glow --width 100 --
+    gh pr view --json number,title,url,updatedAt,state,author,isDraft,mergeable,mergeStateStatus --template "$template" | glow --width 100 --
+  fi
 }
 
 function print_pr_failed_checks(){
@@ -410,15 +425,18 @@ function print_pr_review_request(){
   local ask="Please review the following PR(s):"
   local header=$(print_pr_basics)
   local body=$(print_pr_failed_checks)
-  printf "$ask $header $body"
-}
-
-function lzy() {
-	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
-	yazi "$@" --cwd-file="$tmp"
-	if cwd="$(command cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
+  if ! (( $+commands[glow] )); then
+    print -u2 "glow command not found. Please install glow to view markdown."
+    return 1
+  fi
+  if ! (( $+commands[gmktemp] )); then
+    print -u2 "gmktemp command not found. Please install coreutils."
+    return 1
+  fi
+  local tmp_md=$(gmktemp --suffix=.md pr_review_XXXXXX)
+  printf "%s\n%s\n%s\n" "$ask" "$header" "$body" > "$tmp_md"
+  glow "$tmp_md"
 		builtin cd -- "$cwd"
-	fi
 	rm -f -- "$tmp"
 }
 
