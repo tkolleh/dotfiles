@@ -10,7 +10,7 @@ command_timeout = 150
 
 # Order of modules on prompt
 format = """
-[╭─](clay_clr)[░▒▓](clay_clr)\
+[╭─](fg:clay_clr)[░▒▓](clay_clr)\
 $directory\
 [](bg:bg_dark_cream fg:clear_clr)\
 $git_branch\
