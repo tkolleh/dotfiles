@@ -9,7 +9,7 @@ auto-update-channel = tip
 
 # Cursor configuration
 # cursor-style-blink
-# cursor-style-blink = true
+cursor-style-blink = true
 
 # apperance specific themes
 # theme = dark:github dark,light:Raycast_Light
@@ -18,19 +18,46 @@ theme = dark:cyberdream,light:cyberdream-light
 # Comments start with a `#` and are only valid on their own line.
 # Blank lines are ignored!
 
-keybind = ctrl+b>c=new_tab
-keybind = ctrl+b>shift+l=next_tab
-keybind = ctrl+b>shift+h=previous_tab
+# Instance management
+keybind = opt+cmd+t=toggle_quick_terminal
 
-keybind = ctrl+b>\=new_split:right
-keybind = ctrl+b>-=new_split:down
+#
+# Tab management
+#
 
-keybind = ctrl+b>h=goto_split:left
-keybind = ctrl+b>j=goto_split:bottom
-keybind = ctrl+b>k=goto_split:top
-keybind = ctrl+b>l=goto_split:right
+# keybind = ctrl+b>c=new_tab
+# Use default ... cmd+t
 
-keybind = ctrl+b>z=toggle_split_zoom
+# keybind = ctrl+b>shift+l=next_tab
+keybind = opt+cmd+l=next_tab
+
+# keybind = ctrl+b>shift+h=previous_tab
+keybind = opt+cmd+h=previous_tab
+
+#
+# Pane/Split management
+#
+
+# keybind = ctrl+b>z=toggle_split_zoom
+keybind = opt+cmd+z=toggle_split_zoom
+
+# keybind = ctrl+b>\=new_split:right
+keybind = unconsumed:opt+cmd+\=new_split:right
+
+# keybind = ctrl+b>-=new_split:down
+keybind = unconsumed:opt+cmd+-=new_split:down
+
+# keybind = ctrl+b>h=goto_split:left
+keybind = unconsumed:ctrl+h=goto_split:left
+
+# keybind = ctrl+b>l=goto_split:right
+keybind = unconsumed:ctrl+l=goto_split:right
+
+# keybind = ctrl+b>j=goto_split:bottom
+keybind = unconsumed:ctrl+j=goto_split:bottom
+
+# keybind = ctrl+b>k=goto_split:top
+keybind = unconsumed:ctrl+k=goto_split:top
 
 # Empty values reset the configuration to the default value
 font-family =
