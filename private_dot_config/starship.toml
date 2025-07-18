@@ -1,14 +1,18 @@
-# Get editor completions based on the config schema
+# -*-mode:toml-*-
+#
+# ~/.config/starship.toml
+#
+# Optimized for a Java, Scala, TS/JS, and Python workflow.
+
 "$schema" = 'https://starship.rs/config-schema.json'
 
-# Disable blank line at the start of the prompt
+# --- Global Settings ---
 add_newline = false
+scan_timeout = 300
+command_timeout = 300
 
-# Timeout for commands executed by starship (in milliseconds)
-scan_timeout = 150
-command_timeout = 150
-
-# Order of modules on prompt
+# --- Prompt Format ---
+# The $nodejs, $python, etc., modules will only appear if their detection logic passes.
 format = """
 [╭─](fg:clay_clr)[░▒▓](clay_clr)\
 $directory\
@@ -17,23 +21,16 @@ $git_branch\
 [](fg:bg_dark_cream bg:#394260)\
 [](fg:#394260 bg:bright_grn_clr)\
 $nodejs\
-$rust\
-$golang\
-$php\
 $python\
 $java\
-$gleam\
-$dart\
-$elm\
-$elixir\
-$ruby\
+$scala\
 [](fg:bright_grn_clr bg:red_clay_clr)\
 $time[ ](fg:red_clay_clr)
 [╰](fg:clay_clr)\
 $status\
 $character(fg:clay_clr)"""
 
-# Color palette for light/dark mode
+# --- Color Palette ---
 palette = "dark"
 
 [palettes.dark]
@@ -50,6 +47,7 @@ clay_clr = "#b7b7a4"
 red_clay_clr = "#6f1d1b"
 clear_clr = "#000000"
 
+# --- Core Modules ---
 [character]
 success_symbol = "[](dimmed grn_clr) "
 error_symbol = " [](dimmed red_clr) "
@@ -68,11 +66,10 @@ format = """
 
 [time]
 disabled = false
-time_format = "%R"                                           # Hour:Minute Format
+time_format = "%R" # Hour:Minute Format
 style = "bg:#faedcd"
 format = '[[  $time ](fg:#a0a9cb bg:red_clay_clr)]($style)'
 
-# VCS
 [git_branch]
 symbol = "  "
 style = "bg:bg_dark_cream fg:clear_clr"
@@ -82,61 +79,51 @@ format = "[$symbol$branch](bg:bg_dark_cream fg:txt_clr)"
 style = "bg:bg_dark_cream fg:clear_clr"
 format = "\b[ ﰖ $hash](fg:clear_clr bg:$style)[](fg:$style) "
 
+# --- ACTIVE Language Modules (Optimized) ---
 
-# techno specific
-[conda]
-symbol = " "
-ignore_base = true
-format = "[$symbol$environment]($style) "
-disabled = false
-truncation_length = 10
-
-
-[dart]
-symbol = " "
+[nodejs]
+detect_files = ["package.json", ".node-version", ".nvmrc"]
+detect_folders = ["node_modules"]
+detect_extensions = []
+symbol = " "
 format = '[[ ${symbol}(${version})](bold fg:red_clay_clr bg:bright_grn_clr)]($style)'
 
-[elixir]
-symbol = " "
-format = '[[ ${symbol}(${version})](bold fg:red_clay_clr bg:bright_grn_clr)]($style)'
-
-[elm]
-symbol = " "
-style = "bg:#212736"
-format = '[[ ${symbol}(${version})](bold fg:red_clay_clr bg:bright_grn_clr)]($style)'
-
-[golang]
-symbol = " "
-style = "bg:#212736"
-format = '[[ ${symbol}(${version})](bold fg:red_clay_clr bg:bright_grn_clr)]($style)'
+[python]
+detect_files = ["pyproject.toml", "requirements.txt", "setup.py", "poetry.lock"]
+detect_folders = [".venv"]
+detect_extensions = []
+symbol = " "
+format = '[[ $symbol ${pyenv_prefix}(${version} )(($virtualenv) ) ](bold fg:red_clay_clr bg:bright_grn_clr)]($style)'
 
 [java]
+detect_files = ["pom.xml", "build.gradle", "gradlew", ".java-version"]
+detect_extensions = []
 symbol = " "
 format = '[[ ${symbol}(${version})](bold fg:red_clay_clr bg:bright_grn_clr)]($style)'
 
 [scala]
+detect_files = ["build.sbt", ".scala-version"]
+detect_extensions = []
 symbol = " "
 format = '[[ ${symbol}(${version})](bold fg:red_clay_clr bg:bright_grn_clr)]($style)'
 
-[nodejs]
-symbol = " "
-format = '[[ ${symbol}(${version})](bold fg:red_clay_clr bg:bright_grn_clr)]($style)'
-
-[php]
-symbol = " "
-format = '[[ ${symbol}(${version})](bold fg:red_clay_clr bg:bright_grn_clr)]($style)'
-
-[python]
-symbol = " "
-format = '[[ $symbol ${pyenv_prefix}(${version} )(($virtualenv) ) ](bold fg:red_clay_clr bg:bright_grn_clr)]($style)'
-
-[ruby]
-symbol = " "
-format = '[[ ${symbol}(${version})](bold fg:red_clay_clr bg:bright_grn_clr)]($style)'
+# --- DISABLED Language Modules (for performance) ---
 
 [rust]
-symbol = " "
-format = '[[ ${symbol}(${version})](bold fg:red_clay_clr bg:bright_grn_clr)]($style)'
-
+disabled = true
+[golang]
+disabled = true
+[php]
+disabled = true
 [gleam]
-format = '[[ ${symbol}(${version})](bold fg:red_clay_clr bg:bright_grn_clr)]($style)'
+disabled = true
+[dart]
+disabled = true
+[elm]
+disabled = true
+[elixir]
+disabled = true
+[ruby]
+disabled = true
+[conda]
+disabled = true

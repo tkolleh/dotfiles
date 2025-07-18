@@ -44,10 +44,14 @@ function fif() {
     echo "Need a string to search for!"
     return 1
   fi
-  rg --ignore-case --files-with-matches --no-messages "$1" | fzf | awk '{
-    gsub(/ /, "\\ ", $0);  # Escape spaces with backslashes
-    print "\"" $0 "\""
-  }' | xargs -I {} $EDITOR "{}"
+  if ! (( $+commands[gmktemp] )); then
+    print -u2 "gmktemp command not found. Please install coreutils."
+    return 1
+  fi
+  local tmp_sf=$(gmktemp --suffix=.txt --tmpdir selected_files_XXXX)
+  rg --ignore-case --files-with-matches --no-messages "$1" | fzf -m | sd ' ' '\\ ' | awk '{printf "%s ", $0}' > "$tmp_sf"
+  gum log --structured --level info "Saving selected file list to" path $tmp_sf
+  nvim `cat $tmp_sf`
 }
 
 # an alternative to the above using ripgrep-all (rga)
@@ -80,7 +84,7 @@ function fcb() {
   git checkout $(awk '{print $2}' <<<"$target" )
 }
 
-__alias glNoGraph='git log --color=always --format="%C(auto)%h%d %s %C(black)%C(bold)%cr% C(auto)%an" "$@"'
+alias glNoGraph='git log --color=always --format="%C(auto)%h%d %s %C(black)%C(bold)%cr% C(auto)%an"'
 _gitLogLineToHash="echo {} | grep -o '[a-f0-9]\{7\}' | head -1"
 _viewGitLogLine="$_gitLogLineToHash | xargs -I % sh -c 'git show --color=always % | diff-so-fancy'"
 
@@ -94,7 +98,7 @@ function fcoc_preview() {
 }
 
 # fshow_preview - git commit browser with previews
-function fgshow() {
+function glshow() {
   glNoGraph "$@" |
     fzf --no-sort --reverse --tiebreak=index --no-multi \
       --ansi --preview="$_viewGitLogLine" \

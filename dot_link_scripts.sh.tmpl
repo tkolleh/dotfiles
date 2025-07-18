@@ -1,13 +1,19 @@
-#! /usr/bin/env bash
+#!/usr/bin/env bash
 
-[ "$user_functions_loaded" ] || source {{ .chezmoi.homeDir }}/.zsh_functions
-
-{{ if eq .chezmoi.os "darwin" }}
-bluebox="/usr/local/bin/bluebox"
-if pathtosymlink "${bluebox}"; then 
-  echo "Symlink exists: ${blubox}"
-else
-  echo "Creating symlink for ${bluebox}"
-  ln -s {{ .chezmoi.homeDir }}/ws/usrBinScripts/blubox.sh ${blubox} 
+if [ -f "$HOME/.zsh_functions" ]; then
+  source "$HOME/.zsh_functions"
 fi
-{{ end }}
+
+if [[ "$(uname)" == "Darwin" ]]; then
+  bluebox_src="$HOME/ws/usrBinScripts/blubox.sh"
+  bluebox_dest="/usr/local/bin/bluebox"
+
+  if [ -f "$bluebox_src" ]; then
+    if [ -L "$bluebox_dest" ]; then
+      echo "Symlink exists: $bluebox_dest"
+    else
+      echo "Creating symlink for $bluebox_dest"
+      ln -s "$bluebox_src" "$bluebox_dest"
+    fi
+  fi
+fi
