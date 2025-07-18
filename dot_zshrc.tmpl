@@ -1,75 +1,68 @@
 # -*-mode:sh-*- vim:ft=zsh
-#
-# ~/.zshrc
 # =============================================================================
 #
+# ~/.zshrc
 #
-zmodload zsh/zprof
+# =============================================================================
 
-# Hide default user from local prompt.
+# OPTIMIZATION: zprof is for profiling. Comment it out for daily use.
+# zmodload zsh/zprof
+
+# --- Core Settings & Cache Directory -----------------------------------------
 export DEFAULT_USER="${USER}"
-
-# Automatically update without prompting.
 export DISABLE_UPDATE_PROMPT="false"
-
-# Uncomment the following line to change how often to auto-update (in days).
 export UPDATE_ZSH_DAYS=7
+export KEYTIMEOUT=1 # Reduces editor key-press delay
+export ZSH_CACHE_DIR="$HOME/.cache/zsh" # Standardized cache location
+if [[ ! -d "$ZSH_CACHE_DIR" ]]; then mkdir -p "$ZSH_CACHE_DIR/completions"; fi
 
-# Reduce delay of loading the editor
-# $KEYTIMEOUT controls the number of milliseconds that must pass
-# before a key press is read.
-export KEYTIMEOUT=1
-
-# -- Plugins --------------------------------------------------
-#
-# Install zpm-zsh
-if [[ ! -f ~/.zpm/zpm.zsh ]]; then
-  git clone --recursive https://github.com/zpm-zsh/zpm ~/.zpm
+# --- ZPM Plugin Manager ------------------------------------------------------
+if [[ ! -f "${XDG_DATA_HOME:-$HOME/.local/share}/zsh/plugins/@zpm/zpm.zsh" ]]; then
+  git clone --recursive https://github.com/zpm-zsh/zpm "${XDG_DATA_HOME:-$HOME/.local/share}/zsh/plugins/@zpm"
 fi
-source ~/.zpm/zpm.zsh
+source "${XDG_DATA_HOME:-$HOME/.local/share}/zsh/plugins/@zpm/zpm.zsh"
 
-# Pull in OMZ (doesn't actually source anything)
-zpm load @omz
-
-zpm load                         \
-  @omz/lib/functions             \
+# --- ZPM Plugins -------------------------------------------------------------
+zpm load @gh/romkatv/zsh-defer # Load defer utility first
+zpm load @omz # Pull in OMZ libraries
+zpm load \
+  @omz/lib/functions \
   @omz/lib/prompt_info_functions \
-  @omz/lib/git                   \
-  @omz/lib/compfix               \
-  @omz/lib/grep                  \
-  @omz/lib/termsupport           \
-  @omz/lib/spectrum              \
-  @omz/lib/key-bindings          \
+  @omz/lib/git \
+  @omz/lib/compfix \
+  @omz/lib/grep \
+  @omz/lib/termsupport \
+  @omz/lib/spectrum \
+  @omz/lib/key-bindings \
   @omz/lib/completion
 
-# Load some OMZ plugins and theme
-zpm load                  \
-  @omz/git                \
-  @omz/colored-man-pages  \
+zpm load \
+  @omz/git,async \
+  @omz/colored-man-pages,async \
   @omz/vi-mode
 
+zpm if-not ssh load \
+  @gh/zdharma-continuum/fast-syntax-highlighting,async \
+  @gh/zpm-zsh/zsh-autosuggestions,async \
+  @gh/zsh-users/zsh-completions,async \
+  @omz/poetry,async \
+  @omz/scala,async \
+  @omz/sbt,async
+
+zpm load custom
+
+# --- Plugin Configurations ---------------------------------------------------
+# vi-mode
 VI_MODE_RESET_PROMPT_ON_MODE_CHANGE=true
 VI_MODE_SET_CURSOR=true
-bindkey -M viins 'jk' vi-cmd-mode       # this remaps `jk` to command mode
-bindkey -M vicmd 'V' edit-command-line  # this remaps `vv` to `V` (but overrides `visual-mode`)
+bindkey -M viins 'jk' vi-cmd-mode
+bindkey -M vicmd 'V' edit-command-line
 
-# Plugins for local host
-zpm if-not ssh load                                   \
-  zdharma-continuum/fast-syntax-highlighting          \
-  zpm-zsh/zsh-autosuggestions,async                   \
-  zsh-users/zsh-completions,async                     \
-  zpm-zsh/zsh-better-npm-completion,async
-
-autoload -U compinit && compinit
-
-# Disable autosuggestion for large buffers.
+# zsh-autosuggestions
 export ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE="50"
-
-# Enable aynchronous mode.
 export ZSH_AUTOSUGGEST_USE_ASYNC=true
 
-export CURL_HOME="$(brew --prefix curl)"
-
+# --- FZF (Fuzzy Finder) Configuration ----------------------------------------
 export FZF_DEFAULT_COMMAND='fd --type f --color=never --ignore-case --no-ignore --hidden --follow'
 export FZF_DEFAULT_OPTS="
 --bind 'f1:execute(bat --paging=always --color=always {})'
@@ -80,114 +73,57 @@ export FZF_DEFAULT_OPTS="
 --preview='bat --number --color=always --style=numbers,changes {} | head -700' --preview-window='right:50%:hidden'
 --color header:italic
 --header '<CTRL-Y>:copy - <F2>:open - <tab|CTRL-Z>:select'"
-
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
-
-# Search for files
 export FZF_ALT_C_COMMAND='fd --type d --color=never --no-ignore --ignore-case --hidden --follow '
-
-# Search recent commands
 export FZF_CTRL_R_OPTS="$FZF_DEFAULT_OPTS"
 
-# Volta for managing the JavaScript toolchain
-export PATH="$HOME/.volta/bin:$PATH"
-
-# Load custom code from separate configuration file.
-if [[ -f "$HOME"/.zsh_functions ]]; then source "$HOME"/.zsh_functions; fi
-
-if [[ -f "$HOME"/.host_functions.zsh ]]; then source "$HOME"/.host_functions.zsh; fi
-
-# Load aliases
-if [[ -a "$HOME"/.zsh_aliases ]]; then
-  source "$HOME"/.zsh_aliases
+# --- Shell Hooks -------------------------------------------------------------
+# Safely add hooks only if the 'fre' command exists
+autoload -Uz add-zsh-hook
+if (( $+commands[fre] )); then
+  function fre_chpwd() { fre --add "$(pwd)"; }
+  function fre_preexec () {
+    local tmpcmd="$3"
+    local cand_fname=${(Q)${(z)tmpcmd}[-1]}
+    [[ -f "$cand_fname" ]] && fre --add "$(realpath "$cand_fname")"
+  }
+  add-zsh-hook chpwd fre_chpwd
+  add-zsh-hook preexec fre_preexec
 fi
 
-# -- Prompt styles ----------------------------------
-#
-# Light mode is the default. Check if apple settings are for darkmode
-if [[ -f "$HOME"/.zsh_dark-notify.zsh ]]; then
-  source "$HOME"/.zsh_dark-notify.zsh
-  set_terminal_to_dark_mode
-fi
+# --- Deferred Initializations (for max speed) --------------------------------
+# Load these tools and scripts AFTER the prompt is displayed
 
-# Starship cross-shell prompt
-#
-# Install starship
+# Tooling
+zsh-defer eval "$(zoxide init zsh)"
+zsh-defer eval "$(atuin init zsh)"
+
+# Starship Prompt
 export STARSHIP_LOG=error
-source <(starship init zsh) # Prefer source <() to eval "$()"
+eval "$(starship init zsh)"
 
-# Scala application manager
-# Add coursier bin directory to PATH
-source <(cs install --env)
+# --- Completions -------------------------------------------------------------
+# All fpath modifications and completion setups go here, before the single compinit call.
 
-# Define JAVA_HOME and add it to the PATH. Assign existing JAVA_HOME to CS_FORMER_JAVA_HOME
-{{ if (eq .chezmoi.username .chezmoi.config.data.work_username )}}
-export JAVA_HOME="$(cs java-home --architecture arm64 --jvm {{ .chezmoi.config.data.work_java_version }})"
-{{ else }}
-export JAVA_HOME="$(cs java-home --architecture arm64 --jvm {{ .chezmoi.config.data.sys_java_version }})"
-{{ end }}
-export PATH="$JAVA_HOME/bin:$PATH"
-
-#
-# Alternative to cd
-#
-# The default command is `z` add the `--cmd cd` option to
-# replaces `cd` command.
-export _ZO_ECHO=1
-source <(zoxide init zsh)
-
-# Save and sync command history
-source <(atuin init zsh)
-
-# Hooks `fre_chpwd` into the chpwd_functions array, effectively making it run
-# whenever the current working directory changes.
-#
-function fre_chpwd() {
-  fre --add "$(pwd)"
+# Deferrable completions
+_cache_git_machete_completions() {
+  local cache_file="$ZSH_CACHE_DIR/completions/_git_machete"
+  if [[ ! -f "$cache_file" ]] || [[ "$(command -v git-machete)" -nt "$cache_file" ]]; then
+    git machete completion zsh > "$cache_file"
+  fi
+  zsh-defer source "$cache_file"
 }
-#
-#
-# Adds a hook that, before every command is executed, checks if the last word 
-# of the command is a file. If it is, it adds the absolute path of that file to the fre
-#
-function fre_preexec () {
-  local tmpcmd="$3"
-  local cand_fname=${(Q)${(z)tmpcmd}[-1]}
-  [[ -f "$cand_fname" ]] && fre --add "$(realpath $cand_fname)"
-}
-add-zsh-hook chpwd fre_chpwd
-add-zsh-hook preexec fre_preexec
+_cache_git_machete_completions
+unset -f _cache_git_machete_completions
 
-source <(git machete completion zsh)
 
-# >>> scala-cli completions >>>
+# Synchronous completions
 fpath=("/Users/tkolleh/Library/Application Support/ScalaCli/completions/zsh" $fpath)
-compinit
 
-# TODO: Move these to ZSH_CUSTOM similiar to how oh-my-zsh does it.
-# See: https://github.com/ohmyzsh/ohmyzsh/blob/0d0042aad33562877dffd12baa6fe86e40642241/oh-my-zsh.sh#L16-L20
-#
-if [[ -z "$HOME"/.poetry_completions.zsh ]]; then
-  poetry completions bash > "$HOME"/.poetry_completions.zsh
-fi
-# source "$HOME"/.poetry_completions.zsh
+# Initialize the completion system ONCE.
+autoload -Uz compinit
+compinit -C
 
+# --- Final Exports -----------------------------------------------------------
 export ICLOUD_DIR="$HOME/Library/Mobile Documents/com~apple~CloudDocs/"
-export CHEZMOI_SOURCE_PATH="$(chezmoi source-path)"
-
-# Add JetBrains toolbox scripts to path
-export PATH="$HOME/.local/bin:$PATH"
-
-export PATH="$(go env GOPATH)"/bin:$PATH.
-
-# Load Fuzzy finder completions and keybindings 
-if [[ -f "$HOME"/.fzf.zsh ]]; then source "$HOME"/.fzf.zsh; fi
-
-# MacOS alerting from terminal
-# https://github.com/vjeantet/alerter?tab=readme-ov-file
-if [[ -f /opt/alerter/bin/alerter ]]; then
-  export PATH="$PATH:/opt/alerter/bin"
-fi
-
-export HELIX_RUNTIME=/Users/tkolleh/IdeaProjects/helix/runtime
-export PATH="$PATH:/Users/tkolleh/.cargo/bin"
+export CHEZMOI_SOURCE_PATH="$HOME/.local/share/chezmoi"
