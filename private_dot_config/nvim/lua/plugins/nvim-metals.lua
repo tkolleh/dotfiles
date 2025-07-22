@@ -42,7 +42,7 @@ return {
       defaultBspToBuildTool = true,    -- [default:false] If build tool serves as build server, use it
       bloopSbtAlreadyInstalled = false, -- [default:false] Metals will not generate metals.sbt
       bloopJvmProperties = { "-Xmx1G" },
-      serverProperties = { "-Xmx3g", "-Xms1G" },
+      serverProperties = { "-Xms250m", "-Xss8m", "-XX:+UseStringDeduplication" },
       serverVersion = "latest.snapshot",
       testUserInterface = "Test Explorer",
     }
