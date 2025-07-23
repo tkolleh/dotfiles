@@ -127,7 +127,7 @@ function fcb() {
 
 alias glNoGraph='git log --color=always --format="%C(auto)%h%d %s %C(black)%C(bold)%cr% C(auto)%an"'
 _gitLogLineToHash="echo {} | grep -o '[a-f0-9]\{7\}' | head -1"
-_viewGitLogLine="$_gitLogLineToHash | xargs -I % sh -c 'git show --color=always % | diff-so-fancy'"
+_viewGitLogLine="$_gitLogLineToHash | xargs -I % sh -c 'git -c diff.external=difft show --ext-diff %'"
 
 # fcoc_preview - checkout git commit with previews
 function fcoc_preview() {
@@ -144,7 +144,7 @@ function glshow() {
     fzf --no-sort --reverse --tiebreak=index --no-multi \
       --ansi --preview="$_viewGitLogLine" \
       --header "enter to view, alt-y to copy hash" \
-      --bind "enter:execute:$_viewGitLogLine   | less -R" \
+      --bind "enter:execute:$_viewGitLogLine" \
       --bind "alt-y:execute:$_gitLogLineToHash | xclip"
 }
 
@@ -428,9 +428,9 @@ function print_pr_basics() {
 - Is Draft: {{.isDraft}}
 - Updated At: {{.updatedAt}}
 - Merge Status: {{.mergeStateStatus}}
-- URL: {{.url}}
+- URL: (PR:{{.number}})[{{.url | printf "%.120s"}}]
 '
-    gh pr view --json number,title,url,updatedAt,state,author,isDraft,mergeable,mergeStateStatus --template "$template" | glow --width 100 --
+    gh pr view --json number,title,url,updatedAt,state,author,isDraft,mergeable,mergeStateStatus --template "$template" | glow --width 120 --
   else
     local template='
 #### {{.title}}
@@ -441,9 +441,9 @@ function print_pr_basics() {
 | Is Draft PR     | {{.isDraft}}               |
 | Updated At      | {{.updatedAt}}             |
 | Merge Status    | {{.mergeStateStatus}}      |
-| URL             | (PR:{{.number}})[{{.url}}] |
+| URL             | (PR:{{.number}})[{{.url | printf "%.120s"}}] |
  '
-    gh pr view --json number,title,url,updatedAt,state,author,isDraft,mergeable,mergeStateStatus --template "$template" | glow --width 100 --
+    gh pr view --json number,title,url,updatedAt,state,author,isDraft,mergeable,mergeStateStatus --template "$template" | glow --width 120 --
   fi
 }
 
