@@ -1,47 +1,6 @@
 #!/usr/bin/env zsh
 # -*-mode:zsh-*- vim:ft=zsh
 #
-
-# srcshow - Search Sourcegraph and show results in fzf
-# - If arguments are provided, they are used as the query.
-# - Otherwise, it prompts for a search query.
-# - Uses 'src' to search for file paths.
-# - Displays results in fzf with a preview of the file content.
-# - Opens the selected file in Sourcegraph on 'enter'.
-function srcshow() {
-  # --- 1. Dependency Checks ---
-  if ! (( ${+commands[src]} && ${+commands[gum]} && ${+commands[fzf]} )); then
-    gum log --level error "Requires 'src', 'gum', and 'fzf' to be installed."
-    return 1
-  fi
-
-  # --- 2. Get User Input ---
-  local query
-  if [[ $# -gt 0 ]]; then
-    query="$*"
-    gum log --level info "Using query from arguments: '$query'"
-  else
-    query=$(gum input --placeholder "e.g., 'my_function lang:go repo:has.path(main.go)'")
-  fi
-
-  if [[ -z "$query" ]]; then
-    gum log --level warn "No query provided. Exiting."
-    return 0
-  fi
-
-  # --- 3. Perform Search and Interactive Selection ---
-  gum log --level info "Searching source code for: '$query'"
-  
-  # Inline preview and execution logic directly into fzf using 'zsh -c'
-  # This is the most robust method as it avoids subshell function exporting issues.
-  src search -json -- "$query" | jq -r '.Results[] | .repository.name + ":" + .file.path' | \
-    fzf --preview 'zsh -c "_srcshow_previewer() { set +e; local parts=(${(s,:,)1}); src repos get-content --repo \"${parts[1]}\" --file \"${parts[2]}\" | bat --language=autodetect --color=always --highlight-line=$LBUFFER; }; _srcshow_previewer {q}"' \
-        --preview-window=right:60%:wrap \
-        --header "Press ENTER to open in browser" \
-        --bind 'enter:execute(zsh -c "_srcshow_opener() { local parts=(${(s,:,)1}); local endpoint=\"${SRC_ENDPOINT:-https://sourcegraph.com}\"; local url=\"$endpoint/${parts[1]}/-/blob/${parts[2]}\"; open \"\$url\"; gum log --level info \"Opening in browser: \$url\"; }; _srcshow_opener {+}")'
-}
-
-
 # ~/.zsh_functions
 # ====================================
 #
@@ -76,36 +35,26 @@ function syspath(){
    echo $PATH | sed 's/:/\n/g' | sort | uniq -c
 }
 
-
-# using ripgrep combined with preview
-# find-in-file - usage: fif <searchTerm>
-# reference: https://github.com/junegunn/fzf/wiki/examples#searching-file-contents
-function fif() {
-  if [[ $# -eq 0 ]]; then
-    echo "Need a string to search for!"
-    return 1
-  fi
-  if ! (( $+commands[gmktemp] )); then
-    print -u2 "gmktemp command not found. Please install coreutils."
-    return 1
-  fi
-  local tmp_sf=$(gmktemp --suffix=.txt --tmpdir selected_files_XXXX)
-  rg --ignore-case --files-with-matches --no-messages "$1" | fzf -m | sd ' ' '\\ ' | awk '{printf "%s ", $0}' > "$tmp_sf"
-  gum log --structured --level info "Saving selected file list to" path $tmp_sf
-  nvim `cat $tmp_sf`
-}
-
-# an alternative to the above using ripgrep-all (rga)
-function fid() {
-  if [ ! "$#" -gt 0 ]; then
-    echo "Need a string to search for!"
-    return 1
-  fi
-  rga --files-with-matches --no-messages "$1" | fzf \
-    -m \
-    --preview "highlight -O ansi -l {} 2> /dev/null | rg --colors 'match:bg:yellow' --ignore-case --pretty --context 10 '$1' || rg --ignore-case --pretty --context 10 '$1' {}" \
-    --bind="f9:execute:hx {} < /dev/tty"
-}
+# Find string in files using ripgrep as the filter with fzf interface
+# see: https://junegunn.github.io/fzf/tips/ripgrep-integration/
+# ripgrep->fzf->vim [QUERY]
+fif() (
+  RELOAD='reload:rg --column --color=always --smart-case {q} || :'
+  OPENER='if [[ $FZF_SELECT_COUNT -eq 0 ]]; then
+            nvim {1} +{2}     # No selection. Open the current line in Vim.
+          else
+            nvim +cw -q {+f}  # Build quickfix list for the selected items.
+          fi'
+  fzf --disabled --ansi --multi \
+      --bind "start:$RELOAD" --bind "change:$RELOAD" \
+      --bind "enter:become:$OPENER" \
+      --bind "ctrl-o:execute:$OPENER" \
+      --bind 'alt-a:select-all,alt-d:deselect-all,ctrl-/:toggle-preview' \
+      --delimiter : \
+      --preview 'bat --style=full --color=always --highlight-line {2} {1}' \
+      --preview-window '~4,+{2}+4/3,<80(up)' \
+      --query "$*"
+)
 
 # fbc - fuzzy Find Branch or tag to Checkout
 # checkout git branch (including remote branches), sorted by most recent commit, limit 30 last branches
