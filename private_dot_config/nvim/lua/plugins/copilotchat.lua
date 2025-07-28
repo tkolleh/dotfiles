@@ -2,6 +2,7 @@ return {
   "CopilotC-Nvim/CopilotChat.nvim",
   branch = "main",
   cmd = "CopilotChat",
+  build = "make tiktoken", -- Only on MacOS or Linux
   opts = function()
     local user = "tkolleh"
     user = user:sub(1, 1):upper() .. user:sub(2)

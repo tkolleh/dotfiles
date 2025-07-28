@@ -24,7 +24,7 @@ M.setLight = function()
 end
 
 M.is_background_dark = function()
-  local bg = vim.api.nvim_get_option_value("bg", {})
+  local bg = vim.api.nvim_get_option_value("background", {})
   local colorscheme = vim.g.colors_name
 
   -- Check if it's explicitly set to 'dark'.

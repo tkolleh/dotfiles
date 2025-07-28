@@ -179,20 +179,23 @@ function edit_dot_files() {
 
 function update_term_tools() {
   if (( ${+commands[atuin]} )); then
-    gum spin --title "Syncing atuin history..." -- atuin sync || true
+    gum spin --title "Syncing atuin history..." -- atuin sync || :
   fi
   if (( ${+commands[zpm]} )); then
-    gum spin --title "Cleaning zpm..." -- zpm clean || true
-    gum spin --title "Upgrading zpm..." -- zpm upgrade || true
+    gum spin --title "Cleaning zpm..." -- zpm clean || :
+    gum spin --title "Upgrading zpm..." -- zpm upgrade || :
   fi
   if (( ${+commands[cs]} )); then
-    gum spin --title "Updating coursier..." -- cs update --quiet || true
+    gum spin --title "Updating coursier..." -- cs update --quiet || :
   fi
   if (( ${+commands[pipx]} )); then
-    gum spin --title "Upgrading all pipx packages..." -- pipx upgrade-all --quite || true
+    gum spin --title "Upgrading all pipx packages..." -- pipx upgrade-all --quite || :
   fi
   if (( ${+commands[node]} )); then
-    gum spin --title "Updating global npm packages..." -- npm --global update || true
+    gum spin --title "Updating global npm packages..." -- npm --global update || :
+  fi
+  if (( ${+commands[goose]} )); then
+    gum spin --title "Updating block goose..." -- goose update || :
   fi
 }
 
