@@ -4,6 +4,11 @@
 --
 vim.opt.wrap = true -- Enable line wrap
 
+--  make floating windows transparentish
+vim.o.winblend = 20
+--  and give them rounded borders by default
+vim.o.winborder = 'rounded'
+
 -- LazyVim picker to use.
 -- Can be one of: telescope, fzf
 -- Leave it to "auto" to automatically use the picker

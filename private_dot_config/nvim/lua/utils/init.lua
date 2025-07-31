@@ -7,9 +7,15 @@ M.setDark = function()
   vim.api.nvim_command("highlight clear")
   vim.api.nvim_command("syntax reset")
   -- vim.api.nvim_command("colorscheme github_dark_tritanopia")
-  vim.api.nvim_command("colorscheme tokyonight-moon")
+  -- vim.api.nvim_command("colorscheme tokyonight-moon")
+  -- vim.api.nvim_command("colorscheme nightfox")
+
   -- Change teminal colors to dark
+  require("nightfox").load()
+  vim.api.nvim_command("colorscheme duskfox")
+  -- TODO: Lets see if bat themes can respect terminal theme change indicator
   vim.fn.jobstart("set_bat_theme 1", { detach = true })
+  return "duskfox"
 end
 
 M.setLight = function()
@@ -19,8 +25,12 @@ M.setLight = function()
   -- vim.api.nvim_command("colorscheme tokyonight-day")
   -- vim.api.nvim_command("colorscheme newpaper")
   -- vim.api.nvim_command("colorscheme cyberdream")
+
+  -- Change teminal colors to dark
+  require("nightfox").load()
   vim.api.nvim_command("colorscheme dayfox")
   vim.fn.jobstart("set_bat_theme 0", { detach = true })
+  return "dayfox"
 end
 
 M.is_background_dark = function()
