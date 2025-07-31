@@ -41,18 +41,20 @@ return {
       verboseCompilation = true,        -- [default:false] Show all possible debug information
       defaultBspToBuildTool = true,    -- [default:false] If build tool serves as build server, use it
       bloopSbtAlreadyInstalled = false, -- [default:false] Metals will not generate metals.sbt
-      bloopJvmProperties = { "-Xmx1G" },
-      serverProperties = { "-Xms250m", "-Xss8m", "-XX:+UseStringDeduplication" },
+      bloopJvmProperties = { "-Xms512m" },
+      serverProperties = { "-Xms512m", "-Xss16m", "-XX:+UseStringDeduplication" },
       serverVersion = "latest.snapshot",
       testUserInterface = "Test Explorer",
+      startMcpServer = true,
+      -- mcpClient = 'claude'
     }
-    -- *READ THIS*
+    -- 
     -- "off" will enable LSP progress notifications by Metals and you'll need
-    -- to ensure you have a plugin like fidget.nvim installed to handle them.
+    -- to ensure you have a plugin like fidget.nvim or nvim-lualine installed 
+    -- to handle them. 
     --
-    -- "on" will enable the custom Metals status extension and you *have* to have
-    -- a have settings to capture this in your statusline or else you'll not see
-    -- any messages from metals. There is more info in the help docs about this
+    -- See: https://github.com/nvim-lualine/lualine.nvim/blob/master/lua/lualine/components/progress.lua
+    --
     metals_config.init_options.statusBarProvider = "off"
     return metals_config
   end,

@@ -105,13 +105,13 @@ return {
   {
     "LazyVim/LazyVim",
     opts = {
-      colorscheme = function()
-        if utils.is_background_dark() then
-          utils.setDark()
-        else
-          utils.setLight()
-        end
-      end,
+      news = {
+        -- When enabled, NEWS.md will be shown when changed.
+        -- This only contains big new features and breaking changes.
+        lazyvim = true,
+        -- Same but for Neovim's news.txt
+        neovim = true,
+      }
     },
   },
 }

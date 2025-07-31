@@ -3,14 +3,20 @@ auto-update-channel = tip
 
 # apperance specific themes
 # theme = dark:github dark,light:Raycast_Light
-theme = dark:cyberdream,light:cyberdream-light
+# theme = dark:cyberdream,light:cyberdream-light
+# theme = dark:catppuccin-frappe,light:catppuccin-latte
+# theme = dark:GitLab-Dark-Grey,light:GitLab-Light
+theme = dark:GitLab-Dark-Grey,light:dayfox
+
+font-size = 14
 
 # Whether to use the native macOS full screen mode.
 macos-non-native-fullscreen = false
 
 # Whether to enable saving and restoring window state. Window state 
 # includes their position, size, tabs, splits, etc.
-window-save-state = always
+# Options are default, always, never
+window-save-state = default
 
 # Instance management
 keybind = opt+cmd+t=toggle_quick_terminal
