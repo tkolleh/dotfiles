@@ -21,7 +21,7 @@ api.nvim_create_autocmd(
 -- Auto light / dark theme
 -- The decision will be made based on system preferences using DEC mode 2031 if supported by the terminal.
 -- See: neovim/neovim#31350
-api.nvim_create_autocmd({"OptionSet", "VimEnter"}, {
+api.nvim_create_autocmd({"StdinReadPre", "OptionSet", "VimEnter", "UIEnter"}, {
   group = api.nvim_create_augroup('dec_auto_background', { clear = true }),
   pattern = 'background',
   callback = function()
