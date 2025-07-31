@@ -37,16 +37,16 @@ return {
     metals_config.settings = {
       showImplicitArguments = true,
       excludedPackages = { "akka.actor.typed.javadsl", "com.github.swagger.akka.javadsl" },
-      superMethodLensesEnabled = true,  -- [default:false] Super method lenses are visible
-      verboseCompilation = true,        -- [default:false] Show all possible debug information
-      defaultBspToBuildTool = true,    -- [default:false] If build tool serves as build server, use it
-      bloopSbtAlreadyInstalled = false, -- [default:false] Metals will not generate metals.sbt
+      superMethodLensesEnabled = true,    -- [default:false] Super method lenses are visible
+      verboseCompilation = true,          -- [default:false] Show all possible debug information
+      defaultBspToBuildTool = true,       -- [default:false] If build tool serves as build server, use it
+      bloopSbtAlreadyInstalled = false,   -- [default:false] Metals will not generate metals.sbt
       bloopJvmProperties = { "-Xms512m" },
       serverProperties = { "-Xms512m", "-Xss16m", "-XX:+UseStringDeduplication" },
       serverVersion = "latest.snapshot",
       testUserInterface = "Test Explorer",
       startMcpServer = true,
-      -- mcpClient = 'claude'
+      mcpClient = 'claude'
     }
     -- 
     -- "off" will enable LSP progress notifications by Metals and you'll need
