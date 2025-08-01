@@ -26,7 +26,10 @@ fi
 source <(/opt/homebrew/bin/brew shellenv)
 
 export PATH="$(brew --prefix python3)/bin:$PATH"
-export PATH="$HOME/.volta/bin:$PATH"
+if [[ -d "$HOME/.volta" ]]; then
+  export VOLTA_HOME="$HOME/.volta"
+  export PATH="$VOLTA_HOME/bin:$PATH"
+fi
 export PATH="$HOME/.local/bin:$PATH" # JetBrains toolbox
 export PATH="$(go env GOPATH)/bin:$PATH"
 export PATH="$PATH:/Users/tkolleh/.cargo/bin"
@@ -42,31 +45,18 @@ fi
 source <(cs install --env)
 
 # Define JAVA_HOME and add it to the PATH. Assign existing JAVA_HOME to CS_FORMER_JAVA_HOME
-{{ if (eq .chezmoi.username .chezmoi.config.data.work_username )}}
-export JAVA_HOME="$(cs java-home --architecture arm64 --jvm {{ .chezmoi.config.data.work_java_version }})"
-{{ else }}
-export JAVA_HOME="$(cs java-home --architecture arm64 --jvm {{ .chezmoi.config.data.sys_java_version }})"
-{{ end }}
+
+export JAVA_HOME="$(cs java-home --architecture arm64 --jvm zulu:21)"
+
 export PATH="$JAVA_HOME/bin:$PATH"
 
 export LEFTHOOK_HOME="$(brew --prefix lefthook)"
 export PATH="$LEFTHOOK_HOME/bin:$PATH"
 
-# The preferred pager
 export PAGER='moar'
-
 export NVIM_SESSION="$XDG_CONFIG_HOME/nvim/session"
 export EDITOR='nvim'
 export VISUAL='nvim'
-
-#
-# The preferred visual editor for local or set the remote
-# visual editor. The EDITOR variable technically shouldn't be set to a
-# "visual" editor like vi but something like ed
-#
-if (( ${+commands[zed]} )) && [[ -n $SSH_CONNECTION ]]; then
-  export VISUAL='zed --wait --new'
-fi
 
 FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
 
