@@ -1,2 +1,6 @@
 README.md
 tags
+# macOS specific hidden files
+.DS_Store
+.localized
+.AppleDouble
