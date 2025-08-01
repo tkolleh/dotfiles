@@ -15,8 +15,8 @@ matches:
 
   # Dynamic replacements
 
-  # Print internal IPv4 address
-  - trigger: ":ip4:"
+  - triggers: [":ip", ":ip4"]
+    label: "Internal IPv4 address"
     replace: "{{output}}"
     vars:
       - name: output
@@ -25,8 +25,8 @@ matches:
           cmd: >
             ip -4 addr show | grep "inet " | grep -v 127.0.0.1 | awk '{print $2}' | cut -d'/' -f1
 
-  # Print internal IPv6 address
-  - trigger: ":ip6:"
+  - triggers: [":ip", ":ip6"]
+    label: "Internal IPv6 address"
     replace: "{{output}}"
     vars:
       - name: output
@@ -35,8 +35,8 @@ matches:
           cmd: >
             ip -6 addr show | grep "inet6" | grep -v " fe80::" | awk '{print $2}' | cut -d'/' -f1
 
-  # Print public IPv4 address
-  - trigger: ":ip:"
+  - triggers: [":ip", ":pub-ip"]
+    label: "Public IPv4 address"
     replace: "{{output}}"
     vars:
       - name: output
@@ -44,8 +44,8 @@ matches:
         params:
           cmd: "echo -n $(dig @resolver1.opendns.com ANY myip.opendns.com +short)"
 
-  # Print the current date
-  - trigger: ":date:"
+  - trigger: ":date"
+    label: "Current date"
     replace: "{{output}}"
     vars:
       - name: output
@@ -53,8 +53,8 @@ matches:
         params:
           format: "%m/%d/%Y"
 
-  # Print a 128-bit value guaranteed to be unique over both space and time
-  - trigger: ":uuid:"
+  - trigger: ":uuid"
+    label: "128-bit value guaranteed to be unique over both space and time"
     replace: "{{output}}"
     vars:
       - name: output
