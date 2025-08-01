@@ -1,0 +1,65 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/espanso/espanso/dev/schemas/match.schema.json# espanso match file
+
+# For a complete introduction, visit the official docs at: https://espanso.org/docs/
+
+# You can use this file to define the base matches (aka snippets)
+# that will be available in every application when using espanso.
+
+# Matches are substitution rules: when you type the "trigger" string
+# it gets replaced by the "replace" string.
+matches:
+  # Simple text replacements
+  - trigger: ":espanso"
+    replace: "Hi there!"
+
+
+  # Dynamic replacements
+
+  # Print internal IPv4 address
+  - trigger: ":ip4:"
+    replace: "{{output}}"
+    vars:
+      - name: output
+        type: shell
+        params:
+          cmd: >
+            ip -4 addr show | grep "inet " | grep -v 127.0.0.1 | awk '{print $2}' | cut -d'/' -f1
+
+  # Print internal IPv6 address
+  - trigger: ":ip6:"
+    replace: "{{output}}"
+    vars:
+      - name: output
+        type: shell
+        params:
+          cmd: >
+            ip -6 addr show | grep "inet6" | grep -v " fe80::" | awk '{print $2}' | cut -d'/' -f1
+
+  # Print public IPv4 address
+  - trigger: ":ip:"
+    replace: "{{output}}"
+    vars:
+      - name: output
+        type: shell
+        params:
+          cmd: "echo -n $(dig @resolver1.opendns.com ANY myip.opendns.com +short)"
+
+  # Print the current date
+  - trigger: ":date:"
+    replace: "{{output}}"
+    vars:
+      - name: output
+        type: date
+        params:
+          format: "%m/%d/%Y"
+
+  # Print a 128-bit value guaranteed to be unique over both space and time
+  - trigger: ":uuid:"
+    replace: "{{output}}"
+    vars:
+      - name: output
+        type: shell
+        params:
+          cmd: "uuidgen"
+
+  # And much more! For more information, visit the docs: https://espanso.org/docs/
