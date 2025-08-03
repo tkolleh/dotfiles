@@ -30,7 +30,8 @@ return {
       })
 
       -- Use the ivy layout and fzf-native sorter if not already set
-      opts = vim.tbl_extend("keep", opts, { "ivy", "fzf-native" })
+      local profile_table = {{ "ivy", "fzf-native" }}
+      opts = vim.list_extend(profile_table, opts, 1)
 
       require("fzf-lua").setup(opts)
     end,
