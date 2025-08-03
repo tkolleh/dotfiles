@@ -5,7 +5,7 @@
 vim.opt.wrap = true -- Enable line wrap
 
 --  make floating windows transparentish
-vim.o.winblend = 20
+vim.o.winblend = 5
 --  and give them rounded borders by default
 vim.o.winborder = 'rounded'
 
