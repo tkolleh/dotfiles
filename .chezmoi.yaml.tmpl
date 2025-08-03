@@ -1,15 +1,20 @@
 ---
+encryption: gpg
+gpg:
+  recipient: {{ onepasswordRead "op://Private/jmrwdo77a4qdkbu56rpr3mnwf4/email" }}
 edit:
   command: "nvim"
 merge:
   command: "nvim"
-  args: ["-d", "{{ .Destination }}", "{{ .Source }}", "{{ .Target }}"]
+  args: {{`["-d", "{{ .Destination }}", "{{ .Source }}", "{{ .Target }}"]`}}
 diff:
   command: "nvim"
-  args: ["-d", "{{ .Destination }}", "{{ .Target }}"]
+args: {{`["-d", "{{ .Destination }}", "{{ .Target }}"]`}}
 
 data:
   gmail_email: {{ onepasswordRead "op://Private/personal-google/username" }}
   work_email: {{ onepasswordRead "op://Private/CK PagerDuty/username" }}
   first_name: {{ onepasswordRead "op://Private/Simple-Identity/first name" }}
   last_name: {{ onepasswordRead "op://Private/Simple-Identity/last name" }}
+  sys_java_version: zulu:21
+  work_java_version: corretto:8
