@@ -14,6 +14,7 @@ args: {{`["-d", "{{ .Destination }}", "{{ .Target }}"]`}}
 data:
   gmail_email: {{ onepasswordRead "op://Private/personal-google/username" }}
   work_email: {{ onepasswordRead "op://Private/CK PagerDuty/username" }}
+  work_username: {{ onepasswordRead "op://Private/Simple-Identity/Identification/work username" }}
   first_name: {{ onepasswordRead "op://Private/Simple-Identity/first name" }}
   last_name: {{ onepasswordRead "op://Private/Simple-Identity/last name" }}
   sys_java_version: zulu:21
