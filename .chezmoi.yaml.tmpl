@@ -18,4 +18,5 @@ data:
   first_name: {{ onepasswordRead "op://Private/Simple-Identity/first name" }}
   last_name: {{ onepasswordRead "op://Private/Simple-Identity/last name" }}
   sys_java_version: zulu:21
-  work_java_version: corretto:8
+  work_java_version: corretto:17
+  work_ghe: {{ onepasswordRead "op://Private/gb6vcdbw2dkd3k3rvc573rbjoq/hostname" }}
