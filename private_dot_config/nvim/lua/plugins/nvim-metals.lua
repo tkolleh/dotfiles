@@ -55,7 +55,7 @@ return {
     --
     -- See: https://github.com/nvim-lualine/lualine.nvim/blob/master/lua/lualine/components/progress.lua
     --
-    metals_config.init_options.statusBarProvider = "off"
+    metals_config.init_options.statusBarProvider = "on"
     return metals_config
   end,
   config = function(self, metals_config)
