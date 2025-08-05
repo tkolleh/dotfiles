@@ -94,7 +94,7 @@ function glshow() {
       --ansi --preview="$_viewGitLogLine" \
       --header "enter to view, alt-y to copy hash" \
       --bind "enter:execute:$_viewGitLogLine" \
-      --bind "alt-y:execute:$_gitLogLineToHash | xclip"
+      --bind "alt-y:execute:$_gitLogLineToHash | pbcopy"
 }
 
 # fcs - get git commit sha
