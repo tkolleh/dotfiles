@@ -3,7 +3,7 @@ return {
   dependencies = {
     "nvim-lua/plenary.nvim",
   },
-  ft = { "scala", "sbt", "sc", "java", "conf", "mill" },
+  ft = { "scala", "sbt", "sc", "java", "conf" },
   keys = {
     {
       "<leader>me",
@@ -36,16 +36,17 @@ return {
     end
     metals_config.settings = {
       showImplicitArguments = true,
+      enableSemanticHighlighting = true,
       excludedPackages = { "akka.actor.typed.javadsl", "com.github.swagger.akka.javadsl" },
       superMethodLensesEnabled = true,    -- [default:false] Super method lenses are visible
       verboseCompilation = true,          -- [default:false] Show all possible debug information
       defaultBspToBuildTool = true,       -- [default:false] If build tool serves as build server, use it
       bloopSbtAlreadyInstalled = false,   -- [default:false] Metals will not generate metals.sbt
       bloopJvmProperties = { "-Xms512m" },
-      serverProperties = { "-Xms512m", "-Xss16m", "-XX:+UseStringDeduplication" },
+      serverProperties = { "-Xms1g", "-Xss32m", "-XX:+UseStringDeduplication" },
       serverVersion = "latest.snapshot",
       testUserInterface = "Test Explorer",
-      startMcpServer = true,
+      startMcpServer = false,
       mcpClient = 'claude'
     }
     -- 
