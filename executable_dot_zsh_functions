@@ -35,11 +35,32 @@ function syspath(){
    echo $PATH | sed 's/:/\n/g' | sort | uniq -c
 }
 
+# Zsh function to search with ripgrep and populate Neovim's quickfix list.
+fif2qf() (
+  if [ $# -eq 0 ]; then
+    gum log "Usage: fif2qf <pattern>"
+    return 1
+  fi
+
+  # Combine all arguments into one pattern string
+  local pattern="$*"
+
+  # Open Neovim and execute a command that populates the quickfix list
+  # using ripgrep with: --ignore-case, --vimgrep and --regexp.
+  #
+  # The command passed to nvim uses VimL's execute() with a concatenation:
+  # It builds a command that runs:
+  #   rg --ignore-case --vimgrep --regexp <pattern>
+  # where <pattern> is safely escaped using shellescape().
+  #
+  nvim -c "execute 'cgetexpr systemlist(\"rg --ignore-case --vimgrep --regexp ' . shellescape(\"$pattern\") . '\")'" -c 'copen'
+)
+
 # Find string in files using ripgrep as the filter with fzf interface
 # see: https://junegunn.github.io/fzf/tips/ripgrep-integration/
 # ripgrep->fzf->vim [QUERY]
 fif() (
-  RELOAD='reload:rg --column --color=always --smart-case {q} || :'
+  RELOAD='reload:rg --unrestricted --column --color=always --regexp {q} || :'
   OPENER='if [[ $FZF_SELECT_COUNT -eq 0 ]]; then
             nvim {1} +{2}     # No selection. Open the current line in Vim.
           else
@@ -256,11 +277,6 @@ function sbt_clear_cache(){
     rm -fvr ~/.sbt/0.13/plugins/target
     rm -fvr ~/.sbt/0.13/plugins/project/target
     rm -fvr ~/.sbt/0.13/target
-    rm -fvr ./project/target
-    rm -fvr ./project/project/target
-    rm -fvr .metals
-    rm -fvr .bsp
-    rm -fvr .bloop
   fi
 
   echo -e "\nEmptying the idl cache\n"
@@ -268,6 +284,12 @@ function sbt_clear_cache(){
   rm -fvr ~/.idl-sbt-cache
   echo -e "\nRunning 'sbt clean update'\n"
   rm -fvr ~/.idl-sbt-cache
+  rm -fvr target
+  rm -fvr .metals
+  rm -fvr .bsp
+  rm -fvr .bloop
+  rm -fvr ./project/target
+  rm -fvr ./project/project/target
   sbt clean update
 }
 
