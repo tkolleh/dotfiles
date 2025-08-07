@@ -1,10 +1,34 @@
+local java_home_cache = nil
+local function get_java_home()
+  if java_home_cache then
+    return java_home_cache
+  end
+  local env_java_home = os.getenv("METALS_JAVA_HOME")
+  if env_java_home and env_java_home ~= "" then
+    java_home_cache = env_java_home
+    return java_home_cache
+  end
+  return ""
+end
+
 return {
   "scalameta/nvim-metals",
-  dependencies = {
-    "nvim-lua/plenary.nvim",
-  },
-  ft = { "scala", "sbt", "sc", "java", "conf" },
+  ft = { "scala", "sbt", "sc", "java" },
   keys = {
+    {
+      "<leader>mr",
+      function()
+        require("metals.tvp").reveal_in_tree()
+      end,
+      desc = "Reveal in TVP",
+    },
+    {
+      "<leader>mt",
+      function()
+        require("metals.tvp").toggle_tree_view()
+      end,
+      desc = "Toggle TVP",
+    },
     {
       "<leader>me",
       function()
@@ -35,6 +59,7 @@ return {
       metals.setup_dap()
     end
     metals_config.settings = {
+      javaHome = get_java_home(),
       showImplicitArguments = true,
       enableSemanticHighlighting = true,
       excludedPackages = { "akka.actor.typed.javadsl", "com.github.swagger.akka.javadsl" },
