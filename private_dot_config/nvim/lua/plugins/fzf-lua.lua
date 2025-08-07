@@ -29,6 +29,10 @@ return {
         rg_opts   = "--no-ignore-dot --no-ignore-exclude --no-ignore --hidden --column --line-number --no-heading --color=always --smart-case --max-columns=4096 -e",
       })
 
+      opts.buffers = vim.tbl_deep_extend("force", opts.buffer or {}, {
+        formatter = "path.filename_first",
+      })
+
       -- Use the ivy layout and fzf-native sorter if not already set
       local profile_table = {{ "ivy", "fzf-native" }}
       opts = vim.list_extend(profile_table, opts, 1)
