@@ -44,16 +44,10 @@ fi
 # Add coursier bin directory to PATH
 source <(cs install --env)
 
-# Define JAVA_HOME and add it to the PATH. Assign existing JAVA_HOME to CS_FORMER_JAVA_HOME
-
-export JAVA_HOME="$(cs java-home --architecture arm64 --jvm zulu:21)"
-
-export PATH="$JAVA_HOME/bin:$PATH"
-
 export LEFTHOOK_HOME="$(brew --prefix lefthook)"
 export PATH="$LEFTHOOK_HOME/bin:$PATH"
 
-export PAGER='moar'
+export PAGER='moar --colors=16M --no-clear-on-exit'
 export NVIM_SESSION="$XDG_CONFIG_HOME/nvim/session"
 export EDITOR='nvim'
 export VISUAL='nvim'
@@ -67,10 +61,17 @@ if [[ -f /opt/alerter/bin/alerter ]]; then
 fi
 
 {{ if (eq .chezmoi.username .chezmoi.config.data.work_username)}}
+# Define JAVA_HOME and add it to the PATH. Assign existing JAVA_HOME to CS_FORMER_JAVA_HOME
+export JAVA_HOME="$(cs java-home --architecture arm64 --jvm {{ .chezmoi.config.data.work_java_version }})"
 # Gaurded by one password
 export NEW_RELIC_API_KEY={{ range (onepassword "eehrc6lejvajtfcpejah3e5uem").fields -}}
                           {{   if (eq .id "credential") -}}
                           {{     .value -}}
                           {{   end -}}
                           {{ end }}
+{{ else }}
+export JAVA_HOME="$(cs java-home --architecture arm64 --jvm {{ .chezmoi.config.data.sys_java_version }})"
 {{ end }}
+
+export METALS_JAVA_HOME="$(cs java-home --architecture arm64 --jvm corretto:17)"
+export PATH="$JAVA_HOME/bin:$PATH"

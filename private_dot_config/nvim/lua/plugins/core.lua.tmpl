@@ -9,10 +9,22 @@
 -- * add extra plugins
 -- * disable/enabled LazyVim plugins
 -- * override the configuration of LazyVim plugins
-
-local utils = require("utils")
-
 return {
+  {
+    "LazyVim/LazyVim",
+    opts = function(opts)
+      local icon = require('lib.icons')
+      opts.icons = vim.tbl_deep_extend("force", icon or {}, opts.icons or {})
+      opts.news = vim.tbl_deep_extend("force", opts.news or {}, {
+        -- When enabled, NEWS.md will be shown when changed.
+        -- This only contains big new features and breaking changes.
+        lazyvim = true,
+        -- Same but for Neovim's news.txt
+        neovim = true,
+      })
+      return opts
+    end,
+  },
   {
     "linrongbin16/gitlinker.nvim",
     cmd = "GitLink",
@@ -99,19 +111,6 @@ return {
         separator_style = "slant" or "padded_slant",
         always_show_bufferline = true,
       },
-    },
-  },
-
-  {
-    "LazyVim/LazyVim",
-    opts = {
-      news = {
-        -- When enabled, NEWS.md will be shown when changed.
-        -- This only contains big new features and breaking changes.
-        lazyvim = true,
-        -- Same but for Neovim's news.txt
-        neovim = true,
-      }
     },
   },
 }

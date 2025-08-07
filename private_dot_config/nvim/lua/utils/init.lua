@@ -11,11 +11,11 @@ M.setDark = function()
   -- vim.api.nvim_command("colorscheme nightfox")
 
   -- Change teminal colors to dark
-  require("nightfox").load()
-  vim.api.nvim_command("colorscheme duskfox")
+  require("tokyonight").load()
+  vim.api.nvim_command("colorscheme tokyonight-night")
   -- TODO: Lets see if bat themes can respect terminal theme change indicator
   vim.fn.jobstart("set_bat_theme 1", { detach = true })
-  return "duskfox"
+  return "tokyonight-night"
 end
 
 M.setLight = function()
