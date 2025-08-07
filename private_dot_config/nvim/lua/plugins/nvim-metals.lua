@@ -1,10 +1,21 @@
 return {
   "scalameta/nvim-metals",
-  dependencies = {
-    "nvim-lua/plenary.nvim",
-  },
-  ft = { "scala", "sbt", "sc", "java", "conf" },
+  ft = { "scala", "sbt", "sc", "java" },
   keys = {
+    {
+      "<leader>mr",
+      function()
+        require("metals.tvp").reveal_in_tree()
+      end,
+      desc = "Reveal in TVP",
+    },
+    {
+      "<leader>mt",
+      function()
+        require("metals.tvp").toggle_tree_view()
+      end,
+      desc = "Toggle TVP",
+    },
     {
       "<leader>me",
       function()
