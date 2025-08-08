@@ -4,7 +4,6 @@ end
 
 return {
   "scalameta/nvim-metals",
-  event = "VeryLazy",
   ft = { "scala", "sc", "java", "sbt"},
   keys = {
     {
