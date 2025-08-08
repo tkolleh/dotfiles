@@ -8,7 +8,6 @@
 -- e.g. vim.api.nvim_del_augroup_by_name("lazyvim_wrap_spell")
 --
 local api = vim.api
-local utils = require("utils")
 
 -- Hocon_group
 -- See: https://github.com/antosha417/tree-sitter-hocon
@@ -21,10 +20,11 @@ api.nvim_create_autocmd(
 -- Auto light / dark theme
 -- The decision will be made based on system preferences using DEC mode 2031 if supported by the terminal.
 -- See: neovim/neovim#31350
-api.nvim_create_autocmd({"StdinReadPre", "OptionSet", "VimEnter", "UIEnter"}, {
-  group = api.nvim_create_augroup('dec_auto_background', { clear = true }),
+api.nvim_create_autocmd({"VimEnter","UIEnter","BufWinEnter","StdinReadPre", "OptionSet"}, {
+  group = api.nvim_create_augroup('detect_auto_background', { clear = true }),
   pattern = 'background',
   callback = function()
+    local utils = require("utils")
     if utils.is_background_dark() then
       utils.setDark()
     else
