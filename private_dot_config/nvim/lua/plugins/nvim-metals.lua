@@ -1,19 +1,11 @@
-local java_home_cache = nil
 local function get_java_home()
-  if java_home_cache then
-    return java_home_cache
-  end
-  local env_java_home = os.getenv("METALS_JAVA_HOME")
-  if env_java_home and env_java_home ~= "" then
-    java_home_cache = env_java_home
-    return java_home_cache
-  end
-  return ""
+  return os.getenv("METALS_JAVA_HOME") or os.getenv("JAVA_HOME") or ""
 end
 
 return {
   "scalameta/nvim-metals",
-  ft = { "scala", "sbt", "sc", "java" },
+  event = "VeryLazy",
+  ft = { "scala", "sc", "java", "sbt"},
   keys = {
     {
       "<leader>mr",
@@ -71,7 +63,7 @@ return {
       serverProperties = { "-Xms1g", "-Xss32m", "-XX:+UseStringDeduplication" },
       serverVersion = "latest.snapshot",
       testUserInterface = "Test Explorer",
-      startMcpServer = false,
+      startMcpServer = true,
       mcpClient = 'claude'
     }
     -- 
@@ -85,13 +77,6 @@ return {
     return metals_config
   end,
   config = function(self, metals_config)
-    local nvim_metals_group = vim.api.nvim_create_augroup("nvim-metals", { clear = true })
-    vim.api.nvim_create_autocmd("FileType", {
-      pattern = self.ft,
-      callback = function()
-        require("metals").initialize_or_attach(metals_config)
-      end,
-      group = nvim_metals_group,
-    })
+    require("metals").initialize_or_attach(metals_config)
   end,
 }
