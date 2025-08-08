@@ -7,7 +7,9 @@ auto-update-channel = tip
 # theme = dark:catppuccin-frappe,light:catppuccin-latte
 # theme = dark:GitLab-Dark-Grey,light:GitLab-Light
 # theme = dark:cyberdream,light:dayfox
-theme = dark:cyberdream,light:farmhouse-light
+# theme = dark:cyberdream,light:farmhouse-light
+# theme = dark:cyberdream,light:OneHalfLight
+theme = dark:monrovia,light:monrovia-light
 
 font-size = 14
 

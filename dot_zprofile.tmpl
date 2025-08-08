@@ -47,7 +47,7 @@ source <(cs install --env)
 export LEFTHOOK_HOME="$(brew --prefix lefthook)"
 export PATH="$LEFTHOOK_HOME/bin:$PATH"
 
-export PAGER='moar --colors=16M --no-clear-on-exit'
+export PAGER='moar --colors=auto --no-clear-on-exit --wrap --terminal-fg'
 export NVIM_SESSION="$XDG_CONFIG_HOME/nvim/session"
 export EDITOR='nvim'
 export VISUAL='nvim'
