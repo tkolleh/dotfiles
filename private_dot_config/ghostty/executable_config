@@ -8,8 +8,12 @@ auto-update-channel = tip
 # theme = dark:GitLab-Dark-Grey,light:GitLab-Light
 # theme = dark:cyberdream,light:dayfox
 # theme = dark:cyberdream,light:farmhouse-light
-# theme = dark:cyberdream,light:OneHalfLight
 theme = dark:monrovia,light:monrovia-light
+
+cursor-opacity = 1
+cursor-style = block
+
+unfocused-split-opacity = 0.90
 
 font-size = 14
 
