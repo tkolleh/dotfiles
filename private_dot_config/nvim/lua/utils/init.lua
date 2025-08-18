@@ -3,6 +3,14 @@
 --
 local M = {}
 
+M.is_nil_or_empty = function(value)
+  return value == nil or value == ""
+end
+
+M.use_if_defined = function(val, fallback)
+return val ~= nil and val or fallback
+end
+
 M.setDark = function()
   vim.api.nvim_command("highlight clear")
   vim.api.nvim_command("syntax reset")

@@ -2,6 +2,19 @@
 -- Default options that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/options.lua
 -- Add any additional options here
 --
+
+-- Custom pyton provider
+local util = require("utils")
+if not util.is_nil_or_empty(vim.env.NVIM_VENV) then
+  vim.g.python3_host_prog = vim.env.NVIM_VENV .. "/bin/python"
+else
+  -- Fallback to system python3
+  vim.g.python3_host_prog = vim.fn.exepath("python3")
+end
+
+-- Raise the bar a bit
+vim.opt.cmdheight = 1
+
 vim.opt.wrap = true -- Enable line wrap
 
 --  make floating windows transparentish
