@@ -2,12 +2,15 @@
 encryption: gpg
 gpg:
   recipient: {{ onepasswordRead "op://Private/jmrwdo77a4qdkbu56rpr3mnwf4/email" }}
+pager: "moor"
 edit:
   command: "nvim"
 merge:
+  pager: ""
   command: "nvim"
   args: {{`["-d", "-O", "{{ .Destination }}", "{{ .Source }}", "{{ .Target }}"]`}}
 diff:
+  pager: ""
   command: "nvim"
   args: {{`["-d", "-O", "{{ .Destination }}", "{{ .Target }}"]`}}
 data:
