@@ -471,6 +471,13 @@ function print_pr_review_request(){
 }
 
 function ssh_ghostty() {
+  if [[ $# -ne 2 ]]; then
+    echo "Usage: ssh_ghostty <port> <user@host>"
+    echo "Example: ssh_ghostty 22 user@example.com"
+    echo "Copies your local terminfo to the remote host before connecting via SSH."
+    return 1
+  fi
+
   infocmp -x | ssh -p $1 $2 -- tic -x -
   ssh -p $1 $2
 }
