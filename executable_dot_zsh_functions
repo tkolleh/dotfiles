@@ -207,6 +207,9 @@ function update_term_tools() {
   if (( ${+commands[goose]} )); then
     gum spin --title "Updating block goose..." -- goose update || :
   fi
+  if (( ${+commands[uv]} )); then
+    gum spin --title "Updating uv tools..." -- uv tool upgrade --all || :
+  fi
 }
 
 function has_tldr_page() {
@@ -218,26 +221,47 @@ function has_man_page() {
 }
 
 function help() {
-  # Get some help for this command prefering the
-  #
+  # Get help for a command, showing TLDR at the bottom when available
   if [[ -z "$1" ]]; then
     echo "No command specified. The input string is empty."
-  else
-    if has_tldr_page "$1"; then
-      tldr "$@"
-      return
-    fi
-    if has_man_page "$1"; then
-        if (( ${+commands[batman]} )); then
-          batman "$@"
-          return
-        else
-          man "$1"
-          return
-        fi
-    fi
+    return 1
   fi
-  "$@" --help 2>&1 | bat --plain --language=help
+  
+  local command_name="$1"
+  local has_tldr=false
+  local has_man=false
+  
+  # Check if TLDR page exists
+  if has_tldr_page "$command_name"; then
+    has_tldr=true
+  fi
+  
+  # Check if man page exists
+  if has_man_page "$command_name"; then
+    has_man=true
+  fi
+  
+  # Show man page if available (prefer batman if installed)
+  if [[ "$has_man" == "true" ]]; then
+    if (( ${+commands[batman]} )); then
+      batman "$@"
+    else
+      man "$command_name"
+    fi
+    echo
+  fi
+  
+  # Show --help output if no man page found
+  if [[ "$has_man" == "false" ]]; then
+    "$@" --help 2>&1 | bat --plain --language=help
+    echo
+  fi
+  
+  # Always show TLDR at the bottom if available
+  if [[ "$has_tldr" == "true" ]]; then
+    echo "--- TLDR ---"
+    tldr "$command_name"
+  fi
 }
 
 # Debug what the heck is going on with gpg
@@ -449,37 +473,6 @@ function print_pr_review_request(){
 function ssh_ghostty() {
   infocmp -x | ssh -p $1 $2 -- tic -x -
   ssh -p $1 $2
-}
-
-function gcm() {
-  # This script is used to write a conventional commit message.
-  # It prompts the user to choose the type of commit as specified in the
-  # conventional commit spec. And then prompts for the summary and detailed
-  # description of the message and uses the values provided. as the summary and
-  # details of the message.
-  #
-  # If you want to add a simpler version of this script to your dotfiles, use:
-  #
-  # alias gcm='git commit -m "$(gum input)" -m "$(gum write)"'
-
-  # if [ -z "$(git status -s -uno | grep -v '^ ' | awk '{print $2}')" ]; then
-  #     gum confirm "Stage all?" && git add .
-  # fi
-  unalias gcm > /dev/null 2>&1 || true # TODO: Remove zpm git plugin
-
-  local TYPE=$(gum choose "fix" "feat" "docs" "style" "refactor" "test" "chore" "revert")
-  local DEFAULT_SCOPE_JIRA=$(git branch --show-current | rg --only-matching --regexp '[a-zA-Z]{3}\-[0-9]{4}')
-  local SCOPE=$(gum input --placeholder "scope" --value "${DEFAULT_SCOPE_JIRA}")
-
-  # Since the scope is optional, wrap it in parentheses if it has a value.
-  test -n "$SCOPE" && SCOPE="($SCOPE)"
-
-  # Pre-populate the input with the type(scope): so that the user may change it
-  SUMMARY=$(gum input --value "$TYPE$SCOPE: " --placeholder "Summary of this change")
-  DESCRIPTION=$(gum write --placeholder "Details of this change")
-
-  # Commit these changes if user confirms
-  gum confirm "Commit changes?" && git commit -m "$SUMMARY" -m "$DESCRIPTION"
 }
 
 # aig: Display the output of the last llm command using glow, with paging for long outputs.

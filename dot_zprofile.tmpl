@@ -30,7 +30,11 @@ if [[ -d "$HOME/.volta" ]]; then
   export VOLTA_HOME="$HOME/.volta"
   export PATH="$VOLTA_HOME/bin:$PATH"
 fi
-export PATH="$HOME/.local/bin:$PATH" # JetBrains toolbox
+
+export PATH="$HOME/.local/share/git/git-commands:$PATH"
+
+# Additional tools e.g. JetBrains toolbox
+export PATH="$HOME/.local/bin:$PATH"
 export PATH="$(go env GOPATH)/bin:$PATH"
 export PATH="$PATH:/Users/tkolleh/.cargo/bin"
 
