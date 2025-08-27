@@ -18,6 +18,7 @@ format = """
 $directory\
 [](bg:bg_dark_cream fg:clear_clr)\
 $git_branch\
+$git_state\
 [](fg:bg_dark_cream bg:#394260)\
 [](fg:#394260 bg:bright_grn_clr)\
 $nodejs\
@@ -28,6 +29,7 @@ $scala\
 $time[ ](fg:red_clay_clr)
 [╰](fg:clay_clr)\
 $status\
+
 $character(fg:clay_clr)"""
 
 # --- Color Palette ---
@@ -74,6 +76,10 @@ format = '[[  $time ](fg:#a0a9cb bg:red_clay_clr)]($style)'
 symbol = "  "
 style = "bg:bg_dark_cream fg:clear_clr"
 format = "[$symbol$branch](bg:bg_dark_cream fg:txt_clr)"
+
+[git_state]
+style = "bg:bg_dark_cream fg:clear_clr"
+format = "[ ($state( $progress_current/$progress_total))](bg:bg_dark_cream fg:txt_clr)"
 
 [git_commit]
 style = "bg:bg_dark_cream fg:clear_clr"
