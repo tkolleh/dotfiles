@@ -49,15 +49,11 @@ return {
       LazyVim.has("nvim-dap")
       metals.setup_dap()
     end
-    -- metals_config.inlayHints.hintsXRayMode = vim.tbl_deep_extend("force", 
-    --   metals_config.inlayHints.hintsXRayMode or {}, {
-    --   enable = true,
-    -- })
     metals_config.settings = {
       javaHome = get_java_home(),
-      excludedPackages = { "akka.actor.typed.javadsl", "com.github.swagger.akka.javadsl" },
       showImplicitArguments = true,
       enableSemanticHighlighting = true,
+      excludedPackages = { "akka.actor.typed.javadsl", "com.github.swagger.akka.javadsl" },
       superMethodLensesEnabled = true,    -- [default:false] Super method lenses are visible
       verboseCompilation = true,          -- [default:false] Show all possible debug information
       defaultBspToBuildTool = true,       -- [default:false] If build tool serves as build server, use it
@@ -88,12 +84,5 @@ return {
       end,
       group = nvim_metals_group,
     })
-    -- vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
-    --   pattern = { "*.worksheet.sc" },
-    --   callback = function()
-    --     vim.lsp.inlay_hint.enable(true)
-    --   end,
-    --   group = nvim_metals_group,
-    -- })
   end,
 }
