@@ -13,7 +13,8 @@ theme = dark:monrovia,light:monrovia-light
 cursor-opacity = 1
 cursor-style = block
 
-unfocused-split-opacity = 0.90
+unfocused-split-opacity = 0.80
+split-divider-color = "#663399"
 
 font-size = 14
 
