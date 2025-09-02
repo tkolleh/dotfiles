@@ -6,6 +6,11 @@ project/metals.sbt
 .metals
 .ammonite
 
+# Agentic stuff
+AGENTS.md
+SPECS.md
+.agent_convo.md
+
 # asdf local tool versions
 .tool-versions
 
