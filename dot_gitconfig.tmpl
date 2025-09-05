@@ -11,8 +11,6 @@
   autocrlf = input
   pager = "moor --colors=auto --no-clear-on-exit --wrap --terminal-fg"
   editor = nvim
-  excludesfile = ~/.gitignore_global
-
 
 [include]
   path = ~/.local/share/git/git-commands/common-git-cmd-aliases.conf
@@ -52,11 +50,14 @@
   prompt = true
   cmd = nvim -d \"$LOCAL\" \"$REMOTE\" \"$MERGED\" -c '$wincmd w' -c 'wincmd J'
 
-[difftool "vimdiff"]
+[difftool "nvimdiff"]
   prompt = true
   cmd = nvim -d \"$LOCAL\" \"$REMOTE\"
+[difftool "vimdiff"]
+  prompt = false
+  cmd = nvim -c \"DiffviewOpen\"
 [mergetool "vimdiff"]
-  prompt = true
+  prompt = false
   cmd = nvim -c \"DiffviewOpen\" \"$MERGED\"
 
 [mergetool "idea"]
