@@ -61,6 +61,8 @@ export VISUAL='nvim'
 
 FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
 
+export FZF_GIT_HOME=$HOME/ws/fzf-git.sh
+
 # MacOS alerting from terminal
 # https://github.com/vjeantet/alerter?tab=readme-ov-file
 if [[ -f /opt/alerter/bin/alerter ]]; then
