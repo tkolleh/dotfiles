@@ -103,6 +103,13 @@ zsh-defer eval "$(atuin init zsh)"
 export STARSHIP_LOG=error
 eval "$(starship init zsh)"
 
+# FZF Git - Git objects fuzzy finder
+# https://github.com/junegunn/fzf-git.sh
+#
+if [[ -f "$HOME/ws/fzf-git.sh/fzf-git.sh" ]]; then
+  zsh-defer source "$HOME/ws/fzf-git.sh/fzf-git.sh"
+fi
+
 # --- Completions -------------------------------------------------------------
 # All fpath modifications and completion setups go here, before the single compinit call.
 
