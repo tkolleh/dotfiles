@@ -49,21 +49,62 @@ function syspath(){
 # see: https://junegunn.github.io/fzf/tips/ripgrep-integration/
 # ripgrep->fzf->vim [QUERY]
 fif() (
-  RELOAD='reload:rg --unrestricted --column --color=always --regexp {q} || :'
-  OPENER='if [[ $FZF_SELECT_COUNT -eq 0 ]]; then
+  # Fuzzy search for a string in files using ripgrep and fzf, open in nvim.
+  # Usage: fif [rg options] -- [query]
+
+  # Parse arguments: everything before " -- " is rg_opts, after is query
+  # rg_opts="--hidden --follow --line-number --column --color=always --smart-case"
+  #
+  local pre_separator post_separator rg_opts rg_query
+  pre_separator=$(awk -v RS=" -- " 'NR==1{print; exit}' <<< "$*")
+  post_separator=$(awk -v RS=" -- " 'NR==2{print; exit}' <<< "$*")
+
+  if [[ -z "$post_separator" ]]; then
+    rg_opts=""
+    rg_query=$pre_separator
+  else
+    rg_opts=$pre_separator
+    rg_query=$post_separator
+  fi
+
+  # Uncomment for debugging
+  # printf -- "Opts : [%s]\nQuery: [%s]\n\n" "$rg_opts" "$rg_query" >&2
+  if [[ "$rg_query" == *"--"* ]]; then
+    printf "\033[34mWARN:\033[0m Query contains '--' did you mean to inlcude '--opt-1 -- query'?\n\n" >&2
+  fi
+
+  local init_reload="reload:rg --column --color=always $rg_opts --regexp $rg_query || :"
+  local reload="reload:rg --column --color=always $rg_opts --regexp {q} || :"
+  local opener='if [[ $FZF_SELECT_COUNT -eq 0 ]]; then
             nvim {1} +{2}     # No selection. Open the current line in Vim.
           else
             nvim +cw -q {+f}  # Build quickfix list for the selected items.
           fi'
   fzf --disabled --ansi --multi \
-      --bind "start:$RELOAD" --bind "change:$RELOAD" \
-      --bind "enter:become:$OPENER" \
-      --bind "ctrl-o:execute:$OPENER" \
+      --bind "start:$init_reload" --bind "change:$reload" \
+      --bind "enter:become:$opener" \
+      --bind "ctrl-o:execute:$opener" \
       --bind 'alt-a:select-all,alt-d:deselect-all,?:toggle-preview' \
       --delimiter : \
       --preview 'bat --style=full --color=always --highlight-line {2} {1}' \
       --preview-window '~4,+{2}+4/3,<80(up)' \
-      --query "$*"
+      --query "$rg_query"
+)
+
+# Find string in files using ripgrep with fzf interface. prints filenames with matches
+# ripgrep->fzf [QUERY]
+fifn() (
+  local opener='if [[ $FZF_SELECT_COUNT -eq 0 ]]; then
+            nvim {1}     # No selection. Open the current line in Vim.
+          else
+            nvim +cw -q {+f}  # Build quickfix list for the selected items.
+          fi'
+  rg --files-with-matches --regexp "$*" | fzf --ansi --multi \
+    --bind "enter:become:$opener" \
+    --bind "ctrl-o:execute:$opener" \
+    --bind 'alt-a:select-all,alt-d:deselect-all,?:toggle-preview' \
+    --preview 'bat --style=full --color=always' \
+    --preview-window '~4,+{2}+4/3,<80(up)' \
 )
 
 # fbc - fuzzy Find Branch or tag to Checkout
