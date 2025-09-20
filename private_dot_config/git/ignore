@@ -10,6 +10,7 @@ project/metals.sbt
 AGENTS.md
 SPECS.md
 .agent_convo.md
+.mcp.json
 
 # asdf local tool versions
 .tool-versions
