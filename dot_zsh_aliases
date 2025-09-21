@@ -7,9 +7,11 @@
 # -----------------------------------------------------------------------------
 #
 
+alias bat="bat --theme auto:system --theme-dark Dracula --theme-light GitHub"
+
 if (( ${+commands[eza]} )); then
-  alias ll="eza --time modified --all --binary --git --header --long --color=always "
-  alias lt="eza --long --tree --level=3 "
+  alias ll="eza --time modified --all --binary --git --header --long --color=always"
+  alias lt="eza --long --tree --level=3"
 fi
 
 # alias gignored="git ls-files -v $(git rev-parse --show-toplevel) | (grep '^[[:lower:]]' || echo 'None ignored.') && echo '\nIgnore changes with:   git update-index --assume-unchanged <file> \nor track again with:   git update-index --no-assume-unchanged <file>'"

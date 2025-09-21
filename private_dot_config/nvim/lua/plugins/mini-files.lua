@@ -1,8 +1,8 @@
 --
--- https://github.com/echasnovski/mini.files
+-- https://github.com/nvim-mini/mini.files
 --
 return {
-  "echasnovski/mini.files",
+  "nvim-mini/mini.files",
   enabled = false,
   opts = function(_, opts)
     return vim.tbl_deep_extend("force", opts or {}, {

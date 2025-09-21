@@ -26,33 +26,6 @@ return {
     end,
   },
   {
-    "linrongbin16/gitlinker.nvim",
-    cmd = "GitLink",
-    opts = function(_, opts)
-      local routers = require("gitlinker.routers")
-      return vim.tbl_deep_extend("force", opts or {}, {
-        router = {
-          browse = {
-            ["{{ (index (onepassword "p3zimt7otz5dfe64qtfzxgl3jm").fields 0).value }}"] = routers.github_browse,
-          },
-          blame = {
-            ["{{ (index (onepassword "p3zimt7otz5dfe64qtfzxgl3jm").fields 0).value }}"] = routers.github_blame,
-          },
-          default_branch = {
-            ["{{ (index (onepassword "p3zimt7otz5dfe64qtfzxgl3jm").fields 0).value }}"] = routers.github_default_branch,
-          },
-          current_branch = {
-            ["{{ (index (onepassword "p3zimt7otz5dfe64qtfzxgl3jm").fields 0).value }}"] = routers.github_current_branch,
-          },
-        },
-      })
-    end,
-    keys = {
-      { "<leader>gy", "<cmd>GitLink<cr>", mode = { "n", "v" }, desc = "Yank git link" },
-      { "<leader>gY", "<cmd>GitLink!<cr>", mode = { "n", "v" }, desc = "Open git link" },
-    },
-  },
-  {
     "s1n7ax/nvim-window-picker",
     name = "window-picker",
     event = "VeryLazy",
@@ -101,16 +74,4 @@ return {
 
   -- add nightfox theme
   { "EdenEast/nightfox.nvim" },
-
-  -- Customize bufferline
-  {
-    "akinsho/nvim-bufferline.lua",
-    event = "VeryLazy",
-    opts = {
-      options = {
-        separator_style = "slant" or "padded_slant",
-        always_show_bufferline = true,
-      },
-    },
-  },
 }
