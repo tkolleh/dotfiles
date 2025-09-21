@@ -21,8 +21,6 @@ M.setDark = function()
   -- Change teminal colors to dark
   require("tokyonight").load()
   vim.api.nvim_command("colorscheme tokyonight-night")
-  -- TODO: Lets see if bat themes can respect terminal theme change indicator
-  vim.fn.jobstart("set_bat_theme 1", { detach = true })
   return "tokyonight-night"
 end
 
@@ -37,7 +35,6 @@ M.setLight = function()
   -- Change teminal colors to dark
   require("nightfox").load()
   vim.api.nvim_command("colorscheme dayfox")
-  vim.fn.jobstart("set_bat_theme 0", { detach = true })
   return "dayfox"
 end
 
@@ -74,12 +71,14 @@ M.is_background_dark = function()
   return false
 end
 
-M.cycle_diagnostics_display = function()
-  -- Cycle from:
-  -- * nothing displayed
-  -- * single diagnostic at the end of the line (`virtual_text`)
-  -- * full diagnostics using virtual text (`virtual_lines`)
-
+---Cycle through different diagnostic display modes or override the current display modes.
+---Cycle from:
+--- * nothing displayed
+--- * single diagnostic at the end of the line (`virtual_text`)
+--- * full diagnostics using virtual text (`virtual_lines`)
+---@param override { virtual_text: boolean, virtual_lines: boolean }
+---@return nil
+M.cycle_diagnostics_display = function(override)
   -- check if text and lines are not (explicitly) equal to false ortherwise true
   local text = vim.diagnostic.config().virtual_text ~= false
   local lines = vim.diagnostic.config().virtual_lines ~= false
@@ -97,11 +96,10 @@ M.cycle_diagnostics_display = function()
     text = true
     lines = false
   end
-
-  vim.diagnostic.config({
-    virtual_text = text,
-    virtual_lines = lines,
-  })
+  vim.diagnostic.config(
+    vim.tbl_deep_extend("keep", override or {}, { virtual_text = text, virtual_lines = lines }
+  )
+)
 end
 
 return M

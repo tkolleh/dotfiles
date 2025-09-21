@@ -44,3 +44,6 @@ vim.g.autoformat = false
 vim.o.winborder = 'rounded'
 
 vim.o.showbreak = '↪ '
+
+-- Default to **no** line nor text display for diagnostics
+util.cycle_diagnostics_display({ virtual_text = false, virtual_lines = false })
