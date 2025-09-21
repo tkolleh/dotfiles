@@ -1,43 +1,41 @@
 return {
-  {
     "ibhagwan/fzf-lua",
     cmd = "FzfLua",
-    config = function(_, opts)
-      if opts[1] == "default-title" then
-        -- use the same prompt for all pickers for profile `default-title` and
-        -- profiles that use `default-title` as base profile
-        local function fix(t)
-          t.prompt = t.prompt ~= nil and " " or nil
-          for _, v in pairs(t) do
-            if type(v) == "table" then
-              fix(v)
-            end
-          end
-          return t
-        end
-        opts = vim.tbl_deep_extend("force", fix(require("fzf-lua.profiles.default-title")), opts)
-        opts[1] = nil
-      end
+    opts = function(_, opts)
+      opts = opts or {}
 
-      -- Display the filename first in the results
-      opts.default = vim.tbl_deep_extend("force", opts.default or {}, {
-        formatter= { "path.filename_first",2}
+      -- Base profiles
+      -- Use fzf's native previewing, using `bat` for previews
+      -- UI at bottom, similar to telescope's ivy layout
+      table.insert(opts, 1, { "ivy", "fzf-native" })
+
+      opts["previewers"] = vim.tbl_deep_extend("force", opts.previewers or {}, {
+        bat = {
+          cmd  = "bat",
+          args = "--color=always --style=numbers,changes --theme auto:system --theme-dark Dracula --theme-light GitHub",
+        }
       })
 
-      opts.grep = vim.tbl_deep_extend("force", opts.grep or {}, {
+      -- Display the filename first in the results
+      opts["defaults"] = vim.tbl_deep_extend("force", opts.defaults or {}, {
+        formatter = { "path.filename_first",2}
+      })
+
+      -- Preview in dark or light mode based on system settings
+      opts["winopts"] = opts.winopts or {}
+      opts.winopts["preview"] = vim.tbl_deep_extend("force", opts.winopts.preview or {}, {
+        default="bat"
+      })
+
+      opts["grep"] = vim.tbl_deep_extend("force", opts.grep or {}, {
         formatter = "path.filename_first",
         rg_opts   = "--no-ignore-dot --no-ignore-exclude --no-ignore --hidden --column --line-number --no-heading --color=always --smart-case --max-columns=4096 -e",
       })
 
-      opts.buffers = vim.tbl_deep_extend("force", opts.buffer or {}, {
+      opts["buffers"] = vim.tbl_deep_extend("force", opts.buffers or {}, {
         formatter = "path.filename_first",
       })
 
-      -- Use the ivy layout and fzf-native sorter if not already set
-      local profile_table = {{ "ivy", "fzf-native" }}
-      opts = vim.list_extend(profile_table, opts, 1)
-
-      require("fzf-lua").setup(opts)
+      return opts
     end,
-  },
 }

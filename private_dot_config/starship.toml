@@ -56,7 +56,8 @@ error_symbol = " [](dimmed red_clr) "
 
 [directory]
 truncation_symbol = "../"
-truncation_length = 80
+truncation_length = 3
+truncate_to_repo = true
 style = "bg:bg_brown fg:clear_clr"
 format = """
 [](fg:clay_clr bg:txt_clr)\

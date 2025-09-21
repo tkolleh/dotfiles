@@ -19,7 +19,7 @@ api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
 
 -- Fix conceallevel for markdown files
 -- See: https://www.lazyvim.org/configuration/general#auto-commands
-vim.api.nvim_create_autocmd({ "FileType" }, {
+api.nvim_create_autocmd({ "FileType" }, {
   group = api.nvim_create_augroup("markdown_conceal", {clear = true}),
   pattern = { "mmd", "markdown", "mmd" },
   callback = function()
@@ -27,18 +27,19 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
   end,
 })
 
+-- FIXME: This currently does not work as expected
 -- Auto light / dark theme
 -- The decision will be made based on system preferences using DEC mode 2031 if supported by the terminal.
 -- See: neovim/neovim#31350
-api.nvim_create_autocmd({"VimEnter","UIEnter","BufWinEnter","StdinReadPre", "OptionSet"}, {
-  group = api.nvim_create_augroup('detect_auto_background', { clear = true }),
-  pattern = 'background',
-  callback = function()
-    local utils = require("utils")
-    if utils.is_background_dark() then
-      utils.setDark()
-    else
-      utils.setLight()
-    end
-  end,
-})
+-- api.nvim_create_autocmd({"VimEnter","UIEnter","BufWinEnter","StdinReadPre", "OptionSet"}, {
+--   group = api.nvim_create_augroup('detect_auto_background', { clear = true }),
+--   pattern = 'background',
+--   callback = function()
+--     local utils = require("utils")
+--     if utils.is_background_dark() then
+--       utils.setDark()
+--     else
+--       utils.setLight()
+--     end
+--   end,
+-- })

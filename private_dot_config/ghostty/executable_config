@@ -16,7 +16,7 @@ cursor-style = block
 unfocused-split-opacity = 0.80
 split-divider-color = "#663399"
 
-font-size = 14
+font-size = 15
 
 # Whether to use the native macOS full screen mode.
 macos-non-native-fullscreen = false
