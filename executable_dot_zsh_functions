@@ -73,8 +73,8 @@ fif() (
     printf "\033[34mWARN:\033[0m Query contains '--' did you mean to inlcude '--opt-1 -- query'?\n\n" >&2
   fi
 
-  local init_reload="reload:rg --column --color=always $rg_opts --regexp $rg_query || :"
-  local reload="reload:rg --column --color=always $rg_opts --regexp {q} || :"
+  local init_reload="reload:rg --ignore-case --column --color=always $rg_opts --regexp $rg_query || :"
+  local reload="reload:rg --ignore-case --column --color=always $rg_opts --regexp {q} || :"
   local opener='if [[ $FZF_SELECT_COUNT -eq 0 ]]; then
             nvim {1} +{2}     # No selection. Open the current line in Vim.
           else
@@ -99,7 +99,7 @@ fifn() (
           else
             nvim +cw -q {+f}  # Build quickfix list for the selected items.
           fi'
-  rg --files-with-matches --regexp "$*" | fzf --ansi --multi \
+  rg --ignore-case --files-with-matches --regexp "$*" | fzf --ansi --multi \
     --bind "enter:become:$opener" \
     --bind "ctrl-o:execute:$opener" \
     --bind 'alt-a:select-all,alt-d:deselect-all,?:toggle-preview' \
