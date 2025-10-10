@@ -2,9 +2,11 @@ local function get_java_home()
   return os.getenv("METALS_JAVA_HOME") or os.getenv("JAVA_HOME") or ""
 end
 
+local utils = require("utils")
+
 return {
   "scalameta/nvim-metals",
-  ft = { "scala", "sc", "java", "sbt"},
+  ft = { "scala", "sc", "java", "sbt", "hocon"},
   keys = {
     {
       "<leader>mr",
@@ -28,10 +30,8 @@ return {
       desc = "Metals commands",
     },
     {
-      "<leader>mc",
-      function()
-        require("metals").compile_cascade()
-      end,
+      "<leader>rc",
+      utils.compile_code,
       desc = "Metals compile cascade",
     },
     {

@@ -4,8 +4,8 @@
 --
 
 -- Custom pyton provider
-local util = require("utils")
-if not util.is_nil_or_empty(vim.env.NVIM_VENV) then
+local utils = require("utils")
+if not utils.is_nil_or_empty(vim.env.NVIM_VENV) then
   vim.g.python3_host_prog = vim.env.NVIM_VENV .. "/bin/python"
 else
   -- Fallback to system python3
@@ -20,7 +20,7 @@ vim.opt.wrap = true -- Enable line wrap
 --  make floating windows transparentish
 vim.o.winblend = 5
 --  and give them rounded borders by default
-vim.o.winborder = 'rounded'
+vim.o.winborder = "rounded"
 
 -- LazyVim picker to use.
 -- Can be one of: telescope, fzf
@@ -39,11 +39,11 @@ vim.g.lazyvim_blink_main = false
 vim.g.autoformat = false
 
 -- Nvim 0.11.0+ has breaking change causing borders of floating windows to vanish
--- due to Neovim no longer using global callbacks. Use `winborder` to set the 
+-- due to Neovim no longer using global callbacks. Use `winborder` to set the
 -- default border for all floating windows.
-vim.o.winborder = 'rounded'
+vim.o.winborder = "rounded"
 
-vim.o.showbreak = '↪ '
+vim.o.showbreak = "↪ "
 
 -- Default to **no** line nor text display for diagnostics
-util.cycle_diagnostics_display({ virtual_text = false, virtual_lines = false })
+utils.cycle_diagnostics_display({ virtual_text = false, virtual_lines = false })

@@ -102,4 +102,21 @@ M.cycle_diagnostics_display = function(override)
 )
 end
 
+M.compile_code = function()
+  local filetype = vim.bo.filetype:lower()
+  local compiler_lookup = {}
+
+  local metals_filetypes = { "scala", "sbt" }
+  compiler_lookup[metals_filetypes] = function()
+    require("metals").compile_cascade()
+  end
+
+  local fn = compiler_lookup[filetype]
+  if fn ~= nil then
+    fn()
+  else
+    print("No compiler configured for filetype: " .. filetype)
+  end
+end
+
 return M
