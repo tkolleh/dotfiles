@@ -14,32 +14,41 @@ local api = vim.api
 api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
   group = api.nvim_create_augroup("hocon", { clear = true }),
   pattern = "*.conf",
-  command = "set ft=hocon"
+  command = "set ft=hocon",
 })
 
 -- Fix conceallevel for markdown files
 -- See: https://www.lazyvim.org/configuration/general#auto-commands
 api.nvim_create_autocmd({ "FileType" }, {
-  group = api.nvim_create_augroup("markdown_conceal", {clear = true}),
+  group = api.nvim_create_augroup("markdown_conceal", { clear = true }),
   pattern = { "mmd", "markdown", "mmd" },
   callback = function()
     vim.opt_local.conceallevel = 0
   end,
 })
 
+-- Extract common callback function for background theme detection
+local function apply_auto_background_theme()
+  local utils = require("utils")
+  if utils.is_background_dark() then
+    utils.setDark()
+  else
+    utils.setLight()
+  end
+end
+
 -- FIXME: This currently does not work as expected
 -- Auto light / dark theme
 -- The decision will be made based on system preferences using DEC mode 2031 if supported by the terminal.
 -- See: neovim/neovim#31350
--- api.nvim_create_autocmd({"VimEnter","UIEnter","BufWinEnter","StdinReadPre", "OptionSet"}, {
---   group = api.nvim_create_augroup('detect_auto_background', { clear = true }),
---   pattern = 'background',
---   callback = function()
---     local utils = require("utils")
---     if utils.is_background_dark() then
---       utils.setDark()
---     else
---       utils.setLight()
---     end
---   end,
--- })
+api.nvim_create_autocmd({ "VimEnter", "ColorSchemePre", "OptionSet" }, {
+  group = api.nvim_create_augroup("detect_auto_background", { clear = true }),
+  pattern = "background",
+  callback = apply_auto_background_theme,
+})
+
+api.nvim_create_autocmd("User", {
+  pattern = "SnacksDashboardClosed",
+  group = api.nvim_create_augroup("dashboard_detect_auto_background", { clear = true }),
+  callback = apply_auto_background_theme,
+})

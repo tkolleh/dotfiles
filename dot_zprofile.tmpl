@@ -35,9 +35,13 @@ export PATH="$HOME/.local/share/git/git-commands:$PATH"
 
 export D2_LAYOUT="tala"
 
+export PATH="$HOME/.rd/bin:$PATH"
+
 # Additional tools e.g. JetBrains toolbox
+export PATH="$PATH:$HOME/Library/Application Support/JetBrains/Toolbox/scripts"
+
 export PATH="$HOME/.local/bin:$PATH"
-export PATH="$(go env GOPATH)/bin:$PATH"
+export PATH="$PATH:$(go env GOPATH)/bin"
 export PATH="$PATH:/Users/tkolleh/.cargo/bin"
 
 if [[ -f "$HOME/google-cloud-sdk/completion.zsh.inc" ]]; then
@@ -69,7 +73,7 @@ if [[ -f /opt/alerter/bin/alerter ]]; then
   export PATH="$PATH:/opt/alerter/bin"
 fi
 
-{{ if (eq .chezmoi.username .chezmoi.config.data.work_username)}}
+{{ if (eq .chezmoi.hostname .chezmoi.config.data.work_hostname)}}
 # Define JAVA_HOME and add it to the PATH. Assign existing JAVA_HOME to CS_FORMER_JAVA_HOME
 export JAVA_HOME="$(cs java-home --architecture arm64 --jvm {{ .chezmoi.config.data.work_java_version }})"
 # Gaurded by one password

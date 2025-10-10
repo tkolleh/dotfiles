@@ -8,8 +8,10 @@ project/metals.sbt
 
 # Agentic stuff
 AGENTS.md
+AGENT.md
 SPECS.md
 .agent_convo.md
+.agent-convo.md
 .mcp.json
 
 # asdf local tool versions

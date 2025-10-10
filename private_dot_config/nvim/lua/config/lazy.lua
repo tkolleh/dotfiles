@@ -64,9 +64,9 @@ require("lazy").setup({
     path = "~/ws",
     fallback = false, -- Fallback to git when local plugin doesn't exist
   },
-  install = { 
+  install = {
     missing = true,
-    colorscheme = { "dayfox", "tokyonight-moon", "tokyonight", "habamax", "default" }
+    colorscheme = { "dayfox", "tokyonight-moon", "tokyonight", "habamax", "default" },
   },
   checker = {
     enabled = true, -- check for plugin updates periodically
