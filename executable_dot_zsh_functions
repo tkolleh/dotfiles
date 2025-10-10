@@ -307,7 +307,10 @@ function help() {
 
 # Debug what the heck is going on with gpg
 function debug-gpg(){
+  echo -e "Forcing a restart of the gpg-agent to prevent the use of an outdated agent version\n"
+  gpgconf --kill all
   echo RELOADAGENT | gpg-connect-agent
+  echo -e "Testing gpg signing with clearsign\n"
   echo "test" | gpg --clearsign
 }
 
