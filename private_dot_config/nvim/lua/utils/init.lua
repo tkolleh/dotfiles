@@ -14,61 +14,42 @@ end
 M.setDark = function()
   vim.api.nvim_command("highlight clear")
   vim.api.nvim_command("syntax reset")
-  -- vim.api.nvim_command("colorscheme github_dark_tritanopia")
+  -- vim.api.nvim_command("colorscheme github_dark_colorblind")
   -- vim.api.nvim_command("colorscheme tokyonight-moon")
   -- vim.api.nvim_command("colorscheme nightfox")
+  -- vim.api.nvim_command("colorscheme tokyonight-night")
 
-  -- Change teminal colors to dark
-  require("tokyonight").load()
-  vim.api.nvim_command("colorscheme tokyonight-night")
-  return "tokyonight-night"
+  vim.api.nvim_command("colorscheme catppuccin-mocha")
+  return "catppuccin-mocha"
 end
 
 M.setLight = function()
   vim.api.nvim_command("highlight clear")
   vim.api.nvim_command("syntax reset")
-  -- vim.api.nvim_command("colorscheme github_light_tritanopia")
+  -- vim.api.nvim_command("colorscheme github_light_colorblind")
   -- vim.api.nvim_command("colorscheme tokyonight-day")
-  -- vim.api.nvim_command("colorscheme newpaper")
-  -- vim.api.nvim_command("colorscheme cyberdream")
+  -- vim.api.nvim_command("colorscheme dayfox")
 
-  -- Change teminal colors to dark
-  require("nightfox").load()
-  vim.api.nvim_command("colorscheme dayfox")
-  return "dayfox"
+  -- require("catppuccin").load()
+  vim.api.nvim_command("colorscheme catppuccin-latte")
+  return "catppuccin-latte"
 end
 
 M.is_background_dark = function()
   local bg = vim.api.nvim_get_option_value("background", {})
-  local colorscheme = vim.g.colors_name
-
-  -- Check if it's explicitly set to 'dark'.
   if bg == "dark" then
     return true
-  end
-
-  -- Check if it's explicitly set to 'light'.
-  if bg == "light" then
+  else
     return false
   end
+end
 
-  -- If background is not set explicitly, check the color scheme
-  if colorscheme then
-    -- List of colorschemes known to be light
-    local light_colorschemes = {
-      "github_light_default",
-      "github_light_high_contrast",
-      "github_light_tritanopia",
-    }
-
-    for _, scheme in ipairs(light_colorschemes) do
-      if colorscheme == scheme then
-        return false
-      end
-    end
+M.apply_auto_background_theme = function()
+  if M.is_background_dark() then
+    M.setDark()
+  else
+    M.setLight()
   end
-
-  return false
 end
 
 ---Cycle through different diagnostic display modes or override the current display modes.
