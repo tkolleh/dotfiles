@@ -55,7 +55,7 @@ return {
       enableSemanticHighlighting = true,
       excludedPackages = { "akka.actor.typed.javadsl", "com.github.swagger.akka.javadsl" },
       superMethodLensesEnabled = true,    -- [default:false] Super method lenses are visible
-      verboseCompilation = true,          -- [default:false] Show all possible debug information
+      verboseCompilation = false,          -- [default:false] Show all possible debug information
       defaultBspToBuildTool = true,       -- [default:false] If build tool serves as build server, use it
       bloopSbtAlreadyInstalled = false,   -- [default:false] Metals will not generate metals.sbt
       bloopJvmProperties = { "-Xms512m" },
