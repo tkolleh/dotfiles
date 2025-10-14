@@ -56,10 +56,11 @@ Snacks.toggle({
   get = utils.is_background_dark,
   set = function(state)
     if state then
-      utils.setDark()
+      vim.cmd('set background=dark')
     else
-      utils.setLight()
+      vim.cmd('set background=light')
     end
+    utils.apply_auto_background_theme()
   end,
 }):map("yob")
 
@@ -104,10 +105,11 @@ Snacks.toggle({
   get = utils.is_background_dark,
   set = function(state)
     if state then
-      utils.setDark()
+      vim.cmd('set background=dark')
     else
-      utils.setLight()
+      vim.cmd('set background=light')
     end
+    utils.apply_auto_background_theme()
   end,
 }):map("<leader>ub")
 

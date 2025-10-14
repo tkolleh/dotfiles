@@ -30,8 +30,15 @@ return {
       desc = "Metals commands",
     },
     {
-      "<leader>rc",
+      "<leader>mc",
       utils.compile_code,
+      desc = "Metals compile cascade",
+    },
+    {
+      "<leader>mi",
+      function()
+        require("metals").toggle_setting("showImplicitArguments")
+      end,
       desc = "Metals compile cascade",
     },
     {
@@ -51,7 +58,7 @@ return {
     end
     metals_config.settings = {
       javaHome = get_java_home(),
-      showImplicitArguments = true,
+      showImplicitArguments = false,
       enableSemanticHighlighting = true,
       excludedPackages = { "akka.actor.typed.javadsl", "com.github.swagger.akka.javadsl" },
       superMethodLensesEnabled = true,    -- [default:false] Super method lenses are visible
@@ -59,7 +66,7 @@ return {
       defaultBspToBuildTool = true,       -- [default:false] If build tool serves as build server, use it
       bloopSbtAlreadyInstalled = false,   -- [default:false] Metals will not generate metals.sbt
       bloopJvmProperties = { "-Xms512m" },
-      serverProperties = { "-Xms1g", "-Xss32m", "-XX:+UseStringDeduplication" },
+      serverProperties = { "-Xms1g", "-Xss16m", "-XX:+UseStringDeduplication" },
       serverVersion = "latest.snapshot",
       testUserInterface = "Test Explorer",
       startMcpServer = true,

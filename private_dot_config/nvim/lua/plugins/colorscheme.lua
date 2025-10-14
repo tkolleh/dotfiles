@@ -9,7 +9,7 @@
 --  * disable/enabled LazyVim plugins
 --  * override the configuration of LazyVim plugins
 return {
-  { 
+  {
     "catppuccin/nvim",
     lazy = true,
     name = "catppuccin",
@@ -23,14 +23,14 @@ return {
       auto_integrations = true,
     }
   },
-  { "EdenEast/nightfox.nvim" },
-  { "yorik1984/newpaper.nvim" },
   {
-    'projekt0n/github-nvim-theme',
-    name = 'github-theme',
+    "EdenEast/nightfox.nvim",
+    name = "nightfox",
     lazy = false,     -- make sure we load this during startup if it is your main colorscheme
-    -- priority = 1000,  -- make sure to load this before all the other start plugins
+    priority = 900,   -- make sure to load this before all the other start plugins
   },
+  { "yorik1984/newpaper.nvim" },
+  { 'projekt0n/github-nvim-theme', name = 'github-theme' },
   {
     "LazyVim/LazyVim",
     opts = function(opts)
@@ -43,8 +43,7 @@ return {
         -- Same but for Neovim's news.txt
         neovim = true,
       })
-      local utils = require("utils")
-      opts.colorscheme = "catppuccin"
+      opts.colorscheme = "nightfox"
       return opts
     end,
   },
