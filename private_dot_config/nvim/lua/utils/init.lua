@@ -8,48 +8,42 @@ M.is_nil_or_empty = function(value)
 end
 
 M.use_if_defined = function(val, fallback)
-return val ~= nil and val or fallback
+  return val ~= nil and val or fallback
 end
 
-M.setDark = function()
-  vim.api.nvim_command("highlight clear")
-  vim.api.nvim_command("syntax reset")
-  -- vim.api.nvim_command("colorscheme github_dark_colorblind")
-  -- vim.api.nvim_command("colorscheme tokyonight-moon")
-  -- vim.api.nvim_command("colorscheme nightfox")
-  -- vim.api.nvim_command("colorscheme tokyonight-night")
+-- Dark  : (github_dark_colorblind | tokyonight-moon | nightfox | carbonfox | tokyonight-night)
+M.dark_theme = "nightfox"
 
-  vim.api.nvim_command("colorscheme catppuccin-mocha")
-  return "catppuccin-mocha"
-end
-
-M.setLight = function()
-  vim.api.nvim_command("highlight clear")
-  vim.api.nvim_command("syntax reset")
-  -- vim.api.nvim_command("colorscheme github_light_colorblind")
-  -- vim.api.nvim_command("colorscheme tokyonight-day")
-  -- vim.api.nvim_command("colorscheme dayfox")
-
-  -- require("catppuccin").load()
-  vim.api.nvim_command("colorscheme catppuccin-latte")
-  return "catppuccin-latte"
-end
+-- Light : (github_light_colorblind | tokyonight-day | dayfox)
+M.light_theme = "dayfox"
 
 M.is_background_dark = function()
-  local bg = vim.api.nvim_get_option_value("background", {})
-  if bg == "dark" then
-    return true
+  -- Try to detect macOS system dark mode
+  local success, result = pcall(function()
+    local output = vim.fn.system('defaults read -g AppleInterfaceStyle 2>/dev/null | grep -q "Dark" && echo "dark" || echo "light"')
+    return vim.trim(output) == "dark"
+  end)
+
+  if success then
+    return result
   else
-    return false
+    -- Fallback to vim.o.background if system detection fails
+    return string.lower(vim.o.background) == "dark"
   end
 end
 
 M.apply_auto_background_theme = function()
-  if M.is_background_dark() then
-    M.setDark()
-  else
-    M.setLight()
+  local is_dark = M.is_background_dark()
+  local theme = is_dark and M.dark_theme or M.light_theme
+  local _colorscheme = vim.g.colors_name or "none"
+
+  if string.lower(_colorscheme) ~= string.lower(theme) then
+    require("nightfox").load()
+    vim.g.fox_theme = theme
+    vim.cmd.colorscheme(theme)
+    vim.api.nvim_command("syntax reset")
   end
+  return theme
 end
 
 ---Cycle through different diagnostic display modes or override the current display modes.
@@ -77,10 +71,7 @@ M.cycle_diagnostics_display = function(override)
     text = true
     lines = false
   end
-  vim.diagnostic.config(
-    vim.tbl_deep_extend("keep", override or {}, { virtual_text = text, virtual_lines = lines }
-  )
-)
+  vim.diagnostic.config(vim.tbl_deep_extend("keep", override or {}, { virtual_text = text, virtual_lines = lines }))
 end
 
 M.compile_code = function()

@@ -16,12 +16,7 @@ end
 
 -- Toggle background mode
 M.toggle_background = function()
-  local utils = require("utils")
-  if utils.is_background_dark() then
-    utils.setDark()
-  else
-    utils.setLight()
-  end
+  require("utils").apply_auto_background_theme()
 end
 
 -- Togle relative number
