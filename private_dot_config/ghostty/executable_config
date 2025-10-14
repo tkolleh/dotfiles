@@ -10,12 +10,13 @@ auto-update-channel = tip
 # theme = dark:cyberdream,light:farmhouse-light
 theme = dark:monrovia,light:monrovia-light
 
-cursor-opacity = 1
 # (block|bar|underline|block_hollow)
 cursor-style = block
+cursor-opacity = 3
+cursor-style-blink = true
+adjust-cursor-thickness = 8
 
 unfocused-split-opacity = 0.80
-split-divider-color = "#663399"
 
 font-size = 15
 

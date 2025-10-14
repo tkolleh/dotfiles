@@ -28,16 +28,18 @@ api.nvim_create_autocmd({ "FileType" }, {
   end,
 })
 
--- FIXME: This currently does not work as expected
 -- Auto light / dark theme
 -- The decision will be made based on system preferences using DEC mode 2031 if supported by the terminal.
 -- See: neovim/neovim#31350
-api.nvim_create_autocmd({ "VimEnter", "ColorSchemePre", "OptionSet" }, {
+api.nvim_create_autocmd("VimEnter", {
   group = api.nvim_create_augroup("detect_auto_background", { clear = true }),
+  callback = utils.apply_auto_background_theme,
+})
+api.nvim_create_autocmd("OptionSet", {
+  group = api.nvim_create_augroup("detect_auto_background_optionset", { clear = true }),
   pattern = "background",
   callback = utils.apply_auto_background_theme,
 })
-
 api.nvim_create_autocmd("User", {
   pattern = "SnacksDashboardClosed",
   group = api.nvim_create_augroup("dashboard_detect_auto_background", { clear = true }),
