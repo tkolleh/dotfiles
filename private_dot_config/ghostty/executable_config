@@ -2,15 +2,18 @@
 auto-update-channel = tip
 
 # apperance specific themes
+theme = dark:github dark,light:Atom One Light
 # theme = dark:github dark,light:Raycast_Light
 # theme = dark:cyberdream,light:cyberdream-light
 # theme = dark:catppuccin-frappe,light:catppuccin-latte
 # theme = dark:GitLab-Dark-Grey,light:GitLab-Light
 # theme = dark:cyberdream,light:dayfox
 # theme = dark:cyberdream,light:farmhouse-light
-theme = dark:monrovia,light:monrovia-light
+# theme = dark:monrovia,light:monrovia-light
 
 # (block|bar|underline|block_hollow)
+cursor-color = #6A1B9A
+cursor-text  = #FDFEFF
 cursor-style = block
 cursor-opacity = 3
 cursor-style-blink = true
