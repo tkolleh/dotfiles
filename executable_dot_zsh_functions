@@ -252,8 +252,9 @@ function update_term_tools() {
     gum spin --title "Updating uv tools..." -- uv tool upgrade --all || :
   fi
   if (( ${+commands[yazi]} )); then
-    gum spin --title "Installing yazi plugins with locked versions from package.toml..." ya pkg install || :
-    gum spin --title "Upgrading yazi plugins package.toml" ya pkg upgrade || :
+    gum spin --title "Upgrading yazi..." -- brew upgrade --quiet yazi || :
+    gum spin --title "Installing yazi plugins with locked versions from package.toml..." -- ya pkg install || :
+    gum spin --title "Upgrading yazi plugins package.toml" -- ya pkg upgrade || :
   fi
 }
 
