@@ -2,6 +2,21 @@
 # If you encounter any issues, please make an issue at https://github.com/yazi-rs/schemas.
 # "$schema" = "https://yazi-rs.github.io/schemas/yazi.json"
 
+[[plugin.prepend_fetchers]]
+id   = "git"
+name = "*"
+run  = "git"
+
+[[plugin.prepend_fetchers]]
+id   = "git"
+name = "*/"
+run  = "git"
+
 [mgr]
 show_hidden = true
+
+[[mgr.append_keymap]]
+on   = "<C-m>"
+run  = "plugin toggle-pane max-preview"
+desc = "Maximize or restore the preview pane"
 
