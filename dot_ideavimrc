@@ -33,15 +33,12 @@
 let mapleader=" "
 
 " Confirm to save changes before exiting modified buffer
-set formatoptions=jcroqlnt
 " Print line number
 set number
 " Relative line numbers
 set relativenumber
 " Lines of context
 set scrolloff=4
-" Round indent
-set shiftround
 " Columns of context
 set sidescrolloff=8
 " which-key says to set this high, or set notimeout (default: 1000)
@@ -59,11 +56,7 @@ set visualbell
 " https://neovim.io/doc/user/diff.html
 " https://github.com/mikeslattery/nvim-defaults.vim/blob/main/plugin/.vimrc
 "
-set backspace=indent,eol,start
-set formatoptions=tcqj
-set listchars=tab:>\ ,trail:-,nbsp:+
-set shortmess=filnxtToOF
-
+"
 " Required plugins. https://plugins.jetbrains.com/bundles/7-ideavim-bundle
 " Make sure the following plugins are installed
 set ideajoin
@@ -237,7 +230,7 @@ nmap <leader>wm <Action>(ToggleDistractionFreeMode)
 " Unsplit window
 nmap <leader>wd <Action>(Unsplit)
 " Unsplit all windows
-nmap <leader>wo <Action>(UnsplitAll)
+nmap <leader>wo <Action>(UnsplitAll)<Action>(HideAllWindows)
 
 " Tabs are treated as saved layouts
 "
