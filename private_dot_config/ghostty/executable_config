@@ -1,15 +1,35 @@
+# Configuration - https://ghostty.org/docs/config
+
+# Autoupdate
+#
 # Nightly build
 auto-update-channel = tip
+auto-update = download
+
+# Window
+window-padding-balance = true
+window-padding-color = extend
+macos-titlebar-style = native
+macos-window-shadow = false
+
+# Whether to use the native macOS full screen mode.
+macos-non-native-fullscreen = false
+
+# Whether to enable saving and restoring window state. Window state 
+# includes their position, size, tabs, splits, etc.
+# Options are default, always, never
+window-save-state = default
 
 # apperance specific themes
-theme = dark:github dark,light:Atom One Light
+# theme = dark:github dark,light:Atom One Light
+
 # theme = dark:github dark,light:Raycast_Light
 # theme = dark:cyberdream,light:cyberdream-light
 # theme = dark:catppuccin-frappe,light:catppuccin-latte
 # theme = dark:GitLab-Dark-Grey,light:GitLab-Light
 # theme = dark:cyberdream,light:dayfox
 # theme = dark:cyberdream,light:farmhouse-light
-# theme = dark:monrovia,light:monrovia-light
+theme = dark:monrovia,light:monrovia-light
 
 # (block|bar|underline|block_hollow)
 cursor-color = #6A1B9A
@@ -22,14 +42,6 @@ adjust-cursor-thickness = 8
 unfocused-split-opacity = 0.80
 
 font-size = 15
-
-# Whether to use the native macOS full screen mode.
-macos-non-native-fullscreen = false
-
-# Whether to enable saving and restoring window state. Window state 
-# includes their position, size, tabs, splits, etc.
-# Options are default, always, never
-window-save-state = default
 
 # Instance management
 keybind = opt+cmd+t=toggle_quick_terminal
