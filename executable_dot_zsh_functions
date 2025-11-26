@@ -258,29 +258,38 @@ function update_term_tools() {
   fi
 }
 
-function has_tldr_page() {
-  tldr --language en "$1" > /dev/null 2>&1
-}
-
 function has_man_page() {
   man "$1" > /dev/null 2>&1
 }
 
 function help() {
-  # Get help for a command, showing TLDR at the bottom when available
+  # NAME
+  #   help - Get help for a command
+  #
+  # SYNOPSIS
+  #   help <command>
+  #
+  # DESCRIPTION
+  #   Displays help information for a given command.
+  #   It first checks for a man page and displays it if available.
+  #   If 'batman' is installed, it's used to display the man page.
+  #   If no man page is found, it attempts to run the command with the '--help' flag
+  #   and pipes the output to 'bat' for syntax highlighting.
+  #
+  # PARAMETERS
+  #   $1 - The command to get help for.
+  #
+  # EXAMPLES
+  #   help ls
+  #   help git commit
+  #
   if [[ -z "$1" ]]; then
     echo "No command specified. The input string is empty."
     return 1
   fi
   
   local command_name="$1"
-  local has_tldr=false
   local has_man=false
-  
-  # Check if TLDR page exists
-  if has_tldr_page "$command_name"; then
-    has_tldr=true
-  fi
   
   # Check if man page exists
   if has_man_page "$command_name"; then
@@ -301,12 +310,6 @@ function help() {
   if [[ "$has_man" == "false" ]]; then
     "$@" --help 2>&1 | bat --plain --language=help
     echo
-  fi
-  
-  # Always show TLDR at the bottom if available
-  if [[ "$has_tldr" == "true" ]]; then
-    echo "--- TLDR ---"
-    tldr "$command_name"
   fi
 }
 
@@ -529,50 +532,4 @@ function ssh_ghostty() {
 
   infocmp -x | ssh -p $1 $2 -- tic -x -
   ssh -p $1 $2
-}
-
-# aig: Display the output of the last llm command using glow, with paging for long outputs.
-# Requirements: 'glow' and 'llm' must be installed.
-# - If the first argument is 'prev', prints the last llm logs output and exits.
-# - Otherwise, runs 'llm' with provided arguments (output discarded).
-# - Fetches the last llm command output into a temporary markdown file.
-# - If output exceeds 20 lines, appends paging info and uses glow's pager.
-# - Otherwise, displays output directly with glow.
-# - Suggests installing coreutils for better mktemp experience if not present.
-function aig() {
-  if ! (( ${+commands[glow]} && ${+commands[llm]} )); then
-    echo "Error: Requires glow and llm to be installed"
-    return 1
-  fi
-
-  if [[ "$1" == "prev" ]]; then
-    local prev_command_path=$(gmktemp --suffix=.md)
-    llm logs --count 1 > "$prev_command_path"
-    glow --pager $prev_command_path
-    return
-  fi
-
-  gum spin --show-output --title="Talking to the AI... " --spinner="meter" -- llm "$@" > /dev/null
-  local max_lines=20
-
-  local last_command_path
-  if (( ${+commands[gmktemp]} )); then
-    last_command_path=$(gmktemp --suffix=.md)
-  else
-    last_command_path=$(mktemp)
-    printf "\n%s\n" "Install coreutils for a better terminal experience: \`brew install coreutils\`"
-  fi
-
-  llm logs --count 1 > "$last_command_path"
-  local linecount=$(wc -l "$last_command_path" | awk '{print $1}')
-  if (( linecount > $max_lines )); then
-    printf "\n%s\n" "
->Paging output because the last command output is longer than $max_lines lines:
->* Path to paged output: ${last_command_path}
->* Print original output: \`llm logs --count 1\`
-    " >> $last_command_path
-    glow --pager "$last_command_path"
-  else
-    glow "$last_command_path"
-  fi
 }
