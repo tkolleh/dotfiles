@@ -245,9 +245,6 @@ function update_term_tools() {
   if (( ${+commands[node]} )); then
     gum spin --title "Updating global npm packages..." -- npm --global update || :
   fi
-  if (( ${+commands[goose]} )); then
-    gum spin --title "Updating block goose..." -- goose update || :
-  fi
   if (( ${+commands[uv]} )); then
     gum spin --title "Updating uv tools..." -- uv tool upgrade --all || :
   fi
