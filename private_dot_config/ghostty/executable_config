@@ -22,7 +22,6 @@ window-save-state = default
 
 # apperance specific themes
 # theme = dark:github dark,light:Atom One Light
-
 # theme = dark:github dark,light:Raycast_Light
 # theme = dark:cyberdream,light:cyberdream-light
 # theme = dark:catppuccin-frappe,light:catppuccin-latte
@@ -32,12 +31,10 @@ window-save-state = default
 theme = dark:monrovia,light:monrovia-light
 
 # (block|bar|underline|block_hollow)
-cursor-color = #6A1B9A
-cursor-text  = #FDFEFF
 cursor-style = block
 cursor-opacity = 3
 cursor-style-blink = true
-adjust-cursor-thickness = 8
+adjust-cursor-thickness = 6
 
 unfocused-split-opacity = 0.80
 
