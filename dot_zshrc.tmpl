@@ -130,9 +130,11 @@ fpath=("/Users/tkolleh/Library/Application Support/ScalaCli/completions/zsh" $fp
 autoload -Uz compinit
 compinit -C
 
-# --- Final Exports -----------------------------------------------------------
+# --- Additional Exports ----------------------------------------------------
 export ICLOUD_DIR="$HOME/Library/Mobile Documents/com~apple~CloudDocs/"
 export CHEZMOI_SOURCE_PATH="$HOME/.local/share/chezmoi"
+# Use 1password's ssh agent socket
+export SSH_AUTH_SOCK="~/Library/Group\ Containers/2BUA8C4S2C.com.1password/t/agent.sock"
 
 # pnpm
 export PNPM_HOME="$HOME/.local/share/pnpm"
