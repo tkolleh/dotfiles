@@ -140,3 +140,17 @@ del("v", "<C-s>")
 -- del("v", "<leader>gy")
 -- del("n", "<leader>gY")
 -- del("v", "<leader>gY")
+
+--
+-- Commands
+--
+vim.api.nvim_create_user_command('Marked', function()
+  -- Get the absolute path of the current buffer
+  local filepath = vim.fn.expand('%:p')
+  
+  -- Use jobstart to open it asynchronously without blocking the editor
+  vim.fn.jobstart({'open', '-a', 'Marked 2', filepath}, { detach = true })
+  end, {
+  desc = 'Open current file in Marked 2'
+})
+
