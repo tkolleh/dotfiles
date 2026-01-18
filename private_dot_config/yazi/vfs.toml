@@ -1,0 +1,14 @@
+[services.q2-sandbox]
+type           = "sftp"
+host           = "sandbox-sftp.q2labs.io"
+port           = 22
+user           = "creditkarmamvbsandbox"
+password       = "6Wb8WQdIX7A28JLK43oF"
+
+[services.interchecks-sandbox]
+type           = "sftp"
+host           = "sftp.test.interchecks.com"
+port           = 22
+user           = "ck_write"
+key_file       = "/Users/tkolleh/IdeaProjects/assets_cambr-filestreamer/private_interchecks_key"
+# identity_agent = "~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"

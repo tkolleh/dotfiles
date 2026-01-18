@@ -48,3 +48,7 @@ alias poetry_run="poetry run python -m"
 alias ghorg="git remote get-url origin | cut -d/ -f 4"
 
 alias glzy="lazygit"
+
+if (( ${+commands[uvx]} )); then
+  alias serena="uvx --from git+https://github.com/oraios/serena serena"
+fi

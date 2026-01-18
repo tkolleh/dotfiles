@@ -1,5 +1,22 @@
 local function get_java_home()
-  return os.getenv("METALS_JAVA_HOME") or os.getenv("JAVA_HOME") or ""
+  -- First try METALS_JAVA_HOME environment variable
+  local metals_java = os.getenv("METALS_JAVA_HOME")
+  if metals_java and metals_java ~= "" then
+    return metals_java
+  end
+  
+  -- If not set, try to get it via coursier (fallback to Java 17)
+  local handle = io.popen("cs java-home --architecture arm64 --jvm corretto:17 2>/dev/null")
+  if handle then
+    local result = handle:read("*a")
+    handle:close()
+    if result and result ~= "" then
+      return result:gsub("%s+$", "")
+    end
+  end
+  
+  -- Final fallback to JAVA_HOME
+  return os.getenv("JAVA_HOME") or ""
 end
 
 local utils = require("utils")
@@ -55,19 +72,31 @@ return {
     metals_config.on_attach = function(client, bufnr)
       LazyVim.has("nvim-dap")
       metals.setup_dap()
+      -- Workaround for semantic tokens error
+      -- Disable semantic tokens if causing issues
+      -- if client.server_capabilities then
+      --   client.server_capabilities.semanticTokensProvider = nil
+      -- end
     end
     metals_config.settings = {
       javaHome = get_java_home(),
+      fallbackScalaVersion = "2.12.17",    -- Match project Scala version
       showImplicitArguments = false,
-      enableSemanticHighlighting = true,
+      enableSemanticHighlighting = true,  -- Disabled to fix semantic tokens error
       excludedPackages = { "akka.actor.typed.javadsl", "com.github.swagger.akka.javadsl" },
       superMethodLensesEnabled = true,    -- [default:false] Super method lenses are visible
       verboseCompilation = false,          -- [default:false] Show all possible debug information
       defaultBspToBuildTool = true,       -- [default:false] If build tool serves as build server, use it
-      bloopSbtAlreadyInstalled = false,   -- [default:false] Metals will not generate metals.sbt
+      bloopSbtAlreadyInstalled = true,    -- [default:false] Bloop config is now installed
       bloopJvmProperties = { "-Xms512m" },
-      serverProperties = { "-Xms1g", "-Xss16m", "-XX:+UseStringDeduplication" },
-      serverVersion = "latest.snapshot",
+      serverProperties = {
+        "-Xms1g",
+        "-Xss16m",
+        "-XX:+UseStringDeduplication",
+        "-Dmetals.verbose=true",          -- Enable verbose logging for better diagnostics
+        string.format("-Dmetals.javaHome=%s", get_java_home())
+      },
+      serverVersion = "latest.release",    -- Use stable release instead of snapshot
       testUserInterface = "Test Explorer",
       startMcpServer = true,
       mcpClient = 'claude'
@@ -83,6 +112,12 @@ return {
     return metals_config
   end,
   config = function(self, metals_config)
+    -- Ensure Metals is launched with the correct Java
+    local java_path = get_java_home() .. "/bin/java"
+    if vim.fn.executable(java_path) == 1 then
+      metals_config.cmd = { java_path, "-jar", vim.fn.expand("~/.cache/nvim/nvim-metals/metals") }
+    end
+    
     local nvim_metals_group = vim.api.nvim_create_augroup("nvim-metals", { clear = true })
     vim.api.nvim_create_autocmd("FileType", {
       pattern = self.ft,

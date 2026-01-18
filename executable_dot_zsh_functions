@@ -95,17 +95,17 @@ fif() (
 # ripgrep->fzf [QUERY]
 fifn() (
   local opener='if [[ $FZF_SELECT_COUNT -eq 0 ]]; then
-            nvim {1}     # No selection. Open the current line in Vim.
+            nvim -- {}     # Open the focused file in nvim.
           else
-            nvim +cw -q {+f}  # Build quickfix list for the selected items.
+            nvim -- {+}    # Open all selected files in nvim.
           fi'
-  rg --ignore-case --files-with-matches --regexp "$*" | fzf --ansi --multi \
+  rg --ignore-case --files-with-matches --unrestricted --regexp "$*" | fzf --ansi --multi \
     --bind "enter:become:$opener" \
     --bind "ctrl-o:execute:$opener" \
     --bind 'alt-a:select-all,alt-d:deselect-all,?:toggle-preview' \
-    --preview 'bat --style=full --color=always' \
-    --preview-window '~4,+{2}+4/3,<80(up)' \
-)
+    --preview 'bat --style=full --color=always --line-range :300 {}' \
+    --preview-window '~4,<80(up)' \
+  )
 
 # fbc - fuzzy Find Branch or tag to Checkout
 # checkout git branch (including remote branches), sorted by most recent commit, limit 30 last branches
@@ -257,6 +257,13 @@ function update_term_tools() {
   if (( ${+commands[httpie]} )); then
     gum spin --title "Upgrading httpie cli..." -- httpie cli check-updates || :
     gum spin --title "Upgrading httpie plugins..." -- httpie plugins upgrade httpie-jwt-auth httpie-image || :
+  fi
+  if (( ${+commands[openmemory-js]} )); then
+    gum spin --title "Upgrading openmemory-js..." -- update-openmemory-js.sh || :
+  fi
+  if (( ${+command[cargo]} )); then
+    gum spin --title "Upgrading cargo packages..." -- cargo install cargo-update || :
+    gum spin --title "Upgrading cargo packages..." -- cargo install-update -a || :
   fi
 }
 
@@ -534,4 +541,38 @@ function ssh_ghostty() {
 
   infocmp -x | ssh -p $1 $2 -- tic -x -
   ssh -p $1 $2
+}
+
+function sync_metals_mcp() {
+  local mcp_file=".mcp.json"
+  local opencode_file="opencode.json"
+
+  # 1. Check if Metals MCP file exists
+  if [[ ! -f "$mcp_file" ]]; then
+    gum log --structured --level error "❌ Error: ${mcp_file} not found in the current directory."
+    return 1
+  fi
+
+  # 2. Extract the SSE URL using jq
+  local sse_url=$(jq -r '.mcpServers.metals.url' "$mcp_file")
+
+  if [[ "$sse_url" == "null" ]]; then
+    gum log --structured --level error "❌ Error: Could not find Metals SSE URL in ${mcp_file}"
+    return 1
+  fi
+
+  # 3. Create or replace opencode.json
+  if [[ ! -f "$opencode_file" ]] || rg -q "$sse_url" "$opencode_file"; then
+    # Create a fresh file if it doesn't exist
+    gum log --level info "Creating new $opencode_file..."
+    echo '{ "$schema": "https://opencode.ai/config.json" }' > "$opencode_file"
+  fi
+
+  # Use jq to merge the metals config into the existing file
+  local tmp_file=$(mktemp)
+  jq --arg url "$sse_url" \
+     '.mcp["scala-metals"] = {"type": "remote", "url": $url, "enabled": true}' \
+     "$opencode_file" > "$tmp_file" && mv "$tmp_file" "$opencode_file"
+
+  gum log --level info "✅ Success: OpenCode is now linked to Metals at $sse_url"
 }

@@ -42,6 +42,8 @@ M.apply_auto_background_theme = function()
     vim.g.fox_theme = theme
     vim.cmd.colorscheme(theme)
     vim.api.nvim_command("syntax reset")
+    -- Trigger ColorScheme event to update diff highlights
+    vim.api.nvim_exec_autocmds("ColorScheme", { pattern = theme })
   end
   return theme
 end

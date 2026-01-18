@@ -3,7 +3,7 @@ return {
   -- 'lsp-lens.nvim',
   -- name = "lsp-lens.nvim",
   -- dev = true,
-  enabled = true,
+  enabled = false,
   event = "LspAttach", -- Or `LspAttach`
   priority = 1000,    -- needs to be loaded in first
   config = function(_, opts)
