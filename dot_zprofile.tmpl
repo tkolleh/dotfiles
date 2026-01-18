@@ -86,5 +86,5 @@ export NEW_RELIC_API_KEY={{ range (onepassword "eehrc6lejvajtfcpejah3e5uem").fie
 export JAVA_HOME="$(cs java-home --architecture arm64 --jvm {{ .chezmoi.config.data.sys_java_version }})"
 {{ end }}
 
-export METALS_JAVA_HOME="$(cs java-home --architecture arm64 --jvm corretto:17)"
 export PATH="$JAVA_HOME/bin:$PATH"
+export ZK_NOTEBOOK_DIR="$HOME/zettelkasten/notes"

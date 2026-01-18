@@ -13,6 +13,11 @@ SPECS.md
 .agent_convo.md
 .agent-convo.md
 .mcp.json
+.agent_convo/
+.serena/
+.tree/
+opencode.json
+.opencode/
 
 # asdf local tool versions
 .tool-versions

@@ -37,6 +37,9 @@ _map({ "n", "v" }, "gl", "$", { desc = "Goto end of line" })
 _map({ "n" }, "<leader>fy", ":call setreg('+', expand('%:.') .. ':' .. line('.'))<CR>", { desc = "Yank path" })
 _map({ "n" }, "<leader>fO", ":e <C-r>+<CR>", { noremap = true, desc = "Open path in clipboard" })
 
+-- Enhanced diff with character-level indicators
+_map({ "n" }, "<leader>gd", ":CodeDiff<CR>", { desc = "Code diff with character indicators" })
+
 _map({ "v" }, "//", LazyVim.pick("grep_visual"), { desc = "Selection (Root Dir)" })
 
 vim.keymap.set(

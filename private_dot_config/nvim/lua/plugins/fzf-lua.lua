@@ -27,13 +27,40 @@ return {
         default="bat"
       })
 
+      opts["files"] = vim.tbl_deep_extend("force", opts.files or {}, {
+        -- Rounded borders and word wrap for files preview windows
+        winopts = {
+          border = "rounded",
+          preview = {
+            border = "rounded",
+            wrap = true,
+          },
+        },
+      })
+
       opts["grep"] = vim.tbl_deep_extend("force", opts.grep or {}, {
         formatter = "path.filename_first",
         rg_opts   = "--no-ignore-dot --no-ignore-exclude --no-ignore --hidden --column --line-number --no-heading --color=always --smart-case --max-columns=4096 -e",
+        -- Rounded borders and word wrap for grep preview windows
+        winopts = {
+          border = "rounded",
+          preview = {
+            border = "rounded",
+            wrap = true,
+          },
+        },
       })
 
       opts["buffers"] = vim.tbl_deep_extend("force", opts.buffers or {}, {
         formatter = "path.filename_first",
+        -- Rounded borders and word wrap for buffers preview windows
+        winopts = {
+          border = "rounded",
+          preview = {
+            border = "rounded",
+            wrap = true,
+          },
+        },
       })
 
       return opts

@@ -131,6 +131,7 @@ autoload -Uz compinit
 compinit -C
 
 # --- Additional Exports ----------------------------------------------------
+export PATH="$HOME/ws/OpenMemory/scripts:$PATH"
 export ICLOUD_DIR="$HOME/Library/Mobile Documents/com~apple~CloudDocs/"
 export CHEZMOI_SOURCE_PATH="$HOME/.local/share/chezmoi"
 # Use 1password's ssh agent socket
@@ -143,3 +144,9 @@ case ":$PATH:" in
   *) export PATH="$PNPM_HOME:$PATH" ;;
 esac
 # pnpm end
+
+# direnv for automatic environment switching
+eval "$(direnv hook zsh)"
+
+# Source host-specific functions
+[[ -f ~/.host_functions.zsh ]] && source ~/.host_functions.zsh

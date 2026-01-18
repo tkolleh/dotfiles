@@ -5,8 +5,8 @@
 
 [[mgr.prepend_keymap]]
 on  = "y"
-run = [ 'shell -- echo "$@" | xclip -i -selection clipboard -t text/uri-list', "yank" ]
-desc = "Yank to system clipboard and yazi clipboard"
+run = [ "yank", "plugin copy-path" ]
+desc = "Yank to yazi clipboard and copy full path to system clipboard"
 
 [[mgr.prepend_keymap]]
 on = "<C-y>"
