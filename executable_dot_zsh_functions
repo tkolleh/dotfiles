@@ -258,9 +258,6 @@ function update_term_tools() {
     gum spin --title "Upgrading httpie cli..." -- httpie cli check-updates || :
     gum spin --title "Upgrading httpie plugins..." -- httpie plugins upgrade httpie-jwt-auth httpie-image || :
   fi
-  if (( ${+commands[openmemory-js]} )); then
-    gum spin --title "Upgrading openmemory-js..." -- update-openmemory-js.sh || :
-  fi
   if (( ${+command[cargo]} )); then
     gum spin --title "Upgrading cargo packages..." -- cargo install cargo-update || :
     gum spin --title "Upgrading cargo packages..." -- cargo install-update -a || :
