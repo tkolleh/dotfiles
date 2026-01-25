@@ -25,7 +25,9 @@ _map({ "n", "v" }, "D", '"_D')
 -- dont copy on paste
 _map({ "v" }, "p", "P")
 
-vim.keymap.set({ "v" }, "<leader>/", LazyVim.pick("grep_cword"), { noremap = true, desc = "Word (Root Dir)" })
+if LazyVim and LazyVim.pick then
+  vim.keymap.set({ "v" }, "<leader>/", LazyVim.pick("grep_cword"), { noremap = true, desc = "Word (Root Dir)" })
+end
 
 -- Keymaps similar to Helix goto mode
 -- See: https://docs.helix-editor.com/keymap.html#goto-mode
@@ -40,7 +42,9 @@ _map({ "n" }, "<leader>fO", ":e <C-r>+<CR>", { noremap = true, desc = "Open path
 -- Enhanced diff with character-level indicators
 _map({ "n" }, "<leader>gd", ":CodeDiff<CR>", { desc = "Code diff with character indicators" })
 
-_map({ "v" }, "//", LazyVim.pick("grep_visual"), { desc = "Selection (Root Dir)" })
+if LazyVim and LazyVim.pick then
+  _map({ "v" }, "//", LazyVim.pick("grep_visual"), { desc = "Selection (Root Dir)" })
+end
 
 vim.keymap.set(
   { "n" },
@@ -54,67 +58,77 @@ vim.keymap.set(
 -- See: https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt
 --
 -- Toggles only
-Snacks.toggle({
-  name = "Toggle Background",
-  get = utils.is_background_dark,
-  set = function(state)
-    if state then
-      vim.cmd('set background=dark')
-    else
-      vim.cmd('set background=light')
-    end
-    utils.apply_auto_background_theme()
-  end,
-}):map("yob")
+if Snacks and Snacks.toggle then
+  Snacks.toggle({
+    name = "Toggle Background",
+    get = utils.is_background_dark,
+    set = function(state)
+      if state then
+        vim.cmd('set background=dark')
+      else
+        vim.cmd('set background=light')
+      end
+      utils.apply_auto_background_theme()
+    end,
+  }):map("yob")
+end
 
-Snacks.toggle({
-  name = "Toggle line wrap",
-  get = unimpaired.is_wrapped,
-  set = function(state)
-    if state then
-      unimpaired.enable_wrap()
-    else
-      unimpaired.disable_wrap()
-    end
-  end,
-}):map("yow")
+if Snacks and Snacks.toggle then
+  Snacks.toggle({
+    name = "Toggle line wrap",
+    get = unimpaired.is_wrapped,
+    set = function(state)
+      if state then
+        unimpaired.enable_wrap()
+      else
+        unimpaired.disable_wrap()
+      end
+    end,
+  }):map("yow")
+end
 
-Snacks.toggle({
-  name = "Toggle spell check",
-  get = unimpaired.is_spellchecked,
-  set = function(state)
-    if state then
-      unimpaired.enable_spell()
-    else
-      unimpaired.disable_spell()
-    end
-  end,
-}):map("yos")
+if Snacks and Snacks.toggle then
+  Snacks.toggle({
+    name = "Toggle spell check",
+    get = unimpaired.is_spellchecked,
+    set = function(state)
+      if state then
+        unimpaired.enable_spell()
+      else
+        unimpaired.disable_spell()
+      end
+    end,
+  }):map("yos")
+end
 
-Snacks.toggle({
-  name = "Toggle relative line number",
-  get = unimpaired.is_relativenumber,
-  set = function(state)
-    if state then
-      unimpaired.enable_relativenumber()
-    else
-      unimpaired.disable_relativenumber()
-    end
-  end,
-}):map("yor")
+if Snacks and Snacks.toggle then
+  Snacks.toggle({
+    name = "Toggle relative line number",
+    get = unimpaired.is_relativenumber,
+    set = function(state)
+      if state then
+        unimpaired.enable_relativenumber()
+      else
+        unimpaired.disable_relativenumber()
+      end
+    end,
+  }):map("yor")
+end
 
-Snacks.toggle({
-  name = "Dark Colorscheme",
-  get = utils.is_background_dark,
-  set = function(state)
-    if state then
-      vim.cmd('set background=dark')
-    else
-      vim.cmd('set background=light')
-    end
-    utils.apply_auto_background_theme()
-  end,
-}):map("<leader>ub")
+if Snacks and Snacks.toggle then
+  Snacks.toggle({
+    name = "Dark Colorscheme",
+    get = utils.is_background_dark,
+    set = function(state)
+      if state then
+        vim.cmd('set background=dark')
+      else
+        vim.cmd('set background=light')
+      end
+      utils.apply_auto_background_theme()
+    end,
+  }):map("<leader>ub")
+end
 
 -- Disable default keymaps
 local del = vim.keymap.del

@@ -4,11 +4,11 @@
 
 return {
   {
-    "esmuellert/vscode-diff.nvim",
+    "esmuellert/codediff.nvim",
     dependencies = { "MunifTanjim/nui.nvim" },
     cmd = "CodeDiff",
     config = function()
-      require("vscode-diff").setup({
+      require("codediff").setup({
         -- Highlight configuration
         highlights = {
           -- Line-level: Use existing DiffAdd/DiffDelete groups
@@ -17,8 +17,8 @@ return {
           
           -- Character-level: Define custom highlights for better visibility
           -- These will be set up below with theme-aware colors
-          char_insert = "VscodeDiffCharInsert",
-          char_delete = "VscodeDiffCharDelete",
+          char_insert = "CodeDiffCharInsert",
+          char_delete = "CodeDiffCharDelete",
           
           -- Brightness multiplier is not needed since we're defining custom highlights
           char_brightness = nil,

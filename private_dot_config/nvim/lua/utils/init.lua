@@ -38,7 +38,13 @@ M.apply_auto_background_theme = function()
   local _colorscheme = vim.g.colors_name or "none"
 
   if string.lower(_colorscheme) ~= string.lower(theme) then
-    require("nightfox").load()
+    local ok = pcall(function()
+      require("nightfox").load()
+    end)
+    if not ok then
+      vim.notify("nightfox not loaded yet, skipping theme change", vim.log.levels.WARN)
+      return theme
+    end
     vim.g.fox_theme = theme
     vim.cmd.colorscheme(theme)
     vim.api.nvim_command("syntax reset")
@@ -80,8 +86,10 @@ M.compile_code = function()
   local filetype = vim.bo.filetype:lower()
   local compiler_lookup = {}
 
-  local metals_filetypes = { "scala", "sbt" }
-  compiler_lookup[metals_filetypes] = function()
+  compiler_lookup["scala"] = function()
+    require("metals").compile_cascade()
+  end
+  compiler_lookup["sbt"] = function()
     require("metals").compile_cascade()
   end
 
