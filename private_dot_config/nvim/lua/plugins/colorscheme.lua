@@ -10,9 +10,21 @@
 --  * override the configuration of LazyVim plugins
 return {
   {
+    "oskarnurm/koda.nvim",
+    enabled = false,
+    lazy = false, -- make sure we load this during startup if it is your main colorscheme
+    priority = 1000, -- make sure to load this before all the other start plugins
+    config = function()
+      -- require("koda").setup({ transparent = true })
+      vim.cmd("colorscheme koda")
+    end,
+  },
+  {
     "catppuccin/nvim",
-    lazy = true,
     name = "catppuccin",
+    enabled = false,
+    lazy = false,     -- make sure we load this during startup if it is your main colorscheme
+    priority = 800,   -- make sure to load this before all the other start plugins
     opts = {
       flavour = "auto", -- latte, frappe, macchiato, mocha
       background = { -- :h background
@@ -27,10 +39,17 @@ return {
     "EdenEast/nightfox.nvim",
     name = "nightfox",
     lazy = false,     -- make sure we load this during startup if it is your main colorscheme
-    priority = 900,   -- make sure to load this before all the other start plugins
+    priority = 800,   -- make sure to load this before all the other start plugins
   },
-  { "yorik1984/newpaper.nvim" },
-  { 'projekt0n/github-nvim-theme', name = 'github-theme' },
+  { 
+    "yorik1984/newpaper.nvim",
+    enabled = false,
+  },
+  { 
+    'projekt0n/github-nvim-theme', 
+    name = 'github-theme',
+    enabled = false,
+  },
   {
     "LazyVim/LazyVim",
     opts = function(opts)
@@ -44,6 +63,7 @@ return {
         neovim = true,
       })
       opts.colorscheme = "nightfox"
+      -- opts.colorscheme = "koda"
       return opts
     end,
   },

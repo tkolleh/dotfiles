@@ -17,8 +17,10 @@ return {
         enabled = true,
         right_pad = 1,
     },
+    anti_conceal = { enabled = false },
+    file_types = { "markdown", "opencode_output" },
   },
-  ft = { "markdown", "norg", "rmd", "org", "codecompanion" },
+  ft = { "markdown", "norg", "rmd", "org", "codecompanion", "Avante", "copilot-chat", "opencode_output"},
   config = function(_, opts)
     require("render-markdown").setup(opts)
     if Snacks and Snacks.toggle then
