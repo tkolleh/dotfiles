@@ -2,6 +2,7 @@
 return {
   "ThePrimeagen/harpoon",
   branch = "harpoon2",
+  enabled = false,
   opts = function(_, opts)
     opts.settings = opts.settings or {}
     opts.settings.save_on_toggle = true
