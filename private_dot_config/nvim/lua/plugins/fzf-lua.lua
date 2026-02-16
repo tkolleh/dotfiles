@@ -22,9 +22,13 @@ return {
       })
 
       -- Preview in dark or light mode based on system settings
-      opts["winopts"] = opts.winopts or {}
-      opts.winopts["preview"] = vim.tbl_deep_extend("force", opts.winopts.preview or {}, {
-        default="bat"
+      -- Set rounded borders globally for all pickers
+      opts["winopts"] = vim.tbl_deep_extend("force", opts.winopts or {}, {
+        border = "rounded",
+        preview = {
+          default = "bat",
+          border = "rounded",
+        },
       })
 
       opts["files"] = vim.tbl_deep_extend("force", opts.files or {}, {

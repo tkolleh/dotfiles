@@ -38,11 +38,6 @@ vim.g.lazyvim_blink_main = false
 -- use <leader>uf to enable formatting
 vim.g.autoformat = false
 
--- Nvim 0.11.0+ has breaking change causing borders of floating windows to vanish
--- due to Neovim no longer using global callbacks. Use `winborder` to set the
--- default border for all floating windows.
-vim.o.winborder = "rounded"
-
 vim.o.showbreak = "↪ "
 
 -- Default to **no** line nor text display for diagnostics
@@ -58,3 +53,5 @@ vim.opt.diffopt:append({
   "algorithm:minimal", -- Use minimal diff algorithm
   "iwhite",       -- Ignore whitespace changes
 })
+
+vim.opt_local.conceallevel = 0

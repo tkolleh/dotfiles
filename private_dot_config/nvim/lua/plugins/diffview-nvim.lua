@@ -7,7 +7,6 @@ return {
     cmd = { "DiffviewOpen", "DiffviewFileHistory" },
     config = function()
       local actions = require("diffview.actions")
-      
       require("diffview").setup({
         enhanced_diff_hl = true,
         view = {
@@ -24,10 +23,8 @@ return {
             -- Conflict navigation (only works during active merge/rebase with conflict markers)
             { "n", "[x", actions.prev_conflict, { desc = "Jump to previous conflict" } },
             { "n", "]x", actions.next_conflict, { desc = "Jump to next conflict" } },
-            
             -- Note: ]c and [c for diff hunk navigation are provided automatically by Vim's
             -- native diff mode. No need to map them here. They work out of the box!
-            
             -- Help
             { "n", "g?", actions.help("view"), { desc = "Open the help panel" } },
           },
