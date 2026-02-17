@@ -1,6 +1,5 @@
 return {
     "ibhagwan/fzf-lua",
-    cmd = "FzfLua",
     opts = function(_, opts)
       opts = opts or {}
 

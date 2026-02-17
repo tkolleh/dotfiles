@@ -5,8 +5,8 @@
 return {
   {
     "nvim-treesitter/nvim-treesitter",
-    opts = {
-      ensure_installed = {
+    opts = function(_, opts)
+      vim.list_extend(opts.ensure_installed, {
         "bash",
         "c",
         "diff",
@@ -35,7 +35,7 @@ return {
         "hocon",
         "scala",
         "roc",
-      },
-    },
+      })
+    end,
   },
 }
