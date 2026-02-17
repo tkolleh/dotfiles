@@ -42,7 +42,7 @@ return {
     {
       "<leader>me",
       function()
-        require("telescope").extensions.metals.commands()
+        require("metals").commands()
       end,
       desc = "Metals commands",
     },
