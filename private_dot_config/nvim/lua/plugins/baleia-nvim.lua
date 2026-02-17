@@ -1,7 +1,7 @@
 return {
   "m00qek/baleia.nvim",
+  enabled = false,
   cmd = { "PrettyLogs", "BaleiaColorize", "BaleiaLogs" }, -- lazy load on these commands
-  version = "*",
   opts = {},
   config = function(_, opts)
     -- Store baleia instance in vim.g as shown in the documentation
