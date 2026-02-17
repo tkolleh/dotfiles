@@ -3,14 +3,38 @@
 -- Add any additional options here
 --
 
--- Custom pyton provider
-local utils = require("utils")
-if not utils.is_nil_or_empty(vim.env.NVIM_VENV) then
-  vim.g.python3_host_prog = vim.env.NVIM_VENV .. "/bin/python"
-else
-  -- Fallback to system python3
-  vim.g.python3_host_prog = vim.fn.exepath("python3")
+-- Python Configuration
+-- Priority: NVIM_VENV > System Python (Resolved)
+
+-- 1. Resolve system python path (handling uv/symlinks)
+local system_python = vim.fn.exepath("python3")
+local real_system_python_path = system_python
+if system_python ~= "" then
+  real_system_python_path = (vim.uv or vim.loop).fs_realpath(system_python) or system_python
 end
+
+-- 2. Determine preferred python executable and directory
+local utils = require("utils")
+local python_executable = real_system_python_path
+local python_bin_dir = nil
+
+if not utils.is_nil_or_empty(vim.env.NVIM_VENV) then
+  -- Case A: Use NVIM_VENV
+  python_bin_dir = vim.env.NVIM_VENV .. "/bin"
+  python_executable = python_bin_dir .. "/python"
+elseif real_system_python_path ~= system_python then
+  -- Case B: Use Resolved System Python (if symlinked)
+  -- We only need to prepend to PATH if the real path differs from the one in PATH
+  python_bin_dir = vim.fn.fnamemodify(real_system_python_path, ":h")
+end
+
+-- 3. Update PATH (Essential for Mason to find the correct python)
+if python_bin_dir then
+  vim.env.PATH = python_bin_dir .. ":" .. vim.env.PATH
+end
+
+-- 4. Set Host Prog (Essential for Neovim python provider)
+vim.g.python3_host_prog = python_executable
 
 -- Raise the bar a bit
 vim.opt.cmdheight = 1
