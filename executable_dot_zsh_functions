@@ -262,6 +262,10 @@ function update_term_tools() {
     gum spin --title "Upgrading cargo packages..." -- cargo install cargo-update || :
     gum spin --title "Upgrading cargo packages..." -- cargo install-update -a || :
   fi
+
+  if [[ -n "$NVIM_VENV" ]] && [[ -d "$NVIM_VENV" ]]; then
+    gum spin --title "Updating neovim python venv packages..." -- "$NVIM_VENV/bin/pip" install --upgrade pynvim || :
+  fi
 }
 
 function has_man_page() {
