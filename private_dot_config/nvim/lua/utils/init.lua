@@ -20,7 +20,8 @@ M.light_theme = "dayfox"
 M.is_background_dark = function()
   -- Try to detect macOS system dark mode
   local success, result = pcall(function()
-    local output = vim.fn.system('defaults read -g AppleInterfaceStyle 2>/dev/null | grep -q "Dark" && echo "dark" || echo "light"')
+    local output =
+      vim.fn.system('defaults read -g AppleInterfaceStyle 2>/dev/null | grep -q "Dark" && echo "dark" || echo "light"')
     return vim.trim(output) == "dark"
   end)
 
