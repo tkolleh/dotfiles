@@ -1,71 +1,70 @@
 return {
-    "ibhagwan/fzf-lua",
-    opts = function(_, opts)
-      opts = opts or {}
+  "ibhagwan/fzf-lua",
+  opts = function(_, opts)
+    opts = opts or {}
 
-      -- Base profiles
-      -- Use fzf's native previewing, using `bat` for previews
-      -- UI at bottom, similar to telescope's ivy layout
-      table.insert(opts, 1, { "ivy", "fzf-native" })
+    -- Keep "default-title" as first profile for LazyVim's special handling
+    -- Add ivy and fzf-native profiles after it (applied in order)
+    table.insert(opts, 2, "ivy")
+    table.insert(opts, 3, "fzf-native")
 
-      opts["previewers"] = vim.tbl_deep_extend("force", opts.previewers or {}, {
-        bat = {
-          cmd  = "bat",
-          args = "--color=always --style=numbers,changes --theme auto:system --theme-dark Dracula --theme-light GitHub",
-        }
-      })
+    -- Ensure automatic color sync with nightfox (already set by extra)
+    opts["fzf_colors"] = true
 
-      -- Display the filename first in the results
-      opts["defaults"] = vim.tbl_deep_extend("force", opts.defaults or {}, {
-        formatter = { "path.filename_first",2}
-      })
+    -- Optimize bat previewer for nightfox compatibility
+    opts["previewers"] = vim.tbl_deep_extend("force", opts.previewers or {}, {
+      bat = {
+        cmd = "bat",
+        args = "--color=always --style=numbers,changes --theme=base16",
+      }
+    })
 
-      -- Preview in dark or light mode based on system settings
-      -- Set rounded borders globally for all pickers
-      opts["winopts"] = vim.tbl_deep_extend("force", opts.winopts or {}, {
-        border = "rounded",
+    -- Use filename-first formatter for deeply nested paths
+    opts["defaults"] = vim.tbl_deep_extend("force", opts.defaults or {}, {
+      formatter = { "path.filename_first",2 },
+    })
+
+    -- Override winopts to match ivy profile (bottom placement, minimal borders)
+    -- Preserve preview scrollchars from LazyVim extra
+    opts["winopts"] = vim.tbl_deep_extend("force", opts.winopts or {}, {
+      row = 1,      -- bottom placement (ivy style)
+      col = 0,      -- full width
+      width = 1,    -- full width
+      height = 1,   -- full height
+      -- border is handled by ivy profile's function (minimal snacks-like borders)
+      -- DO NOT set border here or it will override ivy's border function
+    })
+
+    -- Optimized files search with multiprocess for performance
+    -- Remove all winopts overrides - let ivy profile handle borders
+    opts["files"] = vim.tbl_deep_extend("force", opts.files or {}, {
+      multiprocess = true,
+    })
+
+    -- Optimized grep with sensible rg_opts and multiprocess
+    opts["grep"] = vim.tbl_deep_extend("force", opts.grep or {}, {
+      formatter = "path.filename_first",
+      rg_opts = "--column --line-number --no-heading --color=always --smart-case --max-columns=512",
+      multiprocess = true,
+    })
+
+    -- Optimized buffers with multiprocess
+    opts["buffers"] = vim.tbl_deep_extend("force", opts.buffers or {}, {
+      formatter = "path.filename_first",
+      multiprocess = true,
+    })
+
+    -- Enhanced undotree - keep existing config but remove border overrides
+    opts["undotree"] = vim.tbl_deep_extend("force", opts.undotree or {}, {
+      previewer = "undotree_native",
+      preview_pager = "delta --no-gitconfig --paging=never --syntax-theme='Solarized (light)' --true-color=always --navigate --line-numbers --features 'unobtrusive-line-numbers decorations' --whitespace-error-style '22 reverse' --width=$FZF_PREVIEW_COLUMNS",
+      winopts = {
         preview = {
-          default = "bat",
-          border = "rounded",
+          wrap = true,
         },
-      })
+      },
+    })
 
-      opts["files"] = vim.tbl_deep_extend("force", opts.files or {}, {
-        -- Rounded borders and word wrap for files preview windows
-        winopts = {
-          border = "rounded",
-          preview = {
-            border = "rounded",
-            wrap = true,
-          },
-        },
-      })
-
-      opts["grep"] = vim.tbl_deep_extend("force", opts.grep or {}, {
-        formatter = "path.filename_first",
-        rg_opts   = "--no-ignore-dot --no-ignore-exclude --no-ignore --hidden --column --line-number --no-heading --color=always --smart-case --max-columns=4096 -e",
-        -- Rounded borders and word wrap for grep preview windows
-        winopts = {
-          border = "rounded",
-          preview = {
-            border = "rounded",
-            wrap = true,
-          },
-        },
-      })
-
-      opts["buffers"] = vim.tbl_deep_extend("force", opts.buffers or {}, {
-        formatter = "path.filename_first",
-        -- Rounded borders and word wrap for buffers preview windows
-        winopts = {
-          border = "rounded",
-          preview = {
-            border = "rounded",
-            wrap = true,
-          },
-        },
-      })
-
-      return opts
-    end,
+    return opts
+  end,
 }
