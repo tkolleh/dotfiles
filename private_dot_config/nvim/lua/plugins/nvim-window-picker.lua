@@ -18,5 +18,4 @@ return {
       require("window-picker").setup()
     end,
   },
-
 }

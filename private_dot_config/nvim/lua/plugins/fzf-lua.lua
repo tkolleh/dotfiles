@@ -16,42 +16,44 @@ return {
       bat = {
         cmd = "bat",
         args = "--color=always --style=numbers,changes --theme=base16",
-      }
+      },
     })
 
     -- Use filename-first formatter for deeply nested paths
     opts["defaults"] = vim.tbl_deep_extend("force", opts.defaults or {}, {
-      formatter = { "path.filename_first",2 },
+      formatter = { "path.filename_first", 2 },
     })
 
     -- Override winopts to match ivy profile (bottom placement, minimal borders)
     -- Preserve preview scrollchars from LazyVim extra
     opts["winopts"] = vim.tbl_deep_extend("force", opts.winopts or {}, {
-      row = 1,      -- bottom placement (ivy style)
-      col = 0,      -- full width
-      width = 1,    -- full width
-      height = 1,   -- full height
+      row = 1, -- bottom placement (ivy style)
+      col = 0, -- full width
+      width = 1, -- full width
+      height = 1, -- full height
       -- border is handled by ivy profile's function (minimal snacks-like borders)
       -- DO NOT set border here or it will override ivy's border function
     })
 
-    -- Optimized files search with multiprocess for performance
-    -- Remove all winopts overrides - let ivy profile handle borders
+    -- Files search configuration
+    -- Note: multiprocess disabled to avoid upvalue serialization errors with closures
     opts["files"] = vim.tbl_deep_extend("force", opts.files or {}, {
-      multiprocess = true,
+      multiprocess = false,
     })
 
-    -- Optimized grep with sensible rg_opts and multiprocess
+    -- Grep configuration with sensible rg_opts
+    -- Note: multiprocess disabled to avoid upvalue serialization errors
     opts["grep"] = vim.tbl_deep_extend("force", opts.grep or {}, {
       formatter = "path.filename_first",
       rg_opts = "--column --line-number --no-heading --color=always --smart-case --max-columns=512",
-      multiprocess = true,
+      multiprocess = false,
     })
 
-    -- Optimized buffers with multiprocess
+    -- Buffers configuration
+    -- Note: multiprocess disabled to avoid upvalue serialization errors
     opts["buffers"] = vim.tbl_deep_extend("force", opts.buffers or {}, {
       formatter = "path.filename_first",
-      multiprocess = true,
+      multiprocess = false,
     })
 
     -- Enhanced undotree - keep existing config but remove border overrides
