@@ -577,3 +577,134 @@ function sync_metals_mcp() {
 
   gum log --level info "✅ Success: OpenCode is now linked to Metals at $sse_url"
 }
+
+# Git worktrees cd hook - enables `git worktrees` to change parent shell directory
+function _git_worktrees_cd_hook() {
+  local target_file="${TMPDIR:-/tmp}/git-worktrees-cd-target"
+  if [[ -f "$target_file" ]]; then
+    local dir
+    dir="$(<"$target_file")"
+    rm -f "$target_file"
+    # Use cd (not builtin cd) to trigger direnv wrapper
+    [[ -d "$dir" ]] && cd "$dir"
+  fi
+}
+
+# Register hook only if add-zsh-hook is available
+# precmd is a special function in zsh that runs automatically before each prompt is displayed.
+# ┌─────────────┐     ┌─────────────┐     ┌─────────────┐     ┌─────────────┐
+# │ User runs   │────▶│ Command     │────▶│ precmd()    │────▶│ Prompt      │
+# │ command     │     │ executes    │     │ runs        │     │ displayed   │
+# └─────────────┘     └─────────────┘     └─────────────┘     └─────────────┘
+if (( ${+functions[add-zsh-hook]} )); then
+  add-zsh-hook precmd _git_worktrees_cd_hook
+fi
+
+function watch_pr_checks() {
+  # 1. Setup metadata
+  local repo_name=$(git rev-parse --show-toplevel 2>/dev/null | xargs basename)
+  local pr_id="${1:-}" # Use the first argument if provided, else empty (gh defaults to current branch)
+
+  # 2. Dependency Check (Alerter removed)
+  if ! (( ${+commands[gh]} )) || ! (( ${+commands[jq]} )); then
+    gum log --time rfc822 --level error "Required commands (gh, jq) not found."
+    return 1
+  fi
+
+  # 3. Fetch PR info for the notification subject
+  # If $pr_id is empty, gh view looks at the current branch's PR
+  local pr_json=$(gh pr view $pr_id --json number,title,url,state 2>/dev/null)
+  if [[ $? -ne 0 ]]; then
+    gum log --time rfc822 --level error "Could not find PR ${pr_id}"
+    return 1
+  fi
+
+  local pr_number=$(echo "$pr_json" | jq -r '.number')
+  local pr_title=$(echo "$pr_json" | jq -r '.title')
+  local pr_url=$(echo "$pr_json" | jq -r '.url')
+  local title="PR #$pr_number: $pr_title"
+
+  # 4. Watch the checks
+  gum log --time rfc822 --level info "Watching checks for $repo_name #$pr_number..."
+  gh pr checks $pr_id --watch
+
+  # 5. Determine final state
+  local state_json=$(gh pr checks $pr_id --required --json state)
+  local final_state=$(echo "$state_json" | jq -r 'if all(.[]; .state == "SUCCESS") then "SUCCESS" else "FAILURE" end')
+  
+  # Set icon based on state for the notification
+  local icon="✅"
+  [[ "$final_state" == "FAILURE" ]] && icon="❌"
+
+  # 6. Ghostty Native Notification (OSC 777)
+  # Sequence: ESC ] 777 ; notify ; TITLE ; MESSAGE BELL
+  printf "\e]777;notify;%s;%s %s: Checks Completed\a" "$repo_name" "$icon" "$final_state"
+
+  # 7. Terminal Output & Link (OSC 8 Hyperlink)
+  # Since OSC 777 isn't interactive, we provide a clickable link in the scrollback
+  gum log --time rfc822 --level info "Checks finished with state: $final_state"
+  
+  # Print an ANSI hyperlink (OSC 8) which Ghostty supports beautifully
+  printf "\e]8;;%s\e\\Click here to view PR #%s on GitHub\e]8;;\e\\\n" "$pr_url" "$pr_number"
+}
+
+# set_java_home_to <version>
+# Sets JAVA_HOME and updates PATH for the specified Java version using Coursier.
+# Usage: set_java_home_to 8
+function set_java_home_to() {
+  local version="$1"
+  if [[ -z "$version" ]]; then
+    gum log --level info "Usage: set_java_home_to <version>\n"
+    return 1
+  fi
+  local old=$(java -version 2>&1 | head -n 1)
+  export JAVA_HOME="$(cs java-home --architecture arm64 --jvm "corretto:${version}")"
+  export PATH="$JAVA_HOME/bin:${PATH}"
+  local new=$(java -version 2>&1 | head -n 1)
+  gum log --structured --level info "Changed Java version from" old $old to new $new
+}
+
+# Enhanced function to set Java version with .envrc creation
+# Usage: set_java_version 8
+function set_java_version() {
+  local version=${1:-"17"}
+  export PROJECT_JAVA_VERSION="$version"
+  export JAVA_HOME="$(cs java-home --architecture arm64 --jvm corretto:${version})"
+  export PATH="${JAVA_HOME}/bin:${PATH}"
+  
+  # Create .envrc for persistence
+  cat > .envrc << EOF
+export PROJECT_JAVA_VERSION="${version}"
+export JAVA_HOME="\$(cs java-home --architecture arm64 --jvm corretto:\${PROJECT_JAVA_VERSION})"
+export PATH="\${JAVA_HOME}/bin:\${PATH}"
+export METALS_JAVA_HOME="\$(cs java-home --architecture arm64 --jvm corretto:17)"
+EOF
+  
+  gum log --structured --level info "✓ Java version set to ${version}"
+  gum log --structured --level info "✓ Created .envrc - run 'direnv allow' for auto-switching"
+}
+
+# Override cd to support automatic direnv reloading
+function cd() {
+  builtin cd "$@"
+  if [[ -f .envrc ]] && command -v direnv >/dev/null 2>&1; then
+    direnv reload
+  fi
+}
+
+function print_login_connecting_msg(){
+# Get the SSH config details
+SSH_CONFIG_DETAILS=$(ssh -G $1 | rg '^(host\b|hostname\b|user\b)')
+
+# Style the header
+HEADER=$(gum style --foreground "#90EE90" "Connecting to...")
+
+# Style the details (e.g., with a different color or border)
+DETAILS=$(gum style \
+    --foreground "#ADD8E6" \
+    --padding "0 1" \
+    "$SSH_CONFIG_DETAILS")
+
+# Join them vertically
+gum join --vertical "$HEADER" "$DETAILS"
+}

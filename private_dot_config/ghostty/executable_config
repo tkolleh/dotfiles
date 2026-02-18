@@ -38,7 +38,7 @@ adjust-cursor-thickness = 6
 
 unfocused-split-opacity = 0.80
 
-font-size = 15
+font-size = 13
 
 # Instance management
 keybind = opt+cmd+t=toggle_quick_terminal
