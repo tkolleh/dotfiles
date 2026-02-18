@@ -64,9 +64,9 @@ if Snacks and Snacks.toggle then
     get = utils.is_background_dark,
     set = function(state)
       if state then
-        vim.cmd('set background=dark')
+        vim.cmd("set background=dark")
       else
-        vim.cmd('set background=light')
+        vim.cmd("set background=light")
       end
       utils.apply_auto_background_theme()
     end,
@@ -121,9 +121,9 @@ if Snacks and Snacks.toggle then
     get = utils.is_background_dark,
     set = function(state)
       if state then
-        vim.cmd('set background=dark')
+        vim.cmd("set background=dark")
       else
-        vim.cmd('set background=light')
+        vim.cmd("set background=light")
       end
       utils.apply_auto_background_theme()
     end,
@@ -144,13 +144,12 @@ del("v", "<C-s>")
 --
 -- Commands
 --
-vim.api.nvim_create_user_command('Marked', function()
+vim.api.nvim_create_user_command("Marked", function()
   -- Get the absolute path of the current buffer
-  local filepath = vim.fn.expand('%:p')
-  
-  -- Use jobstart to open it asynchronously without blocking the editor
-  vim.fn.jobstart({'open', '-a', 'Marked 2', filepath}, { detach = true })
-  end, {
-  desc = 'Open current file in Marked 2'
-})
+  local filepath = vim.fn.expand("%:p")
 
+  -- Use jobstart to open it asynchronously without blocking the editor
+  vim.fn.jobstart({ "open", "-a", "Marked 2", filepath }, { detach = true })
+end, {
+  desc = "Open current file in Marked 2",
+})

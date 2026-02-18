@@ -80,13 +80,13 @@ utils.cycle_diagnostics_display({ virtual_text = false, virtual_lines = false })
 
 -- Enhanced diff options for better character-level diff detection
 vim.opt.diffopt:append({
-  "internal",     -- Use internal diff library
-  "filler",       -- Show filler lines
-  "closeoff",     -- Close diff windows when one is closed
-  "vertical",     -- Use vertical splits for diffs
+  "internal", -- Use internal diff library
+  "filler", -- Show filler lines
+  "closeoff", -- Close diff windows when one is closed
+  "vertical", -- Use vertical splits for diffs
   "linematch:60", -- Enable character-level diff detection
   "algorithm:minimal", -- Use minimal diff algorithm
-  "iwhite",       -- Ignore whitespace changes
+  "iwhite", -- Ignore whitespace changes
 })
 
 vim.opt_local.conceallevel = 0
