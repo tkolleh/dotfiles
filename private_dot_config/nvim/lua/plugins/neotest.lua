@@ -1,12 +1,12 @@
 return {
   "nvim-neotest/neotest",
-  enabled = false,  -- Disabled due to compatibility issues with this project's build.sbt
+  enabled = false, -- Disabled due to compatibility issues with this project's build.sbt
   dependencies = {
     "nvim-neotest/nvim-nio",
     "nvim-lua/plenary.nvim",
     "antoinemadec/FixCursorHold.nvim",
     "nvim-treesitter/nvim-treesitter",
-    "stevanmilic/neotest-scala",  -- Scala adapter for neotest
+    "stevanmilic/neotest-scala", -- Scala adapter for neotest
   },
   keys = {
     {
@@ -71,8 +71,8 @@ return {
       adapters = {
         require("neotest-scala")({
           -- Neotest-scala configuration
-          runner = "sbt",  -- or "bloop" if you use Bloop
-          framework = "scalatest",  -- or "munit", "utest"
+          runner = "sbt", -- or "bloop" if you use Bloop
+          framework = "scalatest", -- or "munit", "utest"
         }),
       },
       -- Optional: Configure test discovery

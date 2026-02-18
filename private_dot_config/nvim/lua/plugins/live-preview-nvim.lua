@@ -6,5 +6,5 @@ return {
   opts = {
     port = 5500,
     picker = "fzf-lua",
-  }
+  },
 }
