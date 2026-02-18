@@ -23,37 +23,37 @@ return {
     "catppuccin/nvim",
     name = "catppuccin",
     enabled = false,
-    lazy = false,     -- make sure we load this during startup if it is your main colorscheme
-    priority = 800,   -- make sure to load this before all the other start plugins
+    lazy = false, -- make sure we load this during startup if it is your main colorscheme
+    priority = 800, -- make sure to load this before all the other start plugins
     opts = {
       flavour = "auto", -- latte, frappe, macchiato, mocha
       background = { -- :h background
-          light = "latte",
-          dark = "mocha",
+        light = "latte",
+        dark = "mocha",
       },
       default_integrations = true,
       auto_integrations = true,
-    }
+    },
   },
   {
     "EdenEast/nightfox.nvim",
     name = "nightfox",
-    lazy = false,     -- make sure we load this during startup if it is your main colorscheme
-    priority = 800,   -- make sure to load this before all the other start plugins
+    lazy = false, -- make sure we load this during startup if it is your main colorscheme
+    priority = 800, -- make sure to load this before all the other start plugins
   },
-  { 
+  {
     "yorik1984/newpaper.nvim",
     enabled = false,
   },
-  { 
-    'projekt0n/github-nvim-theme', 
-    name = 'github-theme',
+  {
+    "projekt0n/github-nvim-theme",
+    name = "github-theme",
     enabled = false,
   },
   {
     "LazyVim/LazyVim",
     opts = function(opts)
-      local icon = require('lib.icons')
+      local icon = require("lib.icons")
       opts.icons = vim.tbl_deep_extend("force", icon or {}, opts.icons or {})
       opts.news = vim.tbl_deep_extend("force", opts.news or {}, {
         -- When enabled, NEWS.md will be shown when changed.

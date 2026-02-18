@@ -12,54 +12,54 @@ return {
         -- Highlight configuration
         highlights = {
           -- Line-level: Use existing DiffAdd/DiffDelete groups
-          line_insert = "DiffAdd",      -- Line-level insertions
-          line_delete = "DiffDelete",   -- Line-level deletions
-          
+          line_insert = "DiffAdd", -- Line-level insertions
+          line_delete = "DiffDelete", -- Line-level deletions
+
           -- Character-level: Define custom highlights for better visibility
           -- These will be set up below with theme-aware colors
           char_insert = "CodeDiffCharInsert",
           char_delete = "CodeDiffCharDelete",
-          
+
           -- Brightness multiplier is not needed since we're defining custom highlights
           char_brightness = nil,
         },
-        
+
         -- Diff view behavior
         diff = {
-          disable_inlay_hints = true,         -- Disable inlay hints for cleaner view
-          max_computation_time_ms = 5000,     -- Maximum time for diff computation
+          disable_inlay_hints = true, -- Disable inlay hints for cleaner view
+          max_computation_time_ms = 5000, -- Maximum time for diff computation
         },
-        
+
         -- Explorer panel configuration
         explorer = {
-          position = "left",  -- "left" or "bottom"
-          width = 40,         -- Width when position is "left" (columns)
-          height = 15,        -- Height when position is "bottom" (lines)
-          indent_markers = true,  -- Show indent markers in tree view
+          position = "left", -- "left" or "bottom"
+          width = 40, -- Width when position is "left" (columns)
+          height = 15, -- Height when position is "bottom" (lines)
+          indent_markers = true, -- Show indent markers in tree view
           icons = {
-            folder_closed = "",  -- Nerd Font folder icon
-            folder_open = "",    -- Nerd Font folder-open icon
+            folder_closed = "", -- Nerd Font folder icon
+            folder_open = "", -- Nerd Font folder-open icon
           },
-          view_mode = "list",    -- "list" or "tree"
+          view_mode = "list", -- "list" or "tree"
         },
-        
+
         -- Keymaps in diff view
         keymaps = {
           view = {
-            quit = "q",                    -- Close diff tab
-            toggle_explorer = "<leader>b",  -- Toggle explorer visibility
-            next_hunk = "]c",   -- Jump to next change
-            prev_hunk = "[c",   -- Jump to previous change
-            next_file = "]f",   -- Next file in explorer mode
-            prev_file = "[f",   -- Previous file in explorer mode
-            diff_get = "do",    -- Get change from other buffer
-            diff_put = "dp",    -- Put change to other buffer
+            quit = "q", -- Close diff tab
+            toggle_explorer = "<leader>b", -- Toggle explorer visibility
+            next_hunk = "]c", -- Jump to next change
+            prev_hunk = "[c", -- Jump to previous change
+            next_file = "]f", -- Next file in explorer mode
+            prev_file = "[f", -- Previous file in explorer mode
+            diff_get = "do", -- Get change from other buffer
+            diff_put = "dp", -- Put change to other buffer
           },
           explorer = {
-            select = "<CR>",    -- Open diff for selected file
-            hover = "K",        -- Show file diff preview
-            refresh = "R",      -- Refresh git status
-            toggle_view_mode = "i",  -- Toggle between 'list' and 'tree' views
+            select = "<CR>", -- Open diff for selected file
+            hover = "K", -- Show file diff preview
+            refresh = "R", -- Refresh git status
+            toggle_view_mode = "i", -- Toggle between 'list' and 'tree' views
           },
         },
       })
@@ -71,7 +71,7 @@ return {
         vim.api.nvim_set_hl(0, "DiffDelete", { bg = "#3a1a1a", fg = "#f38ba8" })
         vim.api.nvim_set_hl(0, "DiffChange", { bg = "#1a2a3a", fg = "#89b4fa" })
         vim.api.nvim_set_hl(0, "DiffText", { bg = "#3a3a1a", fg = "#f9e2af", bold = true, underline = true })
-        
+
         -- Character-level diff highlights (custom for vscode-diff)
         vim.api.nvim_set_hl(0, "VscodeDiffCharInsert", { bg = "#2a5a2a", fg = "#b8f4b1", bold = true })
         vim.api.nvim_set_hl(0, "VscodeDiffCharDelete", { bg = "#5a2a2a", fg = "#f5a8c8", bold = true })
@@ -84,7 +84,7 @@ return {
         vim.api.nvim_set_hl(0, "DiffDelete", { bg = "#ffe6e6", fg = "#8a2a2a" })
         vim.api.nvim_set_hl(0, "DiffChange", { bg = "#e6f0ff", fg = "#2a4a8a" })
         vim.api.nvim_set_hl(0, "DiffText", { bg = "#fff4e6", fg = "#8a6a2a", bold = true, underline = true })
-        
+
         -- Character-level diff highlights - slightly darker than line highlights
         vim.api.nvim_set_hl(0, "VscodeDiffCharInsert", { bg = "#c6e7c6", fg = "#1a5a1a", bold = true })
         vim.api.nvim_set_hl(0, "VscodeDiffCharDelete", { bg = "#ffc6c6", fg = "#7a1a1a", bold = true })
@@ -126,7 +126,7 @@ return {
 -- - Both plugins can be used together without conflicts
 -- - diffview.nvim provides repository-wide diff views and merge tools
 -- - vscode-diff.nvim provides character-level diff visualization for specific comparisons
--- 
+--
 -- Usage:
 -- - :CodeDiff [file1] [file2] - Compare two files with character-level diffs
 -- - :CodeDiff - Open diff selector interface
