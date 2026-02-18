@@ -30,7 +30,7 @@ return {
     ---Create or open today's daily note
     commands.add("ZkDaily",
       function(options)
-        options = vim.tbl_extend("force", { group = "daily" }, options or {})
+        options = vim.tbl_extend("force", { group = "daily", dir = "journals/daily" }, options or {})
         zk.new(options)
       end
     )
