@@ -20,52 +20,59 @@ local function get_java_home()
 end
 
 local utils = require("utils")
+local scala = require("languages.scala")
+
+local metals_keys = {
+  {
+    "<leader>mr",
+    function()
+      require("metals.tvp").reveal_in_tree()
+    end,
+    desc = "Reveal in TVP",
+  },
+  {
+    "<leader>mt",
+    function()
+      require("metals.tvp").toggle_tree_view()
+    end,
+    desc = "Toggle TVP",
+  },
+  {
+    "<leader>me",
+    function()
+      require("metals").commands()
+    end,
+    desc = "Metals commands",
+  },
+  {
+    "<leader>mc",
+    utils.compile_code,
+    desc = "Metals compile cascade",
+  },
+  {
+    "<leader>mi",
+    function()
+      require("metals").toggle_setting("showImplicitArguments")
+    end,
+    desc = "Metals compile cascade",
+  },
+  {
+    "<leader>mh",
+    function()
+      require("metals").hover_worksheet()
+    end,
+    desc = "Metals hover worksheet",
+  },
+}
+
+for _, key in ipairs(scala.test_keys or {}) do
+  table.insert(metals_keys, key)
+end
 
 return {
   "scalameta/nvim-metals",
   ft = { "scala", "sc", "java", "sbt", "hocon" },
-  keys = {
-    {
-      "<leader>mr",
-      function()
-        require("metals.tvp").reveal_in_tree()
-      end,
-      desc = "Reveal in TVP",
-    },
-    {
-      "<leader>mt",
-      function()
-        require("metals.tvp").toggle_tree_view()
-      end,
-      desc = "Toggle TVP",
-    },
-    {
-      "<leader>me",
-      function()
-        require("metals").commands()
-      end,
-      desc = "Metals commands",
-    },
-    {
-      "<leader>mc",
-      utils.compile_code,
-      desc = "Metals compile cascade",
-    },
-    {
-      "<leader>mi",
-      function()
-        require("metals").toggle_setting("showImplicitArguments")
-      end,
-      desc = "Metals compile cascade",
-    },
-    {
-      "<leader>mh",
-      function()
-        require("metals").hover_worksheet()
-      end,
-      desc = "Metals hover worksheet",
-    },
-  },
+  keys = metals_keys,
   opts = function(_, opts)
     local metals = require("metals")
     local metals_config = vim.tbl_deep_extend("force", metals.bare_config(), opts)
@@ -116,6 +123,8 @@ return {
     return metals_config
   end,
   config = function(self, metals_config)
+    local scala = require("languages.scala")
+
     local nvim_metals_group = vim.api.nvim_create_augroup("nvim-metals", { clear = true })
     vim.api.nvim_create_autocmd("FileType", {
       pattern = self.ft,
