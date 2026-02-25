@@ -55,10 +55,10 @@
   cmd = nvim -d \"$LOCAL\" \"$REMOTE\"
 [difftool "vimdiff"]
   prompt = true
-  cmd = nvim -c \"DiffviewOpen\"
+  cmd = nvim -c \"CodeDiff\"
 [mergetool "vimdiff"]
   prompt = false
-  cmd = nvim -c \"DiffviewOpen\" \"$MERGED\"
+  cmd = nvim -c \"CodeDiff\" \"$MERGED\"
 
 [mergetool "idea"]
     cmd = idea merge $(cd $(dirname "$LOCAL") && pwd)/$(basename "$LOCAL") $(cd $(dirname "$REMOTE") && pwd)/$(basename "$REMOTE") $(cd $(dirname "$BASE") && pwd)/$(basename "$BASE") $(cd $(dirname "$MERGED") && pwd)/$(basename "$MERGED")
