@@ -45,3 +45,17 @@ api.nvim_create_autocmd("User", {
   group = api.nvim_create_augroup("dashboard_detect_auto_background", { clear = true }),
   callback = utils.apply_auto_background_theme,
 })
+
+-- Disable relative line numbers in CodeDiff tabs
+-- CodeDiff opens in a new tab; when closed, these windows are destroyed,
+-- so the original tab's relativenumber settings remain intact.
+api.nvim_create_autocmd("User", {
+  pattern = "CodeDiffOpen",
+  group = api.nvim_create_augroup("codediff_disable_relativenumber", { clear = true }),
+  callback = function()
+    for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+      vim.wo[win].relativenumber = false
+    end
+  end,
+  desc = "Disable relative line numbers in CodeDiff tabs",
+})
