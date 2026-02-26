@@ -35,6 +35,7 @@ return {
         "scala",
         "roc",
       })
+      return opts
     end,
   },
 }
