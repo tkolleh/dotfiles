@@ -5,7 +5,7 @@
 
 -- Python Configuration
 -- Priority: NVIM_VENV > System Python (Resolved)
-
+--
 -- 1. Resolve system python path (handling uv/symlinks)
 local system_python = vim.fn.exepath("python3")
 local real_system_python_path = system_python
@@ -48,10 +48,9 @@ vim.g.loaded_perl_provider = 0
 vim.g.loaded_ruby_provider = 0
 
 -- Raise the bar a bit
-vim.opt.cmdheight = 1
-
-vim.opt.wrap = true -- Enable line wrap
-
+vim.opt.cmdheight = 2
+-- Enable line wrap
+vim.opt.wrap = true 
 --  make floating windows transparentish
 vim.o.winblend = 0
 --  and give them rounded borders by default
@@ -75,18 +74,23 @@ vim.g.autoformat = false
 
 vim.o.showbreak = "↪ "
 
--- Default to **no** line nor text display for diagnostics
-utils.cycle_diagnostics_display({ virtual_text = false, virtual_lines = false })
-
 -- Enhanced diff options for better character-level diff detection
 vim.opt.diffopt:append({
-  "internal", -- Use internal diff library
-  "filler", -- Show filler lines
-  "closeoff", -- Close diff windows when one is closed
-  "vertical", -- Use vertical splits for diffs
-  "linematch:60", -- Enable character-level diff detection
+  "internal",          -- Use internal diff library
+  "filler",            -- Show filler lines
+  "closeoff",          -- Close diff windows when one is closed
+  "vertical",          -- Use vertical splits for diffs
+  "linematch:60",      -- Enable character-level diff detection
   "algorithm:minimal", -- Use minimal diff algorithm
-  "iwhite", -- Ignore whitespace changes
+  "iwhite",            -- Ignore whitespace changes
 })
 
-vim.opt_local.conceallevel = 0
+vim.filetype.add({
+  extension = {
+    conf = "hocon",
+    hocon = "hocon",
+  },
+})
+
+-- Default to **no** line nor text display for diagnostics
+utils.cycle_diagnostics_display({ virtual_text = false, virtual_lines = false })
