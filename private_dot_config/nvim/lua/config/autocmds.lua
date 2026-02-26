@@ -10,19 +10,11 @@
 local api = vim.api
 local utils = require("utils")
 
--- Set hocon filetype for .conf files
--- See: https://github.com/antosha417/tree-sitter-hocon
-api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
-  group = api.nvim_create_augroup("hocon", { clear = true }),
-  pattern = "*.conf",
-  command = "set ft=hocon",
-})
-
 -- Fix conceallevel for markdown files
 -- See: https://www.lazyvim.org/configuration/general#auto-commands
 api.nvim_create_autocmd({ "FileType" }, {
   group = api.nvim_create_augroup("markdown_conceal", { clear = true }),
-  pattern = { "mmd", "markdown", "mmd" },
+  pattern = { "md", "mmd", "markdown" },
   callback = function()
     vim.opt_local.conceallevel = 0
   end,
