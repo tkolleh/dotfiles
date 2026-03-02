@@ -10,8 +10,8 @@ return {
     only_first_definition = true,
     all_references = false,
     clear_on_continue = false,
-    -- Use inline virtual text for Neovim 0.10+
-    virt_text_pos = vim.fn.has("nvim-0.10") == 1 and "inline" or "eol",
+    -- Use inline virtual text (Neovim 0.10+ feature)
+    virt_text_pos = "inline",
     -- Experimental features
     all_frames = false,
     virt_lines = false,

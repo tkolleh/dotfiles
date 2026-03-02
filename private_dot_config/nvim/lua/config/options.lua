@@ -10,7 +10,7 @@
 local system_python = vim.fn.exepath("python3")
 local real_system_python_path = system_python
 if system_python ~= "" then
-  real_system_python_path = (vim.uv or vim.loop).fs_realpath(system_python) or system_python
+  real_system_python_path = vim.uv.fs_realpath(system_python) or system_python
 end
 
 -- 2. Determine preferred python executable and directory

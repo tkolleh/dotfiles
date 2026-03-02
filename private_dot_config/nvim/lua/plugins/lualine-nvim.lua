@@ -3,6 +3,50 @@ return {
   event = "VeryLazy",
   opts = function(_, opts)
 
+    -- Custom LSP status component (Neovim 0.11+ compatible)
+    -- Displays LSP server names (e.g., " lua_ls, metals") or falls back to " LSP (n)"
+    -- when the string exceeds max_width. Filters out utility servers.
+    local lsp_status = {
+      function()
+        local bufnr = vim.api.nvim_get_current_buf()
+        local clients = vim.lsp.get_clients({ bufnr = bufnr })
+
+        -- Filter out utility/assistant servers (hash table for O(1) lookup)
+        local ignore_list = {
+          ["null-ls"] = true,
+          ["copilot"] = true,
+          ["GitHub Copilot"] = true,
+          ["conform"] = true,
+          ["none-ls"] = true,
+          ["efm"] = true,
+        }
+
+        -- Collect non-ignored client names
+        local names = {}
+        for _, client in ipairs(clients) do
+          if not ignore_list[client.name] then
+            table.insert(names, client.name)
+          end
+        end
+
+        local count = #names
+        if count == 0 then
+          return ""
+        end
+
+        -- Build names string and check width
+        local max_width = 30
+        local names_str = "" .. table.concat(names, ", ")
+
+        -- Use nvim_strwidth for accurate display width (handles multibyte/emoji)
+        if vim.api.nvim_strwidth(names_str) > max_width then
+          return " LSP (" .. count .. ")"
+        end
+
+        return names_str
+      end,
+    }
+
     -- stylua: ignore
     local colors = {
       blue   = '#80a0ff',
@@ -46,7 +90,7 @@ return {
         '%=', --[[ add your center components here in place of this comment ]]
       },
       lualine_x = {},
-      lualine_y = { 'filetype', 'progress' },
+      lualine_y = { 'filetype', 'progress', lsp_status },
       lualine_z = {
         { 'location', separator = { right = '' }, left_padding = 2 },
       },
@@ -60,36 +104,6 @@ return {
       lualine_y = {},
       lualine_z = { 'location' },
     })
-
-    -- local icon = _G.LazyVim.config.icons
-    -- local space = {
-    --   function()
-    --     return " "
-    --   end,
-    -- }
-    --
-    -- local lsp_status = {
-    --   "lsp_status",
-    --   separator = { left = icon.ui.PowerlineArrowLeft, right = icon.ui.PowerlineRightRounded },
-    -- }
-    --
-    -- local no_servers = {
-    --   function()
-    --     return "  No servers"
-    --   end,
-    --   cond = function()
-    --     local bufnr = vim.api.nvim_get_current_buf()
-    --     local buf_clients = vim.lsp.get_clients({ bufnr = bufnr })
-    --     return next(buf_clients) == nil
-    --   end,
-    --   separator = { left = icon.ui.PowerlineLeftRounded, right = icon.ui.PowerlineRightRounded },
-    -- }
-    --
-    -- local section_z = vim.tbl_deep_extend("force", opts.sections.lualine_z or {}, {
-    --   lsp_status,
-    --   no_servers,
-    -- })
-    -- opts.sections.lualine_z = section_z
     return opts
   end,
 }
