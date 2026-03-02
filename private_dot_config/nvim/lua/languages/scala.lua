@@ -36,8 +36,11 @@ M.dap.configurations.scala = {
     metals = {
       runType = "runOrTestFile",
       args = function()
-        local args_string = vim.fn.input("Arguments: ")
-        return vim.split(args_string, " +")
+        local co = coroutine.running()
+        vim.ui.input({ prompt = "Arguments: " }, function(input)
+          coroutine.resume(co, input and vim.split(input, " +") or {})
+        end)
+        return coroutine.yield()
       end,
     },
   },

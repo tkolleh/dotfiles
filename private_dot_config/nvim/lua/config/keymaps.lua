@@ -64,9 +64,9 @@ if Snacks and Snacks.toggle then
     get = utils.is_background_dark,
     set = function(state)
       if state then
-        vim.cmd("set background=dark")
+        vim.o.background = "dark"
       else
-        vim.cmd("set background=light")
+        vim.o.background = "light"
       end
       utils.apply_auto_background_theme()
     end,
@@ -121,9 +121,9 @@ if Snacks and Snacks.toggle then
     get = utils.is_background_dark,
     set = function(state)
       if state then
-        vim.cmd("set background=dark")
+        vim.o.background = "dark"
       else
-        vim.cmd("set background=light")
+        vim.o.background = "light"
       end
       utils.apply_auto_background_theme()
     end,

@@ -35,7 +35,15 @@ return {
           type = "codelldb",
           request = "launch",
           program = function()
-            return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/", "file")
+            local co = coroutine.running()
+            vim.ui.input({
+              prompt = "Path to executable: ",
+              default = vim.fn.getcwd() .. "/",
+              completion = "file",
+            }, function(input)
+              coroutine.resume(co, input)
+            end)
+            return coroutine.yield()
           end,
           cwd = "${workspaceFolder}",
           stopOnEntry = false,
@@ -46,11 +54,22 @@ return {
           type = "codelldb",
           request = "launch",
           program = function()
-            return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/", "file")
+            local co = coroutine.running()
+            vim.ui.input({
+              prompt = "Path to executable: ",
+              default = vim.fn.getcwd() .. "/",
+              completion = "file",
+            }, function(input)
+              coroutine.resume(co, input)
+            end)
+            return coroutine.yield()
           end,
           args = function()
-            local args_string = vim.fn.input("Arguments: ")
-            return vim.split(args_string, " +")
+            local co = coroutine.running()
+            vim.ui.input({ prompt = "Arguments: " }, function(input)
+              coroutine.resume(co, input and vim.split(input, " +") or {})
+            end)
+            return coroutine.yield()
           end,
           cwd = "${workspaceFolder}",
         },
