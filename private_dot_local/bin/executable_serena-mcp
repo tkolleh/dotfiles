@@ -1,0 +1,32 @@
+#!/usr/bin/env zsh
+# serena-mcp - Wrapper script for Serena MCP server
+# Sets JAVA_HOME to Java 17+ required by Metals LSP
+#
+# Priority:
+#   1. Use METALS_JAVA_HOME if set
+#   2. Fallback to computing via Coursier (cs java-home)
+#
+# Usage: serena-mcp [serena arguments...]
+# Example: serena-mcp start-mcp-server --context ide --project /path/to/project
+
+set -euo pipefail
+
+# Determine Java 17 home
+if [[ -n "${METALS_JAVA_HOME:-}" ]]; then
+    JAVA_HOME="$METALS_JAVA_HOME"
+elif (( ${+commands[cs]} )); then
+    JAVA_HOME="$(cs java-home --architecture arm64 --jvm corretto:17 2>/dev/null)" || {
+      echo "Error: Failed to resolve Java 17 via Coursier (cs)." >&2
+      exit 1
+    }
+else
+    echo "Error: METALS_JAVA_HOME is not set and 'cs' (Coursier) is not available." >&2
+    echo "Please set METALS_JAVA_HOME or install Coursier." >&2
+    exit 1
+fi
+
+export JAVA_HOME
+# Execute serena via uvx; 
+# - Replace current shell process (this script), rather than starting a child process
+# - passing all arguments
+exec uvx --from git+https://github.com/oraios/serena serena "$@"
