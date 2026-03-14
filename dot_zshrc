@@ -94,8 +94,9 @@ fi
 # Load these tools and scripts AFTER the prompt is displayed
 
 # Tooling
-zsh-defer eval "$(zoxide init zsh)"
-zsh-defer eval "$(atuin init zsh)"
+zsh-defer eval "$(command zoxide init zsh)"
+zsh-defer eval "$(command atuin init zsh)"
+zsh-defer eval "$(command wt config shell init zsh)"
 
 # Starship Prompt
 export STARSHIP_LOG=error
@@ -109,24 +110,53 @@ if [[ -f "$HOME/ws/fzf-git.sh/fzf-git.sh" ]]; then
 fi
 
 # --- Completions -------------------------------------------------------------
-# All fpath modifications and completion setups go here, before the single compinit call.
+# Note: The use of `zsh-defer` for zero startup cost. Completion scripts are `source`d and not
+# added `fpath` (lazier than zsh-defer), this is to avoid any statup cost of checking for the command 
+# and refreshing the cache. The trade-off is that completions won't be available for the first 
+# ~50ms after prompt display (while deferred functions fire). In practice, no human types a command 
+# and hits <tab> that fast.
+#
 
-# Deferrable completions
+# Deferred completions
+#
 _cache_git_machete_completions() {
+  (( $+commands[git-machete] )) || return 0
   local cache_file="$ZSH_CACHE_DIR/completions/_git_machete"
-  if [[ ! -f "$cache_file" ]] || [[ "$(command -v git-machete)" -nt "$cache_file" ]]; then
+  if [[ ! -f "$cache_file" ]] || [[ "$commands[git-machete]" -nt "$cache_file" ]]; then
     git machete completion zsh > "$cache_file"
   fi
-  zsh-defer source "$cache_file"
+  [[ -f "$cache_file" ]] && source "$cache_file"
 }
-_cache_git_machete_completions
-unset -f _cache_git_machete_completions
+zsh-defer _cache_git_machete_completions
 
+_cache_newrelic_completions() {
+  (( $+commands[newrelic] )) || return 0
+  local cache_file="$ZSH_CACHE_DIR/completions/_newrelic"
+  if [[ ! -f "$cache_file" ]] || [[ "$commands[newrelic]" -nt "$cache_file" ]]; then
+    newrelic completion zsh > "$cache_file"
+  fi
+  [[ -f "$cache_file" ]] && source "$cache_file"
+}
+zsh-defer _cache_newrelic_completions
 
-# Synchronous completions
-fpath=("/Users/tkolleh/Library/Application Support/ScalaCli/completions/zsh" $fpath)
+_cache_scalacli_completions() {
+  (( $+commands[scala-cli] )) || return 0
+  local cache_file="$ZSH_CACHE_DIR/completions/_scala-cli"
+  if [[ ! -f "$cache_file" ]] || [[ "$commands[scala-cli]" -nt "$cache_file" ]]; then
+    scala-cli install-completions --shell zsh --rc-file /dev/null 2>/dev/null
+    local src_file="/Users/tkolleh/Library/Application Support/ScalaCli/completions/zsh/_scala-cli"
+    [[ -f "$src_file" ]] && cp "$src_file" "$cache_file"
+  fi
+  [[ -f "$cache_file" ]] && source "$cache_file"
+}
+zsh-defer _cache_scalacli_completions
+
+# Lazy completions
+#
+FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
 
 # Initialize the completion system ONCE.
+# !IMPORTANT!: Only call compinit once, and only after all fpath modifications and completion sources are set up.
 autoload -Uz compinit
 compinit -C
 
@@ -134,10 +164,12 @@ compinit -C
 export PATH="$HOME/ws/OpenMemory/scripts:$PATH"
 export ICLOUD_DIR="$HOME/Library/Mobile Documents/com~apple~CloudDocs/"
 export CHEZMOI_SOURCE_PATH="$HOME/.local/share/chezmoi"
+
 # Use 1password's ssh agent socket
 export SSH_AUTH_SOCK="~/Library/Group\ Containers/2BUA8C4S2C.com.1password/t/agent.sock"
 
-# pnpm
+# pnpm start
+# TODO: Simplify this -- too complicated
 export PNPM_HOME="$HOME/.local/share/pnpm"
 case ":$PATH:" in
   *":$PNPM_HOME:"*) ;;
@@ -146,6 +178,7 @@ esac
 # pnpm end
 
 # direnv for automatic environment switching
+# TODO: How long does this take to load? Consider deferring?
 eval "$(direnv hook zsh)"
 
 # Source host-specific functions

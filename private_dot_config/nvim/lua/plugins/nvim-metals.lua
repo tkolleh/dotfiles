@@ -78,22 +78,30 @@ return {
     local metals_config = vim.tbl_deep_extend("force", metals.bare_config(), opts)
 
     -- Get Java 17 home for Metals
-    local java17_home = get_java_home()
+    -- local java17_home = get_java_home()
 
     -- Override the cmd to use Java 17 explicitly
     -- This is necessary because the coursier bootstrap script uses system default java
-    if java17_home and java17_home ~= "" then
-      local metals_bin = vim.fn.stdpath("cache") .. "/nvim-metals/metals"
-      metals_config.cmd = { java17_home .. "/bin/java", "-jar", metals_bin }
-    end
+    -- if java17_home and java17_home ~= "" then
+    --   local metals_bin = vim.fn.stdpath("cache") .. "/nvim-metals/metals"
+    --   metals_config.cmd = { java17_home .. "/bin/java", "-jar", metals_bin }
+    -- end
 
     metals_config.on_attach = function(client, bufnr)
       LazyVim.has("nvim-dap")
       metals.setup_dap()
     end
+
+    local metals_gcc_config = {
+      "-XX:+UseG1GC",
+      "-Xms1G",
+      "-Xmx4G",
+      "-Xss4M",
+      "-XX:+UseStringDeduplication",
+    }
+
     metals_config.settings = {
-      javaHome = java17_home,
-      fallbackScalaVersion = "2.12.17", -- Match project Scala version
+      -- javaHome = java17_home,
       showImplicitArguments = false,
       enableSemanticHighlighting = true, -- Disabled to fix semantic tokens error
       excludedPackages = { "akka.actor.typed.javadsl", "com.github.swagger.akka.javadsl" },
@@ -101,13 +109,10 @@ return {
       verboseCompilation = false, -- [default:false] Show all possible debug information
       defaultBspToBuildTool = true, -- [default:false] If build tool serves as build server, use it
       bloopSbtAlreadyInstalled = false, -- [default:false] Bloop config is now installed
-      bloopJvmProperties = { "-Xms512m" },
-      serverProperties = {
-        "-Xms1g",
-        "-Xss16m",
-        "-XX:+UseStringDeduplication",
-        "-Dmetals.verbose=true", -- Enable verbose logging for better diagnostics
-      },
+      bloopJvmProperties = metals_gcc_config,
+      serverProperties = vim.list_extend(metals_gcc_config, { 
+        "-Dmetals.verbose=true", -- Enable verbose logging for better diagnostics 
+      }),
       testUserInterface = "Test Explorer",
       startMcpServer = true,
       mcpClient = "claude",

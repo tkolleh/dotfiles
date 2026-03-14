@@ -6,6 +6,7 @@
 # Focuses on system-level environment. This file is for essential 
 # environment variables.
 #
+#=================================================================
 
 # Close shell with five presses of CTRL-D
 export IGNOREEOF=5
@@ -14,15 +15,12 @@ export LANG=en_US.UTF-8
 export XDG_CONFIG_HOME="$HOME/.config"
 export XDG_DATA_HOME="$HOME/.local/share"
 
-# Load app configurations from separate configuration file.
-if [[ -a "$HOME"/.bash_secrets ]]; then
-    source "$HOME"/.bash_secrets
-fi
-
 # Homebrew installs to its preferred prefix;
 # - /usr/local for macOS Intel
 # - /opt/homebrew for Apple Silicon
 # - /home/linuxbrew/.linuxbrew for Linux
+#
+# TODO: Consider deferring this via zsh-defer in zshrc?
 source <(/opt/homebrew/bin/brew shellenv)
 
 export PATH="$(brew --prefix python3)/bin:$PATH"
@@ -41,9 +39,13 @@ export PATH="$HOME/.rd/bin:$PATH"
 export PATH="$PATH:$HOME/Library/Application Support/JetBrains/Toolbox/scripts"
 
 export PATH="$HOME/.local/bin:$PATH"
-export PATH="$PATH:$(go env GOPATH)/bin"
+
+# TODO: Consider deferring this via zsh-defer?
+export PATH="$PATH:$(go env GOPATH)/bin" 
+
 export PATH="$PATH:/Users/tkolleh/.cargo/bin"
 
+# TODO: Consider deferring this via zsh-defer?
 if [[ -f "$HOME/google-cloud-sdk/completion.zsh.inc" ]]; then
   # Enable shell command completion for gcloud.
   source "$HOME/google-cloud-sdk/path.zsh.inc"
@@ -52,39 +54,31 @@ fi
 
 # Scala application manager
 # Add coursier bin directory to PATH
+#
+# TODO: Consider deferring this via zsh-defer?
 source <(cs install --env)
 
+# TODO: Consider deferring this via zsh-defer?
 export LEFTHOOK_HOME="$(brew --prefix lefthook)"
+
 export PATH="$LEFTHOOK_HOME/bin:$PATH"
 
 export PAGER='moor --colors=auto --no-clear-on-exit'
+
 export NVIM_SESSION="$XDG_CONFIG_HOME/nvim/session"
 export NVIM_VENV="$HOME/.local/share/nvim/.venv"
 export EDITOR='nvim'
 export VISUAL='nvim'
 
-FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
-
-export FZF_GIT_HOME=$HOME/ws/fzf-git.sh
+export FZF_GIT_HOME="$HOME/ws/fzf-git.sh"
 
 # MacOS alerting from terminal
 # https://github.com/vjeantet/alerter?tab=readme-ov-file
+# TODO: Remove this - ghostty has native support for macOS notifications
 if [[ -f /opt/alerter/bin/alerter ]]; then
   export PATH="$PATH:/opt/alerter/bin"
 fi
 
-{{ if (eq .chezmoi.hostname .chezmoi.config.data.work_hostname)}}
-# Define JAVA_HOME and add it to the PATH. Assign existing JAVA_HOME to CS_FORMER_JAVA_HOME
-export JAVA_HOME="$(cs java-home --architecture arm64 --jvm {{ .chezmoi.config.data.work_java_version }})"
-# Gaurded by one password
-export NEW_RELIC_API_KEY={{ range (onepassword "eehrc6lejvajtfcpejah3e5uem").fields -}}
-                          {{   if (eq .id "credential") -}}
-                          {{     .value -}}
-                          {{   end -}}
-                          {{ end }}
-{{ else }}
-export JAVA_HOME="$(cs java-home --architecture arm64 --jvm {{ .chezmoi.config.data.sys_java_version }})"
-{{ end }}
-
+export JAVA_HOME="$(cs java-home --architecture arm64 --jvm corretto:21)"
 export PATH="$JAVA_HOME/bin:$PATH"
 export ZK_NOTEBOOK_DIR="$HOME/zettelkasten/notes"

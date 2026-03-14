@@ -9,6 +9,7 @@ project/metals.sbt
 # Agentic stuff
 AGENTS.md
 AGENT.md
+CLAUDE.md
 SPECS.md
 .agent_convo.md
 .agent-convo.md
@@ -22,7 +23,6 @@ opencode.json
 # asdf local tool versions
 .tool-versions
 
-.sbtopts
 
 slate/source
 .project_mind_map.mmd
@@ -725,3 +725,5 @@ MigrationBackup/
 # End of https://www.gitignore.io/api/vim,linux,macos,windows,sublimetext,intellij+all,visualstudio,androidstudio,visualstudiocode
 
 
+
+**/.claude/settings.local.json
