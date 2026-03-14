@@ -2,7 +2,7 @@
   defaultBranch = main
 [user]
   name = "{{ .chezmoi.config.data.first_name }} {{ .chezmoi.config.data.last_name }}"
-{{ if (eq .chezmoi.username .chezmoi.config.data.work_username) }}
+{{ if (eq .chezmoi.hostname .chezmoi.config.data.work_hostname) }}
   email = {{ .chezmoi.config.data.work_email }}
 {{ else }}
   email = {{ .chezmoi.config.data.gmail_email }}

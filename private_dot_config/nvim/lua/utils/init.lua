@@ -7,6 +7,11 @@ M.is_nil_or_empty = function(value)
   return value == nil or value == ""
 end
 
+---@return boolean
+M.is_gui = function()
+  return vim.g.gui_vimr == 1
+end
+
 M.use_if_defined = function(val, fallback)
   return val ~= nil and val or fallback
 end

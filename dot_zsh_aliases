@@ -52,3 +52,7 @@ alias lg="lazygit"
 if (( ${+commands[uvx]} )); then
   alias serena="uvx --from git+https://github.com/oraios/serena serena"
 fi
+
+if (( ${+commands[claude]} )); then
+  alias claude="claude --allow-dangerously-skip-permissions --max-budget-usd 100"
+fi

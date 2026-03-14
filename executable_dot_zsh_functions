@@ -479,7 +479,7 @@ function print_pr_basics() {
 - Merge Status: {{.mergeStateStatus}}
 - URL: (PR:{{.number}})[{{.url | printf "%.120s"}}]
 '
-    gh pr view --json number,title,url,updatedAt,state,author,isDraft,mergeable,mergeStateStatus --template "$template" | glow --width 120 --
+    gh pr view --json number,title,url,updatedAt,state,author,isDraft,mergeable,mergeStateStatus --template "$template" | mdcat --
   else
     local template='
 #### {{.title}}
@@ -492,7 +492,7 @@ function print_pr_basics() {
 | Merge Status    | {{.mergeStateStatus}}      |
 | URL             | (PR:{{.number}})[{{.url | printf "%.120s"}}] |
  '
-    gh pr view --json number,title,url,updatedAt,state,author,isDraft,mergeable,mergeStateStatus --template "$template" | glow --width 120 --
+    gh pr view --json number,title,url,updatedAt,state,author,isDraft,mergeable,mergeStateStatus --template "$template" | mdcat --
   fi
 }
 
@@ -519,8 +519,8 @@ function print_pr_review_request(){
   local ask="Please review the following PR(s):"
   local header=$(print_pr_basics)
   local body=$(print_pr_failed_checks)
-  if ! (( $+commands[glow] )); then
-    print -u2 "glow command not found. Please install glow to view markdown."
+  if ! (( $+commands[mdcat] )); then
+    print -u2 "mdcat command not found. Please install mdcat to view markdown."
     return 1
   fi
   if ! (( $+commands[gmktemp] )); then
@@ -529,7 +529,7 @@ function print_pr_review_request(){
   fi
   local tmp_md=$(gmktemp --suffix=.md pr_review_XXXXXX)
   printf "%s\n%s\n%s\n" "$ask" "$header" "$body" > "$tmp_md"
-  glow "$tmp_md"
+  mdcat "$tmp_md"
 }
 
 function ssh_ghostty() {
