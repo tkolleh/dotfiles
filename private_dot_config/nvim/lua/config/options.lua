@@ -52,9 +52,14 @@ vim.opt.cmdheight = 2
 -- Enable line wrap
 vim.opt.wrap = true 
 --  make floating windows transparentish
+--  VimR needs slight transparency to blend rounded border corners
+-- vim.o.winblend = require("utils").is_gui() and 15 or 0
 vim.o.winblend = 0
 --  and give them rounded borders by default
-vim.o.winborder = "rounded"
+--  VimR's single-grid renderer mishandles winborder, hiding cmdline text
+--if not require("utils").is_gui() then
+  vim.o.winborder = "rounded"
+--end
 
 -- LazyVim picker to use.
 -- Can be one of: telescope, fzf

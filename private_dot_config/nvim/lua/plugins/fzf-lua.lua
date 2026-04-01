@@ -67,6 +67,22 @@ return {
       },
     })
 
+    -- Center vim.ui.select (metals commands, code actions, etc.)
+    -- instead of using the global ivy bottom placement
+    opts["ui_select"] = function(_fzf_opts, items)
+      local min_h, max_h = 0.20, 0.70
+      local h = (#items + 4) / vim.o.lines
+      h = math.max(min_h, math.min(max_h, h))
+      return {
+        winopts = {
+          height = h,
+          width = 0.60,
+          row = 0.40,
+          col = 0.50,
+        },
+      }
+    end
+
     return opts
   end,
 }
