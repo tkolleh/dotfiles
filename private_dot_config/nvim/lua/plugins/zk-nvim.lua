@@ -27,6 +27,12 @@ return {
     })
 
     -- Custom Commands
+    ---List notes sorted by last modified date descending
+    commands.add("ZkNotes", function(options)
+      options = vim.tbl_extend("force", { sort = { "modified" } }, options or {})
+      zk.edit(options, { title = "Zk Notes" })
+    end)
+
     ---Create or open today's daily note
     commands.add("ZkDaily", function(options)
       options = vim.tbl_extend("force", { group = "daily", dir = "journals/daily" }, options or {})

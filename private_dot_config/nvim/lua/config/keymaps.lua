@@ -53,6 +53,17 @@ keymap("n", "<leader>gd", ":CodeDiff<CR>", { desc = "Code diff with character in
 
 vim.keymap.set("n", "<leader>cD", utils.cycle_diagnostics_display, { noremap = true, desc = "Cycle diagnostic display" })
 
+-- Utility commands for date and time
+vim.api.nvim_create_user_command("InsertDate", function()
+  local date = os.date("%Y-%m-%d")
+  vim.cmd("normal! a" .. date)
+end, { desc = "Insert current date at cursor" })
+
+vim.api.nvim_create_user_command("InsertTimestamp", function()
+  local timestamp = os.date("%Y-%m-%d %H:%M:%S")
+  vim.cmd("normal! a" .. timestamp)
+end, { desc = "Insert current timestamp at cursor" })
+
 --
 -- Keymaps similar to vim unimpaired
 -- See: https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt

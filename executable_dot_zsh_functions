@@ -229,6 +229,9 @@ function edit_dot_files() {
 }
 
 function update_term_tools() {
+  if (( ${+commands[brew]} )); then
+    gum spin --title "Upgrading outdated homebrew formulas..." -- brew upgrade --formula || :
+  fi
   if (( ${+commands[atuin]} )); then
     gum spin --title "Syncing atuin history..." -- atuin sync || :
   fi
