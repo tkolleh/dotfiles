@@ -1,5 +1,6 @@
 return {
   "folke/noice.nvim",
+  enabled = true,
   opts = function(_, opts)
     if require("utils").is_gui() then
       -- VimR's bundled vim treesitter parser lacks the "tab" node.
@@ -10,24 +11,17 @@ return {
         },
       })
     end
-    -- Position cmdline popup and completion list with a gap between them
-    local shared_hl = { Normal = "Normal", FloatBorder = "FloatBorder" }
-    opts.views = vim.tbl_deep_extend("force", opts.views or {}, {
-      cmdline_popup = {
-        position = { row = 5, col = "50%" },
-        size = { width = 60, height = "auto" },
-        border = { style = "rounded", padding = { 0, 1 } },
-        win_options = { winhighlight = shared_hl },
-      },
-      popupmenu = {
-        relative = "editor",
-        position = { row = 11, col = "50%" },
-        size = { width = 60, height = 10 },
-        border = { style = "rounded", padding = { 0, 1 } },
-        win_options = { winhighlight = shared_hl },
-      },
+    -- Classic cmdline at the bottom of the screen (see noice config defaults).
+    -- Completions use Neovim's built-in pum.
+    opts.cmdline = vim.tbl_deep_extend("force", opts.cmdline or {}, {
+      view = "cmdline",
     })
-
+    opts.lsp = vim.tbl_deep_extend("force", opts.lsp or {}, {
+      hover = { enabled = false },
+    })
+    opts.presets = vim.tbl_deep_extend("force", opts.presets or {}, {
+      command_palette = false,
+    })
     return opts
   end,
   config = function(_, opts)

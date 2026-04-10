@@ -724,6 +724,6 @@ MigrationBackup/
 
 # End of https://www.gitignore.io/api/vim,linux,macos,windows,sublimetext,intellij+all,visualstudio,androidstudio,visualstudiocode
 
-
+SESSION_SUMMARIES.md
 
 **/.claude/settings.local.json
