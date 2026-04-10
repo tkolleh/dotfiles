@@ -55,4 +55,9 @@ fi
 
 if (( ${+commands[claude]} )); then
   alias claude="claude --allow-dangerously-skip-permissions --max-budget-usd 100"
+  alias claude-usage="bunx -y ccusage@latest session"
+  alias claude-statusline="bunx -y ccstatusline@latest"
+  alias claude-session="open -a 'Google Chrome' ~/.claude/session-tracker/index.html"
 fi
+
+alias chrome="open -a 'Google Chrome'"
