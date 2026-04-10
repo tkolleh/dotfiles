@@ -230,46 +230,45 @@ function edit_dot_files() {
 
 function update_term_tools() {
   if (( ${+commands[brew]} )); then
-    gum spin --title "Upgrading outdated homebrew formulas..." -- brew upgrade --formula || :
+    roda --spinner "arc" --title "Upgrading outdated homebrew formulas..." -- brew upgrade --formula || :
   fi
   if (( ${+commands[atuin]} )); then
-    gum spin --title "Syncing atuin history..." -- atuin sync || :
+    roda --spinner "arc" --title "Syncing atuin history..." -- atuin sync || :
   fi
   if (( ${+commands[zpm]} )); then
-    gum spin --title "Cleaning zpm..." -- zpm clean || :
-    gum spin --title "Upgrading zpm..." -- zpm upgrade || :
+    roda --spinner "arc" --title "Cleaning zpm..." -- zpm clean || :
+    roda --spinner "arc" --title "Upgrading zpm..." -- zpm upgrade || :
   fi
   if (( ${+commands[cs]} )); then
-    gum spin --title "Updating coursier..." -- cs update --quiet || :
+    roda --spinner "arc" --title "Updating coursier..." -- cs update --quiet || :
   fi
   if (( ${+commands[pipx]} )); then
-    gum spin --title "Upgrading all pipx packages..." -- pipx upgrade-all --quite || :
+    roda --spinner "arc" --title "Upgrading all pipx packages..." -- pipx upgrade-all || :
   fi
   if (( ${+commands[node]} )); then
-    gum spin --title "Updating global npm packages..." -- npm --global update || :
-    gum spin --title "Updating pnpm ..." -- pnpm self-update || :
+    roda --spinner "arc" --title "Updating global npm packages..." -- npm --global update || :
+    roda --spinner "arc" --title "Updating pnpm ..." -- pnpm self-update || :
   fi
   if (( ${+commands[uv]} )); then
-    gum spin --title "Updating uv tools..." -- uv tool upgrade --all || :
+    roda --spinner "arc" --title "Updating uv tools..." -- uv tool upgrade --all || :
   fi
   if (( ${+commands[yazi]} )); then
-    gum spin --title "Upgrading yazi..." -- brew upgrade --quiet yazi || :
-    gum spin --title "Installing yazi plugins with locked versions from package.toml..." -- ya pkg install || :
-    gum spin --title "Upgrading yazi plugins package.toml" -- ya pkg upgrade || :
+    roda --spinner "arc" --title "Installing yazi plugins with locked versions from package.toml..." -- ya pkg install || :
+    roda --spinner "arc" --title "Upgrading yazi plugins package.toml" -- ya pkg upgrade || :
   fi
   if (( ${+commands[httpie]} )); then
-    gum spin --title "Upgrading httpie cli..." -- httpie cli check-updates || :
-    gum spin --title "Upgrading httpie plugins..." -- httpie plugins upgrade httpie-jwt-auth httpie-image || :
+    roda --spinner "arc" --title "Upgrading httpie cli..." -- httpie cli check-updates || :
+    roda --spinner "arc" --title "Upgrading httpie plugins..." -- httpie plugins upgrade httpie-jwt-auth httpie-image || :
   fi
   if (( ${+command[cargo]} )); then
-    gum spin --title "Upgrading cargo packages..." -- cargo install cargo-update || :
-    gum spin --title "Upgrading cargo packages..." -- cargo install-update -a || :
+    roda --spinner "arc" --title "Upgrading cargo packages..." -- cargo install cargo-update || :
+    roda --spinner "arc" --title "Upgrading cargo packages..." -- cargo install-update -a || :
   fi
   if [[ -n "$NVIM_VENV" ]] && [[ -d "$NVIM_VENV" ]]; then
-    gum spin --title "Updating neovim python venv packages..." -- "$NVIM_VENV/bin/pip" install --upgrade pynvim || :
+    roda --spinner "arc" --title "Updating neovim python venv packages..." -- "$NVIM_VENV/bin/pip" install --upgrade pynvim || :
   fi
   if (( ${+commands[npx]} )); then
-    gum spin --title "Update agent skills" -- npx skills update || :
+    roda --spinner "arc" --title "Update agent skills" -- npx skills update || :
   fi
 }
 
