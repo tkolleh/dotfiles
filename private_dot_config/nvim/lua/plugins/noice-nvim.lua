@@ -2,20 +2,15 @@ return {
   "folke/noice.nvim",
   enabled = true,
   opts = function(_, opts)
-    if require("utils").is_gui() then
-      -- VimR's bundled vim treesitter parser lacks the "tab" node.
-      -- Keep noice cmdline enabled but skip vim parser highlighting.
-      opts.cmdline = vim.tbl_deep_extend("force", opts.cmdline or {}, {
-        format = {
-          cmdline = { lang = "" },
-        },
-      })
-    end
     -- Classic cmdline at the bottom of the screen (see noice config defaults).
     -- Completions use Neovim's built-in pum.
-    opts.cmdline = vim.tbl_deep_extend("force", opts.cmdline or {}, {
-      view = "cmdline",
-    })
+    -- VimR's bundled vim treesitter parser lacks the "tab" node, so skip
+    -- vim parser highlighting in GUI mode.
+    local cmdline_ext = { view = "cmdline" }
+    if require("utils").is_gui() then
+      cmdline_ext.format = { cmdline = { lang = "" } }
+    end
+    opts.cmdline = vim.tbl_deep_extend("force", opts.cmdline or {}, cmdline_ext)
     opts.lsp = vim.tbl_deep_extend("force", opts.lsp or {}, {
       hover = { enabled = false },
     })
