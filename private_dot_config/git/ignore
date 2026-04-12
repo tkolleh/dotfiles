@@ -19,6 +19,7 @@ SPECS.md
 .tree/
 opencode.json
 .opencode/
+*.allium
 
 # asdf local tool versions
 .tool-versions
