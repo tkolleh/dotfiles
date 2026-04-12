@@ -21,7 +21,7 @@ keymap("i", "jk", "<ESC>", { desc = "Escape to normal with 'jk'" })
 -- Disable default macro recording keymaps to prevent accidental triggers
 keymap("n", "q", "<nop>", { noremap = true, desc = "Prevent accidental macro trigger" })
 keymap("n", "Q", "q", { noremap = true, desc = "Record macro" })
-keymap("n", "<M-q>", "Q", { noremap = true, desc = 'Replay last register' })
+keymap("n", "<M-q>", "Q", { noremap = true, desc = "Replay last register" })
 
 -- d means delete not delete and copy
 keymap({ "n", "v" }, "d", '"_d')
@@ -51,7 +51,12 @@ keymap("n", "<leader>fO", ":e <C-r>+<CR>", { noremap = true, desc = "Open path i
 -- Enhanced diff with character-level indicators
 keymap("n", "<leader>gd", ":CodeDiff<CR>", { desc = "Code diff with character indicators" })
 
-vim.keymap.set("n", "<leader>cD", utils.cycle_diagnostics_display, { noremap = true, desc = "Cycle diagnostic display" })
+vim.keymap.set(
+  "n",
+  "<leader>cD",
+  utils.cycle_diagnostics_display,
+  { noremap = true, desc = "Cycle diagnostic display" }
+)
 
 -- Utility commands for date and time
 vim.api.nvim_create_user_command("InsertDate", function()

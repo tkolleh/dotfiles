@@ -5,13 +5,13 @@ return {
   "mfussenegger/nvim-lint",
   opts = {
     linters_by_ft = {
-			markdown = { "markdownlint" },
-			javascript = { "eslint_d" },
-			typescript = { "eslint_d" },
-			javascriptreact = { "eslint_d" },
-			typescriptreact = { "eslint_d" },
-			svelte = { "eslint_d" },
-			python = { "pylint" },
+      markdown = { "markdownlint" },
+      javascript = { "eslint_d" },
+      typescript = { "eslint_d" },
+      javascriptreact = { "eslint_d" },
+      typescriptreact = { "eslint_d" },
+      svelte = { "eslint_d" },
+      python = { "pylint" },
       -- Use the "*" filetype to run linters on all filetypes.
       -- ['*'] = { 'global linter' },
       -- Use the "_" filetype to run linters on filetypes that don't have other linters configured.
@@ -30,11 +30,11 @@ return {
       --     return vim.fs.find({ "selene.toml" }, { path = ctx.filename, upward = true })[1]
       --   end,
       -- },
-    }
+    },
   },
-	config = function(_, opts)
-		local lint = require("lint")
-		lint.linters.markdownlint.args = {
+  config = function(_, opts)
+    local lint = require("lint")
+    lint.linters.markdownlint.args = {
       "--disable",
       "MD012", -- allow multiple consecutive blank lines
       "MD013", -- disable line length limit
@@ -45,6 +45,6 @@ return {
       "MD040", -- allow code blocks without language specification
       "MD041", -- allow non-headers on the first line, e.g. meta section
       "MD046", -- allow mixed code-block styles
-		}
-  end
+    }
+  end,
 }

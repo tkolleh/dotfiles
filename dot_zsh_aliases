@@ -61,3 +61,4 @@ if (( ${+commands[claude]} )); then
 fi
 
 alias chrome="open -a 'Google Chrome'"
+alias oc-yolo='OPENCODE_CONFIG="$HOME/.config/opencode/opencode-yolo.json" opencode'

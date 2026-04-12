@@ -23,19 +23,9 @@ M.dark_theme = "nightfox"
 M.light_theme = "dayfox"
 
 M.is_background_dark = function()
-  -- Try to detect macOS system dark mode
-  local success, result = pcall(function()
-    local output =
-      vim.fn.system('defaults read -g AppleInterfaceStyle 2>/dev/null | grep -q "Dark" && echo "dark" || echo "light"')
-    return vim.trim(output) == "dark"
-  end)
-
-  if success then
-    return result
-  else
-    -- Fallback to vim.o.background if system detection fails
-    return string.lower(vim.o.background) == "dark"
-  end
+  -- Relies on Neovim's DEC mode 2031 terminal query (supported by Ghostty)
+  -- to have already set vim.o.background to 'dark' or 'light'.
+  return string.lower(vim.o.background) == "dark"
 end
 
 M.apply_auto_background_theme = function()
@@ -44,16 +34,11 @@ M.apply_auto_background_theme = function()
   local _colorscheme = vim.g.colors_name or "none"
 
   if string.lower(_colorscheme) ~= string.lower(theme) then
-    local ok = pcall(function()
-      require("nightfox").load()
-    end)
+    local ok, err = pcall(vim.cmd.colorscheme, theme)
     if not ok then
-      vim.notify("nightfox not loaded yet, skipping theme change", vim.log.levels.WARN)
+      vim.notify("Theme change failed: " .. tostring(err), vim.log.levels.WARN)
       return theme
     end
-    vim.g.fox_theme = theme
-    vim.cmd.colorscheme(theme)
-    vim.cmd.syntax("reset")
     -- Trigger ColorScheme event to update diff highlights
     vim.api.nvim_exec_autocmds("ColorScheme", { pattern = theme })
   end
