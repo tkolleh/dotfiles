@@ -6,7 +6,18 @@ return {
   opts = {
     preview = {
       icon_provider = "mini",
-      filetypes = { "markdown", "md", "mmd", "opencode_output", "norg", "rmd", "org", "codecompanion", "Avante", "copilot-chat" },
+      filetypes = {
+        "markdown",
+        "md",
+        "mmd",
+        "opencode_output",
+        "norg",
+        "rmd",
+        "org",
+        "codecompanion",
+        "Avante",
+        "copilot-chat",
+      },
       ignore_buftypes = { "nofile" },
       modes = { "n", "no", "c" },
       hybrid_modes = { "n" }, -- Show raw markdown on cursor line (like anti_conceal)
@@ -80,7 +91,9 @@ return {
       pattern = "*",
       -- vim.schedule defers until after markview's own ColorScheme handler
       -- regenerates the palette, so we always apply last.
-      callback = function() vim.schedule(clear_markview_bg) end,
+      callback = function()
+        vim.schedule(clear_markview_bg)
+      end,
     })
   end,
 }

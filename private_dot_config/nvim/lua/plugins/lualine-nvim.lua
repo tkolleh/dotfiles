@@ -14,18 +14,20 @@ return {
       end,
     }
 
-    local lsp_status = {
-      "lsp_status",
-      icon = "",
-      symbols = {
-        spinner = { "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏" },
-        done = "✓",
-        separator = " ",
-      },
-      ignore_lsp = { "copilot", "GitHub Copilot", "conform", "none-ls", "efm" },
+    -- Neovim 0.12 native LSP progress via vim.lsp.status() — no plugin dependency.
+    local lsp_progress = {
+      function()
+        return vim.lsp.status()
+      end,
+      cond = function()
+        return vim.lsp.status() ~= ""
+      end,
+      color = function()
+        return { fg = Snacks.util.color("DiagnosticInfo") }
+      end,
     }
 
-    table.insert(opts.sections.lualine_x, 1, lsp_status)
+    table.insert(opts.sections.lualine_x, 1, lsp_progress)
     table.insert(opts.sections.lualine_x, 2, metals_status)
   end,
 }

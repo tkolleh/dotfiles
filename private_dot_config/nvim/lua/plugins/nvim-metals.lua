@@ -72,15 +72,15 @@ return {
     metals_config.settings = {
       -- javaHome = java17_home,
       showImplicitArguments = false,
-      enableSemanticHighlighting = false,         -- Disabled to fix semantic tokens error
+      enableSemanticHighlighting = false, -- Disabled to fix semantic tokens error
       excludedPackages = { "akka.actor.typed.javadsl", "com.github.swagger.akka.javadsl" },
-      superMethodLensesEnabled = true,            -- [default:false] Super method lenses are visible
-      verboseCompilation = false,                 -- [default:false] Show all possible debug information
-      defaultBspToBuildTool = false,              -- [default:false] If build tool serves as build server, use it
-      bloopSbtAlreadyInstalled = false,           -- [default:false] Bloop config is now installed
+      superMethodLensesEnabled = true, -- [default:false] Super method lenses are visible
+      verboseCompilation = false, -- [default:false] Show all possible debug information
+      defaultBspToBuildTool = false, -- [default:false] If build tool serves as build server, use it
+      bloopSbtAlreadyInstalled = false, -- [default:false] Bloop config is now installed
       bloopJvmProperties = metals_gcc_config,
       serverProperties = vim.list_extend(metals_gcc_config, {
-        "-Dmetals.verbose=false",                  -- Enable verbose logging for better diagnostics 
+        "-Dmetals.verbose=false", -- Enable verbose logging for better diagnostics
       }),
       testUserInterface = "Test Explorer",
       startMcpServer = true,
@@ -97,7 +97,6 @@ return {
     return metals_config
   end,
   config = function(self, metals_config)
-
     local nvim_metals_group = vim.api.nvim_create_augroup("nvim-metals", { clear = true })
     vim.api.nvim_create_autocmd("FileType", {
       pattern = self.ft,

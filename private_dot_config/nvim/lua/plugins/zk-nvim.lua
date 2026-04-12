@@ -59,10 +59,8 @@ return {
       end
 
       -- Let zk auto-detect notebook via ZK_NOTEBOOK_DIR or current directory
-      local cmd = string.format(
-        "zk list journals/daily --sort created- --format '{{abs-path}}%s{{title}}' --quiet",
-        delimiter
-      )
+      local cmd =
+        string.format("zk list journals/daily --sort created- --format '{{abs-path}}%s{{title}}' --quiet", delimiter)
 
       ---Extract absolute path from entry string
       ---@param entry string
@@ -71,35 +69,38 @@ return {
         return entry:match("([^" .. delimiter .. "]+)")
       end
 
-      fzf_lua.fzf_exec(cmd, vim.tbl_deep_extend("force", {
-        prompt = "Daily Notes> ",
-        fzf_opts = {
-          ["--delimiter"] = delimiter,
-          ["--with-nth"] = "2",
-          ["--tiebreak"] = "index",
-          ["--preview"] = "mdcat --local {1}",
-          ["--preview-window"] = "right:50%:wrap",
-          ["--multi"] = "",
-        },
-        actions = {
-          ["default"] = function(selected)
-            local paths = vim.tbl_map(extract_path, selected)
-            actions.file_edit(paths, {})
-          end,
-          ["ctrl-s"] = function(selected)
-            local paths = vim.tbl_map(extract_path, selected)
-            actions.file_split(paths, {})
-          end,
-          ["ctrl-v"] = function(selected)
-            local paths = vim.tbl_map(extract_path, selected)
-            actions.file_vsplit(paths, {})
-          end,
-          ["ctrl-t"] = function(selected)
-            local paths = vim.tbl_map(extract_path, selected)
-            actions.file_tabedit(paths, {})
-          end,
-        },
-      }, options.fzf_lua or {}))
+      fzf_lua.fzf_exec(
+        cmd,
+        vim.tbl_deep_extend("force", {
+          prompt = "Daily Notes> ",
+          fzf_opts = {
+            ["--delimiter"] = delimiter,
+            ["--with-nth"] = "2",
+            ["--tiebreak"] = "index",
+            ["--preview"] = "mdcat --local {1}",
+            ["--preview-window"] = "right:50%:wrap",
+            ["--multi"] = "",
+          },
+          actions = {
+            ["default"] = function(selected)
+              local paths = vim.tbl_map(extract_path, selected)
+              actions.file_edit(paths, {})
+            end,
+            ["ctrl-s"] = function(selected)
+              local paths = vim.tbl_map(extract_path, selected)
+              actions.file_split(paths, {})
+            end,
+            ["ctrl-v"] = function(selected)
+              local paths = vim.tbl_map(extract_path, selected)
+              actions.file_vsplit(paths, {})
+            end,
+            ["ctrl-t"] = function(selected)
+              local paths = vim.tbl_map(extract_path, selected)
+              actions.file_tabedit(paths, {})
+            end,
+          },
+        }, options.fzf_lua or {})
+      )
     end)
   end,
 }

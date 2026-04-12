@@ -47,10 +47,10 @@ end
 vim.g.loaded_perl_provider = 0
 vim.g.loaded_ruby_provider = 0
 
--- Raise the bar a bit
-vim.opt.cmdheight = 2
+-- cmdheight=1: ui2 eliminates "Press ENTER" prompts; no extra height needed
+vim.opt.cmdheight = 1
 -- Enable line wrap
-vim.opt.wrap = true 
+vim.opt.wrap = true
 --  make floating windows transparentish
 --  VimR needs slight transparency to blend rounded border corners
 -- vim.o.winblend = require("utils").is_gui() and 15 or 0
@@ -58,8 +58,20 @@ vim.o.winblend = 0
 --  and give them rounded borders by default
 --  VimR's single-grid renderer mishandles winborder, hiding cmdline text
 --if not require("utils").is_gui() then
-  vim.o.winborder = "rounded"
+vim.o.winborder = "rounded"
 --end
+-- Neovim 0.12: dedicated popup menu border option (independent of winborder)
+vim.o.pumborder = "rounded"
+
+-- Neovim 0.12 native UI: replaces noice.nvim.
+-- targets='msg': status messages appear in an ephemeral floating window (bottom-right).
+-- timeout: message visible for 3 seconds before fading.
+require("vim._core.ui2").enable({
+  msg = {
+    targets = "msg",
+    msg = { timeout = 3000 },
+  },
+})
 
 -- LazyVim picker to use.
 -- Can be one of: telescope, fzf
@@ -81,13 +93,13 @@ vim.o.showbreak = "↪ "
 
 -- Enhanced diff options for better character-level diff detection
 vim.opt.diffopt:append({
-  "internal",          -- Use internal diff library
-  "filler",            -- Show filler lines
-  "closeoff",          -- Close diff windows when one is closed
-  "vertical",          -- Use vertical splits for diffs
-  "linematch:60",      -- Enable character-level diff detection
+  "internal", -- Use internal diff library
+  "filler", -- Show filler lines
+  "closeoff", -- Close diff windows when one is closed
+  "vertical", -- Use vertical splits for diffs
+  "linematch:60", -- Enable character-level diff detection
   "algorithm:minimal", -- Use minimal diff algorithm
-  "iwhite",            -- Ignore whitespace changes
+  "iwhite", -- Ignore whitespace changes
 })
 
 vim.filetype.add({
