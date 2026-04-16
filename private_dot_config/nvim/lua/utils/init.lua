@@ -16,11 +16,11 @@ M.use_if_defined = function(val, fallback)
   return val ~= nil and val or fallback
 end
 
--- Dark  : (github_dark_colorblind | tokyonight-moon | nightfox | carbonfox | tokyonight-night)
-M.dark_theme = "nightfox"
+-- Dark  : (github_dark_colorblind | tokyonight-moon | monrovia_night | carbonfox | tokyonight-night)
+M.dark_theme = "monrovia_night"
 
--- Light : (github_light_colorblind | tokyonight-day | dayfox)
-M.light_theme = "dayfox"
+-- Light : (github_light_colorblind | tokyonight-day | monrovia_day)
+M.light_theme = "monrovia_day"
 
 M.is_background_dark = function()
   -- Relies on Neovim's DEC mode 2031 terminal query (supported by Ghostty)

@@ -9,110 +9,104 @@ return {
     cmd = "CodeDiff",
     config = function()
       require("codediff").setup({
-        -- Highlight configuration
         highlights = {
-          -- Line-level: Use existing DiffAdd/DiffDelete groups
-          line_insert = "DiffAdd", -- Line-level insertions
-          line_delete = "DiffDelete", -- Line-level deletions
-
-          -- Character-level: Define custom highlights for better visibility
-          -- These will be set up below with theme-aware colors
+          line_insert = "DiffAdd",
+          line_delete = "DiffDelete",
           char_insert = "CodeDiffCharInsert",
           char_delete = "CodeDiffCharDelete",
-
-          -- Brightness multiplier is not needed since we're defining custom highlights
           char_brightness = nil,
         },
-
-        -- Diff view behavior
         diff = {
-          disable_inlay_hints = true, -- Disable inlay hints for cleaner view
-          max_computation_time_ms = 5000, -- Maximum time for diff computation
+          disable_inlay_hints = true,
+          max_computation_time_ms = 5000,
         },
-
-        -- Explorer panel configuration
         explorer = {
-          position = "left", -- "left" or "bottom"
-          width = 40, -- Width when position is "left" (columns)
-          height = 15, -- Height when position is "bottom" (lines)
-          indent_markers = true, -- Show indent markers in tree view
+          position = "left",
+          width = 40,
+          height = 15,
+          indent_markers = true,
           icons = {
-            folder_closed = "", -- Nerd Font folder icon
-            folder_open = "", -- Nerd Font folder-open icon
+            folder_closed = "",
+            folder_open = "",
           },
-          view_mode = "list", -- "list" or "tree"
+          view_mode = "list",
         },
-
-        -- Keymaps in diff view
         keymaps = {
           view = {
-            quit = "q", -- Close diff tab
-            toggle_explorer = "<leader>b", -- Toggle explorer visibility
-            next_hunk = "]c", -- Jump to next change
-            prev_hunk = "[c", -- Jump to previous change
-            next_file = "]f", -- Next file in explorer mode
-            prev_file = "[f", -- Previous file in explorer mode
-            diff_get = "do", -- Get change from other buffer
-            diff_put = "dp", -- Put change to other buffer
+            quit = "q",
+            toggle_explorer = "<leader>b",
+            next_hunk = "]c",
+            prev_hunk = "[c",
+            next_file = "]f",
+            prev_file = "[f",
+            diff_get = "do",
+            diff_put = "dp",
           },
           explorer = {
-            select = "<CR>", -- Open diff for selected file
-            hover = "K", -- Show file diff preview
-            refresh = "R", -- Refresh git status
-            toggle_view_mode = "i", -- Toggle between 'list' and 'tree' views
+            select = "<CR>",
+            hover = "K",
+            refresh = "R",
+            toggle_view_mode = "i",
           },
         },
       })
 
-      -- Configure highlight groups for dark themes
-      local function setup_dark_highlights()
-        -- Line-level highlights (using existing groups)
-        vim.api.nvim_set_hl(0, "DiffAdd", { bg = "#1a3a1a", fg = "#a6e3a1" })
-        vim.api.nvim_set_hl(0, "DiffDelete", { bg = "#3a1a1a", fg = "#f38ba8" })
-        vim.api.nvim_set_hl(0, "DiffChange", { bg = "#1a2a3a", fg = "#89b4fa" })
-        vim.api.nvim_set_hl(0, "DiffText", { bg = "#3a3a1a", fg = "#f9e2af", bold = true, underline = true })
-
-        -- Character-level diff highlights (custom for vscode-diff)
-        vim.api.nvim_set_hl(0, "VscodeDiffCharInsert", { bg = "#2a5a2a", fg = "#b8f4b1", bold = true })
-        vim.api.nvim_set_hl(0, "VscodeDiffCharDelete", { bg = "#5a2a2a", fg = "#f5a8c8", bold = true })
-      end
-
-      -- Configure highlight groups for light themes
-      local function setup_light_highlights()
-        -- Line-level highlights - much lighter backgrounds for better visibility
-        vim.api.nvim_set_hl(0, "DiffAdd", { bg = "#e6f7e6", fg = "#2a6a2a" })
-        vim.api.nvim_set_hl(0, "DiffDelete", { bg = "#ffe6e6", fg = "#8a2a2a" })
-        vim.api.nvim_set_hl(0, "DiffChange", { bg = "#e6f0ff", fg = "#2a4a8a" })
-        vim.api.nvim_set_hl(0, "DiffText", { bg = "#fff4e6", fg = "#8a6a2a", bold = true, underline = true })
-
-        -- Character-level diff highlights - slightly darker than line highlights
-        vim.api.nvim_set_hl(0, "VscodeDiffCharInsert", { bg = "#c6e7c6", fg = "#1a5a1a", bold = true })
-        vim.api.nvim_set_hl(0, "VscodeDiffCharDelete", { bg = "#ffc6c6", fg = "#7a1a1a", bold = true })
-      end
-
-      -- Set up highlights based on current background
-      local function setup_highlights()
-        if vim.o.background == "dark" then
-          setup_dark_highlights()
-        else
-          setup_light_highlights()
+      local function blend_with_base(hex_color, blend_ratio)
+        local function hex_to_rgb(hex)
+          hex = hex:gsub("^#", "")
+          return tonumber(hex:sub(1, 2), 16), tonumber(hex:sub(3, 4), 16), tonumber(hex:sub(5, 6), 16)
         end
+        local function rgb_to_hex(r, g, b)
+          return string.format("#%02x%02x%02x", r, g, b)
+        end
+        local is_light = vim.o.background == "light"
+        local base_r, base_g, base_b
+        if is_light then
+          base_r, base_g, base_b = 246, 242, 238
+        else
+          base_r, base_g, base_b = 25, 35, 48
+        end
+        local cr, cg, cb = hex_to_rgb(hex_color)
+        if is_light then
+          blend_ratio = blend_ratio * 1.5
+        end
+        local r = math.floor(base_r * (1 - blend_ratio) + cr * blend_ratio + 0.5)
+        local g = math.floor(base_g * (1 - blend_ratio) + cg * blend_ratio + 0.5)
+        local b = math.floor(base_b * (1 - blend_ratio) + cb * blend_ratio + 0.5)
+        return rgb_to_hex(math.min(255, r), math.min(255, g), math.min(255, b))
       end
 
-      -- Expose setup_highlights globally for manual calling
+      local function setup_highlights()
+        local hl = vim.api.nvim_get_hl
+        local diff_add_fg = hl(0, { name = "DiffAdd", link = false }).fg
+        local diff_delete_fg = hl(0, { name = "DiffDelete", link = false }).fg
+        local diff_add_bg = hl(0, { name = "DiffAdd", link = false }).bg
+        local diff_delete_bg = hl(0, { name = "DiffDelete", link = false }).bg
+
+        if diff_add_fg then
+          diff_add_fg = string.format("#%06x", diff_add_fg)
+        end
+        if diff_delete_fg then
+          diff_delete_fg = string.format("#%06x", diff_delete_fg)
+        end
+
+        local char_insert_bg = blend_with_base(diff_add_fg or "#81b29a", 0.35)
+        local char_delete_bg = blend_with_base(diff_delete_fg or "#c94f6d", 0.35)
+
+        vim.api.nvim_set_hl(0, "VscodeDiffCharInsert", { bg = char_insert_bg, fg = diff_add_fg, bold = true })
+        vim.api.nvim_set_hl(0, "VscodeDiffCharDelete", { bg = char_delete_bg, fg = diff_delete_fg, bold = true })
+      end
+
       _G.vscode_diff_setup_highlights = setup_highlights
 
-      -- Set initial highlights
       setup_highlights()
 
-      -- Create autocommand to update highlights when colorscheme changes
       vim.api.nvim_create_autocmd("ColorScheme", {
         pattern = "*",
         callback = setup_highlights,
         desc = "Update diff highlights when colorscheme changes",
       })
 
-      -- Also update when background changes
       vim.api.nvim_create_autocmd("OptionSet", {
         pattern = "background",
         callback = setup_highlights,
@@ -135,13 +129,13 @@ return {
 -- - Use <leader>gd keybinding (configured in keymaps.lua) for quick access
 --
 -- Color scheme compatibility:
--- - Automatically adjusts highlights for dark/light modes
--- - Tested with: nightfox, catppuccin, newpaper, github-theme
--- - Character-level diffs use bold text and distinct background colors
+-- - Dynamically reads DiffAdd/DiffDelete highlights from the active colorscheme
+-- - Character-level diffs use blended background colors derived from the palette
+-- - Tested with: monrovia_night, monrovia_day, catppuccin, newpaper, github-theme
 --
 -- Testing checklist:
--- [ ] Test :CodeDiff command in dark mode (nightfox)
--- [ ] Test :CodeDiff command in light mode (catppuccin-latte, newpaper)
+-- [ ] Test :CodeDiff command in dark mode (monrovia_night)
+-- [ ] Test :CodeDiff command in light mode (monrovia_day)
 -- [ ] Verify character-level diffs are clearly visible
 -- [ ] Test alongside diffview.nvim commands (DiffviewOpen)
 -- [ ] Test theme switching (highlights should auto-update)

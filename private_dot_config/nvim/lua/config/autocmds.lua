@@ -23,9 +23,9 @@ api.nvim_create_autocmd({ "FileType" }, {
 -- Auto light / dark theme
 -- Neovim queries the terminal's background color via OSC 11 at startup
 -- (Ghostty supports DEC mode 2031). When the response arrives, Neovim's
--- defaults.lua sets vim.o.background, which fires OptionSet. The nightfox
+-- defaults.lua sets vim.o.background, which fires OptionSet. The monrovia
 -- plugin spec (lua/plugins/colorscheme.lua) owns the OptionSet "background"
--- listener that switches between nightfox (dark) and dayfox (light).
+-- listener that switches between monrovia_night (dark) and monrovia_day (light).
 --
 -- The SnacksDashboardClosed trigger here is a safety net: the dashboard
 -- holds startup open past the OSC 11 response window, so we re-apply the

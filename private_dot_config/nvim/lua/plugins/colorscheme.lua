@@ -36,12 +36,12 @@ return {
     },
   },
   {
-    "EdenEast/nightfox.nvim",
-    name = "nightfox",
-    lazy = false, -- make sure we load this during startup if it is your main colorscheme
-    priority = 800, -- make sure to load this before all the other start plugins
+    "tkolleh/monrovia.nvim",
+    name = "monrovia",
+    lazy = false,
+    priority = 800,
     config = function()
-      -- nightfox compiles variant-specific highlight blobs that hardcode
+      -- monrovia compiles variant-specific highlight blobs that hardcode
       -- vim.o.background at compile time. When LazyVim loads the colorscheme
       -- at startup the OSC 11 background response from Ghostty (DEC mode 2031)
       -- may not have arrived yet, so the wrong variant can be active.
@@ -49,10 +49,10 @@ return {
       -- Neovim's background detection updates vim.o.background post-startup.
       vim.api.nvim_create_autocmd("OptionSet", {
         pattern = "background",
-        group = vim.api.nvim_create_augroup("nightfox-bg-sync", { clear = true }),
-        desc = "Switch nightfox variant when OSC 11 updates background",
+        group = vim.api.nvim_create_augroup("monrovia-bg-sync", { clear = true }),
+        desc = "Switch monrovia variant when OSC 11 updates background",
         callback = function()
-          local target = vim.o.background == "light" and "dayfox" or "nightfox"
+          local target = vim.o.background == "light" and "monrovia_day" or "monrovia_night"
           if vim.g.colors_name ~= target then
             vim.cmd.colorscheme(target)
           end
@@ -84,7 +84,7 @@ return {
       -- Use a function so the variant is chosen at load time, after Neovim's
       -- OSC 11 terminal query has had a chance to set vim.o.background.
       opts.colorscheme = function()
-        local scheme = vim.o.background == "light" and "dayfox" or "nightfox"
+        local scheme = vim.o.background == "light" and "monrovia_day" or "monrovia_night"
         vim.cmd.colorscheme(scheme)
       end
       return opts

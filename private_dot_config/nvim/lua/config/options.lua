@@ -47,8 +47,6 @@ end
 vim.g.loaded_perl_provider = 0
 vim.g.loaded_ruby_provider = 0
 
--- cmdheight=1: ui2 eliminates "Press ENTER" prompts; no extra height needed
-vim.opt.cmdheight = 1
 -- Enable line wrap
 vim.opt.wrap = true
 --  make floating windows transparentish
@@ -62,16 +60,6 @@ vim.o.winborder = "rounded"
 --end
 -- Neovim 0.12: dedicated popup menu border option (independent of winborder)
 vim.o.pumborder = "rounded"
-
--- Neovim 0.12 native UI: replaces noice.nvim.
--- targets='msg': status messages appear in an ephemeral floating window (bottom-right).
--- timeout: message visible for 3 seconds before fading.
-require("vim._core.ui2").enable({
-  msg = {
-    targets = "msg",
-    msg = { timeout = 3000 },
-  },
-})
 
 -- LazyVim picker to use.
 -- Can be one of: telescope, fzf

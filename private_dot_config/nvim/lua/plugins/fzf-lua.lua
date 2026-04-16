@@ -8,10 +8,10 @@ return {
     table.insert(opts, 2, "ivy")
     table.insert(opts, 3, "fzf-native")
 
-    -- Ensure automatic color sync with nightfox (already set by extra)
+    -- Ensure automatic color sync with monrovia (already set by extra)
     opts["fzf_colors"] = true
 
-    -- Optimize bat previewer for nightfox compatibility
+    -- Optimize bat previewer for monrovia compatibility
     opts["previewers"] = vim.tbl_deep_extend("force", opts.previewers or {}, {
       bat = {
         cmd = "bat",

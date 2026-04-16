@@ -64,7 +64,7 @@ require("lazy").setup({
   },
   install = {
     missing = true,
-    colorscheme = { "dayfox", "tokyonight-moon", "tokyonight", "habamax", "default" },
+    colorscheme = { "monrovia_day", "tokyonight-moon", "tokyonight", "habamax", "default" },
   },
   checker = {
     enabled = true, -- check for plugin updates periodically
