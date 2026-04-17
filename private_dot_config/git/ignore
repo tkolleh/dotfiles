@@ -1,7 +1,8 @@
 # Metals
 .bloop
-.metals 
-.bsp
+.metals
+.bsp/*
+!.bsp/sbt.json
 project/metals.sbt
 .metals
 .ammonite
@@ -119,13 +120,14 @@ fabric.properties
 # Ignores the whole .idea folder and all .iml files
 # See https://github.com/joeblau/gitignore.io/issues/186 and https://github.com/joeblau/gitignore.io/issues/360
 
-.idea/
+.idea/*
+!.idea/misc.xml
+!.idea/compiler.xml
 
 # Reason: https://github.com/joeblau/gitignore.io/issues/186#issuecomment-249601023
 
 *.iml
 modules.xml
-.idea/misc.xml
 *.ipr
 
 # Sonarlint plugin
@@ -325,7 +327,6 @@ obj/
 .idea/workspace.xml
 .idea/tasks.xml
 .idea/.name
-.idea/compiler.xml
 .idea/copyright/profiles_settings.xml
 .idea/encodings.xml
 .idea/modules.xml
