@@ -63,3 +63,4 @@ fi
 alias chrome="open -a 'Google Chrome'"
 alias oc-yolo='OPENCODE_CONFIG="$HOME/.config/opencode/opencode-yolo.json" opencode'
 alias qmd='bunx @tobilu/qmd'
+alias skills='npx skills@latest'
