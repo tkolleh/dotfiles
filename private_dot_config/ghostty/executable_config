@@ -9,6 +9,7 @@ auto-update = download
 # Window
 window-padding-balance = true
 window-padding-color = extend
+window-padding-y = 0
 macos-titlebar-style = native
 macos-window-shadow = false
 
@@ -28,7 +29,7 @@ window-save-state = default
 # theme = dark:GitLab-Dark-Grey,light:GitLab-Light
 # theme = dark:cyberdream,light:dayfox
 # theme = dark:cyberdream,light:farmhouse-light
-theme = dark:monrovia,light:monrovia-light
+theme = dark:monrovia,light:monrovia-sun
 
 # (block|bar|underline|block_hollow)
 cursor-style = block

@@ -82,3 +82,12 @@ fi
 export JAVA_HOME="$(cs java-home --architecture arm64 --jvm corretto:21)"
 export PATH="$JAVA_HOME/bin:$PATH"
 export ZK_NOTEBOOK_DIR="$HOME/zettelkasten/notes"
+
+# Alerternative Ruby installation via Homebrew, to avoid conflicts with system Ruby
+# MacOS has deprecated system Ruby, but some tools (e.g. fastlane) still require it.
+#
+# TODO: Consider deferring this via zsh-defer?
+export RUBY_PREFIX="$(brew --prefix ruby)"
+export GEM_HOME="$HOME/.gem/ruby/4.0.0"
+export GEM_BIN="$GEM_HOME/bin"
+export PATH="$RUBY_PREFIX/bin:$GEM_BIN:$PATH"

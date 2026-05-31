@@ -178,8 +178,10 @@ esac
 # pnpm end
 
 # direnv for automatic environment switching
-# TODO: How long does this take to load? Consider deferring?
-eval "$(direnv hook zsh)"
+zsh-defer eval "$(command direnv hook zsh)"
+
+# mise - the One tool to manage languages, env vars, and tasks per project, reproducibly
+zsh-defer eval "$(command mise activate zsh)"
 
 # Source host-specific functions
 [[ -f ~/.host_functions.zsh ]] && source ~/.host_functions.zsh

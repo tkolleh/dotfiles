@@ -1,6 +1,46 @@
 local utils = require("utils")
 local scala = require("languages.scala")
 
+local LOMBOK_VERSION = "1.18.46"
+local LOMBOK_CACHE_PATH = vim.fn.expand(
+  "~/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/projectlombok/lombok/"
+    .. LOMBOK_VERSION
+    .. "/lombok-"
+    .. LOMBOK_VERSION
+    .. ".jar"
+)
+
+-- Resolved asynchronously on first load; nil until confirmed present.
+local _lombok_jar = nil
+
+local function resolve_lombok()
+  -- Fast path: jar already in Coursier cache — no process spawn needed.
+  local stat = vim.uv.fs_stat(LOMBOK_CACHE_PATH)
+  if stat then
+    _lombok_jar = LOMBOK_CACHE_PATH
+    return
+  end
+
+  -- Slow path: fetch via cs asynchronously.
+  vim.system(
+    { "cs", "fetch", "org.projectlombok:lombok:" .. LOMBOK_VERSION },
+    { text = true },
+    vim.schedule_wrap(function(result)
+      if result.code ~= 0 then
+        vim.notify("[metals] lombok fetch failed:\n" .. (result.stderr or ""), vim.log.levels.WARN)
+        return
+      end
+      local jar = vim.trim(result.stdout):match("[^\n]+$")
+      if jar and vim.uv.fs_stat(jar) then
+        _lombok_jar = jar
+        vim.notify("[metals] lombok jar resolved: " .. jar, vim.log.levels.INFO)
+      end
+    end)
+  )
+end
+
+resolve_lombok()
+
 local metals_keys = {
   {
     "<leader>mr",
@@ -79,9 +119,16 @@ return {
       defaultBspToBuildTool = false, -- [default:false] If build tool serves as build server, use it
       bloopSbtAlreadyInstalled = false, -- [default:false] Bloop config is now installed
       bloopJvmProperties = metals_gcc_config,
-      serverProperties = vim.list_extend(metals_gcc_config, {
-        "-Dmetals.verbose=false", -- Enable verbose logging for better diagnostics
-      }),
+      serverProperties = vim.list_extend(
+        vim.deepcopy(metals_gcc_config),
+        vim
+          .iter({
+            { "-Dmetals.verbose=false" },
+            _lombok_jar and { "-javaagent:" .. _lombok_jar } or {},
+          })
+          :flatten()
+          :totable()
+      ),
       testUserInterface = "Test Explorer",
       startMcpServer = true,
       mcpClient = "claude",

@@ -270,6 +270,16 @@ function update_term_tools() {
   if (( ${+commands[npx]} )); then
     roda --spinner "arc" --title "Update agent skills" -- npx skills update || :
   fi
+  if (( ${+commands[skillfish]} )); then
+    roda --spinner "arc" --title "Update agent skills" -- skillfish update --yes || :
+  fi
+  if (( ${+commands[skills]} )); then
+    roda --spinner "arc" --title "Update agent skills" -- skills update --global --yes || :
+  fi
+  # Run `brew link --overwrite ruby --force` to use the latest ruby version
+  if (( ${+commands[gem]} )); then
+    roda --spinner "arc" --title "Update ruby system gems" -- gem update || :
+  fi
 }
 
 function has_man_page() {
