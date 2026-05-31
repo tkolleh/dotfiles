@@ -1,0 +1,48 @@
+# gitleaks config for the chezmoi dotfiles source repo.
+# Extends the built-in ruleset with patterns matching the shapes that
+# previously leaked here (bare TOML passwords, 40-hex tokens, SFTP blocks).
+#
+# Docs: https://github.com/gitleaks/gitleaks#configuration
+[extend]
+# Inherit gitleaks' default rules, then add the custom rules below.
+useDefault = true
+
+[[rules]]
+id = "toml-inline-password"
+description = "Inline password assignment (e.g. TOML/INI: password = \"...\")"
+# Matches `password = "value"` / `passwd: value` with a non-trivial value,
+# the shape that leaked in yazi's vfs.toml.
+regex = '''(?i)\b(?:password|passwd|pwd)\s*[:=]\s*["']?([^"'\s]{8,})["']?'''
+secretGroup = 1
+keywords = ["password", "passwd", "pwd"]
+
+[[rules]]
+id = "generic-40-hex-token"
+description = "Bare 40-char hex token (legacy GitHub PAT / API token shape)"
+# The leaked HOMEBREW_GITHUB_API_TOKEN was a bare 40-hex string.
+regex = '''(?i)(?:token|api[_-]?key|secret)\s*[:=]\s*["']?([a-f0-9]{40})["']?'''
+secretGroup = 1
+keywords = ["token", "api", "key", "secret"]
+
+[[rules]]
+id = "sftp-service-block"
+description = "SFTP/FTP credential block with embedded password"
+regex = '''(?is)type\s*[:=]\s*["']?s?ftp["']?.{0,200}?password\s*[:=]\s*["']?([^"'\s]{6,})'''
+secretGroup = 1
+keywords = ["sftp", "ftp"]
+
+[allowlist]
+description = "Paths/patterns that are safe by construction"
+paths = [
+  # Encrypted artifacts are ciphertext, not plaintext secrets.
+  '''.*\.asc$''',
+  # 1Password/GPG reference templates store opaque UUIDs, not secrets.
+  '''.chezmoi\.yaml\.tmpl$''',
+  '''dot_gitconfig\.tmpl$''',
+]
+# 1Password item UUIDs are references, not credentials — ignore them.
+regexes = [
+  '''op://[^"'\s]+''',
+  '''onepasswordRead''',
+  '''onepassword "[a-z0-9]+"''',
+]

@@ -6,3 +6,17 @@ ssl
 port
 port.lock
 updatedBrokenPlugins.db
+
+# Secret-bearing files — never commit. Manage these via 1Password/GPG instead.
+# (These exact names previously leaked credentials into git history.)
+dot_bash_secrets
+dot_bash_secrets.tmpl
+dot_bash_options
+dot_bash_profile
+**/vfs.toml
+.envrc
+*.pem
+*.key
+private_*_key
+*_rsa
+id_*

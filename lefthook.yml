@@ -1,0 +1,17 @@
+# Git hooks managed by lefthook (https://lefthook.dev)
+# Activate once per clone:  lefthook install
+#
+# Guards this chezmoi source repo against committing secrets. The repo stores
+# only 1Password/GPG references; raw credentials must never be committed.
+pre-commit:
+  parallel: true
+  commands:
+    gitleaks:
+      # Scan only staged changes for secrets before they land in a commit.
+      # Degrades to a warning (does not block) if gitleaks is not installed.
+      run: |
+        if command -v gitleaks >/dev/null 2>&1; then
+          gitleaks git --pre-commit --staged --redact --no-banner
+        else
+          echo "⚠️  gitleaks not installed — secret scan skipped. Install: brew install gitleaks" >&2
+        fi
