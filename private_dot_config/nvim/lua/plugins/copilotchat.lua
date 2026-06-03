@@ -3,6 +3,7 @@ user = user:sub(1, 1):upper() .. user:sub(2)
 local custom_question_header = "  " .. user .. " "
 return {
   "CopilotC-Nvim/CopilotChat.nvim",
+  enabled = false,
   branch = "main",
   cmd = "CopilotChat",
   build = "make tiktoken", -- Only on MacOS or Linux
