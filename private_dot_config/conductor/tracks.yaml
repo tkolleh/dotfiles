@@ -1,7 +1,11 @@
 tracks:
-  - ext: adoc
-    command: /usr/local/bin/asciidoctor --backend html5 -o - -
-  - ext: md
+  - condition: extension is adoc AND phase is pre
     sequence:
-      - command: /Users/tkolleh/ws/markdown-diagram-preprocessors/markdown-mermaid-preprocessor/process-mermaid-markdown.sc -i $MARKED_PATH
-      - command: /Users/tkolleh/ws/markdown-diagram-preprocessors/markdown-d2-preprocessor/process-d2-markdown.sc
+      - command: ~/ws/markup-diagram-preprocessors/mermaid-preprocessor/process-mermaid.sc -i $MARKED_PATH -f adoc
+      - command: ~/ws/markup-diagram-preprocessors/d2-preprocessor/process-d2.sc -f adoc
+  - condition: extension is adoc AND phase is pro
+    command: /opt/homebrew/bin/asciidoctor --backend html5 -o - -
+  - condition: extension is md AND phase is pre
+    sequence:
+      - command: ~/ws/markup-diagram-preprocessors/mermaid-preprocessor/process-mermaid.sc -i $MARKED_PATH
+      - command: ~/ws/markup-diagram-preprocessors/d2-preprocessor/process-d2.sc
