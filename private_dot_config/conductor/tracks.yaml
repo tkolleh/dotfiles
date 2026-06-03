@@ -1,0 +1,7 @@
+tracks:
+  - ext: adoc
+    command: /usr/local/bin/asciidoctor --backend html5 -o - -
+  - ext: md
+    sequence:
+      - command: /Users/tkolleh/ws/markdown-diagram-preprocessors/markdown-mermaid-preprocessor/process-mermaid-markdown.sc -i $MARKED_PATH
+      - command: /Users/tkolleh/ws/markdown-diagram-preprocessors/markdown-d2-preprocessor/process-d2-markdown.sc

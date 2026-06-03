@@ -1,0 +1,24 @@
+# AST-Grep Configuration
+# https://ast-grep.github.io/advanced/custom-language.html
+#
+# Install parsers 
+#   1. `nvim --headless -c "TSInstall sql" -c "q"`
+#   2. `nvim --headless -c "lua print(vim.fn.stdpath('data'))" -c "q"`
+#
+ruleDirs: []
+customLanguages:
+  sql:
+    libraryPath: /Users/tkolleh/.local/share/nvim/site/parser/sql.so
+    extensions: [sql]
+
+  # HOCON natively uses the ${variable} syntax for internal configuration
+  # substitutions. Because ast-grep also defaults to using $ for its own
+  # meta-variable patterns (e.g., $MATCH), they will conflict.
+  #
+  # This instruct ast-grep to use underscores for its rules instead
+  # (e.g., matching with _MATCH instead of $MATCH)
+  #
+  hocon:
+    libraryPath: /Users/tkolleh/.local/share/nvim/site/parser/hocon.so
+    extensions: [conf, hocon]
+    expandoChar: _
