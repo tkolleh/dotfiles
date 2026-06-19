@@ -23,3 +23,4 @@ cursor-text = #FDFEFF
 
 selection-background = #b3b1aa
 selection-foreground = #4d5658
+split-divider-color  = #6A1B9A
