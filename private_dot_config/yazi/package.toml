@@ -18,5 +18,10 @@ use = "tkolleh/mdcat"
 rev = "79dd0d5"
 hash = "9e29ff96e006a72de5211b73ca7feef6"
 
+[[plugin.deps]]
+use = "llanosrocas/githead"
+rev = "317d09f"
+hash = "41dc37a724b2afd21da4f1ea6c1182d8"
+
 [flavor]
 deps = []
