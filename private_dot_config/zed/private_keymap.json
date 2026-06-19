@@ -1,0 +1,200 @@
+// Zed keymap
+//
+// For information on binding keys, see the Zed
+// documentation: https://zed.dev/docs/key-bindings
+//
+// To see the default key bindings run `zed: open default keymap`
+// from the command palette.
+//
+// Goal: mirror the user's LazyVim (Neovim) keymap as closely as Zed allows.
+// Key bindings are based on jetbrains + vim + helix + LazyVim conventions.
+//
+// Migration notes (Zed has no faithful equivalent):
+//   - goto-preview (gpd/gpr floating peek): Zed opens references as an editable
+//     multibuffer instead of a floating popup. gr/gy/gI map to real nav actions.
+//   - lazygit (<leader>gg): mapped to Zed's native git panel.
+//   - blackhole-register d/D and no-yank visual p: Zed has no register model,
+//     so these nvim hygiene remaps are intentionally omitted.
+[
+  {
+    "context": "Editor",
+    "bindings": {
+      // Disable default binding for project search. Use [space /] for project search
+      "g /": null
+    }
+  },
+  {
+    "context": "Editor && (showing_code_actions || showing_completions)",
+    "bindings": {
+      "ctrl-j": "editor::ContextMenuNext",
+      "ctrl-k": "editor::ContextMenuPrevious",
+      "tab": "editor::ContextMenuNext",
+      "shift-tab": "editor::ContextMenuPrevious"
+    }
+  },
+  {
+    "context": "ProjectPanel",
+    "bindings": {
+      "space e": "workspace::ToggleLeftDock",
+      "ctrl-l": "workspace::ActivatePaneRight"
+    }
+  },
+  {
+    "context": "Terminal",
+    "bindings": {
+      "ctrl-t": "workspace::ToggleBottomDock"
+    }
+  },
+  {
+    // Workspace-level actions: panels, finders, save. These must live in a
+    // Workspace context so they fire even when focus is in a dock/panel.
+    "context": "Workspace",
+    "bindings": {
+      // lazygit equivalent -> native git panel
+      "space g g": "git_panel::ToggleFocus",
+      // Project diagnostics panel (LazyVim <leader>xx / trouble)
+      "space x x": "diagnostics::Deploy",
+      // Outline panel (tree) vs the modal outline bound to `space s` below
+      "space s shift-s": "outline_panel::ToggleFocus",
+      // Reopen closed tab (LazyVim <leader>bb-ish / vim-bufdelete undo)
+      "space b u": "pane::ReopenClosedItem",
+      // Tasks (LazyVim overseer / vim-test analog)
+      "space o o": "task::Spawn",
+      "space o r": "task::Rerun"
+    }
+  },
+  {
+    "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
+    "bindings": {
+      // Project view
+      "space e": "pane::RevealInProjectPanel",
+      // Terminal
+      "ctrl-t": "terminal_panel::ToggleFocus",
+      // Motion
+      "ctrl-shift-alt-w": "vim::NextWordStart",
+      "ctrl-shift-alt-b": "vim::PreviousWordStart",
+      "ctrl-shift-alt-e": "vim::NextWordEnd",
+      // Buffer/tab nav (LazyVim H/L). Overrides vim screen-top/bottom motion
+      // (still available via `g t`/`g b` below).
+      "H": "pane::ActivatePreviousItem",
+      "L": "pane::ActivateNextItem",
+      // Window mode
+      "ctrl-h": "workspace::ActivatePaneLeft",
+      "ctrl-l": "workspace::ActivatePaneRight",
+      "ctrl-k": "workspace::ActivatePaneUp",
+      "ctrl-j": "workspace::ActivatePaneDown",
+      "space w q": "pane::CloseActiveItem",
+      "space w d": "pane::CloseActiveItem",
+      "ctrl-\\": "pane::SplitRight",
+      "ctrl--": "pane::SplitDown",
+      // Move lines (LazyVim alt-j / alt-k)
+      "alt-j": "editor::MoveLineDown",
+      "alt-k": "editor::MoveLineUp",
+      // Space mode -- file/buffer pickers
+      // best we can do for now. Zed has no equivalent to open recently opened files see https://github.com/zed-industries/zed/issues/4663
+      "space b": ["tab_switcher::Toggle", { "select_last": true }],
+      "space f": "file_finder::Toggle",
+      "space f f": "file_finder::Toggle",
+      "space f r": "file_finder::Toggle",
+      // Yank current file path (LazyVim <leader>fy via vim-fetch)
+      "space f y": "editor::CopyPath",
+      "space f shift-y": "editor::CopyRelativePath",
+      "space k": "editor::Hover",
+      // Document symbols (modal) and project/workspace symbols
+      "space s": "outline::Toggle",
+      "space s s": "outline::Toggle",
+      "space shift-s": "project_symbols::Toggle",
+      "space d": "editor::GoToDiagnostic",
+      "space shift-d": "diagnostics::Deploy",
+      "space r n": "editor::Rename",
+      "space c r": "editor::Rename",
+      "space a": "editor::ToggleCodeActions",
+      "space c a": "editor::ToggleCodeActions",
+      "space c f": "editor::Format",
+      "space h": "editor::SelectAllMatches",
+      "space /": "pane::DeploySearch",
+      // Git (LazyVim <leader>g group)
+      "space g b": "editor::ToggleGitBlameInline",
+      "space g shift-b": "git::Blame",
+      "space g h s": "git::StageAndNext",
+      "space g h r": "git::Restore",
+      "space g h p": "editor::ToggleSelectedDiffHunks",
+      "space g h shift-r": "git::RestoreFile",
+      // Search & replace (LazyVim <leader>sr via grug-far)
+      "space s r": "pane::DeploySearch",
+      // AI chat (LazyVim <leader>a Augment group)
+      "space a a": "agent::ToggleFocus",
+      "space a c": "assistant::InlineAssist",
+      // Diagnostics navigation (LazyVim ]d [d)
+      "] d": "editor::GoToDiagnostic",
+      "[ d": "editor::GoToPreviousDiagnostic",
+      // Git hunk navigation (LazyVim ]h [h, ]H [H)
+      "] h": "editor::GoToHunk",
+      "[ h": "editor::GoToPreviousHunk",
+      // Folding (vim za/zR/zM also work natively)
+      "z a": "editor::ToggleFold",
+      "z shift-r": "editor::UnfoldAll",
+      "z shift-m": "editor::FoldAll",
+      // Match mode
+      "m m": "vim::Matching",
+      // Misc
+      "shift-u": "editor::Redo",
+      "ctrl-c": "editor::ToggleComments",
+      "space c": "editor::ToggleComments"
+    }
+  },
+  {
+    "context": "Editor && (vim_mode == normal || vim_mode == visual) && !VimWaiting && !menu",
+    "bindings": {
+      // put key-bindings here if you want them to work in normal & visual mode
+      // Goto mode
+      "g l": "vim::EndOfLine",
+      "g h": "vim::StartOfLine",
+      "g s": "vim::FirstNonWhitespace",
+      "g e": "vim::EndOfDocument",
+      "g d": "editor::GoToDefinition",
+      "g shift-d": "editor::GoToDeclaration",
+      "g y": "editor::GoToTypeDefinition",
+      "g shift-i": "editor::GoToImplementation",
+      "g r": "editor::FindAllReferences", // zed specific
+      "g t": "vim::WindowTop",
+      "g b": "vim::WindowBottom"
+    }
+  },
+  {
+    "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
+    "bindings": {
+      // put key-bindings here if you want them to work only in normal mode
+    }
+  },
+  {
+    "context": "Editor && vim_mode == visual && !VimWaiting && !menu",
+    "bindings": {
+      // visual, visual line & visual block modes
+      "ctrl-c": "editor::ToggleComments",
+      "space c": "editor::ToggleComments",
+      // Move selected lines (LazyVim alt-j / alt-k in visual)
+      "alt-j": "editor::MoveLineDown",
+      "alt-k": "editor::MoveLineUp",
+      // Search selection in project (LazyVim visual <leader>/)
+      "space /": "pane::DeploySearch"
+    }
+  },
+  {
+    "context": "Editor && vim_mode == insert && !menu",
+    "bindings": {
+      // put key-bindings here if you want them to work in insert mode
+      "j k": ["workspace::SendKeystrokes", "escape"]
+    }
+  },
+  {
+    "context": "Dock",
+    "bindings": {
+      // Window mode
+      "ctrl-w h": "workspace::ActivatePaneLeft",
+      "ctrl-w l": "workspace::ActivatePaneRight",
+      "ctrl-w k": "workspace::ActivatePaneUp",
+      "ctrl-w j": "workspace::ActivatePaneDown"
+    }
+  }
+]
