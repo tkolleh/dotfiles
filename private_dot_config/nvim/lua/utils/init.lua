@@ -22,9 +22,26 @@ M.dark_theme = "monrovia_night"
 -- Light : (github_light_colorblind | tokyonight-day | monrovia_day)
 M.light_theme = "monrovia_day"
 
+---Detect macOS system appearance (used in GUI clients like VimR, which have
+---no terminal and therefore never answer the OSC 11 background query).
+---macOS sets AppleInterfaceStyle="Dark" only in dark mode; the key is absent
+---in light mode. VimR also surfaces this via vim.g.os_appearance.
+---@return boolean
+M.is_system_dark = function()
+  if vim.g.os_appearance ~= nil then
+    return string.lower(vim.g.os_appearance) == "dark"
+  end
+  local ok, out = pcall(vim.fn.system, { "defaults", "read", "-g", "AppleInterfaceStyle" })
+  return ok and string.lower(vim.trim(out)) == "dark"
+end
+
 M.is_background_dark = function()
-  -- Relies on Neovim's DEC mode 2031 terminal query (supported by Ghostty)
-  -- to have already set vim.o.background to 'dark' or 'light'.
+  -- GUI (VimR) has no terminal, so OSC 11 (DEC mode 2031) never sets
+  -- vim.o.background. Use the macOS system appearance there. Terminals
+  -- (e.g. Ghostty) keep the OSC 11 -> vim.o.background path.
+  if M.is_gui() then
+    return M.is_system_dark()
+  end
   return string.lower(vim.o.background) == "dark"
 end
 
@@ -32,6 +49,13 @@ M.apply_auto_background_theme = function()
   local is_dark = M.is_background_dark()
   local theme = is_dark and M.dark_theme or M.light_theme
   local _colorscheme = vim.g.colors_name or "none"
+
+  -- Keep vim.o.background consistent with the resolved theme so plugins that
+  -- read it (lualine, diff highlights, markview) agree with the GUI appearance.
+  local desired_bg = is_dark and "dark" or "light"
+  if vim.o.background ~= desired_bg then
+    vim.o.background = desired_bg
+  end
 
   if string.lower(_colorscheme) ~= string.lower(theme) then
     local ok, err = pcall(vim.cmd.colorscheme, theme)

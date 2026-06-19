@@ -49,15 +49,9 @@ vim.g.loaded_ruby_provider = 0
 
 -- Enable line wrap
 vim.opt.wrap = true
---  make floating windows transparentish
---  VimR needs slight transparency to blend rounded border corners
--- vim.o.winblend = require("utils").is_gui() and 15 or 0
+-- Floating windows: opaque with rounded borders
 vim.o.winblend = 0
---  and give them rounded borders by default
---  VimR's single-grid renderer mishandles winborder, hiding cmdline text
---if not require("utils").is_gui() then
 vim.o.winborder = "rounded"
---end
 -- Neovim 0.12: dedicated popup menu border option (independent of winborder)
 vim.o.pumborder = "rounded"
 

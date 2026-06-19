@@ -37,6 +37,20 @@ api.nvim_create_autocmd("User", {
   callback = utils.apply_auto_background_theme,
 })
 
+-- GUI clients (VimR) have no terminal and never answer OSC 11, so the path
+-- above can't detect appearance. VimR instead pushes a User OSAppearanceChanged
+-- event (with vim.g.os_appearance) whenever macOS toggles light/dark. Listen
+-- for it and do an initial sync at startup from the system appearance.
+if utils.is_gui() then
+  api.nvim_create_autocmd("User", {
+    pattern = "OSAppearanceChanged",
+    group = api.nvim_create_augroup("vimr_appearance_sync", { clear = true }),
+    callback = utils.apply_auto_background_theme,
+    desc = "Switch theme when macOS appearance changes (VimR)",
+  })
+  utils.apply_auto_background_theme()
+end
+
 -- Sync Pmenu highlight groups with Normal background on colorscheme change.
 -- Keeps the native completion popup blended with the editor background.
 -- Also sets Neovim 0.12 PmenuBorder and PmenuShadow groups.
