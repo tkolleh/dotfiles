@@ -26,7 +26,7 @@ return {
     opts.views.mini = vim.tbl_deep_extend("force", opts.views.mini or {}, {
       timeout = 3000,
       position = {
-        row = -1,
+        row = -3,
         col = "100%",
       },
       border = {
