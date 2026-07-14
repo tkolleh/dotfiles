@@ -60,7 +60,7 @@ if (( ${+commands[claude]} )); then
   alias claude-session="open -a 'Google Chrome' ~/.claude/session-tracker/index.html"
 fi
 
-alias chrome="open -a 'Google Chrome'"
+alias chrome="open -a 'Google Chrome' --args --remote-debugging-port=9222"
 alias oc-yolo='OPENCODE_CONFIG="$HOME/.config/opencode/opencode-yolo.json" opencode'
 alias qmd='bunx @tobilu/qmd'
 alias skills='npx skills@latest'

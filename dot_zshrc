@@ -12,7 +12,7 @@
 export DEFAULT_USER="${USER}"
 export DISABLE_UPDATE_PROMPT="false"
 export UPDATE_ZSH_DAYS=7
-export KEYTIMEOUT=1 # Reduces editor key-press delay
+export KEYTIMEOUT=40 # 400ms window for multi-key vi maps (e.g. 'jk'); low values break 'jk' under Herdr's input buffering
 export ZSH_CACHE_DIR="$HOME/.cache/zsh" # Standardized cache location
 if [[ ! -d "$ZSH_CACHE_DIR" ]]; then mkdir -p "$ZSH_CACHE_DIR/completions"; fi
 
