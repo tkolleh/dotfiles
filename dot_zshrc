@@ -116,9 +116,19 @@ fi
 # ~50ms after prompt display (while deferred functions fire). In practice, no human types a command 
 # and hits <tab> that fast.
 #
-
+#
 # Deferred completions
 #
+_cache_mdcat_completions() {
+  (( $+commands[mdcat] )) || return 0
+  local cache_file="$ZSH_CACHE_DIR/completions/_mdcat"
+  if [[ ! -f "$cache_file" ]] || [[ "$commands[mdcat]" -nt "$cache_file" ]]; then
+    mdcat --completions zsh > "$cache_file"
+  fi
+  [[ -f "$cache_file" ]] && source "$cache_file"
+}
+zsh-defer _cache_mdcat_completions
+
 _cache_git_machete_completions() {
   (( $+commands[git-machete] )) || return 0
   local cache_file="$ZSH_CACHE_DIR/completions/_git_machete"
