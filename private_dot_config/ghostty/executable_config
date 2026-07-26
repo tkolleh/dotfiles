@@ -29,7 +29,7 @@ window-save-state = default
 # theme = dark:GitLab-Dark-Grey,light:GitLab-Light
 # theme = dark:cyberdream,light:dayfox
 # theme = dark:cyberdream,light:farmhouse-light
-theme = dark:monrovia,light:monrovia-sun
+theme = dark:monrovia,light:monrovia-light
 
 # (block|bar|underline|block_hollow)
 cursor-style = block
