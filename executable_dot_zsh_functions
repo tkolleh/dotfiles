@@ -722,3 +722,98 @@ DETAILS=$(gum style \
 # Join them vertically
 gum join --vertical "$HEADER" "$DETAILS"
 }
+
+# Load native Zsh datetime module 
+zmodload zsh/datetime
+
+function jcmac() {
+  local input_assignee="${1:-$(jira me)}"
+  local _type="${2:-Story}"
+  local -u project="${3:-FRD}"
+
+  local -a assignee_flag
+  local log_assignee
+
+  # 2. Check if the user passed 'x'
+  if [[ "$input_assignee" == "x" ]]; then
+    log_assignee="Unassigned"
+    # By leaving the array empty, we omit the --assignee flag entirely
+  else
+    log_assignee="$input_assignee"
+    assignee_flag=(--assignee "$input_assignee")
+  fi
+
+  gum log --structured --level info "Creating issue" \
+    assignee "$log_assignee" \
+    type "$_type" \
+    project "$project"
+
+  # 3. Use array expansion to conditionally inject the flag
+  jira issue create \
+    --project "$project" \
+    --type "$_type" \
+    "${assignee_flag[@]}" \
+    --custom Squad="Tools" \
+    --label "Money-Admin-Console" \
+    --web
+}
+
+function jmine() {
+  local -l action="${2:-list}"
+  local target_user="${1:-$(jira me)}"
+
+  local -i days_ago=300
+  local filter_date
+  strftime -s filter_date "%Y-%m-%d" $(( EPOCHSECONDS - (days_ago * 86400) ))
+
+  gum log --structured --level info "Fetching Jira data" user "$target_user" action "$action" since "$filter_date"
+
+  case "$action" in
+    list)
+      local -a jql_clauses=(
+        "assignee = '$target_user'"
+        "created >= '$filter_date'"
+        "status NOT IN ('Done', 'Closed')"
+      )
+      # We exploit the CLI's string interpolation here.
+      # The --reverse flag forcefully appends 'ASC' to the end of the query.
+      jira issue list -q "${(j: AND :)jql_clauses}" --order-by "created DESC, status" --reverse
+      ;;
+
+    worklog)
+      jira issue worklog list --author "$target_user"
+      ;;
+
+    sprint)
+      local -a jql_clauses=(
+        "assignee = '$target_user'"
+        "sprint in openSprints()"
+        "created >= '$filter_date'"
+      )
+
+      # Apply the same sorting exploit here
+      jira issue list -q "${(j: AND :)jql_clauses}" --order-by "created DESC, status" --reverse
+      ;;
+
+    *)
+      gum log --level error "Unknown action: $action"
+      echo "Usage: jmine [user] [list|worklog|sprint]"
+      return 1
+      ;;
+  esac
+}
+
+function jmac() {
+  local -i days_ago=300
+  local filter_date
+  strftime -s filter_date "%Y-%m-%d" $(( EPOCHSECONDS - (days_ago * 86400) ))
+
+  gum log --structured --level info "Fetching Jira data for team" since "$filter_date"
+
+  local -a jql_clauses=(
+    "( \"Epic Link\" = '[25.Q2.P1] RTB backlog Servicing and Admin team' OR Squad = 'Tools' OR labels in ('Money-Admin-Console', 'cw-fraud-eng') )"
+    "created >= '$filter_date'"
+    "status NOT IN ('Done', 'Closed')"
+  )
+  jira issue list -q "${(j: AND :)jql_clauses}" --order-by "created DESC, status" --reverse
+}
