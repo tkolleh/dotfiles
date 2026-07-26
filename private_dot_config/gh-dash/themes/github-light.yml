@@ -1,0 +1,17 @@
+# ~/.config/gh-dash/themes/github-light.yml
+theme:
+  colors:
+    text:
+      primary: "#24292f"    # Standard text (Dark Gray/Black)
+      secondary: "#57606a"  # Muted text (Medium Gray)
+      inverted: "#24292f"   # Changed to dark gray so the primary column is visible on the pale background
+      faint: "#8c959f"      # Dimmed text (Light Gray)
+      warning: "#bf8700"    # Issue/PR Warning (Yellow-Orange)
+      success: "#1a7f37"    # Merged/Approved (Green)
+      actor: "#0969da"      # Usernames (GitHub Blue)
+    background:
+      selected: "#ddf4ff"   # Changed from dark blue to a pale, high-contrast light blue
+    border:
+      primary: "#d0d7de"    # Main container borders
+      secondary: "#e1e4e8"  # Inner dividers
+      faint: "#f6f8fa"      # Very subtle borders/backgrounds
