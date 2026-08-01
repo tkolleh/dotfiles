@@ -7,9 +7,10 @@ auto-update-channel = tip
 auto-update = download
 
 # Window
+window-padding-x = 8
+window-padding-y = 8
 window-padding-balance = true
 window-padding-color = extend
-window-padding-y = 0
 macos-titlebar-style = native
 macos-window-shadow = false
 
@@ -21,7 +22,7 @@ macos-non-native-fullscreen = false
 # Options are default, always, never
 window-save-state = default
 
-# apperance specific themes
+# Appearance
 # theme = dark:github dark,light:Atom One Light
 # theme = dark:github dark,light:Raycast_Light
 # theme = dark:cyberdream,light:cyberdream-light
@@ -30,42 +31,50 @@ window-save-state = default
 # theme = dark:cyberdream,light:dayfox
 # theme = dark:cyberdream,light:farmhouse-light
 theme = dark:monrovia,light:monrovia-light
+font-size = 13
+unfocused-split-opacity = 0.80
+minimum-contrast = 1.1
+adjust-cell-height = 10%
+bold-color = bright
+faint-opacity = 0.65
 
+# Cursor
 # (block|bar|underline|block_hollow)
 cursor-style = block
-cursor-opacity = 3
+cursor-opacity = 1
 cursor-style-blink = true
 adjust-cursor-thickness = 6
 
-unfocused-split-opacity = 0.80
+# Interaction
+mouse-hide-while-typing = true
+macos-option-as-alt = true
+clipboard-read = allow
+mouse-scroll-multiplier = 0.9
 
-font-size = 13
+#
+# Keybinds
+#
 
 # Instance management
 keybind = opt+cmd+t=toggle_quick_terminal
 
-#
 # Tab management
-#
-
 # keybind = ctrl+b>c=new_tab
 # Use default ... cmd+t
-
 # keybind = ctrl+b>shift+l=next_tab
 keybind = opt+cmd+l=next_tab
-
 # keybind = ctrl+b>shift+h=previous_tab
 keybind = opt+cmd+h=previous_tab
 
-#
 # Pane/Split management
-#
-
 # keybind = ctrl+b>z=toggle_split_zoom
 keybind = opt+cmd+z=toggle_split_zoom
-
 # keybind = ctrl+b>\=new_split:right
 keybind = opt+cmd+\=new_split:right
-
 # keybind = ctrl+b>-=new_split:down
 keybind = opt+cmd+-=new_split:down
+
+# Config + prompt navigation
+keybind = cmd+shift+comma=reload_config
+keybind = cmd+shift+j=jump_to_prompt:1
+keybind = cmd+shift+k=jump_to_prompt:-1

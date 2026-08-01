@@ -615,51 +615,156 @@ if (( ${+functions[add-zsh-hook]} )); then
 fi
 
 function watch_pr_checks() {
-  # 1. Setup metadata
-  local repo_name=$(git rev-parse --show-toplevel 2>/dev/null | xargs basename)
-  local pr_id="${1:-}" # Use the first argument if provided, else empty (gh defaults to current branch)
+  # NAME
+  #   watch_pr_checks - Watch a PR's CI checks until they finish
+  #
+  # SYNOPSIS
+  #   watch_pr_checks [number|url|branch]
+  #   watch_pr_checks -h|--help
+  #
+  # DESCRIPTION
+  #   Polls CI checks on a pull request, reprinting the status table each
+  #   interval until every check has left the pending state (or until the
+  #   operator interrupts with Ctrl-C).
+  #
+  #   - Defaults to the open PR for the current branch when no argument is given.
+  #   - Always prints the full gh checks table (name, description, elapsed, url).
+  #   - On completion, logs the final state and prints a full link to the PR.
+  #   - A Ghostty OSC 777 desktop notification is sent only when all checks pass.
+  #     No alert is sent on failure or interrupt.
+  #   - A PR with zero checks is treated as already passed.
+  #
+  # EXIT CODES
+  #   0   all checks passed (or no checks reported)
+  #   1   one or more checks failed/cancelled, or PR/lookup error
+  #   130 interrupted with Ctrl-C
+  #
+  # DEPENDENCIES
+  #   gh; gum is used for structured logging when available.
+  #
+  # EXAMPLES
+  #   watch_pr_checks
+  #   watch_pr_checks 123
+  #   watch_pr_checks feature/my-branch
+  #   watch_pr_checks --help
+  #
+  if [[ "$1" == "-h" || "$1" == "--help" ]]; then
+    # Print the leading man-style docstring from this function's source file.
+    # functions_source (zsh/parameter) records the path a function was sourced from.
+    zmodload zsh/parameter 2>/dev/null
+    local src_file="${functions_source[$0]-}"
+    if [[ -n "$src_file" && -r "$src_file" ]]; then
+      command awk -v fn="$0" '
+        $0 ~ ("^function[[:space:]]+" fn "[[:space:]]*[(]") { in_fn = 1; next }
+        in_fn && /^[[:space:]]*#/ {
+          line = $0
+          sub(/^[[:space:]]*# ?/, "", line)
+          print line
+          next
+        }
+        in_fn { exit }
+      ' "$src_file"
+    else
+      print -r -- "Usage: $0 [number|url|branch]"
+      print -r -- "Watch a PR's CI checks until they finish. See source for full docs."
+    fi
+    return 0
+  fi
 
-  # 2. Dependency Check (Alerter removed)
-  if ! (( ${+commands[gh]} )) || ! (( ${+commands[jq]} )); then
-    gum log --time rfc822 --level error "Required commands (gh, jq) not found."
+  local -i poll_interval=10
+  local pr_id="${1:-}"
+
+  if ! (( ${+commands[gh]} )); then
+    if (( ${+commands[gum]} )); then
+      gum log --time rfc822 --level error "Required command (gh) not found."
+    else
+      print -u2 "Required command (gh) not found."
+    fi
     return 1
   fi
 
-  # 3. Fetch PR info for the notification subject
-  # If $pr_id is empty, gh view looks at the current branch's PR
-  local pr_json=$(gh pr view $pr_id --json number,title,url,state 2>/dev/null)
-  if [[ $? -ne 0 ]]; then
-    gum log --time rfc822 --level error "Could not find PR ${pr_id}"
+  local pr_number pr_url pr_head pr_meta
+  # Single gh call; built-in --jq avoids an external jq dependency.
+  if ! pr_meta=$(gh pr view ${pr_id:+"$pr_id"} \
+        --json number,url,headRefName \
+        --jq '[.number, .url, .headRefName] | @tsv' 2>/dev/null) \
+     || [[ -z "$pr_meta" ]]; then
+    if (( ${+commands[gum]} )); then
+      gum log --time rfc822 --level error "Could not find PR ${pr_id:-for current branch}"
+    else
+      print -u2 "Could not find PR ${pr_id:-for current branch}"
+    fi
     return 1
   fi
+  pr_number=${pr_meta%%$'\t'*}
+  pr_meta=${pr_meta#*$'\t'}
+  pr_url=${pr_meta%%$'\t'*}
+  pr_head=${pr_meta#*$'\t'}
 
-  local pr_number=$(echo "$pr_json" | jq -r '.number')
-  local pr_title=$(echo "$pr_json" | jq -r '.title')
-  local pr_url=$(echo "$pr_json" | jq -r '.url')
-  local title="PR #$pr_number: $pr_title"
+  local watch_label="${pr_head:-PR} #${pr_number}"
+  if (( ${+commands[gum]} )); then
+    gum log --time rfc822 --level info "Watching checks for ${watch_label}..."
+  else
+    print "Watching checks for ${watch_label}..."
+  fi
 
-  # 4. Watch the checks
-  gum log --time rfc822 --level info "Watching checks for $repo_name #$pr_number..."
-  gh pr checks $pr_id --watch
+  # Clean exit on operator interrupt — no pass alert
+  trap 'if (( ${+commands[gum]} )); then
+          gum log --time rfc822 --level warn "Stopped watching PR #${pr_number} (interrupted)."
+        else
+          print -u2 "Stopped watching PR #${pr_number} (interrupted)."
+        fi
+        trap - INT
+        return 130' INT
 
-  # 5. Determine final state
-  local state_json=$(gh pr checks $pr_id --required --json state)
-  local final_state=$(echo "$state_json" | jq -r 'if all(.[]; .state == "SUCCESS") then "SUCCESS" else "FAILURE" end')
-  
-  # Set icon based on state for the notification
-  local icon="✅"
-  [[ "$final_state" == "FAILURE" ]] && icon="❌"
+  # gh pr checks --watch streams the status table until checks leave pending.
+  # Exit codes: 0=all pass, 1=failure, 2=cancelled (gh), 130=SIGINT.
+  local -i checks_ec
+  gh pr checks ${pr_id:+"$pr_id"} --watch --interval "$poll_interval"
+  checks_ec=$?
 
-  # 6. Ghostty Native Notification (OSC 777)
-  # Sequence: ESC ] 777 ; notify ; TITLE ; MESSAGE BELL
-  printf "\e]777;notify;%s;%s %s: Checks Completed\a" "$repo_name" "$icon" "$final_state"
+  trap - INT
 
-  # 7. Terminal Output & Link (OSC 8 Hyperlink)
-  # Since OSC 777 isn't interactive, we provide a clickable link in the scrollback
-  gum log --time rfc822 --level info "Checks finished with state: $final_state"
-  
-  # Print an ANSI hyperlink (OSC 8) which Ghostty supports beautifully
-  printf "\e]8;;%s\e\\Click here to view PR #%s on GitHub\e]8;;\e\\\n" "$pr_url" "$pr_number"
+  # If the watch was interrupted (shell or gh cancel), exit without a fail alert.
+  if (( checks_ec == 130 || checks_ec == 2 )); then
+    if (( ${+commands[gum]} )); then
+      gum log --time rfc822 --level warn "Stopped watching PR #${pr_number} (interrupted)."
+    else
+      print -u2 "Stopped watching PR #${pr_number} (interrupted)."
+    fi
+    return 130
+  fi
+
+  # Final line includes a full link to the PR.
+  # On a TTY, wrap the label in OSC-8 so "Click here..." is clickable; always
+  # append the bare URL so the full link is copyable in logs/scrollback too.
+  local pr_link
+  if [[ -n "$pr_url" && -t 1 ]]; then
+    pr_link=$'\e]8;;'"${pr_url}"$'\e\\'"Click here to view PR #${pr_number} on GitHub"$'\e]8;;\e\\'" ${pr_url}"
+  else
+    pr_link="Click here to view PR #${pr_number} on GitHub${pr_url:+ ${pr_url}}"
+  fi
+
+  if (( checks_ec == 0 )); then
+    # Pass-only Ghostty OSC 777 notification
+    # Sequence: ESC ] 777 ; notify ; TITLE ; MESSAGE BEL
+    printf '\e]777;notify;%s;✅ PR #%s checks passed\a' "${pr_head:-pr}" "$pr_number"
+    if (( ${+commands[gum]} )); then
+      gum log --time rfc822 --level info "Checks finished with state: SUCCESS"
+    else
+      print "Checks finished with state: SUCCESS"
+    fi
+    print -r -- "$pr_link"
+    return 0
+  fi
+
+  if (( ${+commands[gum]} )); then
+    gum log --time rfc822 --level info "Checks finished with state: FAILURE"
+  else
+    print "Checks finished with state: FAILURE"
+  fi
+  print -r -- "$pr_link"
+  return 1
 }
 
 # set_java_home_to <version>

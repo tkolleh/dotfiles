@@ -20,3 +20,6 @@ dot_bash_profile
 private_*_key
 *_rsa
 id_*
+
+# Allium loop ledger (local agent state)
+.allium-loop/
