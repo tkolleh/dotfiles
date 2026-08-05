@@ -58,9 +58,9 @@
   prompt = true
   cmd = nvim -c \"CodeDiff\"
 
-[difftool "tuicr"]
+[difftool "hunk"]
   prompt = true
-  cmd = tuicr
+  cmd = hunk diff \"$LOCAL\" \"$REMOTE\"
 
 [mergetool "vimdiff"]
   prompt = false
@@ -85,7 +85,7 @@
   conflictstyle = zdiff3
 [diff]
   external = difft
-  tool = tuicr
+  tool = hunk
   guitool = idea
   colorMoved = default
 
@@ -99,6 +99,3 @@
   side-by-side = true
   features = unobtrusive-line-numbers decorations
   whitespace-error-style = 22 reverse
-  # delta detects terminal colors automatically; set one of these to disable auto-detection
-  # dark = true
-  # light = true
