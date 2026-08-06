@@ -96,9 +96,13 @@ fi
 # Load these tools and scripts AFTER the prompt is displayed
 
 # Tooling
-zsh-defer eval "$(command zoxide init zsh)"
-zsh-defer eval "$(command atuin init zsh)"
-zsh-defer eval "$(command wt config shell init zsh)"
+#
+# -c is required. Without it zsh expands $(...) while building zsh-defer's
+# argument list, so the subprocess runs now and only the cheap eval is
+# deferred. Single quotes keep the expansion inside the deferred string.
+zsh-defer -c 'eval "$(zoxide init zsh)"'
+zsh-defer -c 'eval "$(atuin init zsh)"'
+zsh-defer -c 'eval "$(wt config shell init zsh)"'
 
 # Starship Prompt
 export STARSHIP_LOG=error
@@ -167,10 +171,17 @@ zsh-defer _cache_scalacli_completions
 #
 FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
 
-# Initialize the completion system ONCE.
-# !IMPORTANT!: Only call compinit once, and only after all fpath modifications and completion sources are set up.
-autoload -Uz compinit
-compinit -C
+# Completion init is owned by zpm, not this file.
+#
+# zpm autoloads compinit (zpm.zsh:32) and runs it against a version-stamped
+# dump at $ZSH_CACHE_HOME/zcompdump-$ZSH_VERSION. On a cold start it also
+# schedules @zpm-background-initialization (`sched +1`), which re-runs
+# compinit WITHOUT -C after this file has finished, so late fpath additions
+# and the deferred completion caches above are picked up and revalidated.
+#
+# A second `compinit -C` here dumped to the default ~/.zcompdump instead and,
+# because -C skips revalidation, that copy silently went 11 months stale while
+# new completions never appeared.
 
 # --- Additional Exports ----------------------------------------------------
 export PATH="$HOME/ws/OpenMemory/scripts:$PATH"
@@ -190,7 +201,7 @@ esac
 # pnpm end
 
 # direnv for automatic environment switching
-zsh-defer eval "$(command direnv hook zsh)"
+zsh-defer -c 'eval "$(direnv hook zsh)"'
 
 # mise - the One tool to manage languages, env vars, and tasks per project, reproducibly
-zsh-defer eval "$(command mise activate zsh)"
+zsh-defer -c 'eval "$(mise activate zsh)"'

@@ -493,13 +493,13 @@ function cd() {
 
 function print_login_connecting_msg(){
 # Get the SSH config details
-SSH_CONFIG_DETAILS=$(ssh -G $1 | rg '^(host\b|hostname\b|user\b)')
+local SSH_CONFIG_DETAILS=$(ssh -G $1 | rg '^(host\b|hostname\b|user\b)')
 
 # Style the header
-HEADER=$(gum style --foreground "#90EE90" "Connecting to...")
+local HEADER=$(gum style --foreground "#90EE90" "Connecting to...")
 
 # Style the details (e.g., with a different color or border)
-DETAILS=$(gum style \
+local DETAILS=$(gum style \
     --foreground "#ADD8E6" \
     --padding "0 1" \
     "$SSH_CONFIG_DETAILS")

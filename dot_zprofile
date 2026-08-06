@@ -90,8 +90,8 @@ export JAVA_HOME="$(cs java-home --architecture arm64 --jvm corretto:21)"
 # Prepended deliberately: appending leaves /usr/bin ahead, so `java` resolves to
 # the macOS stub. The stub happens to forward via JAVA_HOME, but that is macOS
 # behaviour rather than a guarantee and it does not cover every tool in this dir
-# (jshell, jcmd, jstack, native-image). set_java_home_to/jmac in ~/.zsh_functions
-# assume this JDK's bin wins.
+# (jshell, jcmd, jstack, native-image). set_java_home_to in ~/.zsh_functions and
+# print_jvm_versions in ~/.local/bin assume this JDK's bin wins.
 export PATH="$JAVA_HOME/bin:$PATH"
 export ZK_NOTEBOOK_DIR="$HOME/zettelkasten/notes"
 
