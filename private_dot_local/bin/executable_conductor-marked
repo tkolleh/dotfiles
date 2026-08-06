@@ -1,0 +1,8 @@
+#!/bin/bash
+# Marked 2 launches GUI processors with a minimal environment (no LANG),
+# which makes Ruby default to US-ASCII and crash on non-ASCII Markdown.
+# Forcing a UTF-8 locale fixes Encoding.default_external. See marked-conductor
+# conductor.rb:119 / command.rb:70.
+export LANG=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
+exec /Users/tkolleh/.gem/ruby/4.0.0/bin/conductor "$@"

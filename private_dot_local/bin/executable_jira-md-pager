@@ -1,0 +1,6 @@
+#!/usr/bin/env zsh
+
+# 1. Read from stdin
+# 2. Convert Jira markup to Markdown using pandoc (-f jira -t gfm)
+# 3. Render the Markdown for the terminal using mdcat
+cat - | pandoc -f jira -t gfm | mdless

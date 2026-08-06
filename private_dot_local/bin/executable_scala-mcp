@@ -1,0 +1,320 @@
+#!/usr/bin/env zsh
+# scala-mcp - Agent-agnostic stdio launcher for metals-mcp
+#
+# Discovers a Scala project root and execs metals-mcp with --transport stdio.
+# Does not use ${workspaceFolder} or hard-coded repo paths.
+#
+# Environment:
+#   SCALA_MCP_WORKSPACE   Explicit project root (highest priority)
+#   SCALA_MCP_METALS_BIN  Override path to metals-mcp binary
+#   METALS_JAVA_HOME      Exported as JAVA_HOME when set
+#   SCALA_MCP_DEBUG=1     Dump resolution details to stderr before exec
+#
+# Example MCP config (Auggie / Claude / Cursor / Codex):
+#   {
+#     "type": "stdio",
+#     "command": "/Users/tkolleh/.local/bin/scala-mcp",
+#     "args": []
+#   }
+#
+# Warning: Avoid running IDE Metals MCP and this wrapper against the same
+# workspace concurrently (competing BSP / .metals state).
+#
+# Usage:
+#   scala-mcp [options] [extra metals-mcp args...]
+#   scala-mcp --print-workspace
+#   scala-mcp --workspace /path/to/project
+#   SCALA_MCP_WORKSPACE=/path scala-mcp
+
+set -euo pipefail
+
+usage() {
+  cat <<'HELP'
+scala-mcp - stdio launcher for metals-mcp
+
+Usage:
+  scala-mcp [options] [extra metals-mcp args...]
+
+Options:
+  --workspace PATH     Use PATH as project root (skip discovery)
+  --print-workspace    Print resolved absolute root on stdout and exit 0
+  -h, --help           Show this help
+  -v, --version        Show wrapper and metals-mcp versions
+
+Environment:
+  SCALA_MCP_WORKSPACE  Explicit project root (highest priority)
+  SCALA_MCP_METALS_BIN Override metals-mcp binary path
+  METALS_JAVA_HOME     Export as JAVA_HOME
+  SCALA_MCP_DEBUG      Non-empty → dump resolution to stderr
+
+Workspace resolution order:
+  1. SCALA_MCP_WORKSPACE
+  2. --workspace PATH
+  3. Walk $PWD → / for strong markers, then weak markers
+
+Strong markers: build.sbt, build.sc, build.mill, pom.xml,
+                project/build.properties, directory .bsp
+Weak markers:   directory .bloop, directory .metals
+
+Transport is always forced to stdio. User --transport / --port are stripped.
+HELP
+}
+
+warn() {
+  print -u2 -- "scala-mcp: $*"
+}
+
+die() {
+  print -u2 -- "scala-mcp: error: $*"
+  exit 1
+}
+
+# --- resolve metals-mcp binary ------------------------------------------------
+
+resolve_metals_bin() {
+  if [[ -n "${SCALA_MCP_METALS_BIN:-}" ]]; then
+    if [[ ! -x "$SCALA_MCP_METALS_BIN" ]]; then
+      die "SCALA_MCP_METALS_BIN is not executable: $SCALA_MCP_METALS_BIN"
+    fi
+    print -r -- "$SCALA_MCP_METALS_BIN"
+    return
+  fi
+  local bin
+  bin="$(command -v metals-mcp 2>/dev/null)" || true
+  if [[ -z "$bin" ]]; then
+    die "metals-mcp not found on PATH.
+Install with: cs install metals-mcp
+  or:        brew install metals
+Or set SCALA_MCP_METALS_BIN to the full path."
+  fi
+  print -r -- "$bin"
+}
+
+# --- optional JAVA_HOME -------------------------------------------------------
+# Non-fatal: inherit ambient JAVA_HOME if nothing resolves.
+
+resolve_java_home() {
+  if [[ -n "${METALS_JAVA_HOME:-}" ]]; then
+    print -r -- "$METALS_JAVA_HOME"
+    return
+  fi
+  if (( ${+commands[cs]} )); then
+    local jh
+    jh="$(cs java-home --architecture arm64 --jvm corretto:17 2>/dev/null)" || true
+    if [[ -n "$jh" ]]; then
+      print -r -- "$jh"
+      return
+    fi
+  fi
+  # Inherit existing JAVA_HOME if any (may be empty)
+  print -r -- "${JAVA_HOME:-}"
+}
+
+# --- workspace discovery ------------------------------------------------------
+
+has_strong_marker() {
+  local dir="$1"
+  [[ -f "$dir/build.sbt" ]] && return 0
+  [[ -f "$dir/build.sc" ]] && return 0
+  [[ -f "$dir/build.mill" ]] && return 0
+  [[ -f "$dir/pom.xml" ]] && return 0
+  [[ -f "$dir/project/build.properties" ]] && return 0
+  [[ -d "$dir/.bsp" ]] && return 0
+  return 1
+}
+
+has_weak_marker() {
+  local dir="$1"
+  [[ -d "$dir/.bloop" ]] && return 0
+  [[ -d "$dir/.metals" ]] && return 0
+  return 1
+}
+
+# Walk from start → / ; nearest match wins. mode: strong|weak
+walk_for_marker() {
+  local start="$1"
+  local mode="$2"
+  local dir="$start"
+  while true; do
+    if [[ "$mode" == strong ]]; then
+      if has_strong_marker "$dir"; then
+        print -r -- "$dir"
+        return 0
+      fi
+    else
+      if has_weak_marker "$dir"; then
+        print -r -- "$dir"
+        return 0
+      fi
+    fi
+    if [[ "$dir" == "/" ]]; then
+      break
+    fi
+    dir="${dir:h}"
+  done
+  return 1
+}
+
+discover_workspace() {
+  local start="${1:-$PWD}"
+  # Normalize to absolute
+  start="${start:A}"
+  local found
+  found="$(walk_for_marker "$start" strong)" && {
+    print -r -- "$found"
+    return 0
+  }
+  found="$(walk_for_marker "$start" weak)" && {
+    print -r -- "$found"
+    return 0
+  }
+  return 1
+}
+
+resolve_workspace() {
+  local explicit="${1:-}"
+  local root=""
+
+  if [[ -n "${SCALA_MCP_WORKSPACE:-}" ]]; then
+    root="${SCALA_MCP_WORKSPACE:A}"
+  elif [[ -n "$explicit" ]]; then
+    root="${explicit:A}"
+  else
+    if ! root="$(discover_workspace "$PWD")"; then
+      die "no Scala project root found walking from $PWD
+
+Looked for strong markers: build.sbt, build.sc, build.mill, pom.xml,
+  project/build.properties, directory .bsp
+Then weak markers: directory .bloop, directory .metals
+
+Set SCALA_MCP_WORKSPACE or pass --workspace PATH."
+    fi
+  fi
+
+  if [[ ! -d "$root" ]]; then
+    die "workspace is not a directory: $root"
+  fi
+  print -r -- "$root"
+}
+
+# --- arg parse ----------------------------------------------------------------
+
+workspace_flag=""
+print_workspace=0
+show_help=0
+show_version=0
+forwarded=()
+
+while (( $# > 0 )); do
+  case "$1" in
+    -h|--help)
+      show_help=1
+      shift
+      ;;
+    -v|--version)
+      show_version=1
+      shift
+      ;;
+    --print-workspace)
+      print_workspace=1
+      shift
+      ;;
+    --workspace)
+      if (( $# < 2 )); then
+        die "--workspace requires a PATH argument"
+      fi
+      workspace_flag="$2"
+      shift 2
+      ;;
+    --workspace=*)
+      workspace_flag="${1#--workspace=}"
+      shift
+      ;;
+    --transport)
+      warn "ignoring user --transport (forced to stdio)"
+      if (( $# >= 2 )) && [[ "$2" != -* ]]; then
+        shift 2
+      else
+        shift
+      fi
+      ;;
+    --transport=*)
+      warn "ignoring user --transport (forced to stdio)"
+      shift
+      ;;
+    --port)
+      warn "ignoring user --port (HTTP out of scope; stdio only)"
+      if (( $# >= 2 )) && [[ "$2" != -* ]]; then
+        shift 2
+      else
+        shift
+      fi
+      ;;
+    --port=*)
+      warn "ignoring user --port (HTTP out of scope; stdio only)"
+      shift
+      ;;
+    --)
+      shift
+      forwarded+=("$@")
+      break
+      ;;
+    *)
+      forwarded+=("$1")
+      shift
+      ;;
+  esac
+done
+
+if (( show_help )); then
+  usage
+  exit 0
+fi
+
+METALS_BIN="$(resolve_metals_bin)"
+
+if (( show_version )); then
+  print -r -- "scala-mcp wrapper 1.0.0"
+  # metals-mcp --version may write to stdout; that's fine for -v
+  if out="$("$METALS_BIN" --version 2>&1)"; then
+    print -r -- "$out"
+  else
+    warn "could not obtain metals-mcp version from $METALS_BIN"
+  fi
+  # For --version we still want java/workspace resolution when DEBUG set,
+  # but don't require workspace unless user also wants print/debug dump.
+  if [[ -n "${SCALA_MCP_DEBUG:-}" ]]; then
+    JH="$(resolve_java_home)"
+    WS=""
+    WS="$(resolve_workspace "$workspace_flag" 2>/dev/null)" || WS="(unresolved)"
+    print -u2 -- "scala-mcp debug:"
+    print -u2 -- "  workspace:  $WS"
+    print -u2 -- "  metals-bin: $METALS_BIN"
+    print -u2 -- "  JAVA_HOME:  ${JH:-"(inherit)"}"
+    print -u2 -- "  pwd:        $PWD"
+  fi
+  exit 0
+fi
+
+ROOT="$(resolve_workspace "$workspace_flag")"
+
+if (( print_workspace )); then
+  print -r -- "$ROOT"
+  exit 0
+fi
+
+JH="$(resolve_java_home)"
+if [[ -n "$JH" ]]; then
+  export JAVA_HOME="$JH"
+fi
+
+if [[ -n "${SCALA_MCP_DEBUG:-}" ]]; then
+  print -u2 -- "scala-mcp debug:"
+  print -u2 -- "  workspace:  $ROOT"
+  print -u2 -- "  metals-bin: $METALS_BIN"
+  print -u2 -- "  JAVA_HOME:  ${JAVA_HOME:-"(unset)"}"
+  print -u2 -- "  pwd:        $PWD"
+  print -u2 -- "  forwarded:  ${forwarded[*]:-}"
+fi
+
+exec "$METALS_BIN" --workspace "$ROOT" --transport stdio "${forwarded[@]}"

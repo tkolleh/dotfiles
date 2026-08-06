@@ -23,3 +23,9 @@ id_*
 
 # Allium loop ledger (local agent state)
 .allium-loop/
+
+# Managed scripts for ~/.local/bin. The global gitignore has a broad `[Bb]in/`
+# rule (VS/JetBrains boilerplate) that would otherwise swallow this directory
+# and silently leave these scripts untracked.
+!private_dot_local/bin/
+!private_dot_local/bin/**
