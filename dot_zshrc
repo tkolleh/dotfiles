@@ -3,6 +3,8 @@
 #
 # ~/.zshrc
 #
+# Review the ~/.local/share/zsh/plugins/custom/init.zsh for the load chain
+#
 # =============================================================================
 
 # OPTIMIZATION: zprof is for profiling. Comment it out for daily use.
@@ -192,6 +194,3 @@ zsh-defer eval "$(command direnv hook zsh)"
 
 # mise - the One tool to manage languages, env vars, and tasks per project, reproducibly
 zsh-defer eval "$(command mise activate zsh)"
-
-# Source host-specific functions
-[[ -f ~/.host_functions.zsh ]] && source ~/.host_functions.zsh

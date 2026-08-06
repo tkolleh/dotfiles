@@ -23,25 +23,32 @@ export XDG_DATA_HOME="$HOME/.local/share"
 # TODO: Consider deferring this via zsh-defer in zshrc?
 source <(/opt/homebrew/bin/brew shellenv)
 
+# Prepended deliberately: brew's python3 must beat the /usr/bin/python3 stub.
 export PATH="$(brew --prefix python3)/bin:$PATH"
 if [[ -d "$HOME/.volta" ]]; then
   export VOLTA_HOME="$HOME/.volta"
-  export PATH="$VOLTA_HOME/bin:$PATH"
+  export PATH="$PATH:$VOLTA_HOME/bin"
 fi
 
-export PATH="$HOME/.local/share/git/git-commands:$PATH"
+export PATH="$PATH:$HOME/.local/share/git/git-commands"
 
 export D2_LAYOUT="tala"
 
-export PATH="$HOME/.rd/bin:$PATH"
+export PATH="$PATH:$HOME/.rd/bin"
 
 # Additional tools e.g. JetBrains toolbox
 export PATH="$PATH:$HOME/Library/Application Support/JetBrains/Toolbox/scripts"
 
+# Prepended deliberately: this dir exists to *override* system/brew tools.
+# Wrappers here re-establish env that external callers strip (conductor-marked),
+# pin a different runtime than the globals below (serena-mcp/scala-mcp need
+# Java 17, not the Corretto 21 set at the bottom of this file), or extend an
+# upstream tool (vimr adds --remote). Appending would let /opt/homebrew/bin and
+# /usr/bin shadow all of that. Keep this ahead of them.
 export PATH="$HOME/.local/bin:$PATH"
 
 # TODO: Consider deferring this via zsh-defer?
-export PATH="$PATH:$(go env GOPATH)/bin" 
+export PATH="$PATH:$(go env GOPATH)/bin"
 
 export PATH="$PATH:/Users/tkolleh/.cargo/bin"
 
@@ -61,7 +68,7 @@ source <(cs install --env)
 # TODO: Consider deferring this via zsh-defer?
 export LEFTHOOK_HOME="$(brew --prefix lefthook)"
 
-export PATH="$LEFTHOOK_HOME/bin:$PATH"
+export PATH="$PATH:$LEFTHOOK_HOME/bin"
 
 export PAGER='moor --colors=auto --no-clear-on-exit'
 
@@ -80,6 +87,11 @@ if [[ -f /opt/alerter/bin/alerter ]]; then
 fi
 
 export JAVA_HOME="$(cs java-home --architecture arm64 --jvm corretto:21)"
+# Prepended deliberately: appending leaves /usr/bin ahead, so `java` resolves to
+# the macOS stub. The stub happens to forward via JAVA_HOME, but that is macOS
+# behaviour rather than a guarantee and it does not cover every tool in this dir
+# (jshell, jcmd, jstack, native-image). set_java_home_to/jmac in ~/.zsh_functions
+# assume this JDK's bin wins.
 export PATH="$JAVA_HOME/bin:$PATH"
 export ZK_NOTEBOOK_DIR="$HOME/zettelkasten/notes"
 
@@ -90,4 +102,4 @@ export ZK_NOTEBOOK_DIR="$HOME/zettelkasten/notes"
 export RUBY_PREFIX="$(brew --prefix ruby)"
 export GEM_HOME="$HOME/.gem/ruby/4.0.0"
 export GEM_BIN="$GEM_HOME/bin"
-export PATH="$RUBY_PREFIX/bin:$GEM_BIN:$PATH"
+export PATH="$PATH:$RUBY_PREFIX/bin:$GEM_BIN"
