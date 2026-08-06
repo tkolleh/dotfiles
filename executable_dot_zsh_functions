@@ -44,68 +44,7 @@ function syspath(){
    echo $PATH | sed 's/:/\n/g' | sort | uniq -c
 }
 
-# Find string in files using ripgrep as the filter with fzf interface. Adds files 
-# to quickfix list if more than one is selected.
-# see: https://junegunn.github.io/fzf/tips/ripgrep-integration/
-# ripgrep->fzf->vim [QUERY]
-fif() (
-  # Fuzzy search for a string in files using ripgrep and fzf, open in nvim.
-  # Usage: fif [rg options] -- [query]
 
-  # Parse arguments: everything before " -- " is rg_opts, after is query
-  # rg_opts="--hidden --follow --line-number --column --color=always --smart-case"
-  #
-  local pre_separator post_separator rg_opts rg_query
-  pre_separator=$(awk -v RS=" -- " 'NR==1{print; exit}' <<< "$*")
-  post_separator=$(awk -v RS=" -- " 'NR==2{print; exit}' <<< "$*")
-
-  if [[ -z "$post_separator" ]]; then
-    rg_opts=""
-    rg_query=$pre_separator
-  else
-    rg_opts=$pre_separator
-    rg_query=$post_separator
-  fi
-
-  # Uncomment for debugging
-  # printf -- "Opts : [%s]\nQuery: [%s]\n\n" "$rg_opts" "$rg_query" >&2
-  if [[ "$rg_query" == *"--"* ]]; then
-    printf "\033[34mWARN:\033[0m Query contains '--' did you mean to inlcude '--opt-1 -- query'?\n\n" >&2
-  fi
-
-  local init_reload="reload:rg --ignore-case --column --color=always $rg_opts --regexp $rg_query || :"
-  local reload="reload:rg --ignore-case --column --color=always $rg_opts --regexp {q} || :"
-  local opener='if [[ $FZF_SELECT_COUNT -eq 0 ]]; then
-            nvim {1} +{2}     # No selection. Open the current line in Vim.
-          else
-            nvim +cw -q {+f}  # Build quickfix list for the selected items.
-          fi'
-  fzf --disabled --ansi --multi \
-      --bind "start:$init_reload" --bind "change:$reload" \
-      --bind "enter:become:$opener" \
-      --bind "ctrl-o:execute:$opener" \
-      --bind 'alt-a:select-all,alt-d:deselect-all,?:toggle-preview' \
-      --delimiter : \
-      --preview 'bat --style=full --color=always --highlight-line {2} {1}' \
-      --preview-window '~4,+{2}+4/3,<80(up)' \
-      --query "$rg_query"
-)
-
-# Find string in files using ripgrep with fzf interface. prints filenames with matches
-# ripgrep->fzf [QUERY]
-fifn() (
-  local opener='if [[ $FZF_SELECT_COUNT -eq 0 ]]; then
-            nvim -- {}     # Open the focused file in nvim.
-          else
-            nvim -- {+}    # Open all selected files in nvim.
-          fi'
-  rg --ignore-case --files-with-matches --unrestricted --regexp "$*" | fzf --ansi --multi \
-    --bind "enter:become:$opener" \
-    --bind "ctrl-o:execute:$opener" \
-    --bind 'alt-a:select-all,alt-d:deselect-all,?:toggle-preview' \
-    --preview 'bat --style=full --color=always --line-range :300 {}' \
-    --preview-window '~4,<80(up)' \
-  )
 
 # fbc - fuzzy Find Branch or tag to Checkout
 # checkout git branch (including remote branches), sorted by most recent commit, limit 30 last branches
@@ -157,32 +96,11 @@ function fcs() {
     echo -n $(echo "$commit" | sed "s/ .*//")
 }
 
-# Check the content length of a file and print size in MB
-function contentlength() {
-  if [[ ! -z "$1" ]]; then
-    curl -sLI $1 | awk 'tolower($1) ~ /content-length/ {print $1, ($2/1000000), "MB"}'
-  else
-    echo "Enter URL to file"
-  fi
-}
-
 # fuzzy find alias
 function fzfa() {
   alias | bat --paging=never -n -f -l bash | fzf --ansi
 }
 
-# Kubernetes namesapce visualization tool
-# https://github.com/viralpoetry/kubesurveyor
-function k8nsv() {
-  if [[ ! -z "$1" ]]; then
-    echo "Saving namespace data for $1"
-    kubesurveyor $1 --insecure --save > namespace.yaml
-    cat namespace.yaml| kubesurveyor $1 --load --out png
-    trash "$1"
-  else
-    echo "Namespace required"
-  fi
-}
 
 function print_color_band() {
   echo -n "
@@ -225,60 +143,6 @@ function edit_dot_files() {
   if (( ${+commands[chezmoi]} )) && (( ${+commands[nvim]} )) && [[ -d $CHEZMOI_SOURCE_PATH ]]; then
     nvim $CHEZMOI_SOURCE_PATH
     chezmoi apply
-  fi
-}
-
-function update_term_tools() {
-  if (( ${+commands[brew]} )); then
-    roda --spinner "arc" --title "Upgrading outdated homebrew formulas..." -- brew upgrade --formula || :
-  fi
-  if (( ${+commands[atuin]} )); then
-    roda --spinner "arc" --title "Syncing atuin history..." -- atuin sync || :
-  fi
-  if (( ${+commands[zpm]} )); then
-    roda --spinner "arc" --title "Cleaning zpm..." -- zpm clean || :
-    roda --spinner "arc" --title "Upgrading zpm..." -- zpm upgrade || :
-  fi
-  if (( ${+commands[cs]} )); then
-    roda --spinner "arc" --title "Updating coursier..." -- cs update --quiet || :
-  fi
-  if (( ${+commands[pipx]} )); then
-    roda --spinner "arc" --title "Upgrading all pipx packages..." -- pipx upgrade-all || :
-  fi
-  if (( ${+commands[node]} )); then
-    roda --spinner "arc" --title "Updating global npm packages..." -- npm --global update || :
-    roda --spinner "arc" --title "Updating pnpm ..." -- pnpm self-update || :
-  fi
-  if (( ${+commands[uv]} )); then
-    roda --spinner "arc" --title "Updating uv tools..." -- uv tool upgrade --all || :
-  fi
-  if (( ${+commands[yazi]} )); then
-    roda --spinner "arc" --title "Installing yazi plugins with locked versions from package.toml..." -- ya pkg install || :
-    roda --spinner "arc" --title "Upgrading yazi plugins package.toml" -- ya pkg upgrade || :
-  fi
-  if (( ${+commands[httpie]} )); then
-    roda --spinner "arc" --title "Upgrading httpie cli..." -- httpie cli check-updates || :
-    roda --spinner "arc" --title "Upgrading httpie plugins..." -- httpie plugins upgrade httpie-jwt-auth httpie-image || :
-  fi
-  if (( ${+command[cargo]} )); then
-    roda --spinner "arc" --title "Upgrading cargo packages..." -- cargo install cargo-update || :
-    roda --spinner "arc" --title "Upgrading cargo packages..." -- cargo install-update -a || :
-  fi
-  if [[ -n "$NVIM_VENV" ]] && [[ -d "$NVIM_VENV" ]]; then
-    roda --spinner "arc" --title "Updating neovim python venv packages..." -- "$NVIM_VENV/bin/pip" install --upgrade pynvim || :
-  fi
-  if (( ${+commands[npx]} )); then
-    roda --spinner "arc" --title "Update agent skills" -- npx skills update || :
-  fi
-  if (( ${+commands[skillfish]} )); then
-    roda --spinner "arc" --title "Update agent skills" -- skillfish update --yes || :
-  fi
-  if (( ${+commands[skills]} )); then
-    roda --spinner "arc" --title "Update agent skills" -- skills update --global --yes || :
-  fi
-  # Run `brew link --overwrite ruby --force` to use the latest ruby version
-  if (( ${+commands[gem]} )); then
-    roda --spinner "arc" --title "Update ruby system gems" -- gem update || :
   fi
 }
 
@@ -335,144 +199,6 @@ function help() {
     "$@" --help 2>&1 | bat --plain --language=help
     echo
   fi
-}
-
-# Debug what the heck is going on with gpg
-function debug-gpg(){
-  echo -e "Forcing a restart of the gpg-agent to prevent the use of an outdated agent version\n"
-  gpgconf --kill all
-  echo RELOADAGENT | gpg-connect-agent
-  echo -e "Testing gpg signing with clearsign\n"
-  echo "test" | gpg --clearsign
-}
-
-function sbt_clear_cache(){
-  echo -e "\nRun with '-a' to clean all cache files\n"
-
-  if [[ $1 == "-a" ]]; then
-    echo -e "\nEmptying the maven cache (this may take some time to rebuild)\n"
-    rm -fvr ~/.m2/repository
-
-    echo -e "\nEmptying the ivy cache (this may take some time to rebuild)\n"
-    rm -fvr ~/.ivy2/cache/*
-    find ~/.sbt ~/.ivy2 -name "*.lock" -print -delete
-    find ~/.sbt ~/.ivy2 -name "ivydata-*.properties" -print -delete
-
-
-    echo -e "\nRemoving all sbt project related class files\n"
-    rm -fvr ~/.sbt/1.0/plugins/target
-    rm -fvr ~/.sbt/1.0/plugins/project/target
-    rm -fvr ~/.sbt/1.0/target
-    rm -fvr ~/.sbt/0.13/plugins/target
-    rm -fvr ~/.sbt/0.13/plugins/project/target
-    rm -fvr ~/.sbt/0.13/target
-  fi
-
-  echo -e "\nEmptying the idl cache\n"
-  rm -fvr ./idl/lib
-  rm -fvr ~/.idl-sbt-cache
-  echo -e "\nRunning 'sbt clean update'\n"
-  rm -fvr ~/.idl-sbt-cache
-  rm -fvr target
-  rm -fvr .metals
-  rm -fvr .bsp
-  rm -fvr .bloop
-  rm -fvr ./project/target
-  rm -fvr ./project/project/target
-  sbt clean update
-}
-
-# Search all commits in heads or remotes for changes matching pattern
-function grep_refs(){
-  echo "\t======= Searching '${1}' for '${2}' ========="
-  git grep -i "${2}" $(git for-each-ref --format='%(refname)' refs/"${1}")
-}
-
-function print_jvm_versions(){
-  echo -e "\nPrinting runtime and tool versions of the JVM.\n"
-  local arr=("java" "scala" "mvn" "sbt")
-  for i in "${arr[@]}"; do
-      echo -e "\n---- ${i} version ----\n"
-      if (( ${+commands[$i]} )); then
-        $i -version
-      fi
-  done
-}
-
-function extract_file_from_image(){
-  if [ $# -eq 3 ]; then
-    echo -e "\nExtracting file [$2] from image [$1]"
-    echo -e "Saving file to [$3]\n"
-    local image=$1
-    local source_path=$2
-    local destination_path=$3
-    local container_id=$(docker create "$image")
-    docker cp "$container_id:$source_path" "$destination_path"
-    docker rm "$container_id"
-  else
-    echo -e "\nRequires <image id> <source path> <destination path>"
-  fi
-}
-
-function is_installed_by_brew(){
-  # Check if the file exists
-  local file="$1"
-  if [[ ! -e "$file" ]]; then
-    # Return an exit code without closing the shell while having -e set.
-    echo "File $file does not exist." && (return 1)
-  fi
-
-  if (( ${+commands[rg]} )) && (( ${+commands[brew]} )); then
-    # Count the number of lines in the file
-    local pattern_cnt=$(wc -l "$file" | awk '{print $1}')
-    local rg_output=$(brew list --versions | rg -f "$file")
-    local line_count=$(echo "$rg_output" | sort | uniq | wc -l | awk '{print $1}')
-
-    # Compare line count with pattern_cnt
-    if (( "$line_count" == "$pattern_cnt" )); then
-      echo "The line count [$line_count] equals pattern_cnt [$pattern_cnt]." && (return 0)
-    else
-      echo "The line count [$line_count] does not equal pattern_cnt [$pattern_cnt]." && (return 2)
-    fi
-  else
-    echo "Requires ripgrep and brew to be installed." && (return 1)
-  fi
-}
-
-function select_from_brew_info() {
-  # Select fields from brew info JSON of installed homebrew formulas.
-  # Defaults to 'name, full_name, desc, homepage' when field names are not provided.
-  if ! (( ${+commands[brew]} )) || ! (( ${+commands[duckdb]} )); then
-    echo "Requires brew and duckdb to be installed" && (return 1)
-  fi
-
-  local _fields
-  local default_fields="name, full_name, \"desc\""
-  local brew_info_json_path=$TMPDIR/brew_info_.json
-  local query_rslt_path=$TMPDIR/brew_info_result.csv
-  local _fields=$default_fields
-
-  if [[ -z "$1" ]]; then
-    _fields=$default_fields
-  else
-    _fields="$1"
-  fi
-
-  local query=$(print -r -- "COPY (
-      select $_fields
-      from read_json_auto('${brew_info_json_path}', ignore_errors := true)
-    ) TO '${query_rslt_path}';
-  ")
-
-  brew info --installed --json > $brew_info_json_path
-
-  echo -e "\nQuerying brew info table of installed formulas"
-  echo -e "\tQuery: [$query]"
-  echo -e "\tInput path: $brew_info_json_path"
-  echo -e "\tOutput path: $query_rslt_path"
-
-  duckdb -c "${query}"
-  bat $query_rslt_path
 }
 
 function print_pr_basics() {
@@ -544,52 +270,6 @@ function print_pr_review_request(){
   local tmp_md=$(gmktemp --suffix=.md pr_review_XXXXXX)
   printf "%s\n%s\n%s\n" "$ask" "$header" "$body" > "$tmp_md"
   mdcat "$tmp_md"
-}
-
-function ssh_ghostty() {
-  if [[ $# -ne 2 ]]; then
-    echo "Usage: ssh_ghostty <port> <user@host>"
-    echo "Example: ssh_ghostty 22 user@example.com"
-    echo "Copies your local terminfo to the remote host before connecting via SSH."
-    return 1
-  fi
-
-  infocmp -x | ssh -p $1 $2 -- tic -x -
-  ssh -p $1 $2
-}
-
-function sync_metals_mcp() {
-  local mcp_file=".mcp.json"
-  local opencode_file="opencode.json"
-
-  # 1. Check if Metals MCP file exists
-  if [[ ! -f "$mcp_file" ]]; then
-    gum log --structured --level error "❌ Error: ${mcp_file} not found in the current directory."
-    return 1
-  fi
-
-  # 2. Extract the SSE URL using jq
-  local sse_url=$(jq -r '.mcpServers.metals.url' "$mcp_file")
-
-  if [[ "$sse_url" == "null" ]]; then
-    gum log --structured --level error "❌ Error: Could not find Metals SSE URL in ${mcp_file}"
-    return 1
-  fi
-
-  # 3. Create or replace opencode.json
-  if [[ ! -f "$opencode_file" ]] || rg -q "$sse_url" "$opencode_file"; then
-    # Create a fresh file if it doesn't exist
-    gum log --level info "Creating new $opencode_file..."
-    echo '{ "$schema": "https://opencode.ai/config.json" }' > "$opencode_file"
-  fi
-
-  # Use jq to merge the metals config into the existing file
-  local tmp_file=$(mktemp)
-  jq --arg url "$sse_url" \
-     '.mcp["scala-metals"] = {"type": "remote", "url": $url, "enabled": true}' \
-     "$opencode_file" > "$tmp_file" && mv "$tmp_file" "$opencode_file"
-
-  gum log --level info "✅ Success: OpenCode is now linked to Metals at $sse_url"
 }
 
 # Git worktrees cd hook - enables `git worktrees` to change parent shell directory

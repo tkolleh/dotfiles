@@ -1,0 +1,29 @@
+#!/usr/bin/env zsh
+# -*-mode:zsh-*- vim:ft=zsh
+#
+# extract_file_from_image - Copy a file out of a Docker image
+#
+# Usage:
+#   extract_file_from_image <image id> <source path> <destination path>
+#
+# Creates a container from the image without running it, copies the
+# requested path out, then removes the container.
+#
+# Requires: docker
+
+emulate -L zsh
+setopt pipe_fail
+
+if [ $# -eq 3 ]; then
+  echo -e "\nExtracting file [$2] from image [$1]"
+  echo -e "Saving file to [$3]\n"
+  local image=$1
+  local source_path=$2
+  local destination_path=$3
+  local container_id=$(docker create "$image")
+  docker cp "$container_id:$source_path" "$destination_path"
+  docker rm "$container_id"
+else
+  echo -e "\nRequires <image id> <source path> <destination path>" >&2
+  exit 1
+fi

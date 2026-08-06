@@ -1,0 +1,22 @@
+#!/usr/bin/env zsh
+# -*-mode:zsh-*- vim:ft=zsh
+#
+# print_jvm_versions - Report versions of the installed JVM toolchain
+#
+# Usage:
+#   print_jvm_versions
+#
+# Prints `-version` output for java, scala, mvn and sbt, skipping any
+# that are not on PATH.
+
+emulate -L zsh
+setopt pipe_fail
+
+echo -e "\nPrinting runtime and tool versions of the JVM.\n"
+local arr=("java" "scala" "mvn" "sbt")
+for i in "${arr[@]}"; do
+    echo -e "\n---- ${i} version ----\n"
+    if (( ${+commands[$i]} )); then
+      $i -version
+    fi
+done

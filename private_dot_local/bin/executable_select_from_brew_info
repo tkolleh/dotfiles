@@ -1,0 +1,56 @@
+#!/usr/bin/env zsh
+# -*-mode:zsh-*- vim:ft=zsh
+#
+# select_from_brew_info - Query installed Homebrew formulas with DuckDB
+#
+# Usage:
+#   select_from_brew_info [fields]
+#
+#   fields  SQL select list. Defaults to 'name, full_name, "desc"'.
+#           Note that `desc` is a DuckDB keyword and must stay quoted.
+#
+# Dumps `brew info --installed --json` to $TMPDIR, runs the query over it,
+# and pages the CSV result through bat.
+#
+# Environment:
+#   TMPDIR  scratch location for the JSON dump and CSV result
+#
+# Requires: brew, duckdb, bat
+
+emulate -L zsh
+setopt pipe_fail
+
+# Select fields from brew info JSON of installed homebrew formulas.
+# Defaults to 'name, full_name, desc, homepage' when field names are not provided.
+if ! (( ${+commands[brew]} )) || ! (( ${+commands[duckdb]} )); then
+  echo "Requires brew and duckdb to be installed" >&2
+  exit 1
+fi
+
+local _fields
+local default_fields="name, full_name, \"desc\""
+local brew_info_json_path=$TMPDIR/brew_info_.json
+local query_rslt_path=$TMPDIR/brew_info_result.csv
+local _fields=$default_fields
+
+if [[ -z "$1" ]]; then
+  _fields=$default_fields
+else
+  _fields="$1"
+fi
+
+local query=$(print -r -- "COPY (
+    select $_fields
+    from read_json_auto('${brew_info_json_path}', ignore_errors := true)
+  ) TO '${query_rslt_path}';
+")
+
+brew info --installed --json > $brew_info_json_path
+
+echo -e "\nQuerying brew info table of installed formulas"
+echo -e "\tQuery: [$query]"
+echo -e "\tInput path: $brew_info_json_path"
+echo -e "\tOutput path: $query_rslt_path"
+
+duckdb -c "${query}"
+bat $query_rslt_path

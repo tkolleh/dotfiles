@@ -1,0 +1,21 @@
+#!/usr/bin/env zsh
+# -*-mode:zsh-*- vim:ft=zsh
+#
+# contentlength - Print the size of a remote file from its Content-Length header
+#
+# Usage:
+#   contentlength <url>
+#
+# Issues a HEAD request (following redirects) and reports the size in MB.
+#
+# Requires: curl
+
+emulate -L zsh
+setopt pipe_fail
+
+if [[ ! -z "$1" ]]; then
+  curl -sLI $1 | awk 'tolower($1) ~ /content-length/ {print $1, ($2/1000000), "MB"}'
+else
+  echo "Enter URL to file" >&2
+  exit 1
+fi

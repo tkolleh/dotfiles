@@ -1,0 +1,46 @@
+#!/usr/bin/env zsh
+# -*-mode:zsh-*- vim:ft=zsh
+#
+# is_installed_by_brew - Check that every formula listed in a file is installed
+#
+# Usage:
+#   is_installed_by_brew <file>
+#
+#   file  newline-separated list of formula names to look for in
+#         `brew list --versions`
+#
+# Exit codes:
+#   0  every line in the file matched an installed formula
+#   1  file missing, or ripgrep/brew unavailable
+#   2  match count did not equal the number of lines in the file
+#
+# Requires: rg, brew
+
+emulate -L zsh
+setopt pipe_fail
+
+# Check if the file exists
+local file="$1"
+if [[ ! -e "$file" ]]; then
+  echo "File $file does not exist." >&2
+  exit 1
+fi
+
+if (( ${+commands[rg]} )) && (( ${+commands[brew]} )); then
+  # Count the number of lines in the file
+  local pattern_cnt=$(wc -l "$file" | awk '{print $1}')
+  local rg_output=$(brew list --versions | rg -f "$file")
+  local line_count=$(echo "$rg_output" | sort | uniq | wc -l | awk '{print $1}')
+
+  # Compare line count with pattern_cnt
+  if (( "$line_count" == "$pattern_cnt" )); then
+    echo "The line count [$line_count] equals pattern_cnt [$pattern_cnt]."
+    exit 0
+  else
+    echo "The line count [$line_count] does not equal pattern_cnt [$pattern_cnt]." >&2
+    exit 2
+  fi
+else
+  echo "Requires ripgrep and brew to be installed." >&2
+  exit 1
+fi

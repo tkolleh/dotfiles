@@ -1,0 +1,26 @@
+#!/usr/bin/env zsh
+# -*-mode:zsh-*- vim:ft=zsh
+#
+# grep_refs - Search all commits under a git ref namespace for a pattern
+#
+# Usage:
+#   grep_refs <namespace> <pattern>
+#
+#   namespace  ref namespace under refs/, e.g. 'heads' or 'remotes'
+#   pattern    case-insensitive pattern passed to `git grep`
+#
+# Example:
+#   grep_refs remotes 'TODO'
+#
+# Requires: git
+
+emulate -L zsh
+setopt pipe_fail
+
+if [[ $# -ne 2 ]]; then
+  echo "Usage: grep_refs <heads|remotes> <pattern>" >&2
+  exit 1
+fi
+
+echo "\t======= Searching '${1}' for '${2}' ========="
+git grep -i "${2}" $(git for-each-ref --format='%(refname)' refs/"${1}")

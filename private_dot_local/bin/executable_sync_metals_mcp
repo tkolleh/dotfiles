@@ -1,0 +1,53 @@
+#!/usr/bin/env zsh
+# -*-mode:zsh-*- vim:ft=zsh
+#
+# sync_metals_mcp - Point opencode.json at the Metals MCP server
+#
+# Usage:
+#   sync_metals_mcp
+#
+# Reads the Metals SSE URL from ./.mcp.json and merges it into
+# ./opencode.json as the 'scala-metals' remote MCP entry.
+#
+# Exit codes:
+#   0  opencode.json updated
+#   1  .mcp.json missing, or it has no Metals URL
+#
+# Requires: jq, rg, gum
+
+emulate -L zsh
+setopt pipe_fail
+
+local mcp_file=".mcp.json"
+local opencode_file="opencode.json"
+
+# 1. Check if Metals MCP file exists
+if [[ ! -f "$mcp_file" ]]; then
+  gum log --structured --level error "❌ Error: ${mcp_file} not found in the current directory."
+  exit 1
+fi
+
+# 2. Extract the SSE URL using jq
+local sse_url=$(jq -r '.mcpServers.metals.url' "$mcp_file")
+
+if [[ "$sse_url" == "null" ]]; then
+  gum log --structured --level error "❌ Error: Could not find Metals SSE URL in ${mcp_file}"
+  exit 1
+fi
+
+# 3. Create opencode.json when absent, or when it does not already carry
+#    this URL. Testing for the URL's presence (rather than its absence)
+#    would clobber a correct config and preserve a stale one.
+if [[ ! -f "$opencode_file" ]] || ! rg -q "$sse_url" "$opencode_file"; then
+  # Create a fresh file if it doesn't exist
+  gum log --level info "Creating new $opencode_file..."
+  echo '{ "$schema": "https://opencode.ai/config.json" }' > "$opencode_file"
+fi
+
+# Use jq to merge the metals config into the existing file
+local tmp_file=$(mktemp)
+jq --arg url "$sse_url" \
+   '.mcp["scala-metals"] = {"type": "remote", "url": $url, "enabled": true}' \
+   "$opencode_file" > "$tmp_file" && mv "$tmp_file" "$opencode_file"
+
+gum log --level info "✅ Success: OpenCode is now linked to Metals at $sse_url"

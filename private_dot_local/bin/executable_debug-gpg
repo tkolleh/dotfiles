@@ -1,0 +1,22 @@
+#!/usr/bin/env zsh
+# -*-mode:zsh-*- vim:ft=zsh
+#
+# debug-gpg - Restart the gpg-agent and verify signing works
+#
+# Usage:
+#   debug-gpg
+#
+# Kills all gpgconf-managed daemons, reloads the agent, then exercises
+# signing with a clearsign round-trip. Use when commit signing starts
+# failing after a gpg upgrade left a stale agent running.
+#
+# Requires: gpgconf, gpg, gpg-connect-agent
+
+emulate -L zsh
+setopt pipe_fail
+
+echo -e "Forcing a restart of the gpg-agent to prevent the use of an outdated agent version\n"
+gpgconf --kill all
+echo RELOADAGENT | gpg-connect-agent
+echo -e "Testing gpg signing with clearsign\n"
+echo "test" | gpg --clearsign

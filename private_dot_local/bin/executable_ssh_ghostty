@@ -1,0 +1,28 @@
+#!/usr/bin/env zsh
+# -*-mode:zsh-*- vim:ft=zsh
+#
+# ssh_ghostty - SSH to a host after installing the local terminfo there
+#
+# Usage:
+#   ssh_ghostty <port> <user@host>
+#
+# Example:
+#   ssh_ghostty 22 user@example.com
+#
+# Copies your local terminfo to the remote host before connecting, so
+# Ghostty's TERM is recognised and keys/colours behave correctly.
+#
+# Requires: infocmp, ssh, tic (on the remote)
+
+emulate -L zsh
+setopt pipe_fail
+
+if [[ $# -ne 2 ]]; then
+  echo "Usage: ssh_ghostty <port> <user@host>" >&2
+  echo "Example: ssh_ghostty 22 user@example.com" >&2
+  echo "Copies your local terminfo to the remote host before connecting via SSH." >&2
+  exit 1
+fi
+
+infocmp -x | ssh -p $1 $2 -- tic -x -
+ssh -p $1 $2

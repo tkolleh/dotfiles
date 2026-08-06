@@ -1,0 +1,26 @@
+#!/usr/bin/env zsh
+# -*-mode:zsh-*- vim:ft=zsh
+#
+# k8nsv - Visualise a Kubernetes namespace as a PNG
+#
+# Usage:
+#   k8nsv <namespace>
+#
+# Saves the namespace survey to namespace.yaml in the current directory,
+# renders it to PNG, then discards the intermediate YAML.
+#
+# Requires: kubesurveyor, trash
+
+emulate -L zsh
+setopt pipe_fail
+
+if [[ ! -z "$1" ]]; then
+  echo "Saving namespace data for $1"
+  kubesurveyor $1 --insecure --save > namespace.yaml
+  cat namespace.yaml| kubesurveyor $1 --load --out png
+  # Discard the intermediate survey, not the namespace name.
+  trash namespace.yaml
+else
+  echo "Namespace required" >&2
+  exit 1
+fi

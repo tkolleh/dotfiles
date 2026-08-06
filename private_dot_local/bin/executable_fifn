@@ -1,0 +1,33 @@
+#!/usr/bin/env zsh
+# -*-mode:zsh-*- vim:ft=zsh
+#
+# fifn - Fuzzy-pick files whose contents match a pattern, open in nvim
+#
+# Usage:
+#   fifn [query]
+#
+# Like fif, but lists matching filenames rather than individual matches.
+# Searches unrestricted (ignores .gitignore, includes hidden files).
+#
+# Keys:
+#   enter    open the focused file (or all selected files) in nvim
+#   ctrl-o   as enter, without leaving fzf
+#   alt-a    select all          alt-d  deselect all
+#   ?        toggle preview
+#
+# Requires: rg, fzf, bat, nvim
+
+emulate -L zsh
+setopt pipe_fail
+
+local opener='if [[ $FZF_SELECT_COUNT -eq 0 ]]; then
+          nvim -- {}     # Open the focused file in nvim.
+        else
+          nvim -- {+}    # Open all selected files in nvim.
+        fi'
+rg --ignore-case --files-with-matches --unrestricted --regexp "$*" | fzf --ansi --multi \
+  --bind "enter:become:$opener" \
+  --bind "ctrl-o:execute:$opener" \
+  --bind 'alt-a:select-all,alt-d:deselect-all,?:toggle-preview' \
+  --preview 'bat --style=full --color=always --line-range :300 {}' \
+  --preview-window '~4,<80(up)'
