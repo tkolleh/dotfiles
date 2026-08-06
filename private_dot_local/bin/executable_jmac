@@ -1,0 +1,31 @@
+#!/usr/bin/env zsh
+# -*-mode:zsh-*- vim:ft=zsh
+#
+# jmac - List the team's open Jira issues from the last 300 days
+#
+# Usage:
+#   jmac
+#
+# Matches issues on the RTB backlog epic, the Tools squad, or the
+# 'Money-Admin-Console'/'cw-fraud-eng' labels, excluding Done/Closed.
+#
+# Requires: jira, gum
+
+emulate -L zsh
+setopt pipe_fail
+
+# Load native Zsh datetime module for strftime / EPOCHSECONDS
+zmodload zsh/datetime
+
+local -i days_ago=300
+local filter_date
+strftime -s filter_date "%Y-%m-%d" $(( EPOCHSECONDS - (days_ago * 86400) ))
+
+gum log --structured --level info "Fetching Jira data for team" since "$filter_date"
+
+local -a jql_clauses=(
+  "( \"Epic Link\" = '[25.Q2.P1] RTB backlog Servicing and Admin team' OR Squad = 'Tools' OR labels in ('Money-Admin-Console', 'cw-fraud-eng') )"
+  "created >= '$filter_date'"
+  "status NOT IN ('Done', 'Closed')"
+)
+jira issue list -q "${(j: AND :)jql_clauses}" --order-by "created DESC, status" --reverse

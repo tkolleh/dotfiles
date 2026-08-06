@@ -1,0 +1,67 @@
+#!/usr/bin/env zsh
+# -*-mode:zsh-*- vim:ft=zsh
+#
+# jmine - List a user's Jira issues, worklog, or open-sprint items
+#
+# Usage:
+#   jmine [user] [list|worklog|sprint]
+#
+#   user    Jira user to query. Defaults to the current user (`jira me`).
+#   action  'list'    open issues created in the last 300 days (default)
+#           'worklog' worklog entries authored by the user
+#           'sprint'  issues in currently open sprints
+#
+# Exit codes:
+#   0  query ran
+#   1  unknown action
+#
+# Requires: jira, gum
+
+emulate -L zsh
+setopt pipe_fail
+
+# Load native Zsh datetime module for strftime / EPOCHSECONDS
+zmodload zsh/datetime
+
+local -l action="${2:-list}"
+local target_user="${1:-$(jira me)}"
+
+local -i days_ago=300
+local filter_date
+strftime -s filter_date "%Y-%m-%d" $(( EPOCHSECONDS - (days_ago * 86400) ))
+
+gum log --structured --level info "Fetching Jira data" user "$target_user" action "$action" since "$filter_date"
+
+case "$action" in
+  list)
+    local -a jql_clauses=(
+      "assignee = '$target_user'"
+      "created >= '$filter_date'"
+      "status NOT IN ('Done', 'Closed')"
+    )
+    # We exploit the CLI's string interpolation here.
+    # The --reverse flag forcefully appends 'ASC' to the end of the query.
+    jira issue list -q "${(j: AND :)jql_clauses}" --order-by "created DESC, status" --reverse
+    ;;
+
+  worklog)
+    jira issue worklog list --author "$target_user"
+    ;;
+
+  sprint)
+    local -a jql_clauses=(
+      "assignee = '$target_user'"
+      "sprint in openSprints()"
+      "created >= '$filter_date'"
+    )
+
+    # Apply the same sorting exploit here
+    jira issue list -q "${(j: AND :)jql_clauses}" --order-by "created DESC, status" --reverse
+    ;;
+
+  *)
+    gum log --level error "Unknown action: $action"
+    echo "Usage: jmine [user] [list|worklog|sprint]"
+    exit 1
+    ;;
+esac

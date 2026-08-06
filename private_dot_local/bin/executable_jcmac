@@ -1,0 +1,49 @@
+#!/usr/bin/env zsh
+# -*-mode:zsh-*- vim:ft=zsh
+#
+# jcmac - Create a Jira issue in the Money Admin Console project
+#
+# Usage:
+#   jcmac [assignee] [type] [project]
+#
+#   assignee  Jira user to assign; 'x' leaves the issue unassigned.
+#             Defaults to the current user (`jira me`).
+#   type      Issue type. Defaults to 'Story'.
+#   project   Project key, upper-cased. Defaults to 'FRD'.
+#
+# Opens the created issue in a browser (--web).
+#
+# Requires: jira, gum
+
+emulate -L zsh
+setopt pipe_fail
+
+local input_assignee="${1:-$(jira me)}"
+local _type="${2:-Story}"
+local -u project="${3:-FRD}"
+
+local -a assignee_flag
+local log_assignee
+
+# 2. Check if the user passed 'x'
+if [[ "$input_assignee" == "x" ]]; then
+  log_assignee="Unassigned"
+  # By leaving the array empty, we omit the --assignee flag entirely
+else
+  log_assignee="$input_assignee"
+  assignee_flag=(--assignee "$input_assignee")
+fi
+
+gum log --structured --level info "Creating issue" \
+  assignee "$log_assignee" \
+  type "$_type" \
+  project "$project"
+
+# 3. Use array expansion to conditionally inject the flag
+jira issue create \
+  --project "$project" \
+  --type "$_type" \
+  "${assignee_flag[@]}" \
+  --custom Squad="Tools" \
+  --label "Money-Admin-Console" \
+  --web
