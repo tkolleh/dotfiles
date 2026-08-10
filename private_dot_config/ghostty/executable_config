@@ -31,7 +31,10 @@ window-save-state = default
 # theme = dark:cyberdream,light:dayfox
 # theme = dark:cyberdream,light:farmhouse-light
 theme = dark:monrovia,light:monrovia-light
+
+font-family = "AtkynsonMono Nerd Font Mono"
 font-size = 13
+
 unfocused-split-opacity = 0.99
 minimum-contrast = 1.1
 adjust-cell-height = 10%

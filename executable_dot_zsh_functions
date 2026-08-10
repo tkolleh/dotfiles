@@ -507,3 +507,17 @@ local DETAILS=$(gum style \
 # Join them vertically
 gum join --vertical "$HEADER" "$DETAILS"
 }
+
+function claude-history-by-session() {
+  duckdb -json -c "
+    SELECT
+      sessionId,
+      any_value(project) as project,
+      COUNT(*) as count,
+      strftime(epoch_ms(MAX(timestamp)), '%Y-%m-%dT%H:%M:%S') as lastMessageTimestamp,
+      list({'display': display, 'timestamp': strftime(epoch_ms(timestamp), '%Y-%m-%dT%H:%M:%S')}) as messages
+    FROM read_json_auto('$HOME/.claude/history.jsonl')
+    GROUP BY sessionId
+    ORDER BY MAX(timestamp) DESC;
+  " | jless
+}
