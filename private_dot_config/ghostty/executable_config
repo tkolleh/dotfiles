@@ -33,11 +33,10 @@ window-save-state = default
 theme = dark:monrovia,light:monrovia-light
 
 font-family = "AtkynsonMono Nerd Font Mono"
-font-size = 13
+font-size = 14
 
 unfocused-split-opacity = 0.99
 minimum-contrast = 1.1
-adjust-cell-height = 10%
 bold-color = bright
 faint-opacity = 0.65
 
