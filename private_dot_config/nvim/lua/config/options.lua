@@ -93,3 +93,7 @@ vim.filetype.add({
 
 -- Default to **no** line nor text display for diagnostics
 utils.cycle_diagnostics_display({ virtual_text = false, virtual_lines = false })
+
+-- Load project-local .nvim.lua. Neovim prompts once per file via vim.secure and
+-- remembers the decision, so untrusted repos cannot execute code silently.
+vim.opt.exrc = true

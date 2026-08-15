@@ -97,25 +97,33 @@ return {
     local metals_config = vim.tbl_deep_extend("force", metals.bare_config(), opts)
 
     metals_config.on_attach = function(client, bufnr)
-      LazyVim.has("nvim-dap")
-      metals.setup_dap()
+      if LazyVim.has("nvim-dap") then
+        metals.setup_dap()
+      end
     end
 
     local metals_gcc_config = {
       "-XX:+UseG1GC",
-      "-Xms1G",
-      "-Xmx6G",
+      "-Xms2G",
+      "-Xmx8G",
       "-Xss4M",
       "-XX:+UseStringDeduplication",
     }
 
     metals_config.settings = {
-      -- javaHome = java17_home,
       showImplicitArguments = false,
-      enableSemanticHighlighting = false, -- Disabled to fix semantic tokens error
+      enableSemanticHighlighting = true, -- re-enabled under Metals 2.0.0-M8 (see below)
       excludedPackages = { "akka.actor.typed.javadsl", "com.github.swagger.akka.javadsl" },
       superMethodLensesEnabled = true, -- [default:false] Super method lenses are visible
       verboseCompilation = false, -- [default:false] Show all possible debug information
+      -- Metals 2.x is MILESTONE-only (no 2.0.0 GA as of 2026-08).
+      serverVersion = "2.0.0-M8",
+      -- NOTE: only applied when THIS client starts the Bloop daemon. Bloop is a
+      -- single shared daemon per machine; an already-running one is adopted as-is,
+      -- version and JVM flags included. Kill all daemons before verifying a change.
+      bloopVersion = "2.1.1",
+      -- Re-run bloopInstall when build files change, which transitively fires the
+      automaticImportBuild = "all",
       defaultBspToBuildTool = false, -- [default:false] If build tool serves as build server, use it
       bloopSbtAlreadyInstalled = false, -- [default:false] Bloop config is now installed
       bloopJvmProperties = metals_gcc_config,
