@@ -1,8 +1,9 @@
 return {
-  "zk-org/zk-nvim",
+  "tkolleh/zk-nvim", -- fork: pulls in fix for #300 (ZkIndex crash) ahead of upstream
   opts = {},
   config = function(_, opts)
     local zk = require("zk")
+    local zk_config = require("zk.config")
     local commands = require("zk.commands")
 
     zk.setup({
@@ -19,11 +20,29 @@ return {
           -- on_attach = ...
           -- etc, see `:h vim.lsp.start()`
         },
-        -- automatically attach buffers in a zk notebook that match the given filetypes
+        -- zk-nvim's own auto_attach only uses notebook_root() to decide *whether*
+        -- to attach; it never feeds that path into the LSP client's root_dir, so
+        -- vim.lsp.start() falls back to the buffer's own directory (Neovim core
+        -- default when root_dir is unset). That breaks wikilink/definition
+        -- resolution for any note outside the buffer's immediate folder. Disable
+        -- the plugin's auto_attach and drive it ourselves with a real root_dir.
         auto_attach = {
-          enabled = true,
+          enabled = false,
         },
       },
+    })
+
+    vim.api.nvim_create_autocmd("FileType", {
+      pattern = "markdown",
+      callback = function(args)
+        local notebook_root = require("zk.util").notebook_root(vim.api.nvim_buf_get_name(args.buf))
+        if not notebook_root then
+          return
+        end
+        vim.lsp.start(vim.tbl_extend("force", zk_config.options.lsp.config, {
+          root_dir = notebook_root,
+        }), { bufnr = args.buf })
+      end,
     })
 
     -- Custom Commands

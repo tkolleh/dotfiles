@@ -71,7 +71,12 @@ vim.g.lazyvim_blink_main = false
 -- use <leader>uf to enable formatting
 vim.g.autoformat = false
 
-vim.o.showbreak = "↪ "
+-- Wrap indicator lives in the statuscolumn gutter (see mini-statuscolumn.lua);
+-- showbreak would duplicate the same ↪ glyph in the text area.
+vim.o.showbreak = ""
+
+-- Muted middle-dot for trailing whitespace (Neovim's built-in default is a full hyphen "-")
+vim.opt.listchars:append({ trail = "·" })
 
 -- Enhanced diff options for better character-level diff detection
 vim.opt.diffopt:append({

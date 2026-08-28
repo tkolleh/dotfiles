@@ -103,3 +103,11 @@ export RUBY_PREFIX="$(brew --prefix ruby)"
 export GEM_HOME="$HOME/.gem/ruby/4.0.0"
 export GEM_BIN="$GEM_HOME/bin"
 export PATH="$PATH:$RUBY_PREFIX/bin:$GEM_BIN"
+
+# MacPorts: appended, not prepended, so it never shadows Homebrew/JDK/overrides above.
+export PATH="$PATH:/opt/local/bin:/opt/local/sbin"
+
+##
+# Your previous /Users/tkolleh/.zprofile file was backed up as /Users/tkolleh/.zprofile.macports-saved_2026-08-16_at_18:16:42
+##
+

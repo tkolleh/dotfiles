@@ -1,0 +1,238 @@
+#!/usr/bin/env zsh
+# -*-mode:zsh-*- vim:ft=zsh
+#
+# morphir-develop - run `morphir-elm develop` with guaranteed cleanup
+#
+# Usage:
+#   morphir-develop [project-dir] [-p|--port PORT]
+#
+# Example:
+#   morphir-develop
+#   morphir-develop .allium/morphir -p 3001
+#
+# Starts `morphir-elm develop --project-dir PROJECT_DIR --port PORT` (defaults:
+# .allium/morphir, 3000) and guarantees the server process is killed and the port
+# confirmed free when this script exits for any reason - normal exit, Ctrl-C, `kill`,
+# or the server dying on its own. Exists because `morphir-elm develop` is a long-running
+# foreground process with no built-in shutdown mode; launching it detached (e.g. inside a
+# `(... &)` subshell) silently orphans it, leaving it bound to the port and serving stale
+# IR data until manually found via `lsof -i :$PORT` and killed.
+#
+# `morphir-elm develop` hardcodes reading a file literally named `morphir-ir.json` from
+# the project dir (not configurable) - this script does not build it; run
+# `morphir-elm make -o morphir-ir.json` first if it's missing. This script does warn,
+# non-fatally, if morphir-ir.json looks older than the project's Elm sources.
+#
+# Known limitation: if this script itself is killed with SIGKILL (`kill -9`), no trap can
+# run and the server process will be orphaned. Recover manually via
+# `lsof -i :$PORT -sTCP:LISTEN` + `kill <pid>`.
+#
+# Requires: morphir-elm, lsof
+
+emulate -L zsh
+setopt pipe_fail
+
+SCRIPT_NAME=${0:t}
+SERVER_PID=""
+PORT_PID=""
+CLEANED_UP=0
+LOG_FILE=""
+PORT=3000
+PROJECT_DIR=".allium/morphir"
+BIND_TIMEOUT=10   # seconds to wait for the server to bind after launch
+TERM_GRACE=5      # seconds to wait after SIGTERM before escalating to SIGKILL
+FREE_TIMEOUT=5    # seconds to wait for the port to free, postflight
+
+err() {
+  print -u2 -- "${SCRIPT_NAME}: $*"
+}
+
+usage() {
+  cat <<EOF
+Usage: ${SCRIPT_NAME} [project-dir] [-p|--port PORT]
+
+Starts 'morphir-elm develop' against PROJECT_DIR (default: .allium/morphir, relative to
+the current directory) on PORT (default: 3000), and guarantees the server process is
+killed and the port confirmed free when this script exits for any reason.
+
+Example:
+  ${SCRIPT_NAME}
+  ${SCRIPT_NAME} .allium/morphir -p 3001
+EOF
+}
+
+require_cmd() {
+  local c
+  for c in "$@"; do
+    (( ${+commands[$c]} )) || { err "required command not found: $c"; exit 1 }
+  done
+}
+
+find_port_pid() {
+  lsof -nP -i ":${PORT}" -sTCP:LISTEN -t 2>/dev/null
+}
+
+wait_for_port_bound() {
+  local waited=0
+  local pids
+  while (( waited < BIND_TIMEOUT * 4 )); do
+    pids=$(find_port_pid)
+    if [[ -n $pids ]]; then
+      print -r -- "$pids"
+      return 0
+    fi
+    kill -0 "$SERVER_PID" 2>/dev/null || return 1
+    sleep 0.25
+    waited=$(( waited + 1 ))
+  done
+  return 1
+}
+
+wait_for_port_free() {
+  local waited=0
+  while (( waited < FREE_TIMEOUT * 4 )); do
+    [[ -z $(find_port_pid) ]] && return 0
+    sleep 0.25
+    waited=$(( waited + 1 ))
+  done
+  return 1
+}
+
+warn_if_ir_stale() {
+  local morphir_json="${PROJECT_DIR}/morphir.json"
+  local ir_file="${PROJECT_DIR}/morphir-ir.json"
+  local src_dir="src"
+  local extracted
+
+  if [[ -f $morphir_json ]]; then
+    extracted=$(grep -o '"sourceDirectory"[[:space:]]*:[[:space:]]*"[^"]*"' "$morphir_json" 2>/dev/null \
+      | sed -E 's/.*"([^"]+)"$/\1/')
+    [[ -n $extracted ]] && src_dir=$extracted
+  fi
+
+  local full_src="${PROJECT_DIR}/${src_dir}"
+  [[ -d $full_src ]] || return 0
+
+  if [[ -n $(find "$full_src" -name '*.elm' -newer "$ir_file" 2>/dev/null) ]]; then
+    err "warning: ${ir_file} looks older than some .elm sources under ${full_src} - consider re-running 'morphir-elm make' first"
+  fi
+}
+
+cleanup() {
+  (( CLEANED_UP )) && return
+  CLEANED_UP=1
+
+  local -aU pids
+  local pid
+
+  [[ -n $SERVER_PID ]] && pids+=("$SERVER_PID")
+  if [[ -n $PORT_PID ]]; then
+    for pid in ${(f)PORT_PID}; do
+      [[ -n $pid ]] && pids+=("$pid")
+    done
+  fi
+
+  (( ${#pids} == 0 )) && return
+
+  for pid in $pids; do
+    kill -0 "$pid" 2>/dev/null && kill -TERM "$pid" 2>/dev/null
+  done
+
+  local waited=0 alive
+  while (( waited < TERM_GRACE * 2 )); do
+    alive=0
+    for pid in $pids; do
+      kill -0 "$pid" 2>/dev/null && alive=1
+    done
+    (( alive == 0 )) && break
+    sleep 0.5
+    waited=$(( waited + 1 ))
+  done
+
+  for pid in $pids; do
+    kill -0 "$pid" 2>/dev/null && kill -KILL "$pid" 2>/dev/null
+  done
+
+  wait_for_port_free || err "warning: port ${PORT} still appears bound after cleanup"
+}
+
+trap 'cleanup; exit 130' INT
+trap 'cleanup; exit 143' TERM
+trap 'cleanup' EXIT
+
+dir_given=0
+while (( $# )); do
+  case "$1" in
+    -p|--port)
+      [[ $# -ge 2 ]] || { err "missing value for $1"; exit 1 }
+      PORT=$2
+      shift 2
+      ;;
+    -h|--help)
+      usage
+      exit 0
+      ;;
+    --)
+      shift
+      break
+      ;;
+    -*)
+      err "unknown option: $1"
+      usage
+      exit 1
+      ;;
+    *)
+      if (( dir_given )); then
+        err "too many arguments: $1"
+        exit 1
+      fi
+      PROJECT_DIR=$1
+      dir_given=1
+      shift
+      ;;
+  esac
+done
+
+require_cmd morphir-elm lsof
+
+if [[ ! $PORT =~ ^[0-9]+$ ]]; then
+  err "port must be numeric: $PORT"
+  exit 1
+fi
+
+if [[ ! -f "${PROJECT_DIR}/morphir-ir.json" ]]; then
+  err "missing ${PROJECT_DIR}/morphir-ir.json - run 'morphir-elm make -o morphir-ir.json' in ${PROJECT_DIR} first"
+  exit 1
+fi
+
+warn_if_ir_stale
+
+existing_pids=$(find_port_pid)
+if [[ -n $existing_pids ]]; then
+  err "port ${PORT} is already in use:"
+  lsof -nP -i ":${PORT}" -sTCP:LISTEN >&2
+  exit 1
+fi
+
+LOG_FILE=$(mktemp "${TMPDIR:-/tmp}/${SCRIPT_NAME}.XXXXXX")
+print -- "${SCRIPT_NAME}: starting morphir-elm develop --project-dir ${PROJECT_DIR} --port ${PORT}"
+print -- "${SCRIPT_NAME}: log: ${LOG_FILE}"
+
+morphir-elm develop --project-dir "$PROJECT_DIR" --port "$PORT" >"$LOG_FILE" 2>&1 &
+SERVER_PID=$!
+
+if ! PORT_PID=$(wait_for_port_bound); then
+  err "morphir-elm develop did not bind port ${PORT} within ${BIND_TIMEOUT}s - dumping log:"
+  cat "$LOG_FILE" >&2
+  exit 1
+fi
+
+print -- "${SCRIPT_NAME}: serving on http://localhost:${PORT} (pid ${PORT_PID})"
+
+wait "$SERVER_PID"
+exit_code=$?
+if (( exit_code != 0 )); then
+  err "morphir-elm develop exited with status ${exit_code} - dumping log:"
+  cat "$LOG_FILE" >&2
+fi
+exit "$exit_code"

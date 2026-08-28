@@ -11,12 +11,11 @@
 
 set -euo pipefail
 
-# Determine Java 17 home
 if [[ -n "${METALS_JAVA_HOME:-}" ]]; then
     JAVA_HOME="$METALS_JAVA_HOME"
 elif (( ${+commands[cs]} )); then
-    JAVA_HOME="$(cs java-home --architecture arm64 --jvm corretto:17 2>/dev/null)" || {
-      echo "Error: Failed to resolve Java 17 via Coursier (cs)." >&2
+    JAVA_HOME="$(cs java-home --architecture arm64 --jvm corretto:21 2>/dev/null)" || {
+      echo "Error: Failed to resolve Java 21 via Coursier (cs)." >&2
       exit 1
     }
 else

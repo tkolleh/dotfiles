@@ -20,7 +20,7 @@ emulate -L zsh
 setopt pipe_fail
 
 if (( ${+commands[brew]} )); then
-  roda --spinner "arc" --title "Upgrading outdated homebrew formulas..." -- brew upgrade --formula || :
+  roda --spinner "arc" --title "Upgrading outdated homebrew formulas..." -- brew upgrade --yes || :
 fi
 if (( ${+commands[atuin]} )); then
   roda --spinner "arc" --title "Syncing atuin history..." -- atuin sync || :

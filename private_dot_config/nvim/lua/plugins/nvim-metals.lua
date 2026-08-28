@@ -23,7 +23,7 @@ local function resolve_lombok()
 
   -- Slow path: fetch via cs asynchronously.
   vim.system(
-    { "cs", "fetch", "org.projectlombok:lombok:" .. LOMBOK_VERSION },
+    { "coursier", "fetch", "org.projectlombok:lombok:" .. LOMBOK_VERSION },
     { text = true },
     vim.schedule_wrap(function(result)
       if result.code ~= 0 then
@@ -105,7 +105,7 @@ return {
     local metals_gcc_config = {
       "-XX:+UseG1GC",
       "-Xms2G",
-      "-Xmx8G",
+      "-Xmx12G",
       "-Xss4M",
       "-XX:+UseStringDeduplication",
     }
@@ -117,11 +117,11 @@ return {
       superMethodLensesEnabled = true, -- [default:false] Super method lenses are visible
       verboseCompilation = false, -- [default:false] Show all possible debug information
       -- Metals 2.x is MILESTONE-only (no 2.0.0 GA as of 2026-08).
-      serverVersion = "2.0.0-M8",
+      serverVersion = "2.0.0-M17",
       -- NOTE: only applied when THIS client starts the Bloop daemon. Bloop is a
       -- single shared daemon per machine; an already-running one is adopted as-is,
       -- version and JVM flags included. Kill all daemons before verifying a change.
-      bloopVersion = "2.1.1",
+      bloopVersion = "2.1.2",
       -- Re-run bloopInstall when build files change, which transitively fires the
       automaticImportBuild = "all",
       defaultBspToBuildTool = false, -- [default:false] If build tool serves as build server, use it

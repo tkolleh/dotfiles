@@ -38,6 +38,7 @@ return {
   {
     "tkolleh/monrovia.nvim",
     name = "monrovia",
+    dev = true,
     lazy = false,
     priority = 800,
     config = function()
