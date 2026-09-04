@@ -95,6 +95,17 @@ export JAVA_HOME="$(cs java-home --architecture arm64 --jvm corretto:21)"
 export PATH="$JAVA_HOME/bin:$PATH"
 export ZK_NOTEBOOK_DIR="$HOME/zettelkasten/notes"
 
+
+# Bloop Build Server JVM Configuration
+export BLOOP_JAVA_OPTS="\
+  -XX:+UseZGC \
+  -XX:ZUncommitDelay=30 \
+  -Xms512m \
+  -Xmx8G \
+  -Xss4M \
+  -XX:CompressedClassSpaceSize=1024m \
+  -XX:ReservedCodeCacheSize=1024m"
+
 # Alerternative Ruby installation via Homebrew, to avoid conflicts with system Ruby
 # MacOS has deprecated system Ruby, but some tools (e.g. fastlane) still require it.
 #
