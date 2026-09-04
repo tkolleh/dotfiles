@@ -103,11 +103,29 @@ return {
     end
 
     local metals_gcc_config = {
+      -- Metals processes massive abstract syntax trees (ASTs) and symbol indexes 
+      -- containing high volumes of repeated strings. Combining G1GC with 
+      -- -XX:+UseStringDeduplication drastically cuts down RAM usage.
       "-XX:+UseG1GC",
-      "-Xms2G",
-      "-Xmx12G",
-      "-Xss4M",
       "-XX:+UseStringDeduplication",
+      "-Xms1G",
+      "-Xmx4G",
+      "-Xss4M",
+      "-XX:CompressedClassSpaceSize=1024m",
+      "-XX:ReservedCodeCacheSize=1024m",
+    }
+
+    local bloop_jvm_config = {
+      -- Bloop runs as a long-lived background build daemon. Unlike standard 
+      -- collectors, ZGC actively uncommits unused JVM heap memory and returns 
+      -- it back to the operating system when the build server is idle. This means 
+      -- no overriding `-Xms`.
+      "-XX:+UseZGC", 
+      "-XX:ZUncommitDelay=30",
+      "-Xmx8G",
+      "-Xss4M",
+      "-XX:CompressedClassSpaceSize=1024m",
+      "-XX:ReservedCodeCacheSize=1024m",
     }
 
     metals_config.settings = {
@@ -116,7 +134,7 @@ return {
       excludedPackages = { "akka.actor.typed.javadsl", "com.github.swagger.akka.javadsl" },
       superMethodLensesEnabled = true, -- [default:false] Super method lenses are visible
       verboseCompilation = false, -- [default:false] Show all possible debug information
-      -- Metals 2.x is MILESTONE-only (no 2.0.0 GA as of 2026-08).
+      -- Metals 2.x is MILESTONE-only (no 2.0.0 GA as of 2026-09).
       serverVersion = "2.0.0-M17",
       -- NOTE: only applied when THIS client starts the Bloop daemon. Bloop is a
       -- single shared daemon per machine; an already-running one is adopted as-is,
@@ -126,7 +144,7 @@ return {
       automaticImportBuild = "all",
       defaultBspToBuildTool = false, -- [default:false] If build tool serves as build server, use it
       bloopSbtAlreadyInstalled = false, -- [default:false] Bloop config is now installed
-      bloopJvmProperties = metals_gcc_config,
+      bloopJvmProperties = bloop_jvm_config,
       serverProperties = vim.list_extend(
         vim.deepcopy(metals_gcc_config),
         vim

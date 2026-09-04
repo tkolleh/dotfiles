@@ -1,6 +1,7 @@
 return {
   {
     "tkolleh/review.nvim",
+    -- dir = vim.fn.expand("~/ws/review.nvim/main"), -- local dev worktree, not GitHub
     dependencies = {
       "esmuellert/codediff.nvim", -- already installed
       "MunifTanjim/nui.nvim",     -- already installed
