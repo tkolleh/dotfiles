@@ -1,0 +1,240 @@
+#!/usr/bin/env -S scala-cli-jvm shebang
+//> using scala 3.8.4
+//> using dep com.lihaoyi::os-lib:0.11.3
+//> using dep com.lihaoyi::upickle:4.0.2
+
+// scala-mcp-broker - shared per-directory metals-mcp instance broker
+//
+// Goal: every new process (Claude Code session, editor, etc.) launched from
+// the same Scala workspace attaches to ONE shared metals-mcp instance,
+// instead of each spawning its own compiler/BSP connection. One consistent
+// source of truth per directory, not N independently-drifting compilers.
+//
+// Mechanism:
+//   1. Resolve workspace root (same strong/weak-marker rules as scala-mcp).
+//   2. Derive a stable lock-file path from the root (sha256 of absolute path).
+//   3. Under a cross-process file lock: if the lock file names a live
+//      metals-mcp pid+port, reuse it. If the pid is dead or the port isn't
+//      listening (crash, reboot, sleep), clean up and respawn transparently.
+//   4. exec `npx mcp-remote <url>` so this process still speaks stdio to
+//      whichever client launched it, while proxying to the shared HTTP
+//      instance underneath.
+//
+// This is a separate registration from scala-mcp (one process per session,
+// no reuse) - both remain available; this one opts into shared-instance
+// behavior.
+//
+// Environment:
+//   SCALA_MCP_WORKSPACE   Explicit project root (highest priority)
+//   SCALA_MCP_METALS_BIN  Override path to metals-mcp binary
+//   METALS_JAVA_HOME      Exported as JAVA_HOME for the spawned metals-mcp
+//   SCALA_MCP_DEBUG=1     Dump resolution/broker details to stderr
+//
+// Lock files live under ~/.cache/scala-mcp-broker/<hash>.json
+
+import java.nio.channels.FileChannel
+import java.nio.file.StandardOpenOption
+import java.net.http.{HttpClient, HttpRequest}
+import java.net.URI
+import java.time.Duration
+import scala.util.{Try, Using}
+
+val debugEnabled = sys.env.get("SCALA_MCP_DEBUG").exists(_.nonEmpty)
+
+def debug(msg: => String): Unit =
+  if debugEnabled then System.err.println(s"scala-mcp-broker debug: $msg")
+
+def warn(msg: String): Unit =
+  System.err.println(s"scala-mcp-broker: $msg")
+
+def die(msg: String): Nothing =
+  System.err.println(s"scala-mcp-broker: error: $msg")
+  sys.exit(1)
+
+val cacheDir: os.Path =
+  sys.env.get("SCALA_MCP_BROKER_CACHE_DIR").map(os.Path(_))
+    .getOrElse(os.home / ".cache" / "scala-mcp-broker")
+
+// --- workspace discovery (mirrors scala-mcp's marker rules) -------------------
+
+val strongMarkerFiles = Seq("build.sbt", "build.sc", "build.mill", "pom.xml", "project/build.properties")
+val strongMarkerDirs  = Seq(".bsp")
+val weakMarkerDirs    = Seq(".bloop", ".metals")
+
+def hasStrongMarker(dir: os.Path): Boolean =
+  strongMarkerFiles.exists(f => os.exists(dir / os.RelPath(f))) ||
+    strongMarkerDirs.exists(d => os.isDir(dir / d))
+
+def hasWeakMarker(dir: os.Path): Boolean =
+  weakMarkerDirs.exists(d => os.isDir(dir / d))
+
+def walkForMarker(start: os.Path, predicate: os.Path => Boolean): Option[os.Path] =
+  Iterator.iterate(Option(start)) {
+    case Some(dir) if dir != os.root => Some(dir / os.up)
+    case _                           => None
+  }.takeWhile(_.isDefined).flatten.find(predicate)
+
+def discoverWorkspace(start: os.Path): Option[os.Path] =
+  walkForMarker(start, hasStrongMarker).orElse(walkForMarker(start, hasWeakMarker))
+
+def resolveWorkspace(): os.Path =
+  sys.env.get("SCALA_MCP_WORKSPACE").map(os.Path(_, os.pwd)) match
+    case Some(root) if os.isDir(root) => root
+    case Some(root)                   => die(s"SCALA_MCP_WORKSPACE is not a directory: $root")
+    case None =>
+      discoverWorkspace(os.pwd).getOrElse {
+        die(s"no Scala project root found walking from ${os.pwd}. Set SCALA_MCP_WORKSPACE to override.")
+      }
+
+// --- metals-mcp / java home resolution -----------------------------------------
+
+def resolveMetalsBin(): String =
+  sys.env.get("SCALA_MCP_METALS_BIN") match
+    case Some(bin) =>
+      if os.isFile(os.Path(bin, os.pwd)) then bin
+      else die(s"SCALA_MCP_METALS_BIN is not executable: $bin")
+    case None =>
+      Try(os.proc("command", "-v", "metals-mcp").call(check = true).out.trim())
+        .toOption.filter(_.nonEmpty)
+        .getOrElse(die("metals-mcp not found on PATH. Install with: cs install metals-mcp"))
+
+def resolveJavaHome(): Option[String] =
+  sys.env.get("METALS_JAVA_HOME").orElse {
+    Try(
+      os.proc("cs", "java-home", "--architecture", "arm64", "--jvm", "corretto:17")
+        .call(check = true).out.trim()
+    ).toOption.filter(_.nonEmpty)
+  }.orElse(sys.env.get("JAVA_HOME"))
+
+// --- lock file handling ---------------------------------------------------------
+
+case class LockInfo(pid: Long, port: Int, workspace: String) derives upickle.default.ReadWriter
+
+def lockPathFor(root: os.Path): os.Path =
+  val digest = java.security.MessageDigest.getInstance("SHA-256")
+    .digest(root.toString.getBytes("UTF-8"))
+  val hash = digest.map("%02x".format(_)).mkString.take(16)
+  cacheDir / s"$hash.json"
+
+def pidIsAlive(pid: Long): Boolean =
+  ProcessHandle.of(pid).map(_.isAlive).orElse(false)
+
+def portIsListening(port: Int): Boolean =
+  Try {
+    val client = HttpClient.newBuilder().connectTimeout(Duration.ofMillis(500)).build()
+    val req = HttpRequest.newBuilder(URI.create(s"http://localhost:$port/mcp"))
+      .method("HEAD", HttpRequest.BodyPublishers.noBody())
+      .timeout(Duration.ofMillis(500))
+      .build()
+    client.send(req, java.net.http.HttpResponse.BodyHandlers.discarding())
+    true
+  }.recoverWith { case _ =>
+    // A non-2xx/connection-refused HEAD still proves *something* is
+    // listening vs ConnectionRefused; fall back to a raw socket probe.
+    Try {
+      val sock = new java.net.Socket()
+      sock.connect(new java.net.InetSocketAddress("localhost", port), 500)
+      sock.close()
+      true
+    }
+  }.getOrElse(false)
+
+def readLock(lockFile: os.Path): Option[LockInfo] =
+  if os.isFile(lockFile) then Try(upickle.default.read[LockInfo](os.read(lockFile))).toOption
+  else None
+
+def writeLock(lockFile: os.Path, info: LockInfo): Unit =
+  os.makeDir.all(cacheDir)
+  val tmp = os.Path(s"${lockFile.toString}.${ProcessHandle.current().pid()}.tmp")
+  os.write.over(tmp, upickle.default.write(info))
+  os.move.over(tmp, lockFile)
+
+// Cross-process mutual exclusion so two processes launched at the same
+// instant for the same directory don't both spawn a server.
+def withDirectoryLock[A](lockFile: os.Path)(body: => A): A =
+  os.makeDir.all(cacheDir)
+  val mutexPath = java.nio.file.Path.of(s"${lockFile.toString}.mutex")
+  Using.resource(
+    FileChannel.open(mutexPath, StandardOpenOption.CREATE, StandardOpenOption.WRITE)
+  ) { channel =>
+    val fileLock = channel.lock() // blocks until acquired; released on channel close
+    try body finally fileLock.release()
+  }
+
+def ensureSharedInstance(root: os.Path): Int =
+  val lockFile = lockPathFor(root)
+
+  readLock(lockFile) match
+    case Some(LockInfo(pid, port, _)) if pidIsAlive(pid) && portIsListening(port) =>
+      debug(s"reusing existing metals-mcp pid=$pid port=$port for $root")
+      port
+    case Some(LockInfo(pid, port, _)) =>
+      debug(s"stale lock (pid=$pid alive=${pidIsAlive(pid)}, port=$port listening=${portIsListening(port)}) - respawning")
+      os.remove(lockFile, checkExists = false)
+      spawn(root, lockFile)
+    case None =>
+      spawn(root, lockFile)
+
+def spawn(root: os.Path, lockFile: os.Path): Int =
+  val metalsBin = resolveMetalsBin()
+  val javaHome = resolveJavaHome()
+  os.makeDir.all(cacheDir)
+  val logFile = cacheDir / s"${lockFile.baseName}.log"
+
+  debug(s"spawning new metals-mcp for $root, log=$logFile")
+
+  val env = javaHome.map(jh => Map("JAVA_HOME" -> jh)).getOrElse(Map.empty)
+
+  // os.proc(...).spawn() makes metals-mcp a direct child of this JVM: if the
+  // broker's process group receives a signal (e.g. its own parent session
+  // exiting), the child dies too, defeating the point of a shared instance
+  // that outlives any single broker invocation. macOS has no `setsid`
+  // command (only the setsid(2) syscall, not exposed to ProcessBuilder), so
+  // detach via a shell-level double-fork: `nohup` ignores SIGHUP, `disown`
+  // removes it from the shell's job table, and running it via `sh -c` puts
+  // it in a fresh process group rather than this JVM's.
+  val quotedArgs = Seq(metalsBin, "--workspace", root.toString, "--transport", "http")
+    .map(a => "'" + a.replace("'", "'\\''") + "'").mkString(" ")
+  val detachedCommand =
+    s"nohup $quotedArgs >'${logFile}' 2>&1 & disown; echo $$!"
+
+  val pidOutput = os.proc("sh", "-c", detachedCommand).call(env = env, cwd = root).out.trim()
+  val spawnedPid = pidOutput.toLong
+
+  val portPattern = """port[:\s]+(\d+)""".r
+  val maxWaitSeconds = 120
+  var boundPort: Option[Int] = None
+  var waited = 0
+  while boundPort.isEmpty && waited < maxWaitSeconds && pidIsAlive(spawnedPid) do
+    if os.isFile(logFile) then
+      portPattern.findFirstMatchIn(os.read(logFile)).foreach(m => boundPort = Some(m.group(1).toInt))
+    if boundPort.isEmpty then
+      Thread.sleep(1000)
+      waited += 1
+
+  boundPort.filter(portIsListening) match
+    case Some(port) =>
+      writeLock(lockFile, LockInfo(spawnedPid, port, root.toString))
+      debug(s"spawned metals-mcp pid=$spawnedPid port=$port for $root")
+      port
+    case None if !pidIsAlive(spawnedPid) =>
+      die(s"metals-mcp exited before reporting a listening port - see $logFile")
+    case None =>
+      die(s"metals-mcp did not report a listening port within ${maxWaitSeconds}s - see $logFile")
+
+// --- main -------------------------------------------------------------------
+
+if args.headOption.exists(a => a == "-h" || a == "--help") then
+  println("scala-mcp-broker: shared per-directory metals-mcp instance broker")
+  println(s"See header comment in this script for details.")
+  sys.exit(0)
+
+val root = resolveWorkspace()
+val lockFile = lockPathFor(root)
+val port = withDirectoryLock(lockFile) { ensureSharedInstance(root) }
+
+debug(s"attaching via mcp-remote to http://localhost:$port/mcp")
+
+val mcpRemote = os.proc("npx", "-y", "mcp-remote", s"http://localhost:$port/mcp")
+  .call(stdin = os.Inherit, stdout = os.Inherit, stderr = os.Inherit, check = false)
+sys.exit(mcpRemote.exitCode)

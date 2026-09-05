@@ -1,0 +1,77 @@
+#!/usr/bin/env zsh
+#
+# Start metals-mcp for a Scala workspace with the JVM flags Metals needs.
+#
+# JDK 21 strong-encapsulation workaround for Metals' JavacMtags, which parses
+# .java files during workspace indexing via internal com.sun.tools.javac.*
+# APIs. Without these exports, indexing throws IllegalAccessError and the
+# 2-minute Await.result in StandaloneMcpService.start times out, killing the
+# whole MCP server. Package list verified via `javap` against
+# mtags_2.12.20-1.6.8.jar; all five are required together.
+#
+# Two env channels, deliberately split. The coursier launcher execs
+#   java -Xms100m -Xss4m -Xmx2g $JAVA_OPTS "$@"
+# and the java binary prepends JDK_JAVA_OPTIONS ahead of all of that. Since
+# last-wins for duplicate JVM flags, heap tuning in JDK_JAVA_OPTIONS is
+# silently overridden by the launcher's own -Xmx2g. $JAVA_OPTS expands after
+# them, so that is the only channel where heap settings take effect.
+#
+# Usage: start_metals_mcp [workspace_dir] [extra metals-mcp args...]
+
+emulate -L zsh
+setopt err_return no_unset pipe_fail
+
+# Nested parameter expansion with native ':a' modifier for subshell-free absolute paths
+local workspace="${${1:-$PWD}:a}"
+(( $# )) && shift
+
+if (( ! ${+commands[metals-mcp]} )); then
+  gum log --level error "metals-mcp not found on PATH"
+  exit 1
+fi
+
+# 1. Resolve Lombok Jar
+local lombok_version="1.18.46"
+local lombok_jar="${HOME}/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/projectlombok/lombok/${lombok_version}/lombok-${lombok_version}.jar"
+
+if [[ ! -f $lombok_jar ]] && (( ${+commands[coursier]} )); then
+  lombok_jar=$(coursier fetch "org.projectlombok:lombok:${lombok_version}" 2>/dev/null | tail -n 1)
+fi
+
+# 2. Vectorized array expansion for repeated JVM exports
+local -a javac_pkgs=(api file parser tree util)
+local -a jdk_java_options=(
+  "--add-exports=jdk.compiler/com.sun.tools.javac."${^javac_pkgs}"=ALL-UNNAMED"
+  -Dmetals.verbose=false
+)
+
+[[ -f $lombok_jar ]] && jdk_java_options+=("-javaagent:${lombok_jar}")
+
+# Heap and GC must ride JAVA_OPTS to survive the launcher's baked-in defaults
+local -a java_opts=(
+  -XX:+UseG1GC
+  -XX:+UseStringDeduplication
+  -Xms1G
+  -Xmx4G
+  -Xss4M
+  -XX:CompressedClassSpaceSize=1024m
+  -XX:ReservedCodeCacheSize=1024m
+)
+
+# 3. UserConfiguration overrides. Metals never reads .metals/config.json --
+# the CLI is the only channel that reaches UserConfiguration. Flag names are not
+# a kebab-casing of the documented LSP setting names (metals.automaticImportBuild
+# has no CLI equivalent; the nearest, --auto-import-builds, accepts any string
+# unvalidated), so probe any new flag against a real workspace before adding it.
+# bloopJvmProperties is omitted deliberately: ~/.bloop/bloop.json already
+# supplies those javaOptions.
+local -a metals_config=(
+  --bloop-version 2.1.2
+  --excluded-packages akka.actor.typed.javadsl,com.github.swagger.akka.javadsl
+)
+
+gum log --level info "Starting metals-mcp for workspace: ${workspace}"
+exec env \
+  JDK_JAVA_OPTIONS="${(j: :)jdk_java_options}" \
+  JAVA_OPTS="${(j: :)java_opts}" \
+  metals-mcp --workspace "$workspace" --client claude "${metals_config[@]}" "$@"

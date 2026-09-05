@@ -1,0 +1,36 @@
+#!/usr/bin/env zsh
+# scala-cli-jvm - JVM-jar launched scala-cli, bypassing the native binary.
+#
+# The Coursier-distributed and Homebrew-distributed `scala-cli` binaries are
+# both GraalVM native images with their own baked-in CA trust store, which
+# does not include this machine's Zscaler-injected corporate root CA. That
+# breaks TLS to repo1.maven.org/repo.scala-lang.org with a PKIX path error,
+# even though the ambient JVM's cacerts (patched via import_zscaler_ca_into_jvm
+# in ~/.host_functions.zsh) trusts it fine.
+#
+# This wrapper runs scala-cli as a plain JVM application via coursier.jar's
+# `launch` command instead, which correctly reads the ambient JVM's cacerts.
+#
+# Requires: ~/.local/share/coursier/coursier.jar (plain Coursier launcher jar,
+# NOT the native `cs` binary), a JDK on JAVA_HOME with the Zscaler CA imported.
+#
+# Usage: scala-cli-jvm <scala-cli args...>
+
+set -euo pipefail
+
+COURSIER_JAR="${SCALA_CLI_JVM_COURSIER_JAR:-$HOME/.local/share/coursier/coursier.jar}"
+SCALA_CLI_VERSION="${SCALA_CLI_JVM_VERSION:-1.15.0}"
+
+if [[ ! -f "$COURSIER_JAR" ]]; then
+  print -u2 -- "scala-cli-jvm: error: coursier.jar not found at $COURSIER_JAR"
+  print -u2 -- "Fetch it with: curl -fsSL -o \"$COURSIER_JAR\" https://github.com/coursier/coursier/releases/latest/download/coursier.jar"
+  exit 1
+fi
+
+if [[ -z "${JAVA_HOME:-}" ]]; then
+  print -u2 -- "scala-cli-jvm: error: JAVA_HOME is not set"
+  exit 1
+fi
+
+exec "${JAVA_HOME}/bin/java" -jar "$COURSIER_JAR" launch \
+  "org.virtuslab.scala-cli:cli_3:${SCALA_CLI_VERSION}" -M scala.cli.ScalaCli -- "$@"
