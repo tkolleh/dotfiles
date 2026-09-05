@@ -14,6 +14,9 @@ window-padding-color = extend
 macos-titlebar-style = native
 macos-window-shadow = false
 
+background-opacity = 1.0
+background-blur-radius = 20
+
 # Whether to use the native macOS full screen mode.
 macos-non-native-fullscreen = false
 
@@ -35,8 +38,8 @@ theme = dark:monrovia,light:monrovia-light
 font-family = "AtkynsonMono Nerd Font Mono"
 font-size = 14
 
-unfocused-split-opacity = 0.99
-minimum-contrast = 1.1
+unfocused-split-opacity = 0.90
+minimum-contrast = 4.0
 bold-color = bright
 faint-opacity = 0.65
 

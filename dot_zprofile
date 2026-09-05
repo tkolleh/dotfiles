@@ -100,7 +100,6 @@ export ZK_NOTEBOOK_DIR="$HOME/zettelkasten/notes"
 export BLOOP_JAVA_OPTS="\
   -XX:+UseZGC \
   -XX:ZUncommitDelay=30 \
-  -Xms512m \
   -Xmx8G \
   -Xss4M \
   -XX:CompressedClassSpaceSize=1024m \
