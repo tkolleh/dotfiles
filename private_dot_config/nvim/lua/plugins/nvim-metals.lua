@@ -103,26 +103,13 @@ return {
     end
 
     local metals_gcc_config = {
-      -- Metals processes massive abstract syntax trees (ASTs) and symbol indexes 
-      -- containing high volumes of repeated strings. Combining G1GC with 
+      -- Metals processes massive abstract syntax trees (ASTs) and symbol indexes
+      -- containing high volumes of repeated strings. Combining G1GC with
       -- -XX:+UseStringDeduplication drastically cuts down RAM usage.
       "-XX:+UseG1GC",
       "-XX:+UseStringDeduplication",
       "-Xms1G",
       "-Xmx4G",
-      "-Xss4M",
-      "-XX:CompressedClassSpaceSize=1024m",
-      "-XX:ReservedCodeCacheSize=1024m",
-    }
-
-    local bloop_jvm_config = {
-      -- Bloop runs as a long-lived background build daemon. Unlike standard 
-      -- collectors, ZGC actively uncommits unused JVM heap memory and returns 
-      -- it back to the operating system when the build server is idle. This means 
-      -- no overriding `-Xms`.
-      "-XX:+UseZGC", 
-      "-XX:ZUncommitDelay=30",
-      "-Xmx8G",
       "-Xss4M",
       "-XX:CompressedClassSpaceSize=1024m",
       "-XX:ReservedCodeCacheSize=1024m",
@@ -136,24 +123,28 @@ return {
       verboseCompilation = false, -- [default:false] Show all possible debug information
       -- Metals 2.x is MILESTONE-only (no 2.0.0 GA as of 2026-09).
       serverVersion = "2.0.0-M17",
-      -- NOTE: only applied when THIS client starts the Bloop daemon. Bloop is a
-      -- single shared daemon per machine; an already-running one is adopted as-is,
-      -- version and JVM flags included. Kill all daemons before verifying a change.
-      bloopVersion = "2.1.2",
-      -- Re-run bloopInstall when build files change, which transitively fires the
+      -- Re-run bloopInstall/sbt reimport when build files change.
       automaticImportBuild = "all",
-      defaultBspToBuildTool = false, -- [default:false] If build tool serves as build server, use it
-      bloopSbtAlreadyInstalled = false, -- [default:false] Bloop config is now installed
-      bloopJvmProperties = bloop_jvm_config,
+      -- Use the sbt BSP server instead of Bloop: Bloop compiles files, not sbt
+      -- tasks, so it misses sbt-task-generated sources (e.g. the idl module's
+      -- Scrooge-generated Thrift sources) and needs its own shared daemon with
+      -- its own heap tuning. sbt BSP has the full task graph and no daemon to
+      -- coordinate across worktrees.
+      defaultBspToBuildTool = true,
+      -- Metals' findSbtInPath() fallback assumes whatever resolves on $PATH can be
+      -- decomposed into `java -classpath <path> xsbt.boot.Boot`. Coursier's sbt
+      -- launcher is a self-executing polyglot (sh script + appended jar bytes)
+      -- that only works when exec'd directly as a script, not split into
+      -- classpath args — decomposing it throws "Could not find or load main
+      -- class xsbt.boot.Boot". sbtScript bypasses findSbtInPath() entirely and
+      -- execs this script as-is (see SbtBuildTool.scala composeArgs).
+      sbtScript = "/Users/tkolleh/Library/Application Support/Coursier/bin/sbt",
       serverProperties = vim.list_extend(
         vim.deepcopy(metals_gcc_config),
-        vim
-          .iter({
+        vim.iter({
             { "-Dmetals.verbose=false" },
             _lombok_jar and { "-javaagent:" .. _lombok_jar } or {},
-          })
-          :flatten()
-          :totable()
+        }):flatten():totable()
       ),
       testUserInterface = "Test Explorer",
       startMcpServer = true,

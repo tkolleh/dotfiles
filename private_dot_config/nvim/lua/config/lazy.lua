@@ -42,7 +42,6 @@ require("lazy").setup({
     -- { import = "lazyvim.plugins.extras.ai.copilot" },
     -- { import = "lazyvim.plugins.extras.ai.copilot-chat" },
     { import = "lazyvim.plugins.extras.editor.fzf" },
-    { import = "lazyvim.plugins.extras.ui.treesitter-context" },
     -- Load order 3: import/override with your plugins
     { import = "plugins" },
   },

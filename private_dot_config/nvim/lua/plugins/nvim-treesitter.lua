@@ -14,6 +14,7 @@ return {
         "javascript",
         "jsdoc",
         "json",
+        "json5",
         "lua",
         "luadoc",
         "luap",
@@ -35,6 +36,13 @@ return {
         "scala",
         "roc",
       })
+      return opts
+    end,
+  },
+  {
+    "nvim-treesitter/nvim-treesitter",
+    opts = function(_, opts)
+      vim.treesitter.language.register("json5", { "jsonc", "jsonl" })
       return opts
     end,
   },

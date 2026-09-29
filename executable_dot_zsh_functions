@@ -447,6 +447,143 @@ function watch_pr_checks() {
   return 1
 }
 
+function pr-range() {
+  # NAME
+  #   pr-range - List PRs merged in a commit range
+  #
+  # SYNOPSIS
+  #   pr-range <start-commit> <end-commit>
+  #   pr-range -h|--help
+  #
+  # DESCRIPTION
+  #   Extracts PR numbers from squash-merge commit subjects in a commit range
+  #   (trailing (#NNNN) format, automatically appended by GitHub) and displays
+  #   them as a bulleted list with title, author, state, and merge timestamp.
+  #
+  #   The start and end commits must be reachable locally; if either is unknown,
+  #   the function exits with a fetch recommendation.
+  #
+  #   If a PR's mergedAt field is null (indicating a disagreement between the
+  #   local commit history and GitHub's record), it is flagged as "unmerged —
+  #   verify" rather than hidden.
+  #
+  # EXIT CODES
+  #   0   PRs found and displayed (or no PRs in range)
+  #   1   argument count wrong, missing dependency, or commits not found locally
+  #
+  # DEPENDENCIES
+  #   ghe (GitHub Enterprise alias); jq (JSON query); parallel (GNU parallel,
+  #   used to fan out the per-PR ghe pr view network calls concurrently)
+  #
+  # EXAMPLES
+  #   pr-range d17e779b8 1d4936a83
+  #   pr-range 42546e2b6 8bf2eea52
+  #   pr-range --help
+  #
+
+  if [[ "$1" == "-h" || "$1" == "--help" ]]; then
+    zmodload zsh/parameter 2>/dev/null
+    local src_file="${functions_source[$0]-}"
+    if [[ -n "$src_file" && -r "$src_file" ]]; then
+      command awk -v fn="$0" '
+        $0 ~ ("^function[[:space:]]+" fn "[[:space:]]*[(]") { in_fn = 1; next }
+        in_fn && /^[[:space:]]*#/ {
+          line = $0
+          sub(/^[[:space:]]*# ?/, "", line)
+          print line
+          next
+        }
+        in_fn { exit }
+      ' "$src_file"
+    else
+      print -r -- "Usage: $0 <start-commit> <end-commit>"
+      print -r -- "List PRs merged in a commit range. See source for full docs."
+    fi
+    return 0
+  fi
+
+  if [[ $# -ne 2 ]]; then
+    print -u2 "Usage: pr-range <start-commit> <end-commit>"
+    return 1
+  fi
+
+  if ! (( ${+commands[ghe]} )) && ! (( ${+aliases[ghe]} )); then
+    print -u2 "Required command (ghe) not found."
+    return 1
+  fi
+  if ! (( ${+commands[jq]} )); then
+    print -u2 "Required command (jq) not found."
+    return 1
+  fi
+  if ! (( ${+commands[parallel]} )); then
+    print -u2 "Required command (parallel) not found. Install GNU parallel."
+    return 1
+  fi
+
+  local start="$1" end="$2"
+
+  # Verify both refs resolve locally before querying git log
+  if ! git rev-parse --verify --quiet "${start}^{commit}" >/dev/null \
+     || ! git rev-parse --verify --quiet "${end}^{commit}" >/dev/null; then
+    print -u2 "One or both commits not found locally. Try: git fetch"
+    return 1
+  fi
+
+  # Extract PR numbers from squash-merge commit subjects: trailing (#1234)
+  local -a pr_numbers
+  pr_numbers=(${(f)"$(git log --pretty=format:'%s' "${start}..${end}" \
+    | grep -oE '\(#[0-9]+\)$' | grep -oE '[0-9]+' | sort -run)"})
+
+  if (( ${#pr_numbers[@]} == 0 )); then
+    print "No PRs found in range ${start}..${end}"
+    return 0
+  fi
+
+  # Fan out the network-bound ghe pr view calls concurrently via GNU parallel.
+  # `ghe` is a zsh alias (GH_HOST=... gh), not a binary or exported function,
+  # so it does not survive into parallel's non-interactive job shells; resolve
+  # its expansion here and pass the literal command through instead. Each job
+  # prints one TSV line (pr_num, title, author, state, mergedAt) on success,
+  # or a "<pr_num>\t__FAILED__" sentinel line on failure. --keep-order
+  # preserves the descending PR-number sort applied above despite out-of-order
+  # completion.
+  local ghe_cmd="${aliases[ghe]:-ghe}"
+  local -a raw_lines
+  raw_lines=(${(f)"$(printf '%s\n' "${pr_numbers[@]}" | parallel --keep-order -j 8 "
+    n={};
+    fields=\$(${ghe_cmd} pr view \"\$n\" --json title,author,state,mergedAt \
+      --jq '[.title, .author.login, .state, .mergedAt] | @tsv' 2>/dev/null) \
+      && printf '%s\t%s\n' \"\$n\" \"\$fields\" \
+      || printf '%s\t__FAILED__\n' \"\$n\"
+  ")"})
+
+  local line pr_num fields title author state merged_at
+  for line in "${raw_lines[@]}"; do
+    pr_num="${line%%$'\t'*}"
+    fields="${line#*$'\t'}"
+
+    if [[ "$fields" == "__FAILED__" ]]; then
+      print "• #${pr_num}: (unable to fetch details)"
+      continue
+    fi
+
+    title="${fields%%$'\t'*}"
+    fields="${fields#*$'\t'}"
+    author="${fields%%$'\t'*}"
+    fields="${fields#*$'\t'}"
+    state="${fields%%$'\t'*}"
+    merged_at="${fields#*$'\t'}"
+    if [[ "$merged_at" == "null" || -z "$merged_at" ]]; then
+      # PR number came from a squash-merge commit already in git log, so an
+      # unmerged mergedAt here means GitHub's record disagrees with local
+      # history (e.g. force-push/rewrite) — flag it instead of hiding it.
+      print "• #${pr_num}: ${title} (@${author}) [${state}, mergedAt: unmerged — verify]"
+    else
+      print "• #${pr_num}: ${title} (@${author}) [${state}, merged ${merged_at}]"
+    fi
+  done
+}
+
 # set_java_home_to <version>
 # Sets JAVA_HOME and updates PATH for the specified Java version using Coursier.
 # Usage: set_java_home_to 8
@@ -520,4 +657,21 @@ function claude-history-by-session() {
     GROUP BY sessionId
     ORDER BY MAX(timestamp) DESC;
   " | jless
+}
+
+#
+# --- CK Jira CLI (1Password-backed token injection with session caching) ------
+#
+ckjira() {
+  # Lazy-load token from 1Password on first use
+  : ${JIRA_API_TOKEN:=$(op item get "Jira API Token Credential" --reveal --fields credential)}
+  export JIRA_API_TOKEN JIRA_CONFIG_FILE=~/.config/.jira/.ck.yml
+
+  jira "$@"
+}
+#
+# --- Intuit Jira CLI (acli, OAuth session managed by acli itself) ------------
+#
+intuitjira() {
+  acli jira "$@"
 }

@@ -10,6 +10,13 @@ return {
     })
     opts.servers.metals = nil
     opts.setup.metals = nil
+
+    -- Enhance jsonls to support jsonc and jsonl filetypes
+    if opts.servers.jsonls then
+      opts.servers.jsonls.filetypes = opts.servers.jsonls.filetypes or { "json", "jsonc", "json5" }
+      table.insert(opts.servers.jsonls.filetypes, "jsonl")
+    end
+
     return opts
   end,
 }

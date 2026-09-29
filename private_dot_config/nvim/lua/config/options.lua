@@ -93,6 +93,13 @@ vim.filetype.add({
   extension = {
     conf = "hocon",
     hocon = "hocon",
+    jsonc = "jsonc",
+    jsonl = "jsonl",
+  },
+  pattern = {
+    [".*/%.vscode/.*%.json"] = "jsonc",
+    [".*/package%.jsonc?"] = "jsonc",
+    ["[^/]*%.?vscode%-?settings"] = "jsonc",
   },
 })
 

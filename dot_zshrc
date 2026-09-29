@@ -6,15 +6,20 @@
 # Review the ~/.local/share/zsh/plugins/custom/init.zsh for the load chain
 #
 # =============================================================================
-
+#
 # OPTIMIZATION: zprof is for profiling. Comment it out for daily use.
 # zmodload zsh/zprof
 
 # --- Core Settings & Cache Directory -----------------------------------------
+
+# Close shell with five presses of CTRL-D
+export IGNOREEOF=5
+
 export DEFAULT_USER="${USER}"
 export DISABLE_UPDATE_PROMPT="false"
 export UPDATE_ZSH_DAYS=7
 export KEYTIMEOUT=40 # 400ms window for multi-key vi maps (e.g. 'jk'); low values break 'jk' under Herdr's input buffering
+
 export ZSH_CACHE_DIR="$HOME/.cache/zsh" # Standardized cache location
 if [[ ! -d "$ZSH_CACHE_DIR" ]]; then mkdir -p "$ZSH_CACHE_DIR/completions"; fi
 
@@ -91,6 +96,19 @@ if (( $+commands[fre] )); then
   add-zsh-hook chpwd fre_chpwd
   add-zsh-hook preexec fre_preexec
 fi
+
+export PAGER='moor --colors=auto --no-clear-on-exit'
+
+export NVIM_SESSION="$XDG_CONFIG_HOME/nvim/session"
+export NVIM_VENV="$HOME/.local/share/nvim/.venv"
+export EDITOR='nvim'
+export VISUAL='nvim'
+
+export FZF_GIT_HOME="$HOME/ws/fzf-git.sh"
+
+export ZK_NOTEBOOK_DIR="$HOME/zettelkasten/notes"
+
+export D2_LAYOUT="tala"
 
 # --- Deferred Initializations (for max speed) --------------------------------
 # Load these tools and scripts AFTER the prompt is displayed
@@ -188,6 +206,11 @@ export PATH="$HOME/ws/OpenMemory/scripts:$PATH"
 export ICLOUD_DIR="$HOME/Library/Mobile Documents/com~apple~CloudDocs/"
 export CHEZMOI_SOURCE_PATH="$HOME/.local/share/chezmoi"
 
+# Claude shim for 1Password JIRA token injection: tells cmux's wrapper to use this
+# as the intermediate claude, which then chains to the real one.
+# Requires ~/.local/share/claude/shim to be on PATH BETWEEN cmux's shim and the real claude.
+export CMUX_CUSTOM_CLAUDE_PATH="$HOME/.local/share/claude/shim/claude"
+
 # Use 1password's ssh agent socket
 export SSH_AUTH_SOCK="~/Library/Group\ Containers/2BUA8C4S2C.com.1password/t/agent.sock"
 
@@ -205,7 +228,6 @@ zsh-defer -c 'eval "$(direnv hook zsh)"'
 
 # mise - the One tool to manage languages, env vars, and tasks per project, reproducibly
 zsh-defer -c 'eval "$(mise activate zsh)"'
-
 
 # BEGIN opam configuration
 # This is useful if you're using opam as it adds:

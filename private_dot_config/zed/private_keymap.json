@@ -7,7 +7,15 @@
 // from the command palette.
 //
 // Goal: mirror the user's LazyVim (Neovim) keymap as closely as Zed allows.
-// Key bindings are based on jetbrains + vim + helix + LazyVim conventions.
+// Reconciled against the Neovim config on 2026-09-19 (post-mini.nvim
+// migration) and validated against Zed v1.20.2's default keymap.
+//
+// PRECEDENCE NOTE: Zed resolves deeper context-tree matches first, NOT later
+// definitions. An `Editor` binding beats a `Workspace` one. So a bare prefix
+// like `space b` bound in Editor would shadow `space b u` bound in Workspace,
+// making the longer sequence unreachable. All `space <x>` prefixes therefore
+// live in ONE context block below, and bare-prefix bindings that collide with
+// a longer sequence have been removed.
 //
 // Migration notes (Zed has no faithful equivalent):
 //   - goto-preview (gpd/gpr floating peek): Zed opens references as an editable
@@ -15,6 +23,16 @@
 //   - lazygit (<leader>gg): mapped to Zed's native git panel.
 //   - blackhole-register d/D and no-yank visual p: Zed has no register model,
 //     so these nvim hygiene remaps are intentionally omitted.
+//   - unimpaired `yo*` toggles (yob/yow/yos/yor): no Zed analog; the
+//     equivalent state toggles are bound under `space u` instead.
+//   - q/Q/<M-q> macro remaps: Zed's vim mode has no macro-record rebinding.
+//   - <leader>cD (cycle diagnostic display): nvim cycles virtual_text /
+//     virtual_lines / off. Zed has no virtual-lines mode.
+//   - zk-nvim <leader>m* (Zettelkasten) and <leader>R: no Zed equivalent.
+//   - <leader>fr (recent FILES): Zed has no per-file MRU picker
+//     (zed-industries/zed#4663). `space f r` opens recent PROJECTS instead.
+//   - mini.sessions <leader>q*: Zed restores workspaces automatically per
+//     project; there is no named-session model to map onto.
 [
   {
     "context": "Editor",
@@ -46,18 +64,11 @@
     }
   },
   {
-    // Workspace-level actions: panels, finders, save. These must live in a
-    // Workspace context so they fire even when focus is in a dock/panel.
+    // Workspace-level actions fire even when focus is in a dock/panel.
+    // Keep these free of any `space <x>` prefix that also exists in the
+    // Editor block below, or the Editor binding will shadow them.
     "context": "Workspace",
     "bindings": {
-      // lazygit equivalent -> native git panel
-      "space g g": "git_panel::ToggleFocus",
-      // Project diagnostics panel (LazyVim <leader>xx / trouble)
-      "space x x": "diagnostics::Deploy",
-      // Outline panel (tree) vs the modal outline bound to `space s` below
-      "space s shift-s": "outline_panel::ToggleFocus",
-      // Reopen closed tab (LazyVim <leader>bb-ish / vim-bufdelete undo)
-      "space b u": "pane::ReopenClosedItem",
       // Tasks (LazyVim overseer / vim-test analog)
       "space o o": "task::Spawn",
       "space o r": "task::Rerun"
@@ -66,10 +77,9 @@
   {
     "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
     "bindings": {
-      // Project view
-      "space e": "pane::RevealInProjectPanel",
-      // Terminal
-      "ctrl-t": "terminal_panel::ToggleFocus",
+      // Terminal (nvim <leader>ft / ctrl-t)
+      // NOTE: was `terminal_panel::ToggleFocus`, which is not a real action.
+      "ctrl-t": "terminal_panel::Toggle",
       // Motion
       "ctrl-shift-alt-w": "vim::NextWordStart",
       "ctrl-shift-alt-b": "vim::PreviousWordStart",
@@ -83,52 +93,111 @@
       "ctrl-l": "workspace::ActivatePaneRight",
       "ctrl-k": "workspace::ActivatePaneUp",
       "ctrl-j": "workspace::ActivatePaneDown",
-      "space w q": "pane::CloseActiveItem",
-      "space w d": "pane::CloseActiveItem",
       "ctrl-\\": "pane::SplitRight",
       "ctrl--": "pane::SplitDown",
       // Move lines (LazyVim alt-j / alt-k)
       "alt-j": "editor::MoveLineDown",
       "alt-k": "editor::MoveLineUp",
-      // Space mode -- file/buffer pickers
-      // best we can do for now. Zed has no equivalent to open recently opened files see https://github.com/zed-industries/zed/issues/4663
-      "space b": ["tab_switcher::Toggle", { "select_last": true }],
-      "space f": "file_finder::Toggle",
+      // Hover docs (LazyVim K)
+      "space k": "editor::Hover",
+
+      //
+      // <leader>b -- buffers (mini.bufremove / cokeline)
+      //
+      "space b b": ["tab_switcher::Toggle", { "select_last": true }],
+      "space b d": "pane::CloseActiveItem",
+      "space b o": "pane::CloseOtherItems",
+      "space b u": "pane::ReopenClosedItem",
+
+      //
+      // <leader>e -- file explorer (mini.files)
+      //
+      "space e": "pane::RevealInProjectPanel",
+      "space f e": "pane::RevealInProjectPanel",
+      "space f shift-e": "project_panel::ToggleFocus",
+
+      //
+      // <leader>f -- find files
+      //
       "space f f": "file_finder::Toggle",
-      "space f r": "file_finder::Toggle",
+      // No per-file MRU in Zed (#4663); recent PROJECTS is the closest analog.
+      "space f r": "projects::OpenRecent",
       // Yank current file path (LazyVim <leader>fy via vim-fetch)
       "space f y": "editor::CopyPath",
-      "space f shift-y": "editor::CopyRelativePath",
-      "space k": "editor::Hover",
-      // Document symbols (modal) and project/workspace symbols
-      "space s": "outline::Toggle",
+      // NOTE: was `editor::CopyRelativePath`, which is not a real action.
+      "space f shift-y": "workspace::CopyRelativePath",
+
+      //
+      // <leader>s -- search / symbols
+      //
       "space s s": "outline::Toggle",
+      "space s shift-s": "outline_panel::ToggleFocus",
+      // Search & replace (LazyVim <leader>sr via grug-far)
+      "space s r": ["pane::DeploySearch", { "replace_enabled": true }],
       "space shift-s": "project_symbols::Toggle",
-      "space d": "editor::GoToDiagnostic",
-      "space shift-d": "diagnostics::Deploy",
-      "space r n": "editor::Rename",
-      "space c r": "editor::Rename",
-      "space a": "editor::ToggleCodeActions",
+      "space /": "pane::DeploySearch",
+      "space h": "editor::SelectAllMatches",
+
+      //
+      // <leader>c -- code (LSP)
+      //
       "space c a": "editor::ToggleCodeActions",
       "space c f": "editor::Format",
-      "space h": "editor::SelectAllMatches",
-      "space /": "pane::DeploySearch",
-      // Git (LazyVim <leader>g group)
+      "space c r": "editor::Rename",
+      "space c c": "editor::ToggleComments",
+      "space r n": "editor::Rename",
+
+      //
+      // <leader>x / d -- diagnostics
+      //
+      "space x x": "diagnostics::Deploy",
+      "space x shift-x": "diagnostics::Deploy",
+
+      //
+      // <leader>g -- git (mini.git + mini.diff)
+      //
+      "space g g": "git_panel::ToggleFocus",
       "space g b": "editor::ToggleGitBlameInline",
       "space g shift-b": "git::Blame",
+      "space g d": "git::Diff",
+      // mini.diff hunk actions
       "space g h s": "git::StageAndNext",
       "space g h r": "git::Restore",
       "space g h p": "editor::ToggleSelectedDiffHunks",
+      "space g h shift-s": "git::StageFile",
       "space g h shift-r": "git::RestoreFile",
-      // Search & replace (LazyVim <leader>sr via grug-far)
-      "space s r": "pane::DeploySearch",
-      // AI chat (LazyVim <leader>a Augment group)
+      // mini.git <leader>ghu -- unstages the whole file in nvim too
+      "space g h u": "git::UnstageFile",
+      "space g h d": "git::Diff",
+
+      //
+      // <leader>u -- UI toggles (replacing Snacks.toggle / unimpaired yo*)
+      //
+      "space u w": "editor::ToggleSoftWrap",
+      "space u l": "editor::ToggleLineNumbers",
+      "space u h": "editor::ToggleInlayHints",
+      "space u z": "workspace::ToggleZoom",
+      "space u shift-z": "workspace::ToggleZoom",
+
+      //
+      // <leader>w -- windows
+      //
+      "space w q": "pane::CloseActiveItem",
+      "space w d": "pane::CloseActiveItem",
+      "space w m": "workspace::ToggleZoom",
+
+      //
+      // <leader>a -- AI agent. The enterprise Claude account is reached via
+      // the external `claude-acp` agent (settings.json agent_servers).
+      //
       "space a a": "agent::ToggleFocus",
+      "space a n": "agent::NewThread",
       "space a c": "assistant::InlineAssist",
+
       // Diagnostics navigation (LazyVim ]d [d)
       "] d": "editor::GoToDiagnostic",
       "[ d": "editor::GoToPreviousDiagnostic",
-      // Git hunk navigation (LazyVim ]h [h, ]H [H)
+      // Git hunk navigation (LazyVim ]h [h via mini.diff)
       "] h": "editor::GoToHunk",
       "[ h": "editor::GoToPreviousHunk",
       // Folding (vim za/zR/zM also work natively)
@@ -139,15 +208,13 @@
       "m m": "vim::Matching",
       // Misc
       "shift-u": "editor::Redo",
-      "ctrl-c": "editor::ToggleComments",
-      "space c": "editor::ToggleComments"
+      "ctrl-c": "editor::ToggleComments"
     }
   },
   {
     "context": "Editor && (vim_mode == normal || vim_mode == visual) && !VimWaiting && !menu",
     "bindings": {
-      // put key-bindings here if you want them to work in normal & visual mode
-      // Goto mode
+      // Goto mode (Helix-style, mirrors nvim gh/gl)
       "g l": "vim::EndOfLine",
       "g h": "vim::StartOfLine",
       "g s": "vim::FirstNonWhitespace",
@@ -156,15 +223,9 @@
       "g shift-d": "editor::GoToDeclaration",
       "g y": "editor::GoToTypeDefinition",
       "g shift-i": "editor::GoToImplementation",
-      "g r": "editor::FindAllReferences", // zed specific
+      "g r": "editor::FindAllReferences",
       "g t": "vim::WindowTop",
       "g b": "vim::WindowBottom"
-    }
-  },
-  {
-    "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
-    "bindings": {
-      // put key-bindings here if you want them to work only in normal mode
     }
   },
   {
@@ -172,18 +233,21 @@
     "bindings": {
       // visual, visual line & visual block modes
       "ctrl-c": "editor::ToggleComments",
-      "space c": "editor::ToggleComments",
+      "space c c": "editor::ToggleComments",
       // Move selected lines (LazyVim alt-j / alt-k in visual)
       "alt-j": "editor::MoveLineDown",
       "alt-k": "editor::MoveLineUp",
       // Search selection in project (LazyVim visual <leader>/)
-      "space /": "pane::DeploySearch"
+      "space /": "pane::DeploySearch",
+      // Stage/reset hunk from a visual range (mini.diff n+x mode maps)
+      "space g h s": "git::StageRange",
+      "space g h r": "git::Restore"
     }
   },
   {
     "context": "Editor && vim_mode == insert && !menu",
     "bindings": {
-      // put key-bindings here if you want them to work in insert mode
+      // nvim: keymap("i", "jk", "<ESC>")
       "j k": ["workspace::SendKeystrokes", "escape"]
     }
   },
