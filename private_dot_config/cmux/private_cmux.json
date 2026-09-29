@@ -1,0 +1,48 @@
+{
+  "$schema": "https://raw.githubusercontent.com/manaflow-ai/cmux/main/web/data/cmux.schema.json",
+  "schemaVersion": 1,
+
+  // This file uses JSON with comments (JSONC).
+  // Uncomment and edit any setting to make it file-managed.
+  // Remove a setting to fall back to the value saved in Settings.
+  // cmux creates this template on launch when ~/.config/cmux/cmux.json is missing.
+  // Legacy settings.json files are read only as fallback for keys not present here.
+
+  "terminal" : {
+    "textBoxDefaultSubmitAction" : "claude",
+    "textBoxSubmitActions" : [
+      {
+        "title" : "Claude Dangerous",
+        "kind" : "commandTemplate",
+        "systemImage" : "sparkle",
+        "commandTemplate" : "claude --dangerously-skip-permissions -- {{prompt}}",
+        "backgroundColorHex" : "#F6D5C8",
+        "id" : "claude",
+        "assetName" : "AgentIcons\/Claude"
+      }
+    ]
+  },
+
+  "sidebar" : {
+    "showAgentActivity" : false
+  },
+
+  "notifications" : {
+    "showInMenuBar" : false,
+    "dockBadge" : false,
+    "unreadPaneRing" : false,
+    "paneFlash" : false,
+    "sound" : "none"
+  },
+
+  "shortcuts": {
+    "bindings": {
+      "nextSurface": "opt+cmd+l",
+      "prevSurface": "opt+cmd+h",
+      "toggleSplitZoom": "opt+cmd+z",
+      "splitRight": "opt+cmd+\\",
+      "splitDown": "opt+cmd+-",
+      "canvasZoomOut": "cmd+opt+9"
+    }
+  }
+}
