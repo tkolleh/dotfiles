@@ -1,11 +1,11 @@
 [[plugin.deps]]
 use = "yazi-rs/plugins:toggle-pane"
-rev = "f703392"
+rev = "9558da9"
 hash = "5b2fbef7d1513ce38ff72623a071a5e"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:git"
-rev = "f703392"
+rev = "9558da9"
 hash = "347cc6b190eb0c2fd60513cc7ae37412"
 
 [[plugin.deps]]
