@@ -236,3 +236,10 @@ zsh-defer -c 'eval "$(mise activate zsh)"'
 # This section can be safely removed at any time if needed.
 [[ ! -r '/Users/tkolleh/.opam/opam-init/init.zsh' ]] || source '/Users/tkolleh/.opam/opam-init/init.zsh' > /dev/null 2> /dev/null
 # END opam configuration
+
+# ZIA-CERT-STORE-MANAGED profile.d sourcing
+if [ -d /etc/profile.d ]; then
+  for _zia_f in /etc/profile.d/*.sh; do [ -f "$_zia_f" ] && . "$_zia_f"; done
+  unset _zia_f
+fi
+# ZIA-CERT-STORE-MANAGED-END

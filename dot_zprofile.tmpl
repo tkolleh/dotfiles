@@ -46,7 +46,15 @@ if [[ -f "$HOME/google-cloud-sdk/completion.zsh.inc" ]]; then
   source "$HOME/google-cloud-sdk/completion.zsh.inc"
 fi
 
-export JAVA_HOME="$(cs java-home --architecture arm64 --jvm corretto:21)"
+# Pinned to a .pkg-installed JDK, not Coursier-managed. Coursier's arc/ cache
+# can drop an extracted JDK ENTIRELY -- not merely revert its cacerts (observed
+# 2026-09-25: the whole tree went, conf/security/policy/ included, so the JVM
+# could not even init JCE: "Can't read cryptographic policy directory:
+# unlimited") -- and silently re-extracting ~200MB mid-login blocked shell
+# startup. /Library/Java/JavaVirtualMachines is Apple's system JVM registry
+# (what /usr/libexec/java_home reads), not a cache dir, so nothing prunes it.
+# Install/reinstall via: brew install --cask corretto@21
+export JAVA_HOME="/Library/Java/JavaVirtualMachines/amazon-corretto-21.jdk/Contents/Home"
 
 # Prepended deliberately: appending leaves /usr/bin ahead, so `java` resolves to
 # the macOS stub. The stub happens to forward via JAVA_HOME, but that is macOS
@@ -55,18 +63,14 @@ export JAVA_HOME="$(cs java-home --architecture arm64 --jvm corretto:21)"
 # print_jvm_versions in ~/.local/bin assume this JDK's bin wins.
 export PATH="$JAVA_HOME/bin:$PATH"
 
+export PATH="$PATH:/Users/tkolleh/Library/Application Support/Coursier/bin"
+
 {{ if (eq .chezmoi.hostname .chezmoi.config.data.work_hostname) }}
 
-# Validate, don't assume. Coursier's arc/ cache can drop an extracted JDK
-# ENTIRELY -- not merely revert its cacerts (observed 2026-09-25: the whole
-# tree went, conf/security/policy/ included, so the JVM could not even init
-# JCE: "Can't read cryptographic policy directory: unlimited"). Testing
-# bin/java alone misses that, hence the policy-dir check. Re-resolving calls
-# the same command, which re-extracts; we only pay for it when something is
-# actually wrong.
+# Coursier-managed path, there's no safe re-resolve to fall back on; a broken
+# system JVM means `brew reinstall --cask corretto@21`, not a silent retry mid-shell.
 if [[ ! -x "$JAVA_HOME/bin/java" || ! -d "$JAVA_HOME/conf/security/policy/unlimited" ]]; then
-  print -u2 -- "zprofile: JAVA_HOME incomplete ($JAVA_HOME); re-extracting"
-  [[ -x "$JAVA_HOME/bin/java" ]] || print -u2 -- "zprofile: WARNING JAVA_HOME still unusable; JVM tooling will fail"
+  print -u2 -- "zprofile: WARNING JAVA_HOME broken ($JAVA_HOME); run: brew reinstall --cask corretto@21"
 fi
 
 # Corp CA trust for ALL JVMs, from one file outside any JDK.

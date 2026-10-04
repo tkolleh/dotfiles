@@ -1,0 +1,379 @@
+#!/usr/bin/env zsh
+#
+# prs — Unified GitHub Pull Request CLI for Credit Karma GHE
+#
+# Consolidates: prs alias (gh dash), pr-range, watch_pr_checks,
+# print_pr_basics, print_pr_failed_checks into a single entry point.
+#
+set -euo pipefail
+
+readonly PRS_VERSION="1.0.0"
+
+if [[ "$(git config --get remote.origin.url 2>/dev/null)" == *code.corp.creditkarma.com* ]]; then
+  export GH_HOST="code.corp.creditkarma.com"
+fi
+
+prs_help() {
+  cat <<EOF
+prs — Unified GitHub Pull Request CLI (GH_HOST=${GH_HOST:-default})
+
+USAGE
+  prs [COMMAND] [OPTIONS]
+
+COMMANDS
+  list                        List open PRs
+  list <sha>                  Find the PR that contains a single commit
+  list <start>..<end>         List PRs merged in a commit range
+  checkout <number>           Check out a PR into a worktree (via worktrunk)
+  view [number|branch] [slack]
+                               View PR details (default: markdown table;
+                               pass 'slack' for the Slack-flavored template)
+  checks [number|branch]      Show failed CI checks for a PR
+  watch [number|branch]       Poll a PR's CI checks until they finish
+  --help, -h                  Show this message
+  --version                   Show version
+
+EXAMPLES
+  prs list
+  prs list f5a944e6f
+  prs list d17e779b8..1d4936a83
+  prs checkout 2991
+  prs view 2991
+  prs view 2991 slack
+  prs checks 2991
+  prs watch 2991
+EOF
+}
+
+main() {
+  local cmd="${1:-list}"
+  (( $# > 0 )) && shift
+
+  case "$cmd" in
+    list)        cmd_list "$@" ;;
+    checkout)    cmd_checkout "$@" ;;
+    view)        cmd_view "$@" ;;
+    checks)      cmd_checks "$@" ;;
+    watch)       cmd_watch "$@" ;;
+    --help|-h)   prs_help ;;
+    --version)   echo "prs $PRS_VERSION" ;;
+    *)           prs_help >&2; return 1 ;;
+  esac
+}
+
+# A bare commit-ish argument: a plausible SHA, or a start..end / start...end
+# range. Anything else (gh flags, multiple args) is not commit-shaped and
+# falls through to `gh pr list`.
+commit_shaped() {
+  [[ $# -eq 1 ]] || return 1
+  local arg="$1"
+  [[ "$arg" == -* ]] && return 1
+  [[ "$arg" == *..* ]] && return 0
+  [[ "$arg" =~ ^[0-9a-fA-F]{4,40}$ ]]
+}
+
+require_gh() {
+  if ! (( ${+commands[gh]} )); then
+    print -u2 "Requires gh to be installed."
+    return 1
+  fi
+}
+
+# ---------------------------------------------------------------------------
+# list — plain tabular PR listing (replaces the `prs` alias's gh dash TUI),
+# or a commit/range lookup when given a commit-shaped argument.
+# ---------------------------------------------------------------------------
+cmd_list() {
+  require_gh || return 1
+
+  if [[ $# -eq 1 && ( "$1" == "--help" || "$1" == "-h" ) ]]; then
+    prs_help
+    return 0
+  fi
+
+  if commit_shaped "$@"; then
+    local arg="$1"
+    if [[ "$arg" == *...* ]]; then
+      # GitHub compare-URL syntax (a...b) — same range semantics as a..b here.
+      GH_PAGER=cat cmd_commit_range "${arg%%...*}" "${arg##*...}"
+    elif [[ "$arg" == *..* ]]; then
+      GH_PAGER=cat cmd_commit_range "${arg%%..*}" "${arg##*..}"
+    else
+      GH_PAGER=cat cmd_commit_single "$arg"
+    fi
+    return
+  fi
+
+  gh pr list "$@"
+}
+
+commit_resolvable_locally() {
+  git rev-parse --verify --quiet "${1}^{commit}" >/dev/null 2>&1
+}
+
+cmd_commit_single() {
+  require_gh || return 1
+  local sha="$1"
+  local pr_num=""
+
+  if ! commit_resolvable_locally "$sha"; then
+    print "Commit ${sha} not found locally, fetching from origin..."
+    git fetch origin
+  fi
+
+  if commit_resolvable_locally "$sha"; then
+    local subject
+    subject="$(git log -1 --format=%s "$sha")"
+    pr_num="$(grep -oE '\(#[0-9]+\)$' <<<"$subject" | grep -oE '[0-9]+' || true)"
+  fi
+
+  if [[ -z "$pr_num" ]]; then
+    # Either the commit is a merge/rebase/cherry-pick with no trailing (#NNNN),
+    # or it has no local ref at all (its branch was deleted post-merge and no
+    # fetch can bring it back). Either way, GitHub's own search operates
+    # server-side against its object database, not the local clone, so it
+    # still resolves commits git can't see locally.
+    pr_num="$(gh pr list --search "$sha" --state all \
+      --json number --jq '.[0].number // empty' 2>/dev/null || true)"
+  fi
+
+  if [[ -z "$pr_num" ]]; then
+    print -u2 "No PR found for commit ${sha}."
+    return 1
+  fi
+
+  gh pr view "$pr_num" \
+    --json number,title,author,state,mergedAt,url \
+    --jq '"#\(.number): \(.title)\n  Author: \(.author.login)\n  State: \(.state)\n  Merged: \(.mergedAt // "unmerged")\n  URL: \(.url)"'
+}
+
+cmd_commit_range() {
+  require_gh || return 1
+  if ! (( ${+commands[jq]} )); then
+    print -u2 "Required command (jq) not found."
+    return 1
+  fi
+  if ! (( ${+commands[parallel]} )); then
+    print -u2 "Required command (parallel) not found. Install GNU parallel."
+    return 1
+  fi
+
+  local start="$1" end="$2"
+
+  # Ask GHE's own compare API for the commit list rather than walking local
+  # git history: source branches are routinely deleted after merge here, so
+  # `git log start..end` silently misses commits no local ref can reach,
+  # even after a fresh `git fetch origin`. The compare API has no such gap —
+  # it answers from the server's object database directly.
+  local compare_messages
+  if ! compare_messages="$(gh api "repos/{owner}/{repo}/compare/${start}...${end}" \
+      --jq '.commits[].commit.message | split("\n")[0]' 2>&1)"; then
+    print -u2 "Could not resolve range ${start}...${end} via GHE compare API:"
+    print -u2 -- "$compare_messages"
+    return 1
+  fi
+
+  local -a pr_numbers
+  pr_numbers=(${(f)"$(grep -oE '\(#[0-9]+\)$' <<<"$compare_messages" \
+    | grep -oE '[0-9]+' | sort -run)"})
+
+  if (( ${#pr_numbers[@]} == 0 )); then
+    print "No PRs found in range ${start}..${end}"
+    return 0
+  fi
+
+  local -a raw_lines
+  raw_lines=(${(f)"$(printf '%s\n' "${pr_numbers[@]}" | parallel --keep-order -j 8 "
+    n={};
+    fields=\$(gh pr view \"\$n\" --json title,author,state,mergedAt,url \
+      --jq '[.title, .author.login, .state, .mergedAt, .url] | @tsv' 2>/dev/null) \
+      && printf '%s\t%s\n' \"\$n\" \"\$fields\" \
+      || printf '%s\t__FAILED__\n' \"\$n\"
+  ")"})
+
+  local line pr_num fields title author state merged_at url
+  for line in "${raw_lines[@]}"; do
+    pr_num="${line%%$'\t'*}"
+    fields="${line#*$'\t'}"
+
+    if [[ "$fields" == "__FAILED__" ]]; then
+      print "• #${pr_num}: (unable to fetch details)"
+      continue
+    fi
+
+    title="${fields%%$'\t'*}"
+    fields="${fields#*$'\t'}"
+    author="${fields%%$'\t'*}"
+    fields="${fields#*$'\t'}"
+    state="${fields%%$'\t'*}"
+    fields="${fields#*$'\t'}"
+    merged_at="${fields%%$'\t'*}"
+    url="${fields#*$'\t'}"
+
+    if [[ "$merged_at" == "null" || -z "$merged_at" ]]; then
+      print "• #${pr_num}: ${title} (@${author}) [${state}, mergedAt: unmerged — verify] ${url}"
+    else
+      print "• #${pr_num}: ${title} (@${author}) [${state}, merged ${merged_at}] ${url}"
+    fi
+  done
+}
+
+# ---------------------------------------------------------------------------
+# checkout — check out a PR into a worktree via worktrunk
+# ---------------------------------------------------------------------------
+cmd_checkout() {
+  if ! (( ${+commands[wt]} )); then
+    print -u2 "Requires worktrunk (wt) to be installed."
+    return 1
+  fi
+  if [[ $# -ne 1 || ! "$1" =~ ^[0-9]+$ ]]; then
+    print -u2 "Usage: prs checkout <number>"
+    return 1
+  fi
+
+  wt switch "pr:$1"
+}
+
+# ---------------------------------------------------------------------------
+# view — PR metadata (markdown table, or Slack-flavored template)
+# ---------------------------------------------------------------------------
+cmd_view() {
+  require_gh || return 1
+  local pr_id="" format=""
+
+  case $# in
+    0) : ;;
+    1) [[ "$1" == "slack" ]] && format="slack" || pr_id="$1" ;;
+    2) pr_id="$1"; format="$2" ;;
+    *) print -u2 "Usage: prs view [number|branch] [slack]"; return 1 ;;
+  esac
+
+  if [[ "$format" == "slack" ]]; then
+    local template='
+#### {{.title}}
+
+- Number: {{.number}}
+- Title: {{.title}}
+- State: {{.state}}
+- Is Draft: {{.isDraft}}
+- Updated At: {{.updatedAt}}
+- Merge Status: {{.mergeStateStatus}}
+- URL: (PR:{{.number}})[{{.url | printf "%.120s"}}]
+'
+    gh pr view ${pr_id:+"$pr_id"} --json number,title,url,updatedAt,state,author,isDraft,mergeable,mergeStateStatus --template "$template" | mdcat --
+  else
+    local template='
+#### {{.title}}
+
+| Attribute       | Value                      |
+|-----------------|----------------------------|
+| State           | {{.state}}                 |
+| Is Draft PR     | {{.isDraft}}               |
+| Updated At      | {{.updatedAt}}             |
+| Merge Status    | {{.mergeStateStatus}}      |
+| URL             | (PR:{{.number}})[{{.url | printf "%.120s"}}] |
+ '
+    gh pr view ${pr_id:+"$pr_id"} --json number,title,url,updatedAt,state,author,isDraft,mergeable,mergeStateStatus --template "$template" | mdcat --
+  fi
+}
+
+# ---------------------------------------------------------------------------
+# checks — failed CI checks for a PR
+# ---------------------------------------------------------------------------
+cmd_checks() {
+  require_gh || return 1
+  local template='
+  Failed Checks:
+  --------------
+  {{- range . }}
+  {{- if eq .state "FAILURE" }}
+  {{ .name }}: {{ .description }}
+  {{- end }}
+  {{- end }}
+  '
+  gh pr checks ${1:+"$1"} --json name,description,state --template $template
+}
+
+# ---------------------------------------------------------------------------
+# watch — poll a PR's CI checks until they finish
+# ---------------------------------------------------------------------------
+cmd_watch() {
+  require_gh || return 1
+  local -i poll_interval=10
+  local pr_id="${1:-}"
+
+  local pr_number pr_url pr_head pr_meta
+  if ! pr_meta=$(gh pr view ${pr_id:+"$pr_id"} \
+        --json number,url,headRefName \
+        --jq '[.number, .url, .headRefName] | @tsv' 2>/dev/null) \
+     || [[ -z "$pr_meta" ]]; then
+    if (( ${+commands[gum]} )); then
+      gum log --time rfc822 --level error "Could not find PR ${pr_id:-for current branch}"
+    else
+      print -u2 "Could not find PR ${pr_id:-for current branch}"
+    fi
+    return 1
+  fi
+  pr_number=${pr_meta%%$'\t'*}
+  pr_meta=${pr_meta#*$'\t'}
+  pr_url=${pr_meta%%$'\t'*}
+  pr_head=${pr_meta#*$'\t'}
+
+  local watch_label="${pr_head:-PR} #${pr_number}"
+  if (( ${+commands[gum]} )); then
+    gum log --time rfc822 --level info "Watching checks for ${watch_label}..."
+  else
+    print "Watching checks for ${watch_label}..."
+  fi
+
+  trap 'if (( ${+commands[gum]} )); then
+          gum log --time rfc822 --level warn "Stopped watching PR #${pr_number} (interrupted)."
+        else
+          print -u2 "Stopped watching PR #${pr_number} (interrupted)."
+        fi
+        trap - INT
+        return 130' INT
+
+  local -i checks_ec
+  gh pr checks ${pr_id:+"$pr_id"} --watch --interval "$poll_interval"
+  checks_ec=$?
+
+  trap - INT
+
+  if (( checks_ec == 130 || checks_ec == 2 )); then
+    if (( ${+commands[gum]} )); then
+      gum log --time rfc822 --level warn "Stopped watching PR #${pr_number} (interrupted)."
+    else
+      print -u2 "Stopped watching PR #${pr_number} (interrupted)."
+    fi
+    return 130
+  fi
+
+  local pr_link
+  if [[ -n "$pr_url" && -t 1 ]]; then
+    pr_link=$'\e]8;;'"${pr_url}"$'\e\\'"Click here to view PR #${pr_number} on GitHub"$'\e]8;;\e\\'" ${pr_url}"
+  else
+    pr_link="Click here to view PR #${pr_number} on GitHub${pr_url:+ ${pr_url}}"
+  fi
+
+  if (( checks_ec == 0 )); then
+    printf '\e]777;notify;%s;✅ PR #%s checks passed\a' "${pr_head:-pr}" "$pr_number"
+    if (( ${+commands[gum]} )); then
+      gum log --time rfc822 --level info "Checks finished with state: SUCCESS"
+    else
+      print "Checks finished with state: SUCCESS"
+    fi
+    print -r -- "$pr_link"
+    return 0
+  fi
+
+  if (( ${+commands[gum]} )); then
+    gum log --time rfc822 --level info "Checks finished with state: FAILURE"
+  else
+    print "Checks finished with state: FAILURE"
+  fi
+  print -r -- "$pr_link"
+  return 1
+}
+
+main "$@"
