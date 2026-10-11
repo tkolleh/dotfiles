@@ -69,32 +69,39 @@ M.apply_auto_background_theme = function()
   return theme
 end
 
+-- Per :help diagnostic.txt (vim.diagnostic.Opts.VirtualText/VirtualLines), `false`
+-- is the only "off" sentinel; a table always means "on with these sub-options."
+-- These styles are the single source of truth for the "on" states, exported so
+-- other config (e.g. the nvim-lspconfig plugin spec's initial opts.diagnostics)
+-- can reuse the same table instead of duplicating it and risking drift.
+M.VIRTUAL_TEXT_STYLE = { current_line = false, prefix = "●", source = "if_many", spacing = 4 }
+M.VIRTUAL_LINES_STYLE = { current_line = true }
+
 ---Cycle through different diagnostic display modes or override the current display modes.
 ---Cycle from:
 --- * nothing displayed
 --- * single diagnostic at the end of the line (`virtual_text`)
---- * full diagnostics using virtual text (`virtual_lines`)
+--- * full diagnostics using virtual lines (`virtual_lines`)
 ---@param override { virtual_text: boolean, virtual_lines: boolean }
 ---@return nil
 M.cycle_diagnostics_display = function(override)
-  -- check if text and lines are not (explicitly) equal to false ortherwise true
-  local text = vim.diagnostic.config().virtual_text ~= false
-  local lines = vim.diagnostic.config().virtual_lines ~= false
+  local text_on = vim.diagnostic.config().virtual_text ~= false
+  local lines_on = vim.diagnostic.config().virtual_lines ~= false
 
+  local virtual_text, virtual_lines
   -- Text -> Lines transition
-  if text then
-    text = false
-    lines = true
+  if text_on then
+    virtual_text, virtual_lines = false, M.VIRTUAL_LINES_STYLE
   -- Lines -> Nothing transition
-  elseif lines then
-    text = false
-    lines = false
+  elseif lines_on then
+    virtual_text, virtual_lines = false, false
   -- Nothing -> Text transition
   else
-    text = true
-    lines = false
+    virtual_text, virtual_lines = M.VIRTUAL_TEXT_STYLE, false
   end
-  vim.diagnostic.config(vim.tbl_deep_extend("keep", override or {}, { virtual_text = text, virtual_lines = lines }))
+  vim.diagnostic.config(
+    vim.tbl_deep_extend("keep", override or {}, { virtual_text = virtual_text, virtual_lines = virtual_lines })
+  )
 end
 
 M.compile_code = function()

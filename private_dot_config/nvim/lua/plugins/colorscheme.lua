@@ -12,6 +12,7 @@ return {
   {
     "tkolleh/monrovia.nvim",
     name = "monrovia",
+    dir = vim.fn.expand("~/ws/monrovia.nvim/main"), -- local dev worktree, not GitHub
     lazy = false,
     priority = 800,
     config = function()

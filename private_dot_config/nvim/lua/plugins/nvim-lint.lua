@@ -12,6 +12,9 @@ return {
       typescriptreact = { "eslint_d" },
       svelte = { "eslint_d" },
       python = { "pylint" },
+      json = { "jsonlint" },
+      jsonc = { "jsonlint" },
+      jsonl = { "jsonlint" },
       -- Use the "*" filetype to run linters on all filetypes.
       -- ['*'] = { 'global linter' },
       -- Use the "_" filetype to run linters on filetypes that don't have other linters configured.

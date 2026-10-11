@@ -8,45 +8,25 @@ return {
     dependencies = { "MunifTanjim/nui.nvim" },
     cmd = "CodeDiff",
     config = function()
+      -- Everything below that isn't char_insert/char_delete/icons already
+      -- matched codediff.nvim's own defaults (confirmed against
+      -- lua/codediff/config.lua's M.defaults) and has been removed:
+      -- highlights.line_insert/line_delete/char_brightness; all of
+      -- diff.disable_inlay_hints/max_computation_time_ms;
+      -- explorer.position/width/height/indent_markers/view_mode; every
+      -- keymaps.view.* and keymaps.explorer.* entry. Only char_insert/
+      -- char_delete (real highlight groups vs. default nil) and
+      -- explorer.icons.folder_closed/folder_open (blanked vs. default Nerd
+      -- Font glyphs) are genuine deviations.
       require("codediff").setup({
         highlights = {
-          line_insert = "DiffAdd",
-          line_delete = "DiffDelete",
           char_insert = "CodeDiffCharInsert",
           char_delete = "CodeDiffCharDelete",
-          char_brightness = nil,
-        },
-        diff = {
-          disable_inlay_hints = true,
-          max_computation_time_ms = 5000,
         },
         explorer = {
-          position = "left",
-          width = 40,
-          height = 15,
-          indent_markers = true,
           icons = {
             folder_closed = "",
             folder_open = "",
-          },
-          view_mode = "list",
-        },
-        keymaps = {
-          view = {
-            quit = "q",
-            toggle_explorer = "<leader>b",
-            next_hunk = "]c",
-            prev_hunk = "[c",
-            next_file = "]f",
-            prev_file = "[f",
-            diff_get = "do",
-            diff_put = "dp",
-          },
-          explorer = {
-            select = "<CR>",
-            hover = "K",
-            refresh = "R",
-            toggle_view_mode = "i",
           },
         },
       })

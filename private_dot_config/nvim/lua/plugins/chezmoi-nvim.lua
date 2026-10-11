@@ -37,20 +37,14 @@ return {
       desc = "Chezmoi",
     },
   },
-  opts = {
-    edit = {
-      watch = false,
-      force = false,
-    },
-    notification = {
-      on_open = true,
-      on_apply = true,
-      on_watch = false,
-    },
-    telescope = {
-      select = { "<CR>" },
-    },
-  },
+  -- edit.watch/force and telescope.select all already matched chezmoi.nvim's
+  -- own defaults and are left unset. `notification.on_open/on_apply/on_watch`
+  -- is also removed, but for a different reason: it was never a real key at
+  -- all -- chezmoi.nvim's actual schema nests these under
+  -- `events.on_open.notification.enable` etc. (three levels under `events`,
+  -- not a flat `notification` table), so these three lines were always
+  -- silently ignored, never actually toggling anything.
+  opts = {},
   init = function()
     vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
       pattern = { vim.env.HOME .. "/.local/share/chezmoi/*" },

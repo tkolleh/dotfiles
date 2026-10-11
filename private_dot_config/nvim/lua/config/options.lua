@@ -93,11 +93,18 @@ vim.filetype.add({
   extension = {
     conf = "hocon",
     hocon = "hocon",
+    jsonc = "jsonc",
+    jsonl = "jsonl",
+  },
+  pattern = {
+    [".*/%.vscode/.*%.json"] = "jsonc",
+    [".*/package%.jsonc?"] = "jsonc",
+    ["[^/]*%.?vscode%-?settings"] = "jsonc",
   },
 })
 
--- Default to **no** line nor text display for diagnostics
-utils.cycle_diagnostics_display({ virtual_text = false, virtual_lines = false })
+-- Default to virtual_lines on, virtual_text off for diagnostics
+utils.cycle_diagnostics_display({ virtual_text = false, virtual_lines = utils.VIRTUAL_LINES_STYLE })
 
 -- Load project-local .nvim.lua. Neovim prompts once per file via vim.secure and
 -- remembers the decision, so untrusted repos cannot execute code silently.

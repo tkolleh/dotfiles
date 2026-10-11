@@ -39,7 +39,7 @@ font-family = "AtkynsonMono Nerd Font Mono"
 font-size = 14
 
 unfocused-split-opacity = 0.90
-minimum-contrast = 4.0
+# minimum-contrast = 4.0
 bold-color = bright
 faint-opacity = 0.65
 

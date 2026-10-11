@@ -1,31 +1,16 @@
 return {
   "theHamsta/nvim-dap-virtual-text",
-  opts = {
-    enabled = true,
-    enabled_commands = true,
-    highlight_changed_variables = true,
-    highlight_new_as_changed = false,
-    show_stop_reason = true,
-    commented = false,
-    only_first_definition = true,
-    all_references = false,
-    clear_on_continue = false,
-    -- Use inline virtual text (Neovim 0.10+ feature)
-    virt_text_pos = "inline",
-    -- Experimental features
-    all_frames = false,
-    virt_lines = false,
-    virt_text_win_col = nil,
-    -- Display callback (default)
-    display_callback = function(variable, buf, stackframe, node, options)
-      -- By default, strip out new line characters
-      if options.virt_text_pos == "inline" then
-        return " = " .. variable.value:gsub("%s+", " ")
-      else
-        return variable.name .. " = " .. variable.value:gsub("%s+", " ")
-      end
-    end,
-  },
+  -- Everything below used to just restate the plugin's own defaults
+  -- (enabled, highlight_*, show_stop_reason, commented, only_first_definition,
+  -- all_references, clear_on_continue, all_frames, virt_lines,
+  -- virt_text_win_col, display_callback -- all confirmed identical to
+  -- nvim-dap-virtual-text.lua's own `options` table). `virt_text_pos` is left
+  -- unset too: the plugin's own default is already "inline" on Neovim 0.10+
+  -- (`vim.fn.has('nvim-0.10') == 1 and 'inline' or 'eol'`), which covers this
+  -- config's nvim 0.12. `enabled_commands` (note: not a real key -- the
+  -- plugin reads `enable_commands`, no "d") is dropped rather than fixed:
+  -- that default is also already `true`.
+  opts = {},
   config = function(_, opts)
     require("nvim-dap-virtual-text").setup(opts)
 

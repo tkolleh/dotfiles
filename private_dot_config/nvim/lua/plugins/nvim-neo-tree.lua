@@ -103,9 +103,10 @@ return {
     },
     opts = {
       filesystem = {
-        -- Had to disable this option, because when I open neotree it was
-        -- jumping around to random dirs when I opened a dir
-        follow_current_file = { enabled = false },
+        -- filesystem.follow_current_file.enabled already defaults to false
+        -- in neo-tree.nvim itself (only the `buffers` section defaults to
+        -- true) -- not set here, since this project doesn't import LazyVim's
+        -- neo-tree extra (which would otherwise flip it to true).
 
         -- ###################################################################
         --                     custom delete command

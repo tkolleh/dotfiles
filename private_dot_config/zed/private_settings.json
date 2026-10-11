@@ -8,11 +8,6 @@
 // from the command palette or from `Zed` application menu.
 {
   "proxy": "",
-  /* Duplicated key auto-commented: "agent": {
-    "sidebar_side": "right",
-    "favorite_models": [],
-    "model_parameters": []
-  }, */
   "session": {
     "trust_all_worktrees": true
   },
@@ -47,11 +42,15 @@
           }
         }
   },
+  // Zed's built-in agent. The enterprise Claude account is used via the
+  // external `claude-acp` agent above (Agent Panel -> new thread), which wraps
+  // the local Claude Code CLI and carries its own auth -- run `/login` in a
+  // Claude Agent thread and pick the Claude Code option. Zed-side model/API-key
+  // settings do NOT configure it, so no `default_model` is pinned here.
   "agent": {
-    "default_model": {
-      "provider": "copilot_chat",
-      "model": "gpt-4o"
-    },
+    "sidebar_side": "right",
+    "favorite_models": [],
+    "model_parameters": []
   },
   "buffer_font_family": "JetBrainsMono Nerd Font",
   // See: https://fontdrop.info/ for more information on font features
@@ -66,7 +65,7 @@
   "base_keymap": "JetBrains",
   "theme": {
     "mode": "system",
-    "light": "Ayu Light",
+    "light": "Dawnfox - blurred",
     "dark": "Ayu Dark"
   },
   "tab_size": 2,

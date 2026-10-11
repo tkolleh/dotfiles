@@ -39,9 +39,12 @@ return {
         if not notebook_root then
           return
         end
-        vim.lsp.start(vim.tbl_extend("force", zk_config.options.lsp.config, {
-          root_dir = notebook_root,
-        }), { bufnr = args.buf })
+        vim.lsp.start(
+          vim.tbl_extend("force", zk_config.options.lsp.config, {
+            root_dir = notebook_root,
+          }),
+          { bufnr = args.buf }
+        )
       end,
     })
 

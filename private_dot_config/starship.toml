@@ -1,136 +1,72 @@
-# -*-mode:toml-*-
-#
-# ~/.config/starship.toml
-#
-# Optimized for a Java, Scala, TS/JS, and Python workflow.
-
 "$schema" = 'https://starship.rs/config-schema.json'
 
-# --- Global Settings ---
 add_newline = false
 scan_timeout = 300
 command_timeout = 300
 
-# --- Prompt Format ---
-# The $nodejs, $python, etc., modules will only appear if their detection logic passes.
+# Modules absent from `format` never run, so none need `disabled = true`.
+# Each segment is bracketed by its own black wedges, so a hidden module leaves no orphan separator.
 format = """
-[╭─](fg:clay_clr)[░▒▓](clay_clr)\
+[╭─░▒▓](fg:bright-black)\
 $directory\
-[](bg:bg_dark_cream fg:clear_clr)\
-$git_branch\
-$git_state\
-[](fg:bg_dark_cream bg:#394260)\
-[](fg:#394260 bg:bright_grn_clr)\
-$nodejs\
-$python\
-$java\
-$scala\
-[](fg:bright_grn_clr bg:red_clay_clr)\
-$time[ ](fg:red_clay_clr)
-[╰](fg:clay_clr)\
-$status\
+([](fg:wedge bg:bg_dark_cream)$git_branch$git_state[](fg:bg_dark_cream bg:wedge))\
+([](fg:wedge bg:bright_grn_clr)$nodejs$python$java$scala[](fg:bright_grn_clr bg:wedge))\
+[](fg:wedge)
+[╰](fg:bright-black)$character"""
 
-$character(fg:clay_clr)"""
-
-# --- Color Palette ---
 palette = "dark"
 
 [palettes.dark]
 bg_brown = "#D4A373"
 bg_dark_cream = "#b7b7a4"
-bg_cream = "#FEFAE0"
-bg_light_green = "#E9EDC9"
-bg_green = "#CCD5AE"
-txt_clr = "#463f3a"
-red_clr = "#b61827"
-grn_clr = "#b2dfdb"
 bright_grn_clr = "#adc178"
-clay_clr = "#b7b7a4"
 red_clay_clr = "#6f1d1b"
-clear_clr = "#000000"
+txt_clr = "#1c1917"
+navy = "#394260"
+ink = "#212736"
+wedge = "#000000"
 
-# --- Core Modules ---
 [character]
-success_symbol = "[](dimmed grn_clr) "
-error_symbol = " [](dimmed red_clr) "
+success_symbol = "[](green) "
+error_symbol = " [](red) "
 
 [directory]
 truncation_symbol = "../"
-truncation_length = 3
-truncate_to_repo = true
-style = "bg:bg_brown fg:clear_clr"
-format = """
-[](fg:clay_clr bg:txt_clr)\
-[](fg:#394260 bg:#212736)\
-[](fg:#212736 bg:bg_brown)\
-[$path](bg:bg_brown fg:txt_clr)\
-[$read_only]($read_only_style)\
-[](bg:clear_clr fg:bg_brown)"""
-
-[time]
-disabled = false
-time_format = "%R" # Hour:Minute Format
-style = "bg:#faedcd"
-format = '[[  $time ](fg:#a0a9cb bg:red_clay_clr)]($style)'
+# worktrunk names worktrees <repo>.<user>-<branch>; the branch segment already shows the user prefix.
+substitutions = [{ from = "tj-kolleh-ck-", to = "" }]
+format = "[](fg:bright-black bg:txt_clr)[](fg:navy bg:ink)[](fg:ink bg:bg_brown)[$path](bg:bg_brown fg:txt_clr)[$read_only]($read_only_style)[](fg:bg_brown bg:wedge)"
 
 [git_branch]
 symbol = "  "
-style = "bg:bg_dark_cream fg:clear_clr"
+truncation_length = 28
 format = "[$symbol$branch](bg:bg_dark_cream fg:txt_clr)"
 
 [git_state]
-style = "bg:bg_dark_cream fg:clear_clr"
-format = "[ ($state( $progress_current/$progress_total))](bg:bg_dark_cream fg:txt_clr)"
+format = "[  $state( $progress_current/$progress_total)](bg:bg_dark_cream fg:txt_clr)"
 
-[git_commit]
-style = "bg:bg_dark_cream fg:clear_clr"
-format = "\b[ ﰖ $hash](fg:clear_clr bg:$style)[](fg:$style) "
-
-# --- ACTIVE Language Modules (Optimized) ---
-
+# Detection is narrowed so versions show only at a project root and sbt projects don't also match Java.
 [nodejs]
 detect_files = ["package.json", ".node-version", ".nvmrc"]
-detect_folders = ["node_modules"]
 detect_extensions = []
-symbol = " "
-format = '[[ ${symbol}(${version})](bold fg:red_clay_clr bg:bright_grn_clr)]($style)'
+symbol = " "
+format = "[ ${symbol}(${version})](bold fg:red_clay_clr bg:bright_grn_clr)"
 
 [python]
 detect_files = ["pyproject.toml", "requirements.txt", "setup.py", "poetry.lock"]
 detect_folders = [".venv"]
 detect_extensions = []
 symbol = " "
-format = '[[ $symbol ${pyenv_prefix}(${version} )(($virtualenv) ) ](bold fg:red_clay_clr bg:bright_grn_clr)]($style)'
+format = "[ $symbol ${pyenv_prefix}(${version} )($virtualenv ) ](bold fg:red_clay_clr bg:bright_grn_clr)"
 
 [java]
 detect_files = ["pom.xml", "build.gradle", "gradlew", ".java-version"]
 detect_extensions = []
 symbol = " "
-format = '[[ ${symbol}(${version})](bold fg:red_clay_clr bg:bright_grn_clr)]($style)'
+format = "[ ${symbol}(${version})](bold fg:red_clay_clr bg:bright_grn_clr)"
 
 [scala]
 detect_files = ["build.sbt", ".scala-version"]
+detect_folders = []
 detect_extensions = []
 symbol = " "
-format = '[[ ${symbol}(${version})](bold fg:red_clay_clr bg:bright_grn_clr)]($style)'
-
-# --- DISABLED Language Modules (for performance) ---
-
-[rust]
-disabled = true
-[golang]
-disabled = true
-[php]
-disabled = true
-[gleam]
-disabled = true
-[dart]
-disabled = true
-[elm]
-disabled = true
-[elixir]
-disabled = true
-[ruby]
-disabled = true
-[conda]
-disabled = true
+format = "[ ${symbol}(${version})](bold fg:red_clay_clr bg:bright_grn_clr)"
