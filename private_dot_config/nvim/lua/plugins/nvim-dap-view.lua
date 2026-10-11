@@ -35,15 +35,13 @@ return {
 
   ---@module 'dap-view'
   ---@type dapview.Config
+  -- winbar.show, winbar.sections, and windows.position all match dap-view's
+  -- own defaults and are left unset; only windows.size (0.3 vs default 0.25)
+  -- and auto_toggle (true vs default false) are genuine overrides.
   opts = {
     auto_toggle = true,
-    winbar = {
-      show = true,
-      sections = { "watches", "scopes", "exceptions", "breakpoints", "threads", "repl" },
-    },
     windows = {
       size = 0.3,
-      position = "below",
     },
   },
   config = function(_, opts)

@@ -212,7 +212,7 @@ export CHEZMOI_SOURCE_PATH="$HOME/.local/share/chezmoi"
 export CMUX_CUSTOM_CLAUDE_PATH="$HOME/.local/share/claude/shim/claude"
 
 # Use 1password's ssh agent socket
-export SSH_AUTH_SOCK="~/Library/Group\ Containers/2BUA8C4S2C.com.1password/t/agent.sock"
+export SSH_AUTH_SOCK="$HOME/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
 
 # pnpm start
 # TODO: Simplify this -- too complicated

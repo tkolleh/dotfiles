@@ -70,6 +70,18 @@ api.nvim_create_autocmd("ColorScheme", {
   callback = sync_pmenu_bg,
 })
 
+-- Hard-wrap prose at 80 columns. Code filetypes are intentionally excluded:
+-- line length there is owned by stylua/formatters, not Vim's 't' formatoption.
+api.nvim_create_autocmd("FileType", {
+  group = api.nvim_create_augroup("prose_textwidth", { clear = true }),
+  pattern = { "markdown", "gitcommit", "text", "asciidoc"},
+  callback = function()
+    vim.opt_local.textwidth = 80
+    vim.opt_local.formatoptions:append("t")
+  end,
+  desc = "Set textwidth=80 and auto-wrap while typing for prose filetypes",
+})
+
 -- Disable relative line numbers in CodeDiff tabs
 -- CodeDiff opens in a new tab; when closed, these windows are destroyed,
 -- so the original tab's relativenumber settings remain intact.
