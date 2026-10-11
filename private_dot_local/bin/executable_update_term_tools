@@ -57,8 +57,8 @@ fi
 if [[ -n "$NVIM_VENV" ]] && [[ -d "$NVIM_VENV" ]]; then
   roda --spinner "arc" --title "Updating neovim python venv packages..." -- "$NVIM_VENV/bin/pip" install --upgrade pynvim || :
 fi
-if (( ${+commands[npx]} )); then
-  roda --spinner "arc" --title "Update agent skills" -- npx skills@latest update --global --yes || :
+if (( ${+commands[skillshare]} )); then
+  roda --spinner "arc" --title "Update agent skills" -- skillshare update --all || :
 fi
 if (( ${+commands[skillfish]} )); then
   roda --spinner "arc" --title "Update agent skills" -- skillfish update --yes || :
