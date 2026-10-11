@@ -7,7 +7,7 @@ command_timeout = 300
 # Modules absent from `format` never run, so none need `disabled = true`.
 # Each segment is bracketed by its own black wedges, so a hidden module leaves no orphan separator.
 format = """
-[╭─░▒▓](fg:bright-black)\
+[╭─░](fg:bright-black)\
 $directory\
 ([](fg:wedge bg:bg_dark_cream)$git_branch$git_state[](fg:bg_dark_cream bg:wedge))\
 ([](fg:wedge bg:bright_grn_clr)$nodejs$python$java$scala[](fg:bright_grn_clr bg:wedge))\
@@ -27,14 +27,14 @@ ink = "#212736"
 wedge = "#000000"
 
 [character]
-success_symbol = "[](green) "
+success_symbol = "[](fg:bright-black) "
 error_symbol = " [](red) "
 
 [directory]
 truncation_symbol = "../"
 # worktrunk names worktrees <repo>.<user>-<branch>; the branch segment already shows the user prefix.
 substitutions = [{ from = "tj-kolleh-ck-", to = "" }]
-format = "[](fg:bright-black bg:txt_clr)[](fg:navy bg:ink)[](fg:ink bg:bg_brown)[$path](bg:bg_brown fg:txt_clr)[$read_only]($read_only_style)[](fg:bg_brown bg:wedge)"
+format = "[▒](fg:bright-black bg:txt_clr)[](fg:navy bg:ink)[](fg:ink bg:bg_brown)[$path](bg:bg_brown fg:txt_clr)[$read_only]($read_only_style)[](fg:bg_brown bg:wedge)"
 
 [git_branch]
 symbol = "  "
