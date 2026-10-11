@@ -7,7 +7,7 @@
 #   update_term_tools
 #
 # Walks every package manager present on this machine (brew, atuin, zpm,
-# coursier, pipx, npm/pnpm, uv, yazi, httpie, cargo, gem, agent skills)
+# coursier, npm/pnpm, uv, yazi, cargo, gem, agent skills)
 # and upgrades it. Each step is guarded by a command check and trails
 # `|| :` so one failing ecosystem does not abort the rest.
 #
@@ -32,9 +32,6 @@ fi
 if (( ${+commands[cs]} )); then
   roda --spinner "arc" --title "Updating coursier..." -- cs update --quiet || :
 fi
-if (( ${+commands[pipx]} )); then
-  roda --spinner "arc" --title "Upgrading all pipx packages..." -- pipx upgrade-all || :
-fi
 if (( ${+commands[node]} )); then
   roda --spinner "arc" --title "Updating global npm packages..." -- npm --global update || :
   roda --spinner "arc" --title "Updating pnpm ..." -- pnpm self-update || :
@@ -45,10 +42,6 @@ fi
 if (( ${+commands[yazi]} )); then
   roda --spinner "arc" --title "Installing yazi plugins with locked versions from package.toml..." -- ya pkg install || :
   roda --spinner "arc" --title "Upgrading yazi plugins package.toml" -- ya pkg upgrade || :
-fi
-if (( ${+commands[httpie]} )); then
-  roda --spinner "arc" --title "Upgrading httpie cli..." -- httpie cli check-updates || :
-  roda --spinner "arc" --title "Upgrading httpie plugins..." -- httpie plugins upgrade httpie-jwt-auth httpie-image || :
 fi
 if (( ${+commands[cargo]} )); then
   roda --spinner "arc" --title "Upgrading cargo packages..." -- cargo install cargo-update || :
