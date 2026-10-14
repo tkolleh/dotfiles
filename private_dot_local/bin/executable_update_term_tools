@@ -40,8 +40,9 @@ if (( ${+commands[uv]} )); then
   roda --spinner "arc" --title "Updating uv tools..." -- uv tool upgrade --all || :
 fi
 if (( ${+commands[yazi]} )); then
-  roda --spinner "arc" --title "Installing yazi plugins with locked versions from package.toml..." -- ya pkg install || :
-  roda --spinner "arc" --title "Upgrading yazi plugins package.toml" -- ya pkg upgrade || :
+  # Pass --discard so non-interactive runs overwrite stale plugin files when package.toml is synced via chezmoi
+  roda --spinner "arc" --title "Installing yazi plugins with locked versions from package.toml..." -- ya pkg install --discard || :
+  roda --spinner "arc" --title "Upgrading yazi plugins package.toml" -- ya pkg upgrade --discard || :
 fi
 if (( ${+commands[cargo]} )); then
   roda --spinner "arc" --title "Upgrading cargo packages..." -- cargo install cargo-update || :

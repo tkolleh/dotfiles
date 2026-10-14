@@ -14,6 +14,17 @@ return {
         cmd = "bat",
         args = "--color=always --style=numbers,changes --theme=base16",
       },
+      builtin = {
+        extensions = {
+          ["png"] = { "chafa", "-f", "symbols" },
+          ["jpg"] = { "chafa", "-f", "symbols" },
+          ["jpeg"] = { "chafa", "-f", "symbols" },
+          ["gif"] = { "chafa", "-f", "symbols" },
+          ["webp"] = { "chafa", "-f", "symbols" },
+          ["bmp"] = { "chafa", "-f", "symbols" },
+          ["svg"] = { "chafa", "-f", "symbols" },
+        },
+      },
     })
 
     -- Use filename-first formatter for deeply nested paths
