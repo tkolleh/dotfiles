@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+# Rehydrate the skillshare library from the chezmoi-managed manifest, then sync.
+# Hashes below re-trigger this script when either managed file changes.
+# manifest: {{ include "private_dot_config/skillshare/skills/encrypted_dot_metadata.json.asc" | sha256sum }}
+# config:   {{ include "private_dot_config/skillshare/encrypted_config.yaml.asc" | sha256sum }}
+set -o pipefail
+
+for bin in skillshare jq; do
+  command -v "$bin" >/dev/null || { echo "skillshare bootstrap: '$bin' not found (brew install $bin)" >&2; exit 1; }
+done
+
+src="$HOME/.config/skillshare/skills"
+manifest="$(mktemp)"
+trap 'rm -f "$manifest"' EXIT
+
+# `skillshare install` rewrites .metadata.json and drops entries that have no
+# skill directory on disk, so replay from a copy. The audit gate stays on.
+cp "$src/.metadata.json" "$manifest" || { echo "skillshare bootstrap: no $src/.metadata.json" >&2; exit 1; }
+
+failed=()
+while IFS=$'\t' read -r name repo subdir; do
+  [ -f "$src/$name/SKILL.md" ] && continue
+  skillshare install "$repo/$subdir" --name "$name" || failed+=("$name")
+done < <(jq -r '.entries | to_entries[]
+  | select(.value.repo_url | startswith("https://github.com/"))
+  | [.key, (.value.repo_url | ltrimstr("https://github.com/") | rtrimstr(".git")), .value.subdir]
+  | @tsv' "$manifest")
+
+skillshare sync || failed+=("sync")
+
+# Merge mode keeps real directories that shadow a managed skill (e.g. old npx
+# copies). Report them instead of deleting anything.
+shadowed=()
+for target in "$HOME/.claude/skills" "$HOME/.agents/skills"; do
+  for dir in "$src"/*/; do
+    entry="$target/$(basename "$dir")"
+    [ -d "$entry" ] && [ ! -L "$entry" ] && shadowed+=("$entry")
+  done
+done
+if [ "${#shadowed[@]}" -gt 0 ]; then
+  echo "skillshare bootstrap: ${#shadowed[@]} real dirs shadow managed skills; trash them, then run 'skillshare sync':" >&2
+  printf '  %s\n' "${shadowed[@]}" >&2
+fi
+
+if [ "${#failed[@]}" -gt 0 ]; then
+  echo "skillshare bootstrap: failed: ${failed[*]}" >&2
+  exit 1
+fi
