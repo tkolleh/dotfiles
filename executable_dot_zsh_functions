@@ -223,10 +223,37 @@ if (( ${+functions[add-zsh-hook]} )); then
   add-zsh-hook precmd _git_worktrees_cd_hook
 fi
 
+# Nearest ancestor of $PWD holding a mise config, never above the git root (mirrors
+# lua/utils/mise.lua in the nvim config, so shell and Neovim agree on what a mise project is).
+function _mise_project_root() {
+  local dir="$PWD" stop f
+  stop="$(git rev-parse --show-toplevel 2>/dev/null)"
+  # git reports the physical path while $PWD may traverse a symlink (/tmp, /var), so compare with :A.
+  stop="${${stop:-$dir}:A}"
+  while true; do
+    for f in mise.toml .mise.toml mise.local.toml .mise.local.toml; do
+      [[ -f "$dir/$f" ]] && { print -r -- "$dir"; return 0 }
+    done
+    [[ "${dir:A}" == "$stop" || "$dir" == "/" ]] && return 1
+    dir="${dir:h}"
+  done
+}
+
+# Project-local mise owns the JDK; a Coursier JDK plus a generated .envrc would put direnv and mise
+# in charge of JAVA_HOME at once, and Neovim (which asks mise only) would then disagree with the shell.
+# Usage: _refuse_in_mise_project <caller>   (returns 1 inside a mise project)
+function _refuse_in_mise_project() {
+  local root
+  root="$(_mise_project_root)" || return 0
+  gum log --level warn "$1: $root defines mise; use 'mise use java@corretto-<version>' instead"
+  return 1
+}
+
 # set_java_home_to <version>
 # Sets JAVA_HOME and updates PATH for the specified Java version using Coursier.
-# Usage: set_java_home_to 8
+# Refuses inside a mise project. Usage: set_java_home_to 8
 function set_java_home_to() {
+  _refuse_in_mise_project set_java_home_to || return 1
   local version="$1"
   if [[ -z "$version" ]]; then
     gum log --level info "Usage: set_java_home_to <version>\n"
@@ -242,6 +269,7 @@ function set_java_home_to() {
 # Enhanced function to set Java version with .envrc creation
 # Usage: set_java_version 8
 function set_java_version() {
+  _refuse_in_mise_project set_java_version || return 1
   local version=${1:-"17"}
   export PROJECT_JAVA_VERSION="$version"
   export JAVA_HOME="$(cs java-home --architecture arm64 --jvm corretto:${version})"
@@ -299,18 +327,21 @@ function claude-history-by-session() {
 }
 
 #
-# --- CK Jira CLI (1Password-backed token injection with session caching) ------
+# --- Jira CLI (jira-cli) per instance -----------------------------------------
 #
-ckjira() {
-  # Lazy-load token from 1Password on first use
-  : ${JIRA_API_TOKEN:=$(op item get "Jira API Token Credential" --reveal --fields credential)}
-  export JIRA_API_TOKEN JIRA_CONFIG_FILE=~/.config/.jira/.ck.yml
-
-  jira "$@"
-}
-#
-# --- Intuit Jira CLI (acli, OAuth session managed by acli itself) ------------
-#
+# Intuit Jira Cloud is the primary instance: its token may already be in
+# JIRA_API_TOKEN (exported by ~/.local/share/claude/shim/claude). The API host is
+# intuit-prod.atlassian.net; jira.cloud.intuit.com rejects API tokens.
 intuitjira() {
-  acli jira "$@"
+  JIRA_CONFIG_FILE=~/.config/.jira/.intuit.yml \
+  JIRA_API_TOKEN="${JIRA_API_TOKEN:-$(op read --account my.1password.com "op://Private/Intuit Jira API Credentials/credential")}" \
+    command jira "$@"
+}
+
+# CK Jira is used sparingly: always fetch its token inline and scope it to this
+# one process so it never overwrites the ambient Intuit JIRA_API_TOKEN.
+ckjira() {
+  JIRA_CONFIG_FILE=~/.config/.jira/.ck.yml \
+  JIRA_API_TOKEN="$(op read --account my.1password.com "op://Private/Jira API Token Credential/credential")" \
+    command jira "$@"
 }

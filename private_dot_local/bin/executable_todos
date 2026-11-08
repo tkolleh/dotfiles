@@ -1,0 +1,134 @@
+#!/usr/bin/env zsh
+#
+# todos — Fuzzy-filter md2do tasks from the zk notebook, open them in $EDITOR
+#
+set -euo pipefail
+
+readonly TODOS_VERSION="1.0.0"
+
+todos_help() {
+  cat <<EOF
+todos — md2do tasks from \$ZK_NOTEBOOK_DIR, filtered with fzf
+
+USAGE
+  todos [COMMAND]
+
+COMMANDS
+  incomplete                  Open tasks (default)
+  all                         Open and completed tasks
+  complete                    Completed tasks
+  daily                       Open tasks in journals/daily
+  --help, -h                  Show this message
+  --version                   Show version
+
+KEYS
+  enter    open the focused task in \$EDITOR at its line
+           (or build a quickfix list when several are selected)
+  ctrl-o   as enter, without leaving fzf
+  alt-a    select all          alt-d  deselect all
+  ?        toggle preview
+
+EXAMPLES
+  todos
+  todos daily
+  todos all
+EOF
+}
+
+main() {
+  local cmd="${1:-incomplete}"
+
+  case "$cmd" in
+    incomplete)  pick "" --incomplete ;;
+    all)         pick "" ;;
+    complete)    pick "" --completed ;;
+    daily)       pick /journals/daily --incomplete ;;
+    --help|-h)   todos_help ;;
+    --version)   echo "todos $TODOS_VERSION" ;;
+    *)           todos_help >&2; return 1 ;;
+  esac
+}
+
+require_tools() {
+  local -a missing=()
+  local tool
+  for tool in md2do fzf jq bat; do
+    (( ${+commands[$tool]} )) || missing+=("$tool")
+  done
+  if (( ${#missing} )); then
+    print -u2 "Requires ${(j:, :)missing} to be installed."
+    return 1
+  fi
+}
+
+# $1 = subdirectory of the notebook, remaining args go to `md2do list`.
+pick() {
+  require_tools || return 1
+  if [[ -z "${ZK_NOTEBOOK_DIR:-}" ]]; then
+    print -u2 "ZK_NOTEBOOK_DIR is not set."
+    return 1
+  fi
+
+  local subdir="$1"; shift
+  local dir="${ZK_NOTEBOOK_DIR%/}${subdir}"
+
+  # md2do reports `file` relative to --path, so rebuild the absolute path; the
+  # display copy is relative to the notebook root so a task reads the same in
+  # every mode.
+  local root="${ZK_NOTEBOOK_DIR%/}" json lines
+  json="$(md2do list --path "$dir" "$@" --format json --no-warnings)" || {
+    print -u2 "todos: md2do failed (exit $?)"
+    return 1
+  }
+  lines="$(jq -r --arg dir "$dir" --arg root "$root" '.tasks[]
+        | "\($dir)/\(.file)" as $abs
+        | $abs[($root | length) + 1:] as $shown
+        | [ $abs,
+            (.line | tostring),
+            "\($shown):\(.line)  \(if .completed then "✓" else "○" end) \(.text)" ]
+        | @tsv' <<<"$json")"
+
+  if [[ -z "$lines" ]]; then
+    print -u2 "No tasks"
+    return 0
+  fi
+
+  # md2do has no per-task timestamp, so order by file mtime (newest first),
+  # keeping tasks in line order within a file.
+  zmodload -F zsh/stat b:zstat
+  local row
+  local -a mt
+  lines="$(
+    for row in ${(f)lines}; do
+      zstat -A mt +mtime -- "${row%%$'\t'*}" 2>/dev/null || mt=(0)
+      print -r -- "${mt[1]}"$'\t'"$row"
+    done | sort -t$'\t' -k1,1nr -k2,2 -k3,3n | cut -f2-
+  )"
+
+  # Not a terminal (piped/redirected): fzf can't prompt, so emit the readable column.
+  if [[ ! -t 1 ]]; then
+    cut -f3 <<<"$lines"
+    return 0
+  fi
+
+  local opener='if [[ $FZF_SELECT_COUNT -eq 0 ]]; then
+          ${EDITOR:-nvim} {1} +{2}
+        else
+          nvim +cw -q <(awk -F"\t" "{print \$1\":\"\$2\":\"\$3}" {+f})
+        fi'
+
+  # fzf exits 1 (no match) or 130 (Esc/Ctrl-C) on a normal cancel; not an error.
+  local rc=0
+  fzf --ansi --multi --tiebreak=index \
+      --delimiter '\t' --with-nth 3 \
+      --bind "enter:become:$opener" \
+      --bind "ctrl-o:execute:$opener" \
+      --bind 'alt-a:select-all,alt-d:deselect-all,?:toggle-preview' \
+      --preview 'command bat --style=full --color=always --highlight-line {2} {1}' \
+      --preview-window '~4,+{2}+4/3,<80(up),nohidden' <<<"$lines" || rc=$?
+
+  (( rc == 1 || rc == 130 )) && return 0
+  return $rc
+}
+
+main "$@"

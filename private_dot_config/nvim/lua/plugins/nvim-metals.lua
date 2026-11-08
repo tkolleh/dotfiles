@@ -131,14 +131,9 @@ return {
       -- its own heap tuning. sbt BSP has the full task graph and no daemon to
       -- coordinate across worktrees.
       defaultBspToBuildTool = true,
-      -- Metals' findSbtInPath() fallback assumes whatever resolves on $PATH can be
-      -- decomposed into `java -classpath <path> xsbt.boot.Boot`. Coursier's sbt
-      -- launcher is a self-executing polyglot (sh script + appended jar bytes)
-      -- that only works when exec'd directly as a script, not split into
-      -- classpath args — decomposing it throws "Could not find or load main
-      -- class xsbt.boot.Boot". sbtScript bypasses findSbtInPath() entirely and
-      -- execs this script as-is (see SbtBuildTool.scala composeArgs).
-      sbtScript = "/Users/tkolleh/Library/Application Support/Coursier/bin/sbt",
+      -- sbtScript and the JDK/sbt environment are not set here: scala.config_for()
+      -- injects them per buffer from the project's mise config. Outside a mise
+      -- project Metals' embedded sbt launcher and the shell's JAVA_HOME apply.
       serverProperties = vim.list_extend(
         vim.deepcopy(metals_gcc_config),
         vim.iter({
@@ -164,8 +159,10 @@ return {
     local nvim_metals_group = vim.api.nvim_create_augroup("nvim-metals", { clear = true })
     vim.api.nvim_create_autocmd("FileType", {
       pattern = self.ft,
-      callback = function()
-        require("metals").initialize_or_attach(metals_config)
+      callback = function(args)
+        local name = vim.api.nvim_buf_get_name(args.buf)
+        local dir = name ~= "" and vim.fs.dirname(name) or vim.uv.cwd()
+        require("metals").initialize_or_attach(scala.config_for(metals_config, dir))
       end,
       group = nvim_metals_group,
     })

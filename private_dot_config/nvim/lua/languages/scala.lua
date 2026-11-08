@@ -1,3 +1,5 @@
+local mise = require("utils.mise")
+
 local M = {}
 
 M.dap = { adapters = {}, configurations = {} }
@@ -96,5 +98,81 @@ M.test_keys = {
     ft = { "scala", "sbt" },
   },
 }
+
+local warned = {}
+
+---@param key string
+---@param msg string
+local function warn_once(key, msg)
+  if not warned[key] then
+    warned[key] = true
+    vim.notify(msg, vim.log.levels.WARN)
+  end
+end
+
+---Absolute paths named in `.bsp/sbt.json` that no longer exist. sbt writes the launcher, JDK and
+---`-Dsbt.script` as version-pinned paths, so a mise bump leaves Metals launching a missing binary.
+---@param bsp_root string directory containing `.bsp/`
+---@return string[]
+function M.stale_bsp_paths(bsp_root)
+  local file = vim.fs.joinpath(bsp_root, ".bsp", "sbt.json")
+  if vim.fn.filereadable(file) == 0 then
+    return {}
+  end
+  local ok, conn = pcall(vim.json.decode, table.concat(vim.fn.readfile(file), "\n"))
+  if not ok or type(conn) ~= "table" then
+    return {}
+  end
+  return vim
+    .iter(conn.argv or {})
+    :map(function(arg)
+      return arg:match("^%-Dsbt%.script=(.+)$") or arg
+    end)
+    :filter(function(path)
+      return vim.startswith(path, "/") and not vim.uv.fs_stat(path)
+    end)
+    :totable()
+end
+
+---Per-buffer nvim-metals config. Project-local mise wins over global: inside a mise project Metals
+---gets mise's JDK/sbt; elsewhere the base config (and the shell's env) is used unchanged.
+---Returns a copy because nvim-metals mutates the table it is handed (settings re-nesting, root_dir).
+---@param base table pristine nvim-metals config
+---@param dir string directory of the buffer being attached
+---@return table
+function M.config_for(base, dir)
+  local cfg = vim.deepcopy(base)
+
+  local bsp_root = vim.fs.root(dir, ".bsp")
+  local missing = bsp_root and M.stale_bsp_paths(bsp_root) or {}
+  if #missing > 0 then
+    warn_once(
+      "bsp:" .. bsp_root,
+      ("[metals] %s/.bsp/sbt.json points at missing paths (run `sbt bspConfig`):\n%s"):format(
+        bsp_root,
+        table.concat(missing, "\n")
+      )
+    )
+  end
+
+  local root = mise.root(dir)
+  if not root then
+    return cfg
+  end
+
+  local env, err = mise.env(root)
+  if not env then
+    warn_once(
+      "mise:" .. root,
+      ("[metals] mise config in %s but `mise env` failed; using the global env:\n%s"):format(root, err)
+    )
+    return cfg
+  end
+
+  cfg.cmd_env = vim.tbl_extend("force", cfg.cmd_env or {}, env)
+  cfg.settings = cfg.settings or {}
+  cfg.settings.sbtScript = mise.which("sbt", root)
+  return cfg
+end
 
 return M
